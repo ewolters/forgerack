@@ -158,8 +158,14 @@ function _cableColor(index) {
 // ── Interactive jack clicking ──
 
 function _initJackInteraction() {
-    // Listen for clicks on any patch jack
+    // Listen for clicks on any patch jack — uses document delegation
+    // so it works for dynamically added elements
     document.addEventListener('click', function(e) {
+        // Debug: log what was actually clicked on the back panel
+        if (e.target.closest('.rack-back, .rack-unit-back, [data-unit-back]')) {
+            console.log('[ForgeRack] Back panel click:', e.target.tagName, e.target.className, e.target);
+        }
+
         const jack = e.target.closest('.patch-jack, .jack');
         if (!jack) {
             // Click elsewhere — cancel pending

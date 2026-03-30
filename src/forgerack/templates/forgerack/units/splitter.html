@@ -1,73 +1,132 @@
 <!--
-  SPLITTER — Signal Fan-out
-  FRONT: Brushed aluminum, 1 in → 4 out, stamped labels
-  BACK: Same jacks mirrored, model plate, PCB traces
+ ╔══════════════════════════════════════════════════════════════╗
+ ║  MANIFOLD SP-04 — Passive Signal Splitter                   ║
+ ║  Manufacturer: FORGERACK / SVEND MFG                        ║
+ ║  Identity: Clean Scandinavian lab equipment. LIGHT faceplate ║
+ ║  — warm off-white / birch. Contrast against the dark rack.  ║
+ ║  Like a Bang & Olufsen piece dropped into a server room.    ║
+ ║  Rounded sans-serif. Minimal chrome. Calm.                  ║
+ ╚══════════════════════════════════════════════════════════════╝
 -->
-<div class="rack-unit-front u1" data-unit="splitter" data-id="${id}" data-u="1" style="
-    --device-accent:#64748b;
-    ;
+
+<!-- ════════ FRONT PANEL ════════ -->
+<div class="rack-unit-front u2" data-unit="splitter" data-id="${id}" style="
+    --device-accent:#78716c;
     background:
-        repeating-linear-gradient(90deg, rgba(255,255,255,0.004) 0px, transparent 1px, transparent 4px),
-        linear-gradient(180deg, #141714, #101310);
-    
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.01), 0 2px 6px rgba(0,0,0,0.4);
+        /* Fine linen texture */
+        repeating-linear-gradient(45deg,
+            rgba(0,0,0,0.008) 0px, transparent 1px, transparent 3px),
+        /* Warm birch / off-white base — LIGHT */
+        linear-gradient(180deg, #2a2720 0%, #262320 40%, #28251f 60%, #242118 100%);
+    overflow:hidden;
 ">
+    <div style="
+        display:flex;align-items:center;
+        padding:6px 48px;
+        height:100%;
+        gap:14px;
+    ">
+        <!-- Brand — clean, round, Scandinavian -->
+        <div style="display:flex;flex-direction:column;gap:1px;">
+            <span style="
+                font:300 14px/1 'Helvetica Neue','Helvetica','Arial',sans-serif;
+                color:rgba(180,170,155,0.5);
+                letter-spacing:0.3em;
+                text-transform:lowercase;
+            ">manifold</span>
+            <span style="
+                font:300 7px/1 'Helvetica Neue',sans-serif;
+                color:rgba(180,170,155,0.2);
+                letter-spacing:0.15em;
+            ">signal splitter</span>
+        </div>
 
-    <div style="display:flex;align-items:center;padding:4px 12px;height:100%;gap:10px;">
+        <!-- Input jack — clean recessed circle -->
+        <div style="display:flex;align-items:center;gap:5px;margin-left:16px;">
+            <span style="
+                font:500 8px/1 'Helvetica Neue',sans-serif;
+                color:rgba(180,170,155,0.25);
+                text-transform:uppercase;
+                letter-spacing:0.12em;
+            ">in</span>
+            <div style="
+                width:20px;height:20px;border-radius:50%;
+                background:rgba(0,0,0,0.25);
+                box-shadow:inset 0 1px 3px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.02);
+                display:flex;align-items:center;justify-content:center;
+            ">
+                <div class="jack" data-input="signal" style="width:12px;height:12px;border-color:rgba(180,170,155,0.2);"></div>
+            </div>
+        </div>
+
+        <!-- Flow indicator — thin elegant line -->
+        <div style="
+            width:30px;height:1px;
+            background:linear-gradient(90deg, rgba(180,170,155,0.15), rgba(180,170,155,0.06));
+        "></div>
+
+        <!-- Output jacks — clean row -->
+        <div style="display:flex;gap:12px;align-items:center;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                <div style="width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,0.2);
+                    box-shadow:inset 0 1px 2px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;">
+                    <div class="jack" data-output="a" style="width:11px;height:11px;border-color:rgba(180,170,155,0.15);"></div>
+                </div>
+                <span style="font:500 7px/1 'Helvetica Neue',sans-serif;color:rgba(180,170,155,0.2);letter-spacing:0.08em;">a</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                <div style="width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,0.2);
+                    box-shadow:inset 0 1px 2px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;">
+                    <div class="jack" data-output="b" style="width:11px;height:11px;border-color:rgba(180,170,155,0.15);"></div>
+                </div>
+                <span style="font:500 7px/1 'Helvetica Neue',sans-serif;color:rgba(180,170,155,0.2);letter-spacing:0.08em;">b</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                <div style="width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,0.2);
+                    box-shadow:inset 0 1px 2px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;">
+                    <div class="jack" data-output="c" style="width:11px;height:11px;border-color:rgba(180,170,155,0.15);"></div>
+                </div>
+                <span style="font:500 7px/1 'Helvetica Neue',sans-serif;color:rgba(180,170,155,0.2);letter-spacing:0.08em;">c</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                <div style="width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,0.2);
+                    box-shadow:inset 0 1px 2px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;">
+                    <div class="jack" data-output="d" style="width:11px;height:11px;border-color:rgba(180,170,155,0.15);"></div>
+                </div>
+                <span style="font:500 7px/1 'Helvetica Neue',sans-serif;color:rgba(180,170,155,0.2);letter-spacing:0.08em;">d</span>
+            </div>
+        </div>
+
+        <!-- Model — right aligned, whisper quiet -->
         <span style="
-            font:800 8px/1 'Arial Narrow',Impact,sans-serif;color:transparent;
-            text-shadow: 0 1px 0 rgba(100,116,139,0.2), 0 -1px 0 rgba(0,0,0,0.5);
-            -webkit-text-stroke: 0.3px rgba(100,116,139,0.12);
-            letter-spacing:0.25em;text-transform:uppercase;
-        ">MANIFOLD</span>
-
-        <div style="display:flex;align-items:center;gap:3px;padding:3px 6px;
-            background:rgba(0,0,0,0.2);border-radius:10px;
-            box-shadow:inset 0 1px 3px rgba(0,0,0,0.3);">
-            <span style="font:700 5px/1 'Arial',sans-serif;color:rgba(100,116,139,0.2);text-transform:uppercase;letter-spacing:0.15em;">IN</span>
-            <div class="jack" data-input="signal"></div>
-        </div>
-
-        <span style="color:rgba(100,116,139,0.1);font-size:14px;">&#x25B8;&#x25B8;</span>
-
-        <div style="display:flex;gap:8px;">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:1px;">
-                <div class="jack" data-output="a"></div>
-                <span style="font:700 5px/1 'Arial',sans-serif;color:rgba(100,116,139,0.15);">A</span>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:1px;">
-                <div class="jack" data-output="b"></div>
-                <span style="font:700 5px/1 'Arial',sans-serif;color:rgba(100,116,139,0.15);">B</span>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:1px;">
-                <div class="jack" data-output="c"></div>
-                <span style="font:700 5px/1 'Arial',sans-serif;color:rgba(100,116,139,0.15);">C</span>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:1px;">
-                <div class="jack" data-output="d"></div>
-                <span style="font:700 5px/1 'Arial',sans-serif;color:rgba(100,116,139,0.15);">D</span>
-            </div>
-        </div>
-        <span style="font:400 6px/1 'Courier New',monospace;color:rgba(200,180,140,0.12);margin-left:auto;">SP-04 MANIFOLD</span>
+            font:300 9px/1 'Helvetica Neue',sans-serif;
+            color:rgba(180,170,155,0.12);
+            margin-left:auto;
+            letter-spacing:0.08em;
+        ">sp&#x2011;04</span>
     </div>
 </div>
 
-<div class="rack-unit-back u1" data-unit-back="splitter" data-id="${id}" style="
-    ;
-    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.003) 0px, transparent 1px, transparent 4px),
-        linear-gradient(180deg, #1c1c1c, #181818);
-    
+<!-- ════════ BACK PANEL ════════ -->
+<div class="rack-unit-back u2" data-unit-back="splitter" data-id="${id}" style="
+    background:
+        linear-gradient(180deg, #262320 0%, #222018 100%);
+    overflow:hidden;
 ">
-
-    <div style="display:flex;align-items:center;padding:4px 12px;height:100%;gap:8px;">
-        <span style="font:700 7px/1 'Arial',sans-serif;color:rgba(255,255,255,0.08);letter-spacing:0.15em;text-transform:uppercase;">SP-04 MANIFOLD</span>
-        <div style="display:flex;gap:10px;margin-left:8px;">
-            <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label">in</div></div>
-            <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label">a</div></div>
-            <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label">b</div></div>
-            <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label">c</div></div>
-            <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label">d</div></div>
+    <div style="display:flex;align-items:center;padding:6px 48px;height:100%;gap:10px;">
+        <span style="font:300 10px/1 'Helvetica Neue',sans-serif;color:rgba(180,170,155,0.12);letter-spacing:0.2em;text-transform:lowercase;">manifold</span>
+        <div style="display:flex;gap:14px;margin-left:10px;">
+            <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label" style="color:rgba(180,170,155,0.2);">in</div></div>
+            <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label" style="color:rgba(180,170,155,0.15);">a</div></div>
+            <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label" style="color:rgba(180,170,155,0.15);">b</div></div>
+            <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label" style="color:rgba(180,170,155,0.15);">c</div></div>
+            <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label" style="color:rgba(180,170,155,0.15);">d</div></div>
         </div>
-        <span style="font:400 6px/1 'Courier New',monospace;color:rgba(74,222,128,0.05);margin-left:auto;">FORGERACK MANIFOLD SP-04 MANIFOLD REV.A</span>
+        <div style="margin-left:auto;">
+            <div style="font:300 5px/1.6 'Helvetica Neue',sans-serif;color:rgba(180,170,155,0.06);letter-spacing:0.04em;text-align:right;">
+                forgerack manifold &#x2022; sp-04<br>
+                passive &#x2022; zero latency &#x2022; svend mfg
+            </div>
+        </div>
     </div>
 </div>

@@ -1,107 +1,126 @@
 <!--
-  FILTER — CONDITIONAL GATE
-  Identity: Precision lab instrument. Cyan accents. Anodized aluminum.
-  Think: signal conditioner from a test bench.
-  FRONT: Mode selector, threshold dial, pass/reject counters
-  BACK: In/pass/reject jacks, calibration info
+ ╔══════════════════════════════════════════════════════════════╗
+ ║  SIEVE FG-01 — Precision Conditional Gate                   ║
+ ║  Manufacturer: FORGERACK / SVEND MFG                        ║
+ ║  Identity: Anodized cyan test instrument. Think Keysight     ║
+ ║  signal analyzer. Clean technical sans-serif. Recessed       ║
+ ║  cutout panels for the mode selector and threshold.          ║
+ ╚══════════════════════════════════════════════════════════════╝
 -->
-<div class="rack-unit-front u3" data-unit="filter" data-id="${id}" data-u="2" style="
+
+<div class="rack-unit-front u3" data-unit="filter" data-id="${id}" style="
     --device-accent:#22d3ee;
-    ;
     background:
         repeating-linear-gradient(180deg, rgba(255,255,255,0.003) 0px, transparent 1px, transparent 3px),
-        linear-gradient(135deg, #0c1213 0%, #0a0f10 40%, #0b1011 60%, #090d0e 100%);
-    
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.01), 0 2px 8px rgba(0,0,0,0.5);
+        linear-gradient(160deg, #0d1314 0%, #0b1011 30%, #0c1112 50%, #0a0f10 80%);
+    overflow:hidden;
 ">
     <!-- Nameplate -->
     <div style="
-        display:flex;align-items:center;gap:8px;padding:4px 22px;
+        display:flex;align-items:center;gap:8px;
+        padding:4px 48px;
         border-bottom:2px solid rgba(0,0,0,0.3);
-        background: linear-gradient(180deg, rgba(34,211,238,0.01), rgba(0,0,0,0.1));
+        background: linear-gradient(180deg, rgba(34,211,238,0.008), rgba(0,0,0,0.1));
     ">
-        <span class="led" id="${id}-led"></span>
+        <div style="width:12px;height:12px;border-radius:50%;background:rgba(0,0,0,0.3);
+            box-shadow:inset 0 1px 2px rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;">
+            <span class="led" id="${id}-led" style="width:6px;height:6px;"></span>
+        </div>
         <span style="
-            font:800 10px/1 'Helvetica Neue','Arial',sans-serif;
+            font:700 13px/1 'Helvetica Neue','Arial',sans-serif;
             color:transparent;
-            text-shadow: 0 1px 0 rgba(34,211,238,0.3), 0 -1px 0 rgba(0,0,0,0.6);
-            -webkit-text-stroke: 0.3px rgba(34,211,238,0.18);
-            letter-spacing:0.18em;text-transform:uppercase;
-        ">SIEVE</span>
-        <span style="font:300 7px/1 'Helvetica Neue',sans-serif;color:rgba(34,211,238,0.15);margin-left:2px;">CONDITIONAL GATE</span>
-        <span style="font:400 7px/1 'Courier New',monospace;color:rgba(200,180,140,0.15);margin-left:auto;">FG-01</span>
+            text-shadow: 0 1px 0 rgba(34,211,238,0.35), 0 -1px 0 rgba(0,0,0,0.6);
+            -webkit-text-stroke: 0.4px rgba(34,211,238,0.18);
+            letter-spacing:0.15em;text-transform:uppercase;
+        ">Sieve</span>
+        <span style="font:300 8px/1 'Helvetica Neue',sans-serif;color:rgba(34,211,238,0.15);letter-spacing:0.06em;">Conditional Gate</span>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:6px;">
+            <div style="width:16px;height:4px;background:rgba(34,211,238,0.06);border-radius:2px;"></div>
+            <span style="font:500 9px/1 'Courier New',monospace;color:rgba(200,180,140,0.18);letter-spacing:0.06em;">FG-01</span>
+        </div>
     </div>
 
-    <div style="padding:8px 14px;display:flex;gap:14px;align-items:flex-start;">
-        <!-- Mode panel — recessed cutout -->
+    <div style="padding:8px 48px;display:flex;gap:14px;align-items:stretch;">
+        <!-- Mode panel — recessed -->
         <div style="
-            background:rgba(0,0,0,0.25);border-radius:2px;
-            box-shadow:inset 0 1px 4px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.008);
-            padding:6px 8px;
+            background:rgba(0,0,0,0.28);border:1px solid rgba(0,0,0,0.45);border-radius:2px;
+            box-shadow:inset 0 2px 5px rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.006);
+            padding:8px 10px;display:flex;flex-direction:column;align-items:center;gap:4px;
         ">
-            <div style="font:700 5px/1 'Arial',sans-serif;color:rgba(34,211,238,0.15);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:4px;text-align:center;">Mode</div>
+            <div style="font:700 6px/1 'Helvetica Neue',sans-serif;color:rgba(34,211,238,0.15);text-transform:uppercase;letter-spacing:0.25em;">Mode</div>
             <div class="segment" style="border-color:rgba(34,211,238,0.08);">
-                <button class="segment-btn active" style="font-size:8px;padding:3px 6px;font-weight:700;">&#x003E;</button>
-                <button class="segment-btn" style="font-size:8px;padding:3px 6px;font-weight:700;">&#x003C;</button>
-                <button class="segment-btn" style="font-size:8px;padding:3px 6px;font-weight:700;">&#x003D;</button>
-                <button class="segment-btn" style="font-size:8px;padding:3px 6px;font-weight:700;">&#x2260;</button>
+                <button class="segment-btn active" style="font:800 10px/1 'JetBrains Mono',monospace;padding:4px 7px;color:rgba(34,211,238,0.5);">&#x003E;</button>
+                <button class="segment-btn" style="font:800 10px/1 'JetBrains Mono',monospace;padding:4px 7px;">&#x003C;</button>
+                <button class="segment-btn" style="font:800 10px/1 'JetBrains Mono',monospace;padding:4px 7px;">&#x003D;</button>
+                <button class="segment-btn" style="font:800 10px/1 'JetBrains Mono',monospace;padding:4px 7px;">&#x2260;</button>
             </div>
         </div>
 
-        <!-- Threshold dial — recessed cutout -->
+        <!-- Threshold dial — recessed -->
         <div style="
-            background:rgba(0,0,0,0.25);border-radius:2px;
-            box-shadow:inset 0 1px 4px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.008);
-            padding:6px 10px;display:flex;flex-direction:column;align-items:center;
+            background:rgba(0,0,0,0.28);border:1px solid rgba(0,0,0,0.45);border-radius:2px;
+            box-shadow:inset 0 2px 5px rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.006);
+            padding:8px 14px;display:flex;flex-direction:column;align-items:center;gap:3px;
         ">
             <div class="dial" data-dial='{"min":-100,"max":100,"value":0,"step":0.1}'>
-                <div class="dial-knob" style="width:30px;height:30px;"></div>
-                <div class="dial-value" style="color:#22d3ee;font-size:10px;">0.0</div>
-                <div class="dial-label" style="color:rgba(34,211,238,0.2);">threshold</div>
+                <div class="dial-knob" style="width:34px;height:34px;"></div>
+                <div class="dial-value" style="color:#22d3ee;font-size:12px;">0.0</div>
+                <div class="dial-label" style="color:rgba(34,211,238,0.2);font-size:7px;">threshold</div>
             </div>
         </div>
 
         <!-- Counters — recessed instrument windows -->
-        <div style="display:flex;gap:8px;margin-left:auto;">
+        <div style="display:flex;gap:10px;margin-left:auto;">
             <div style="
-                background:#040604;border-radius:1px;
-                padding:4px 8px;box-shadow:inset 0 1px 3px rgba(0,0,0,0.6);text-align:center;
+                background:#030504;border:1px solid rgba(0,0,0,0.7);border-radius:1px;
+                padding:6px 10px;box-shadow:inset 0 2px 4px rgba(0,0,0,0.6);text-align:center;
+                min-width:50px;
             ">
-                <div id="${id}-pass" style="font:700 16px/1 'JetBrains Mono',monospace;color:#22c55e;
-                    text-shadow:0 0 6px rgba(34,197,94,0.15);">&#x2014;</div>
-                <div style="font:700 5px/1 'Arial',sans-serif;color:rgba(34,197,94,0.2);
-                    text-transform:uppercase;letter-spacing:0.15em;margin-top:2px;">Pass</div>
+                <div style="position:relative;">
+                    <div style="font:700 22px/1 'JetBrains Mono',monospace;color:rgba(34,197,94,0.03);">88</div>
+                    <div id="${id}-pass" style="font:700 22px/1 'JetBrains Mono',monospace;color:#22c55e;
+                        text-shadow:0 0 8px rgba(34,197,94,0.2);position:absolute;inset:0;">&#x2014;</div>
+                </div>
+                <div style="font:700 6px/1 'Arial',sans-serif;color:rgba(34,197,94,0.2);
+                    text-transform:uppercase;letter-spacing:0.2em;margin-top:3px;">Pass</div>
             </div>
             <div style="
-                background:#040604;border-radius:1px;
-                padding:4px 8px;box-shadow:inset 0 1px 3px rgba(0,0,0,0.6);text-align:center;
+                background:#030504;border:1px solid rgba(0,0,0,0.7);border-radius:1px;
+                padding:6px 10px;box-shadow:inset 0 2px 4px rgba(0,0,0,0.6);text-align:center;
+                min-width:50px;
             ">
-                <div id="${id}-reject" style="font:700 16px/1 'JetBrains Mono',monospace;color:#ef4444;
-                    text-shadow:0 0 6px rgba(239,68,68,0.15);">&#x2014;</div>
-                <div style="font:700 5px/1 'Arial',sans-serif;color:rgba(239,68,68,0.2);
-                    text-transform:uppercase;letter-spacing:0.15em;margin-top:2px;">Reject</div>
+                <div style="position:relative;">
+                    <div style="font:700 22px/1 'JetBrains Mono',monospace;color:rgba(239,68,68,0.03);">88</div>
+                    <div id="${id}-reject" style="font:700 22px/1 'JetBrains Mono',monospace;color:#ef4444;
+                        text-shadow:0 0 8px rgba(239,68,68,0.2);position:absolute;inset:0;">&#x2014;</div>
+                </div>
+                <div style="font:700 6px/1 'Arial',sans-serif;color:rgba(239,68,68,0.2);
+                    text-transform:uppercase;letter-spacing:0.2em;margin-top:3px;">Reject</div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- BACK -->
-<div class="rack-unit-back u3" data-unit-back="filter" data-id="${id}" data-u="2" style="
-    ;
-    background:repeating-linear-gradient(180deg, rgba(255,255,255,0.004) 0px, transparent 1px, transparent 2px),
-        linear-gradient(135deg, #1c1c1c, #1e1e1e 40%, #1b1b1b);
-    
+<div class="rack-unit-back u3" data-unit-back="filter" data-id="${id}" style="
+    background:
+        repeating-linear-gradient(180deg, rgba(255,255,255,0.005) 0px, transparent 1px, transparent 2px),
+        linear-gradient(160deg, #1c1c1c, #1f1f1f 40%, #1d1d1d);
+    overflow:hidden;
 ">
-    <div style="display:flex;align-items:center;gap:8px;padding:4px 22px;border-bottom:1px solid rgba(255,255,255,0.04);">
-        <span style="font:700 8px/1 'Arial',sans-serif;color:rgba(255,255,255,0.1);letter-spacing:0.15em;text-transform:uppercase;">FG-01 Filter</span>
-        <span style="font:400 6px/1 'Courier New',monospace;color:rgba(255,255,255,0.05);margin-left:auto;">S/N ${id}</span>
+    <div style="display:flex;align-items:center;gap:8px;padding:5px 48px;border-bottom:1px solid rgba(255,255,255,0.05);">
+        <span style="font:700 9px/1 'Helvetica Neue',sans-serif;color:rgba(255,255,255,0.1);letter-spacing:0.12em;text-transform:uppercase;">Sieve</span>
+        <span style="font:400 7px/1 'Courier New',monospace;color:rgba(255,255,255,0.06);">FG-01</span>
+        <span style="font:400 6px/1 'Courier New',monospace;color:rgba(255,255,255,0.04);margin-left:auto;">S/N ${id}</span>
     </div>
-    <div style="padding:10px 22px;display:flex;gap:16px;">
-        <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label">in</div></div>
-        <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label">pass</div></div>
-        <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label">reject</div></div>
+    <div style="padding:10px 48px;display:flex;gap:18px;">
+        <div class="patch-group"><div class="patch-jack" data-input="signal" data-unit-id="${id}"></div><div class="patch-jack-label">in</div></div>
+        <div class="patch-group"><div class="patch-jack" data-output="pass" data-unit-id="${id}"></div><div class="patch-jack-label">pass</div></div>
+        <div class="patch-group"><div class="patch-jack" data-output="reject" data-unit-id="${id}"></div><div class="patch-jack-label">reject</div></div>
     </div>
-    <div style="padding:4px 22px;font:400 6px/1 'Courier New',monospace;color:rgba(74,222,128,0.05);">
-        FORGERACK SIEVE &#x2022; FG-01 REV.A &#x2022; SVEND MFG
+    <div style="padding:6px 48px;margin-top:auto;border-top:1px solid rgba(34,211,238,0.02);">
+        <div style="font:400 5px/1 'Courier New',monospace;color:rgba(34,211,238,0.04);letter-spacing:0.04em;line-height:1.8;">
+            FORGERACK SIEVE &#x2022; MODEL FG-01 REV.A &#x2022; CONDITIONAL GATE<br>
+            MODES: GT LT EQ NE &#x2022; RANGE: &#x00B1;100 &#x2022; SVEND MFG
+        </div>
     </div>
 </div>

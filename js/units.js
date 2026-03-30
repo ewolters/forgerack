@@ -49,6 +49,12 @@ FR.registerUnit('csv-input', {
             }
         }
         this._render();
+        // Emit on each column name — matches back panel jack data-output="colname"
+        var self = this;
+        this.columns.forEach(function(col) {
+            FR.emit(self.id, col, self.data[col]);
+        });
+        // Also emit full dataset on 'parsed' channel
         FR.emit(this.id, 'parsed', { columns: this.columns, data: this.data });
     },
 

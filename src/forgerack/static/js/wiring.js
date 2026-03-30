@@ -72,6 +72,19 @@ FR.connect = function(sourceUnitId, sourceOutput, targetUnitId, targetInput) {
     });
 
     _renderCables();
+
+    // Immediately push existing data through the new cable
+    var source = FR.units[sourceUnitId];
+    if (source && source.getOutput) {
+        var existingData = source.getOutput(sourceOutput);
+        if (existingData && (Array.isArray(existingData) ? existingData.length > 0 : true)) {
+            var target = FR.units[targetUnitId];
+            if (target && target.receive) {
+                console.log('[ForgeRack] Pushing existing data through new cable:', sourceUnitId, sourceOutput, '→', targetUnitId, targetInput);
+                target.receive(targetInput, existingData, sourceUnitId);
+            }
+        }
+    }
 };
 
 // ── SVG cable rendering ──

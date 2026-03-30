@@ -55,7 +55,7 @@
                 box-shadow:inset 0 1px 3px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.02);
                 display:flex;align-items:center;justify-content:center;
             ">
-                <div class="jack" data-input="signal" style="width:12px;height:12px;border-color:rgba(180,170,155,0.2);"></div>
+                <div class="jack" data-input="signal" data-unit-id="${id}" style="width:12px;height:12px;border-color:rgba(180,170,155,0.2);"></div>
             </div>
         </div>
 
@@ -70,28 +70,28 @@
             <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
                 <div style="width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,0.2);
                     box-shadow:inset 0 1px 2px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;">
-                    <div class="jack" data-output="a" style="width:11px;height:11px;border-color:rgba(180,170,155,0.15);"></div>
+                    <div class="jack" data-output="a" data-unit-id="${id}" style="width:11px;height:11px;border-color:rgba(180,170,155,0.15);"></div>
                 </div>
                 <span style="font:500 7px/1 'Helvetica Neue',sans-serif;color:rgba(180,170,155,0.2);letter-spacing:0.08em;">a</span>
             </div>
             <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
                 <div style="width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,0.2);
                     box-shadow:inset 0 1px 2px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;">
-                    <div class="jack" data-output="b" style="width:11px;height:11px;border-color:rgba(180,170,155,0.15);"></div>
+                    <div class="jack" data-output="b" data-unit-id="${id}" style="width:11px;height:11px;border-color:rgba(180,170,155,0.15);"></div>
                 </div>
                 <span style="font:500 7px/1 'Helvetica Neue',sans-serif;color:rgba(180,170,155,0.2);letter-spacing:0.08em;">b</span>
             </div>
             <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
                 <div style="width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,0.2);
                     box-shadow:inset 0 1px 2px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;">
-                    <div class="jack" data-output="c" style="width:11px;height:11px;border-color:rgba(180,170,155,0.15);"></div>
+                    <div class="jack" data-output="c" data-unit-id="${id}" style="width:11px;height:11px;border-color:rgba(180,170,155,0.15);"></div>
                 </div>
                 <span style="font:500 7px/1 'Helvetica Neue',sans-serif;color:rgba(180,170,155,0.2);letter-spacing:0.08em;">c</span>
             </div>
             <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
                 <div style="width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,0.2);
                     box-shadow:inset 0 1px 2px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;">
-                    <div class="jack" data-output="d" style="width:11px;height:11px;border-color:rgba(180,170,155,0.15);"></div>
+                    <div class="jack" data-output="d" data-unit-id="${id}" style="width:11px;height:11px;border-color:rgba(180,170,155,0.15);"></div>
                 </div>
                 <span style="font:500 7px/1 'Helvetica Neue',sans-serif;color:rgba(180,170,155,0.2);letter-spacing:0.08em;">d</span>
             </div>
@@ -116,11 +116,11 @@
     <div style="display:flex;align-items:center;padding:6px 48px;height:100%;gap:10px;">
         <span style="font:300 10px/1 'Helvetica Neue',sans-serif;color:rgba(180,170,155,0.12);letter-spacing:0.2em;text-transform:lowercase;">manifold</span>
         <div style="display:flex;gap:14px;margin-left:10px;">
-            <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label" style="color:rgba(180,170,155,0.2);">in</div></div>
-            <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label" style="color:rgba(180,170,155,0.15);">a</div></div>
-            <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label" style="color:rgba(180,170,155,0.15);">b</div></div>
-            <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label" style="color:rgba(180,170,155,0.15);">c</div></div>
-            <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label" style="color:rgba(180,170,155,0.15);">d</div></div>
+            <div class="patch-group"><div class="patch-jack" data-input="signal" data-unit-id="${id}"></div><div class="patch-jack-label" style="color:rgba(180,170,155,0.2);">in</div></div>
+            <div class="patch-group"><div class="patch-jack" data-output="a" data-unit-id="${id}"></div><div class="patch-jack-label" style="color:rgba(180,170,155,0.15);">a</div></div>
+            <div class="patch-group"><div class="patch-jack" data-output="b" data-unit-id="${id}"></div><div class="patch-jack-label" style="color:rgba(180,170,155,0.15);">b</div></div>
+            <div class="patch-group"><div class="patch-jack" data-output="c" data-unit-id="${id}"></div><div class="patch-jack-label" style="color:rgba(180,170,155,0.15);">c</div></div>
+            <div class="patch-group"><div class="patch-jack" data-output="d" data-unit-id="${id}"></div><div class="patch-jack-label" style="color:rgba(180,170,155,0.15);">d</div></div>
         </div>
         <div style="margin-left:auto;">
             <div style="font:300 5px/1.6 'Helvetica Neue',sans-serif;color:rgba(180,170,155,0.06);letter-spacing:0.04em;text-align:right;">

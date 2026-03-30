@@ -19,31 +19,38 @@ let svgLayer = null;
 // or literal ${id} that wasn't substituted (traverse DOM to find real ID)
 
 function _resolveUnitId(jack) {
-    // Direct attribute
+    // 1. Direct attribute on the jack itself
     var uid = jack.dataset.unitId;
     if (uid && uid !== '${id}' && uid !== '') return uid;
 
-    // Walk up to find the nearest unit wrapper with a real data-id
-    var parent = jack.closest('[data-id]');
-    if (parent) {
-        uid = parent.dataset.id;
-        if (uid && uid !== '${id}') return uid;
+    // 2. Walk up to parent unit element — check data-id (what S2 sets at mount)
+    var unitEl = jack.closest('[data-id]');
+    if (unitEl) {
+        uid = unitEl.dataset.id;
+        if (uid && uid !== '${id}' && uid !== '') return uid;
     }
 
-    // Walk up to find rack-unit-front or rack-unit-back with data-unit attribute
-    var unitEl = jack.closest('.rack-unit-front, .rack-unit-back, [data-unit], [data-unit-back]');
-    if (unitEl) {
-        uid = unitEl.dataset.id || unitEl.dataset.unitId;
-        if (uid && uid !== '${id}') return uid;
+    // 3. Check FR.units — find which registered unit contains this jack
+    var keys = Object.keys(FR.units);
+    for (var i = 0; i < keys.length; i++) {
+        var unit = FR.units[keys[i]];
+        if (unit.el && unit.el.contains(jack)) return keys[i];
+    }
 
-        // Last resort: use the unit type + index as ID
-        var unitType = unitEl.dataset.unit || unitEl.dataset.unitBack || 'unknown';
-        var siblings = document.querySelectorAll('[data-unit="' + unitType + '"], [data-unit-back="' + unitType + '"]');
-        for (var i = 0; i < siblings.length; i++) {
-            if (siblings[i] === unitEl) return unitType + '-' + i;
+    // 4. Back panel: find the matching front panel's unit by data-unit-back type
+    var backEl = jack.closest('[data-unit-back]');
+    if (backEl) {
+        var backType = backEl.dataset.unitBack;
+        var backId = backEl.dataset.id;
+        if (backId && backId !== '${id}') return backId;
+        // Match by type — find the FR.units entry with same unit type
+        for (var j = 0; j < keys.length; j++) {
+            var u = FR.units[keys[j]];
+            if (u.el && u.el.dataset.unit === backType) return keys[j];
         }
     }
 
+    console.warn('[ForgeRack] Could not resolve unit ID for jack:', jack);
     return 'unknown';
 }
 

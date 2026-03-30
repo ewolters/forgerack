@@ -1,0 +1,44 @@
+<!--
+  READOUT — Numeric Display Panel
+  Identity: Instrument cluster. Multiple 7-segment readouts in a row.
+  Like a cockpit instrument panel — each readout has a label and threshold coloring.
+  Color: device-accent inherited from input source
+  Size: 1U
+-->
+<div class="rack-unit u1" data-unit="readout" style="
+    --device-accent:#e2e8f0;
+    --device-accent-dim:rgba(226,232,240,0.08);
+    background: linear-gradient(180deg, #0e110e, #0a0d0a);
+    border-color: rgba(226,232,240,0.05);
+">
+    <span class="rack-screw tl"></span><span class="rack-screw tr"></span>
+
+    <div style="display:flex;align-items:center;padding:4px 20px;height:100%;gap:12px;">
+        <!-- Unit label -->
+        <span style="font:600 7px/1 'Inter',sans-serif;color:rgba(226,232,240,0.15);letter-spacing:0.15em;text-transform:uppercase;writing-mode:vertical-lr;transform:rotate(180deg);">readout</span>
+
+        <!-- 4 readout slots -->
+        <div class="readout sm" id="${id}-r0">
+            <div class="readout-value" style="font-size:14px;min-width:44px;">&#x2014;</div>
+            <div class="readout-label">—</div>
+        </div>
+        <div class="readout sm" id="${id}-r1">
+            <div class="readout-value" style="font-size:14px;min-width:44px;">&#x2014;</div>
+            <div class="readout-label">—</div>
+        </div>
+        <div class="readout sm" id="${id}-r2">
+            <div class="readout-value" style="font-size:14px;min-width:44px;">&#x2014;</div>
+            <div class="readout-label">—</div>
+        </div>
+        <div class="readout sm" id="${id}-r3">
+            <div class="readout-value" style="font-size:14px;min-width:44px;">&#x2014;</div>
+            <div class="readout-label">—</div>
+        </div>
+
+        <!-- Input jack -->
+        <div style="margin-left:auto;display:flex;align-items:center;gap:3px;">
+            <span style="font:600 6px/1 'JetBrains Mono',monospace;color:rgba(226,232,240,0.12);text-transform:uppercase;">in</span>
+            <div class="jack" data-input="values" id="${id}-in"></div>
+        </div>
+    </div>
+</div>

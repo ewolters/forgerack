@@ -1,0 +1,55 @@
+<!--
+  CSV INPUT — Data Terminal
+  Identity: Utilitarian. Monospaced, cold, no frills. The tape reader.
+  Color: cool grey (#9ca3af)
+  Size: 3U
+-->
+<div class="rack-unit u3" data-unit="csv-input" style="
+    --device-accent:#9ca3af;
+    --device-accent-dim:rgba(156,163,175,0.1);
+    --device-accent-glow:rgba(156,163,175,0.08);
+    background: linear-gradient(180deg, #101310, #0c0f0c);
+    border-color: rgba(156,163,175,0.08);
+">
+    <span class="rack-screw tl"></span><span class="rack-screw tr"></span>
+    <span class="rack-screw bl"></span><span class="rack-screw br"></span>
+
+    <div style="display:flex;align-items:center;gap:6px;padding:3px 20px;border-bottom:1px solid rgba(156,163,175,0.06);background:rgba(0,0,0,0.15);">
+        <span class="led" id="${id}-led"></span>
+        <span style="font:700 9px/1 'JetBrains Mono',monospace;color:#9ca3af;letter-spacing:0.15em;text-transform:uppercase;">CSV Input</span>
+        <span style="font:400 7px/1 'JetBrains Mono',monospace;color:rgba(156,163,175,0.3);margin-left:auto;">DATA TERMINAL</span>
+    </div>
+
+    <div style="padding:6px 12px;">
+        <textarea id="${id}-data" rows="3" placeholder="paste measurements — comma, tab, or newline"
+            style="width:100%;background:#080a08;border:1px solid rgba(156,163,175,0.06);color:#7a8a7a;
+            font:10px/1.3 'JetBrains Mono',monospace;padding:4px 6px;border-radius:1px;resize:vertical;
+            box-shadow:inset 0 1px 4px rgba(0,0,0,0.4);"></textarea>
+
+        <div style="display:flex;gap:4px;margin-top:4px;align-items:center;">
+            <button onclick="ForgeRack.units['${id}'].parse()"
+                style="flex:1;padding:3px 0;font:600 8px/1 'JetBrains Mono',monospace;text-transform:uppercase;
+                letter-spacing:0.1em;background:rgba(156,163,175,0.06);border:1px solid rgba(156,163,175,0.1);
+                color:#9ca3af;border-radius:1px;cursor:pointer;">&#x25B6; Parse</button>
+            <button onclick="ForgeRack.units['${id}'].demo()"
+                style="flex:1;padding:3px 0;font:600 8px/1 'JetBrains Mono',monospace;text-transform:uppercase;
+                letter-spacing:0.1em;background:transparent;border:1px solid rgba(156,163,175,0.06);
+                color:rgba(156,163,175,0.4);border-radius:1px;cursor:pointer;">Demo</button>
+            <div style="text-align:center;margin-left:auto;">
+                <div id="${id}-n" style="font:700 14px/1 'JetBrains Mono',monospace;color:#9ca3af;
+                    text-shadow:0 0 6px rgba(156,163,175,0.15);padding:2px 6px;
+                    background:rgba(0,0,0,0.3);border:1px solid rgba(0,0,0,0.4);border-radius:1px;min-width:28px;">&#x2014;</div>
+                <div style="font:600 6px/1 'JetBrains Mono',monospace;color:rgba(156,163,175,0.25);
+                    text-transform:uppercase;letter-spacing:0.15em;margin-top:1px;">rows</div>
+            </div>
+        </div>
+        <div id="${id}-cols" style="display:none;margin-top:4px;"></div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:6px;padding:4px 20px;background:rgba(0,0,0,0.12);
+        border-top:1px solid rgba(156,163,175,0.04);font:600 7px/1 'JetBrains Mono',monospace;
+        color:rgba(156,163,175,0.2);text-transform:uppercase;letter-spacing:0.1em;">
+        out
+        <div id="${id}-jacks" style="display:flex;gap:6px;margin-left:4px;"></div>
+    </div>
+</div>

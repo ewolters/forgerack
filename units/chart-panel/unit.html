@@ -1,0 +1,39 @@
+<!--
+  CHART PANEL — Universal Display
+  Identity: The oscilloscope. Dark screen, phosphor glow, scanlines.
+  Accepts any ChartSpec via input jack. ForgeViz renders inside.
+  Color: none (transparent — it's a screen)
+  Size: 4U
+-->
+<div class="rack-unit u4" data-unit="chart-panel" style="
+    --device-accent:#4ade80;
+    background: linear-gradient(180deg, #080a08, #060806);
+    border-color: rgba(255,255,255,0.04);
+">
+    <span class="rack-screw tl"></span><span class="rack-screw tr"></span>
+    <span class="rack-screw bl"></span><span class="rack-screw br"></span>
+
+    <div style="display:flex;align-items:center;gap:6px;padding:3px 20px;border-bottom:1px solid rgba(255,255,255,0.03);background:rgba(0,0,0,0.2);">
+        <span class="led on-green" id="${id}-led"></span>
+        <span style="font:300 10px/1 'Inter',sans-serif;color:rgba(255,255,255,0.2);letter-spacing:0.08em;text-transform:uppercase;">Chart Panel</span>
+        <span style="font:400 7px/1 'JetBrains Mono',monospace;color:rgba(255,255,255,0.08);margin-left:auto;">LENS</span>
+    </div>
+
+    <!-- The screen -->
+    <div style="margin:6px 10px;position:relative;">
+        <div class="chart-viewport" id="${id}-viewport" style="height:240px;">
+            <!-- ForgeViz renders here -->
+            <div id="${id}-empty" style="display:flex;align-items:center;justify-content:center;height:100%;
+                font:300 10px/1 'Inter',sans-serif;color:rgba(255,255,255,0.06);">
+                No signal
+            </div>
+        </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:6px;padding:4px 20px;background:rgba(0,0,0,0.12);
+        border-top:1px solid rgba(255,255,255,0.02);font:600 7px/1 'JetBrains Mono',monospace;
+        color:rgba(255,255,255,0.1);text-transform:uppercase;letter-spacing:0.1em;">
+        <span>in</span>
+        <div class="jack" data-input="chart" id="${id}-in"></div>
+    </div>
+</div>

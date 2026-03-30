@@ -1,0 +1,39 @@
+<!--
+  SPLITTER — Signal Fan-out
+  Identity: Simple, industrial. Like a power strip or cable splitter.
+  One input, up to 4 outputs. Pure routing, no computation.
+  Color: slate (#64748b)
+  Size: 1U (compact)
+-->
+<div class="rack-unit u1" data-unit="splitter" style="
+    --device-accent:#64748b;
+    --device-accent-dim:rgba(100,116,139,0.1);
+    background: linear-gradient(180deg, #0f1210, #0b0e0b);
+    border-color: rgba(100,116,139,0.08);
+">
+    <span class="rack-screw tl"></span><span class="rack-screw tr"></span>
+
+    <div style="display:flex;align-items:center;padding:4px 20px;height:100%;">
+        <!-- Label -->
+        <span style="font:700 8px/1 'Inter',sans-serif;color:#64748b;letter-spacing:0.15em;text-transform:uppercase;">SPLIT</span>
+
+        <!-- Input jack -->
+        <div style="display:flex;align-items:center;gap:3px;margin-left:12px;">
+            <span style="font:600 6px/1 'JetBrains Mono',monospace;color:rgba(100,116,139,0.3);text-transform:uppercase;">in</span>
+            <div class="jack" data-input="signal" id="${id}-in"></div>
+        </div>
+
+        <!-- Arrow -->
+        <span style="color:rgba(100,116,139,0.2);margin:0 8px;font-size:12px;">&#x2192;</span>
+
+        <!-- Output jacks -->
+        <div style="display:flex;align-items:center;gap:6px;">
+            <div class="jack" data-output="a" id="${id}-a"></div>
+            <div class="jack" data-output="b" id="${id}-b"></div>
+            <div class="jack" data-output="c" id="${id}-c"></div>
+            <div class="jack" data-output="d" id="${id}-d"></div>
+        </div>
+
+        <span style="font:600 6px/1 'JetBrains Mono',monospace;color:rgba(100,116,139,0.3);text-transform:uppercase;margin-left:3px;">out</span>
+    </div>
+</div>

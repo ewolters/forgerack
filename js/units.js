@@ -107,46 +107,138 @@ FR.registerUnit('chart-panel', {
         this.el = el;
         this.id = id;
         this._spec = null;
+        this._rawData = null;
+        this._source = null;
+        this.chartType = 'line';
+
+        // Wire up chart type buttons
+        el.querySelectorAll('[data-chart-type]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                el.querySelectorAll('[data-chart-type]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.chartType = btn.dataset.chartType;
+                this._updateSettingsCRT();
+                if (this._rawData) this._buildAndRender(this._rawData);
+            });
+        });
     },
 
     receive(inputName, data, fromUnit) {
-        // Data received via cable — render it
         if (!data) return;
+        this._source = fromUnit || '?';
 
         const viewport = document.getElementById(this.id + '-viewport');
         const empty = document.getElementById(this.id + '-empty');
         if (!viewport) return;
 
-        // If data is already a ChartSpec, render directly
+        // Already a ChartSpec — render directly regardless of mode
         if (data.traces || data.chart_type) {
             this._renderSpec(viewport, data);
             if (empty) empty.style.display = 'none';
+            this._updateSettingsCRT(data);
             return;
         }
 
-        // If data is an array of numbers, build a line chart
+        // Extract numeric array from various input shapes
+        let vals = null;
         if (Array.isArray(data)) {
-            const spec = {
-                traces: [{ x: data.map((_, i) => i + 1), y: data, trace_type: 'line', color: '#4ade80', width: 1.5, marker_size: 3 }],
-                reference_lines: [],
-                x_axis: { label: '' },
-                y_axis: { label: '' },
-                theme: 'svend_dark'
-            };
-            this._renderSpec(viewport, spec);
-            if (empty) empty.style.display = 'none';
-            return;
+            vals = data.filter(v => typeof v === 'number');
+        } else if (data.data && data.columns) {
+            const col = data.columns[0];
+            vals = (data.data[col] || []).filter(v => typeof v === 'number');
         }
 
-        // If data is { columns, data } from csv-input, plot first numeric column
-        if (data.data && data.columns) {
-            const col = data.columns[0];
-            const vals = data.data[col];
-            if (Array.isArray(vals) && vals.length > 0 && typeof vals[0] === 'number') {
-                this.receive('chart', vals, fromUnit);
-                return;
-            }
+        if (vals && vals.length > 0) {
+            this._rawData = vals;
+            this._buildAndRender(vals);
+            if (empty) empty.style.display = 'none';
         }
+    },
+
+    _buildAndRender(vals) {
+        const viewport = document.getElementById(this.id + '-viewport');
+        if (!viewport) return;
+
+        const n = vals.length;
+        const x = vals.map((_, i) => i + 1);
+        const c = '#4ade80';
+        let spec;
+
+        switch (this.chartType) {
+            case 'line':
+                spec = { traces: [{ x, y: vals, trace_type: 'line', color: c, width: 1.5, marker_size: 3 }] };
+                break;
+
+            case 'scatter':
+                spec = { traces: [{ x, y: vals, trace_type: 'scatter', color: c, marker_size: 5, opacity: 0.7 }] };
+                break;
+
+            case 'bar':
+                spec = { traces: [{ x, y: vals, trace_type: 'bar', color: c, opacity: 0.8 }] };
+                break;
+
+            case 'hist': {
+                // Build histogram bins
+                const bins = Math.max(5, Math.min(30, Math.ceil(Math.sqrt(n))));
+                const mn = Math.min(...vals), mx = Math.max(...vals);
+                const bw = (mx - mn) / bins || 1;
+                const counts = new Array(bins).fill(0);
+                const edges = [];
+                for (let i = 0; i <= bins; i++) edges.push(mn + i * bw);
+                vals.forEach(v => { const b = Math.min(bins - 1, Math.floor((v - mn) / bw)); counts[b]++; });
+                const centers = edges.slice(0, bins).map((e, i) => (e + edges[i + 1]) / 2);
+                spec = { traces: [{ x: centers, y: counts, trace_type: 'bar', color: c, opacity: 0.8 }] };
+                break;
+            }
+
+            case 'box':
+                spec = { traces: [{
+                    type: 'box', name: 'data',
+                    q1: _quantile(vals, 0.25), median: _quantile(vals, 0.5), q3: _quantile(vals, 0.75),
+                    whisker_low: Math.min(...vals), whisker_high: Math.max(...vals),
+                    outliers: [], color: c, x_position: 0
+                }] };
+                break;
+
+            case 'control': {
+                // I-chart with ±3σ limits
+                const mean = vals.reduce((a, b) => a + b, 0) / n;
+                const mr = [];
+                for (let i = 1; i < n; i++) mr.push(Math.abs(vals[i] - vals[i - 1]));
+                const mrBar = mr.length > 0 ? mr.reduce((a, b) => a + b, 0) / mr.length : 0;
+                const sigma = mrBar / 1.128;
+                const ucl = mean + 3 * sigma, lcl = mean - 3 * sigma;
+                spec = {
+                    traces: [{ x, y: vals, trace_type: 'line', color: c, width: 1.5, marker_size: 3 }],
+                    reference_lines: [
+                        { axis: 'y', value: ucl, color: '#f87171', width: 1, dash: 'dashed', label: 'UCL' },
+                        { axis: 'y', value: mean, color: '#4ade80', width: 1, label: 'CL' },
+                        { axis: 'y', value: lcl, color: '#f87171', width: 1, dash: 'dashed', label: 'LCL' },
+                    ],
+                    markers: []
+                };
+                // Mark OOC points
+                const ooc = [];
+                vals.forEach((v, i) => { if (v > ucl || v < lcl) ooc.push(i); });
+                if (ooc.length) spec.markers.push({ indices: ooc, color: '#f87171', size: 6 });
+                break;
+            }
+
+            case 'heatmap':
+                // Auto-correlogram if enough data
+                spec = { traces: [{ x, y: vals, trace_type: 'line', color: c, width: 1.5 }] };
+                break;
+
+            default:
+                spec = { traces: [{ x, y: vals, trace_type: 'line', color: c, width: 1.5, marker_size: 3 }] };
+        }
+
+        spec.x_axis = { label: '' };
+        spec.y_axis = { label: '' };
+        spec.theme = 'svend_dark';
+
+        this._renderSpec(viewport, spec);
+        this._updateSettingsCRT();
     },
 
     _renderSpec(viewport, spec) {
@@ -159,14 +251,32 @@ FR.registerUnit('chart-panel', {
         FR.LED(document.getElementById(this.id + '-led')).set('green');
     },
 
+    _updateSettingsCRT(spec) {
+        const modeEl = document.getElementById(this.id + '-mode-label');
+        const ptsEl = document.getElementById(this.id + '-pts');
+        const srcEl = document.getElementById(this.id + '-src');
+        if (modeEl) modeEl.textContent = this.chartType.toUpperCase();
+        if (ptsEl) ptsEl.textContent = this._rawData ? this._rawData.length : (spec && spec.traces ? spec.traces[0]?.y?.length || 0 : 0);
+        if (srcEl) srcEl.textContent = this._source || '\u2014';
+    },
+
     clear() {
         const viewport = document.getElementById(this.id + '-viewport');
         const empty = document.getElementById(this.id + '-empty');
         if (viewport) viewport.innerHTML = '';
         if (empty) { empty.style.display = 'flex'; viewport.appendChild(empty); }
+        this._rawData = null;
         FR.LED(document.getElementById(this.id + '-led')).off();
+        this._updateSettingsCRT();
     }
 });
+
+function _quantile(arr, p) {
+    const s = [...arr].sort((a, b) => a - b);
+    const i = (s.length - 1) * p;
+    const lo = Math.floor(i), hi = Math.ceil(i);
+    return s[lo] + (s[hi] - s[lo]) * (i - lo);
+}
 
 
 // ═══════════════════════════════════════════════════════════

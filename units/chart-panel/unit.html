@@ -1,149 +1,186 @@
 <!--
-  CHART PANEL — LENS Universal Display
-  Identity: Laboratory oscilloscope. Deep CRT cavity. Phosphor scanlines.
-  Below the main screen: a small secondary CRT showing chart settings.
-  Pure display — no computation. Mode selector picks visualization type.
-  FRONT: Main viewport + settings CRT + mode selector
-  BACK: Input jacks (chart, data, aux)
+ ╔══════════════════════════════════════════════════════════════╗
+ ║  SCOPE LS-800 — Universal Oscilloscope Display              ║
+ ║  Manufacturer: FORGERACK / SVEND MFG                        ║
+ ║  Identity: 1970s Tektronix oscilloscope. Deep CRT cavity.   ║
+ ║  Phosphor P31 green glow. Heavy beveled bezel. The screen   ║
+ ║  is recessed 4mm into the faceplate. Graticule overlay.     ║
+ ║  Settings shown on secondary CRT below main display.        ║
+ ╚══════════════════════════════════════════════════════════════╝
 -->
-<div class="rack-unit-front u8" data-unit="chart-panel" data-id="${id}" data-u="5" style="
+
+<!-- ════════ FRONT PANEL ════════ -->
+<div class="rack-unit-front u8" data-unit="chart-panel" data-id="${id}" style="
     --device-accent:#4ade80;
-    ;
     background:
-        linear-gradient(135deg, #0a0d0a 0%, #080b08 40%, #090c09 60%, #070a07 100%);
-    
-    
-    
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.008), 0 3px 10px rgba(0,0,0,0.6);
+        repeating-linear-gradient(180deg, rgba(255,255,255,0.002) 0px, transparent 1px, transparent 4px),
+        linear-gradient(160deg, #0b0e0b 0%, #090c09 30%, #0a0d0a 50%, #080b08 80%, #070a07 100%);
+    overflow:hidden;
 ">
-    <!-- Nameplate -->
+    <!-- ── Nameplate — understated, the screen is the star ── -->
     <div style="
-        display:flex;align-items:center;gap:8px;padding:3px 22px;
-        border-bottom:1px solid rgba(255,255,255,0.02);
-        background: rgba(0,0,0,0.15);
+        display:flex;align-items:center;gap:8px;
+        padding:3px 48px;
+        background: rgba(0,0,0,0.12);
+        border-bottom:1px solid rgba(255,255,255,0.015);
     ">
-        <span class="led on-green" id="${id}-led" style="width:6px;height:6px;"></span>
+        <div style="width:10px;height:10px;border-radius:50%;background:rgba(0,0,0,0.3);
+            box-shadow:inset 0 1px 2px rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;">
+            <span class="led on-green" id="${id}-led" style="width:5px;height:5px;"></span>
+        </div>
         <span style="
-            font:300 9px/1 'Helvetica Neue','Arial',sans-serif;
-            color:rgba(255,255,255,0.12);letter-spacing:0.12em;text-transform:uppercase;
-        ">SCOPE</span>
-        <span style="
-            font:400 8px/1 'Courier New',monospace;
-            color:rgba(200,180,140,0.08);margin-left:auto;
-        ">LS-800</span>
+            font:300 10px/1 'Helvetica Neue','Helvetica','Arial',sans-serif;
+            color:rgba(255,255,255,0.1);letter-spacing:0.14em;text-transform:uppercase;
+        ">Scope</span>
+        <div style="width:1px;height:8px;background:rgba(255,255,255,0.03);"></div>
+        <span style="font:300 7px/1 'Helvetica Neue',sans-serif;color:rgba(255,255,255,0.05);letter-spacing:0.06em;">Universal Display</span>
+        <span style="font:500 8px/1 'Courier New',monospace;color:rgba(200,180,140,0.1);margin-left:auto;letter-spacing:0.06em;">LS-800</span>
     </div>
 
-    <!-- Main screen — beveled bezel -->
+    <!-- ── Main screen — heavy beveled bezel ── -->
     <div style="
-        margin:6px 12px 4px;padding:3px;
-        background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(0,0,0,0.2));
+        margin:6px 48px 4px;
+        padding:4px;
+        /* Bezel — chamfered edge, lighter on top-left, darker on bottom-right */
+        background: linear-gradient(145deg,
+            rgba(255,255,255,0.04) 0%,
+            rgba(255,255,255,0.02) 20%,
+            rgba(0,0,0,0.1) 80%,
+            rgba(0,0,0,0.2) 100%);
         border-radius:3px;
-        box-shadow: 0 1px 0 rgba(255,255,255,0.02), inset 0 1px 0 rgba(0,0,0,0.3);
+        box-shadow:
+            0 2px 4px rgba(0,0,0,0.4),
+            inset 0 1px 0 rgba(255,255,255,0.03),
+            inset 0 -1px 0 rgba(0,0,0,0.3);
     ">
+        <!-- Screen cavity — deep recess -->
         <div style="
-            background:#030503;border-radius:2px;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
-            position:relative;overflow:hidden;
+            background:#020402;
+            border:2px solid #000;
+            border-radius:2px;
+            box-shadow:
+                inset 0 3px 10px rgba(0,0,0,0.7),
+                inset 0 0 20px rgba(0,0,0,0.3);
+            position:relative;
+            overflow:hidden;
         ">
+            <!-- P31 phosphor scanlines -->
             <div style="position:absolute;inset:0;
-                background:repeating-linear-gradient(0deg, transparent 0px, rgba(0,0,0,0.04) 1px, transparent 2px);
-                pointer-events:none;z-index:1;"></div>
+                background:repeating-linear-gradient(0deg,
+                    transparent 0px, rgba(0,0,0,0.05) 1px, transparent 2px);
+                pointer-events:none;z-index:2;"></div>
+
+            <!-- Phosphor bloom — center glow -->
             <div style="position:absolute;inset:0;
-                background:radial-gradient(ellipse at center, rgba(74,222,128,0.01), transparent 70%);
-                pointer-events:none;z-index:1;"></div>
-            <div id="${id}-viewport" style="height:180px;position:relative;">
-                <div id="${id}-empty" style="display:flex;align-items:center;justify-content:center;height:100%;
-                    font:300 11px/1 'Courier New',monospace;color:rgba(74,222,128,0.06);">
-                    NO SIGNAL
+                background:radial-gradient(ellipse at 50% 50%,
+                    rgba(74,222,128,0.015) 0%,
+                    rgba(74,222,128,0.005) 40%,
+                    transparent 70%);
+                pointer-events:none;z-index:2;"></div>
+
+            <!-- Edge shadow — CRT curvature simulation -->
+            <div style="position:absolute;inset:0;
+                box-shadow: inset 0 0 30px rgba(0,0,0,0.4);
+                border-radius:1px;
+                pointer-events:none;z-index:3;"></div>
+
+            <!-- ForgeViz render target -->
+            <div id="${id}-viewport" style="height:200px;position:relative;z-index:1;">
+                <div id="${id}-empty" style="
+                    display:flex;flex-direction:column;align-items:center;justify-content:center;
+                    height:100%;gap:4px;
+                ">
+                    <span style="font:300 12px/1 'Courier New',monospace;color:rgba(74,222,128,0.05);">NO SIGNAL</span>
+                    <span style="font:300 7px/1 'Courier New',monospace;color:rgba(74,222,128,0.03);">connect data source to input jack</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Settings strip — small secondary CRT + mode selector -->
-    <div style="margin:0 12px 6px;display:flex;gap:8px;align-items:stretch;">
+    <!-- ── Bottom strip: Settings CRT + Mode selector ── -->
+    <div style="margin:0 48px 6px;display:flex;gap:8px;align-items:stretch;">
 
-        <!-- Mini CRT — shows current chart config -->
+        <!-- Mini CRT — settings readout -->
         <div style="
-            flex:1;
-            padding:2px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(0,0,0,0.15));
+            flex:1;padding:3px;
+            background:linear-gradient(145deg, rgba(255,255,255,0.025), rgba(0,0,0,0.12));
             border-radius:2px;
-            box-shadow: inset 0 1px 0 rgba(0,0,0,0.2);
+            box-shadow:inset 0 1px 0 rgba(0,0,0,0.15);
         ">
             <div style="
                 background:#020402;
-                
+                border:1px solid rgba(0,0,0,0.8);
                 border-radius:1px;
-                box-shadow: inset 0 1px 4px rgba(0,0,0,0.5);
+                box-shadow:inset 0 1px 4px rgba(0,0,0,0.6);
                 padding:4px 8px;
-                position:relative;
-                overflow:hidden;
-                min-height:38px;
+                position:relative;overflow:hidden;
+                min-height:40px;
             ">
-                <!-- Scanlines on mini CRT -->
                 <div style="position:absolute;inset:0;
-                    background:repeating-linear-gradient(0deg, transparent 0px, rgba(0,0,0,0.06) 1px, transparent 2px);
+                    background:repeating-linear-gradient(0deg, transparent 0px, rgba(0,0,0,0.07) 1px, transparent 2px);
                     pointer-events:none;"></div>
-                <!-- Phosphor tint -->
                 <div style="position:absolute;inset:0;
-                    background:radial-gradient(ellipse at center, rgba(74,222,128,0.015), transparent 80%);
+                    background:radial-gradient(ellipse at center, rgba(74,222,128,0.02), transparent 80%);
                     pointer-events:none;"></div>
-
-                <div id="${id}-settings" style="position:relative;font:9px/1.4 'JetBrains Mono',monospace;color:rgba(74,222,128,0.35);">
+                <div id="${id}-settings" style="position:relative;font:9px/1.5 'JetBrains Mono',monospace;color:rgba(74,222,128,0.3);">
                     <div>MODE: <span id="${id}-mode-label" style="color:rgba(74,222,128,0.5);">LINE</span></div>
-                    <div>PTS:  <span id="${id}-pts" style="color:rgba(74,222,128,0.5);">0</span></div>
-                    <div>SRC:  <span id="${id}-src" style="color:rgba(74,222,128,0.3);">—</span></div>
+                    <div>PTS:  <span id="${id}-pts" style="color:rgba(74,222,128,0.45);">0</span></div>
+                    <div>SRC:  <span id="${id}-src" style="color:rgba(74,222,128,0.25);">&#x2014;</span></div>
                 </div>
             </div>
         </div>
 
-        <!-- Mode selector — chart type buttons -->
+        <!-- Mode selector — recessed panel -->
         <div style="
-            background:rgba(0,0,0,0.2);border-radius:2px;
+            background:rgba(0,0,0,0.2);
+            border:1px solid rgba(0,0,0,0.35);
+            border-radius:2px;
             box-shadow:inset 0 1px 3px rgba(0,0,0,0.3);
-            padding:4px 6px;
-            display:flex;flex-direction:column;gap:2px;justify-content:center;
+            padding:5px 8px;
+            display:flex;flex-direction:column;gap:3px;justify-content:center;
         ">
-            <div style="font:700 5px/1 'Arial',sans-serif;color:rgba(74,222,128,0.12);
-                text-transform:uppercase;letter-spacing:0.2em;text-align:center;margin-bottom:1px;">Type</div>
+            <div style="font:700 5px/1 'Arial',sans-serif;color:rgba(74,222,128,0.1);
+                text-transform:uppercase;letter-spacing:0.2em;text-align:center;">Display</div>
             <div class="segment" id="${id}-type-seg" style="border-color:rgba(74,222,128,0.06);">
-                <button class="segment-btn active" data-chart-type="line" style="font-size:6px;padding:2px 4px;">Line</button>
-                <button class="segment-btn" data-chart-type="scatter" style="font-size:6px;padding:2px 4px;">Scat</button>
-                <button class="segment-btn" data-chart-type="bar" style="font-size:6px;padding:2px 4px;">Bar</button>
-                <button class="segment-btn" data-chart-type="hist" style="font-size:6px;padding:2px 4px;">Hist</button>
+                <button class="segment-btn active" data-chart-type="line" style="font:700 6px/1 'Arial',sans-serif;padding:3px 5px;">Line</button>
+                <button class="segment-btn" data-chart-type="scatter" style="font:700 6px/1 'Arial',sans-serif;padding:3px 5px;">Scat</button>
+                <button class="segment-btn" data-chart-type="bar" style="font:700 6px/1 'Arial',sans-serif;padding:3px 5px;">Bar</button>
+                <button class="segment-btn" data-chart-type="hist" style="font:700 6px/1 'Arial',sans-serif;padding:3px 5px;">Hist</button>
             </div>
             <div class="segment" id="${id}-type-seg2" style="border-color:rgba(74,222,128,0.06);">
-                <button class="segment-btn" data-chart-type="box" style="font-size:6px;padding:2px 4px;">Box</button>
-                <button class="segment-btn" data-chart-type="control" style="font-size:6px;padding:2px 4px;">SPC</button>
-                <button class="segment-btn" data-chart-type="heatmap" style="font-size:6px;padding:2px 4px;">Heat</button>
+                <button class="segment-btn" data-chart-type="box" style="font:700 6px/1 'Arial',sans-serif;padding:3px 5px;">Box</button>
+                <button class="segment-btn" data-chart-type="control" style="font:700 6px/1 'Arial',sans-serif;padding:3px 5px;">SPC</button>
+                <button class="segment-btn" data-chart-type="heatmap" style="font:700 6px/1 'Arial',sans-serif;padding:3px 5px;">Heat</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ═══ BACK ═══ -->
-<div class="rack-unit-back u8" data-unit-back="chart-panel" data-id="${id}" data-u="5" style="
-    ;
-    background:repeating-linear-gradient(180deg, rgba(255,255,255,0.004) 0px, transparent 1px, transparent 2px),
-        linear-gradient(135deg, #1a1a1a, #1d1d1d 40%, #1b1b1b);
-    
-    
-    
+<!-- ════════ BACK PANEL ════════ -->
+<div class="rack-unit-back u8" data-unit-back="chart-panel" data-id="${id}" style="
+    background:
+        repeating-linear-gradient(180deg, rgba(255,255,255,0.005) 0px, transparent 1px, transparent 2px),
+        linear-gradient(160deg, #1c1c1c 0%, #1f1f1f 40%, #1d1d1d 70%, #1a1a1a 100%);
+    overflow:hidden;
 ">
-    <div style="display:flex;align-items:center;gap:8px;padding:4px 22px;border-bottom:1px solid rgba(255,255,255,0.04);">
-        <span style="font:700 8px/1 'Arial',sans-serif;color:rgba(255,255,255,0.1);letter-spacing:0.15em;text-transform:uppercase;">SCOPE LS-800</span>
-        <span style="font:400 6px/1 'Courier New',monospace;color:rgba(255,255,255,0.05);margin-left:auto;">S/N ${id}</span>
+    <div style="display:flex;align-items:center;gap:8px;padding:4px 48px;border-bottom:1px solid rgba(255,255,255,0.05);">
+        <span style="font:300 9px/1 'Helvetica Neue',sans-serif;color:rgba(255,255,255,0.1);letter-spacing:0.12em;text-transform:uppercase;">Scope</span>
+        <span style="font:400 7px/1 'Courier New',monospace;color:rgba(255,255,255,0.06);">LS-800</span>
+        <span style="font:400 6px/1 'Courier New',monospace;color:rgba(255,255,255,0.04);margin-left:auto;">S/N ${id}</span>
     </div>
-    <div style="padding:12px 22px;">
-        <div style="font:700 6px/1 'Arial',sans-serif;color:rgba(255,255,255,0.08);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:8px;">Signal Input</div>
-        <div style="display:flex;gap:16px;">
+    <div style="padding:12px 48px;">
+        <div style="font:700 6px/1 'Arial',sans-serif;color:rgba(255,255,255,0.07);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:10px;">Signal Input</div>
+        <div style="display:flex;gap:18px;">
             <div class="patch-group"><div class="patch-jack" data-input="chart" data-unit-id="${id}"></div><div class="patch-jack-label">chart</div></div>
             <div class="patch-group"><div class="patch-jack" data-input="data" data-unit-id="${id}"></div><div class="patch-jack-label">data</div></div>
             <div class="patch-group"><div class="patch-jack" data-input="aux" data-unit-id="${id}"></div><div class="patch-jack-label">aux</div></div>
         </div>
     </div>
-    <div style="padding:4px 22px;margin-top:auto;font:400 6px/1 'Courier New',monospace;color:rgba(74,222,128,0.04);">
-        FORGERACK SCOPE &#x2022; LS-800 REV.C &#x2022; FORGEVIZ COMPATIBLE &#x2022; SVEND MFG
+    <div style="padding:6px 48px;margin-top:auto;border-top:1px solid rgba(74,222,128,0.02);">
+        <div style="font:400 5px/1 'Courier New',monospace;color:rgba(74,222,128,0.04);letter-spacing:0.04em;line-height:1.8;">
+            FORGERACK SCOPE &#x2022; MODEL LS-800 REV.C &#x2022; SVEND MANUFACTURING<br>
+            FORGEVIZ COMPATIBLE &#x2022; CHARTSPEC INPUT &#x2022; 7 DISPLAY MODES<br>
+            &#x00A9; SVEND MFG &#x2022; MADE IN USA
+        </div>
     </div>
 </div>

@@ -1,128 +1,233 @@
 <!--
-  CSV INPUT — DATA ACQUISITION
-  FRONT: Tape reader, parse controls, row counter
-  BACK: Output jacks (one per parsed column), model plate
+ ╔══════════════════════════════════════════════════════════════╗
+ ║  INGEST DT-100 — Data Acquisition Terminal                  ║
+ ║  Manufacturer: FORGERACK / SVEND MFG                        ║
+ ║  Identity: East German industrial terminal. Worn brushed     ║
+ ║  steel. Stamped Cyrillic-style lettering. Tape reader slot.  ║
+ ║  Bakelite button bezels. Radiation-badge readout window.     ║
+ ╚══════════════════════════════════════════════════════════════╝
 -->
 
-<!-- ═══ FRONT PANEL ═══ -->
-<div class="rack-unit-front u4" data-unit="csv-input" data-id="${id}" data-u="3" style="
+<!-- ════════ FRONT PANEL ════════ -->
+<div class="rack-unit-front u4" data-unit="csv-input" data-id="${id}" style="
     --device-accent:#9ca3af;
-    ;
     background:
-        repeating-linear-gradient(180deg, rgba(255,255,255,0.003) 0px, transparent 1px, transparent 3px),
-        linear-gradient(135deg, #131613 0%, #101310 40%, #121512 60%, #0e110e 100%);
-    
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.015), 0 2px 8px rgba(0,0,0,0.5);
-    position:relative;
+        /* Brushed steel grain — vertical */
+        repeating-linear-gradient(180deg,
+            rgba(255,255,255,0.004) 0px, transparent 1px, transparent 3px),
+        /* Base metal — slightly warm, aged */
+        linear-gradient(160deg, #141714 0%, #111411 30%, #131613 50%, #101310 80%, #0e110e 100%);
+    overflow:hidden;
 ">
-    <!-- Rack ears — bolt holes for rail mounting -->
-
-    <!-- Nameplate — engraved into metal -->
+    <!-- ── Top nameplate — stamped aluminum strip ── -->
     <div style="
-        display:flex;align-items:center;gap:8px;padding:4px 22px;
-        border-bottom:2px solid rgba(0,0,0,0.3);
-        background: linear-gradient(180deg, rgba(255,255,255,0.008), rgba(0,0,0,0.1));
+        display:flex;align-items:center;gap:8px;
+        padding:5px 48px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.12));
+        border-bottom:2px solid rgba(0,0,0,0.35);
+        /* Subtle wear — darker at edges */
+        box-shadow: inset 0 -1px 0 rgba(255,255,255,0.008);
     ">
-        <span class="led" id="${id}-led"></span>
+        <!-- Power LED — recessed housing -->
+        <div style="
+            width:12px;height:12px;border-radius:50%;
+            background:rgba(0,0,0,0.3);
+            box-shadow:inset 0 1px 2px rgba(0,0,0,0.5);
+            display:flex;align-items:center;justify-content:center;
+        ">
+            <span class="led" id="${id}-led" style="width:6px;height:6px;"></span>
+        </div>
+
+        <!-- Brand — deep engraved into metal -->
         <span style="
-            font:800 10px/1 'Arial Narrow',Impact,'Inter',sans-serif;
+            font:900 11px/1 'Arial Black','Impact',sans-serif;
             color:transparent;
-            text-shadow: 0 1px 0 rgba(156,163,175,0.25), 0 -1px 0 rgba(0,0,0,0.6);
-            -webkit-text-stroke: 0.3px rgba(156,163,175,0.15);
-            letter-spacing:0.2em;text-transform:uppercase;
-        ">INGEST</span>
+            text-shadow:
+                0 1px 0 rgba(156,163,175,0.3),
+                0 -1px 0 rgba(0,0,0,0.7),
+                1px 0 0 rgba(0,0,0,0.3);
+            -webkit-text-stroke: 0.4px rgba(156,163,175,0.12);
+            letter-spacing:0.22em;
+            text-transform:uppercase;
+        ">Ingest</span>
+
+        <!-- Thin separator line -->
+        <div style="width:1px;height:10px;background:rgba(156,163,175,0.06);margin:0 2px;"></div>
+
+        <!-- Sub-brand — painted cream, aged -->
         <span style="
             font:400 7px/1 'Courier New',monospace;
-            color:rgba(200,180,140,0.18);letter-spacing:0.06em;margin-left:auto;
-            text-shadow: 0 0 2px rgba(200,180,140,0.05);
-        ">DT-100</span>
+            color:rgba(220,200,160,0.2);
+            letter-spacing:0.06em;
+            text-shadow: 0 0 3px rgba(220,200,160,0.03);
+        ">DATA ACQUISITION TERMINAL</span>
+
+        <!-- Model number — right side, smaller painted label -->
+        <div style="margin-left:auto;display:flex;align-items:center;gap:6px;">
+            <!-- Painted warning stripe (tiny) -->
+            <div style="width:16px;height:6px;background:repeating-linear-gradient(135deg,rgba(220,180,60,0.08) 0px,rgba(220,180,60,0.08) 2px,transparent 2px,transparent 4px);border-radius:1px;"></div>
+            <span style="
+                font:700 8px/1 'Courier New',monospace;
+                color:rgba(200,180,140,0.2);
+                letter-spacing:0.08em;
+                text-shadow: 0 0 2px rgba(200,180,140,0.04);
+            ">DT-100</span>
+        </div>
     </div>
 
-    <div style="padding:6px 14px;display:flex;gap:10px;">
-        <!-- Tape reader — recessed cutout -->
+    <!-- ── Main panel area ── -->
+    <div style="padding:8px 48px;display:flex;gap:12px;height:calc(100% - 38px);">
+
+        <!-- ── LEFT: Tape reader slot — deep recessed cavity ── -->
         <div style="
             flex:1;
-            background: rgba(0,0,0,0.35);
-            border: 1px solid rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(0,0,0,0.6);
             border-radius:2px;
-            box-shadow: inset 0 2px 6px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.01);
-            padding:1px;
+            box-shadow:
+                inset 0 2px 8px rgba(0,0,0,0.6),
+                inset 0 0 1px rgba(0,0,0,0.4),
+                0 1px 0 rgba(255,255,255,0.008);
+            padding:2px;
+            position:relative;
         ">
-            <textarea id="${id}-data" rows="3" placeholder="paste data — csv, tsv, or one value per line"
-                style="width:100%;height:100%;background:transparent;border:none;color:#6a7a6a;
-                font:10px/1.3 'JetBrains Mono',monospace;padding:4px 6px;resize:none;outline:none;"></textarea>
+            <!-- Reader window label — silk-screened -->
+            <div style="
+                position:absolute;top:-1px;left:8px;
+                font:700 5px/1 'Arial',sans-serif;
+                color:rgba(156,163,175,0.12);
+                text-transform:uppercase;letter-spacing:0.2em;
+                background: linear-gradient(180deg, #131613, #111411);
+                padding:0 4px 1px;
+            ">Data Feed</div>
+
+            <textarea id="${id}-data" rows="4"
+                placeholder="paste measurements&#10;comma, tab, or newline separated&#10;&#10;header row auto-detected"
+                style="
+                    width:100%;height:100%;
+                    background:#040604;
+                    border:none;
+                    color:#5a6a5a;
+                    font:10px/1.4 'JetBrains Mono',monospace;
+                    padding:8px 6px 4px;
+                    resize:none;outline:none;
+                    /* Faint CRT scanlines on the input area */
+                    background-image: repeating-linear-gradient(
+                        0deg, transparent 0px, rgba(0,0,0,0.04) 1px, transparent 2px
+                    );
+                    background-color: #040604;
+            "></textarea>
         </div>
 
-        <!-- Control panel — recessed -->
+        <!-- ── RIGHT: Control panel — recessed instrument cluster ── -->
         <div style="
-            width:90px;
-            background: rgba(0,0,0,0.2);
-            border: 1px solid rgba(0,0,0,0.3);
+            width:100px;
+            background: rgba(0,0,0,0.25);
+            border: 1px solid rgba(0,0,0,0.4);
             border-radius:2px;
-            box-shadow: inset 0 1px 4px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.01);
+            box-shadow:
+                inset 0 2px 4px rgba(0,0,0,0.4),
+                0 1px 0 rgba(255,255,255,0.006);
             padding:6px;
-            display:flex;flex-direction:column;gap:4px;align-items:center;
+            display:flex;flex-direction:column;gap:5px;align-items:center;
         ">
-            <!-- Row counter — recessed 7-segment window -->
+            <!-- Cluster label — silk-screen -->
+            <div style="font:700 5px/1 'Arial',sans-serif;color:rgba(156,163,175,0.1);
+                text-transform:uppercase;letter-spacing:0.2em;width:100%;text-align:center;">Control</div>
+
+            <!-- Row counter — recessed 7-segment window with bezel -->
             <div style="
-                background:#050705;border-radius:1px;
-                padding:2px 6px;box-shadow: inset 0 1px 3px rgba(0,0,0,0.6);
-                text-align:center;width:100%;
+                width:100%;
+                background:#030503;
+                border:1px solid rgba(0,0,0,0.7);
+                border-radius:1px;
+                padding:3px 6px;
+                box-shadow: inset 0 2px 4px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.006);
+                text-align:center;
+                position:relative;
             ">
-                <div id="${id}-n" style="font:700 16px/1 'JetBrains Mono',monospace;color:#9ca3af;
-                    text-shadow:0 0 6px rgba(156,163,175,0.12);">&#x2014;</div>
-                <div style="font:700 5px/1 'Arial',sans-serif;color:rgba(156,163,175,0.2);
-                    text-transform:uppercase;letter-spacing:0.2em;margin-top:2px;">ROWS</div>
+                <!-- Faint ghost segments (like unlit 7-segment) -->
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+                    font:700 18px/1 'JetBrains Mono',monospace;color:rgba(156,163,175,0.02);">888</div>
+                <div id="${id}-n" style="
+                    font:700 18px/1 'JetBrains Mono',monospace;
+                    color:#9ca3af;
+                    text-shadow:0 0 8px rgba(156,163,175,0.15);
+                    position:relative;
+                ">&#x2014;</div>
+                <div style="font:700 5px/1 'Arial',sans-serif;color:rgba(156,163,175,0.15);
+                    text-transform:uppercase;letter-spacing:0.25em;margin-top:2px;">Rows</div>
             </div>
-            <button onclick="ForgeRack.units['${id}'].parse()" style="
-                width:100%;padding:4px 0;font:700 7px/1 'Arial',sans-serif;text-transform:uppercase;
-                letter-spacing:0.12em;background:linear-gradient(180deg, rgba(156,163,175,0.1), rgba(156,163,175,0.04));
+
+            <!-- Parse button — industrial momentary -->
+            <button onclick="ForgeRack.units['${id}']&&ForgeRack.units['${id}'].parse()" style="
+                width:100%;padding:5px 0;
+                font:800 7px/1 'Arial',sans-serif;text-transform:uppercase;letter-spacing:0.15em;
+                background:linear-gradient(180deg, rgba(156,163,175,0.12), rgba(156,163,175,0.04));
+                border:1px solid rgba(156,163,175,0.15);
                 color:#9ca3af;border-radius:1px;cursor:pointer;
-                box-shadow: 0 1px 2px rgba(0,0,0,0.3);
-            ">&#x25B6; Parse</button>
-            <button onclick="ForgeRack.units['${id}'].demo()" style="
-                width:100%;padding:3px 0;font:600 6px/1 'Arial',sans-serif;text-transform:uppercase;
-                letter-spacing:0.1em;background:transparent;
-                color:rgba(156,163,175,0.3);border-radius:1px;cursor:pointer;
+                box-shadow: 0 2px 3px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03);
+                transition: transform 0.05s, box-shadow 0.05s;
+            " onmousedown="this.style.transform='translateY(1px)';this.style.boxShadow='0 1px 1px rgba(0,0,0,0.4)'"
+               onmouseup="this.style.transform='';this.style.boxShadow='0 2px 3px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.03)'"
+            >&#x25B6; Parse</button>
+
+            <!-- Demo button — smaller, less prominent -->
+            <button onclick="ForgeRack.units['${id}']&&ForgeRack.units['${id}'].demo()" style="
+                width:100%;padding:3px 0;
+                font:600 6px/1 'Arial',sans-serif;text-transform:uppercase;letter-spacing:0.1em;
+                background:transparent;
+                border:1px solid rgba(156,163,175,0.06);
+                color:rgba(156,163,175,0.25);border-radius:1px;cursor:pointer;
             ">Load Demo</button>
+
+            <!-- Column count indicator -->
+            <div style="display:flex;gap:3px;margin-top:auto;">
+                <div class="led" id="${id}-c0" style="width:5px;height:5px;"></div>
+                <div class="led" id="${id}-c1" style="width:5px;height:5px;"></div>
+                <div class="led" id="${id}-c2" style="width:5px;height:5px;"></div>
+                <div class="led" id="${id}-c3" style="width:5px;height:5px;"></div>
+            </div>
+            <div style="font:600 4px/1 'Arial',sans-serif;color:rgba(156,163,175,0.1);text-transform:uppercase;letter-spacing:0.15em;">Channels</div>
         </div>
     </div>
 
-    <!-- Column chips -->
-    <div id="${id}-cols" style="display:none;padding:0 14px 4px;"></div>
+    <!-- Column chips (appear after parse) -->
+    <div id="${id}-cols" style="display:none;padding:2px 48px 4px;"></div>
 </div>
 
-<!-- ═══ BACK PANEL ═══ -->
+<!-- ════════ BACK PANEL ════════ -->
 <div class="rack-unit-back u4" data-unit-back="csv-input" data-id="${id}" style="
-    ;
     background:
-        repeating-linear-gradient(180deg, rgba(255,255,255,0.005) 0px, transparent 1px, transparent 2px),
-        linear-gradient(135deg, #1a1a1a, #1e1e1e 40%, #1c1c1c 60%, #191919);
-    
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 0 2px 6px rgba(0,0,0,0.4);
-    position:relative;
+        repeating-linear-gradient(180deg, rgba(255,255,255,0.006) 0px, transparent 1px, transparent 2px),
+        linear-gradient(160deg, #1c1c1c 0%, #1e1e1e 40%, #1d1d1d 70%, #1a1a1a 100%);
+    overflow:hidden;
 ">
-    <!-- Rack ears -->
-
-    <!-- Back nameplate — simpler, stamped into steel -->
-    <div style="display:flex;align-items:center;gap:8px;padding:4px 22px;border-bottom:1px solid rgba(255,255,255,0.04);">
-        <span style="font:700 8px/1 'Arial',sans-serif;color:rgba(255,255,255,0.12);letter-spacing:0.15em;text-transform:uppercase;">INGEST</span>
-        <span style="font:400 7px/1 'Courier New',monospace;color:rgba(255,255,255,0.06);margin-left:auto;">S/N ${id}</span>
+    <!-- Back nameplate -->
+    <div style="
+        display:flex;align-items:center;gap:8px;
+        padding:4px 48px;
+        border-bottom:1px solid rgba(255,255,255,0.05);
+    ">
+        <span style="font:800 8px/1 'Arial Black',sans-serif;color:rgba(255,255,255,0.1);letter-spacing:0.15em;text-transform:uppercase;">Ingest</span>
+        <span style="font:400 7px/1 'Courier New',monospace;color:rgba(255,255,255,0.06);">DT-100</span>
+        <span style="font:400 6px/1 'Courier New',monospace;color:rgba(255,255,255,0.04);margin-left:auto;">S/N ${id}</span>
     </div>
 
-    <!-- Output jacks cluster -->
-    <div style="padding:10px 22px;">
-        <div style="font:700 6px/1 'Arial',sans-serif;color:rgba(255,255,255,0.08);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:8px;">Output Channels</div>
-        <div id="${id}-back-jacks" style="display:flex;gap:12px;flex-wrap:wrap;">
-            <!-- Jacks generated per parsed column -->
-            <div style="font:300 9px/1 'Inter',sans-serif;color:rgba(255,255,255,0.06);">Parse data to populate jacks</div>
+    <!-- Output jacks — appear after parse -->
+    <div style="padding:10px 48px;">
+        <div style="font:700 6px/1 'Arial',sans-serif;color:rgba(255,255,255,0.07);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:10px;">Output Channels</div>
+        <div id="${id}-back-jacks" style="display:flex;gap:14px;flex-wrap:wrap;">
+            <div style="font:300 9px/1 'Courier New',monospace;color:rgba(255,255,255,0.05);">Parse data to populate output jacks</div>
         </div>
     </div>
 
-    <!-- PCB trace decoration -->
-    <div style="margin:8px 22px;border-top:1px solid rgba(74,222,128,0.03);padding-top:6px;">
-        <div style="font:400 6px/1 'Courier New',monospace;color:rgba(74,222,128,0.06);letter-spacing:0.04em;">
-            FORGERACK INGEST &#x2022; DT-100 REV.A &#x2022; SVEND MFG
+    <!-- Manufacturing info — PCB silk-screen style -->
+    <div style="padding:6px 48px;margin-top:auto;border-top:1px solid rgba(74,222,128,0.02);">
+        <div style="font:400 5px/1 'Courier New',monospace;color:rgba(74,222,128,0.05);letter-spacing:0.04em;line-height:1.8;">
+            FORGERACK INGEST &#x2022; MODEL DT-100 REV.B &#x2022; SVEND MANUFACTURING<br>
+            MAX INPUT: 100K ROWS &#x2022; FORMATS: CSV TSV SSV &#x2022; AUTO-HEADER DETECT<br>
+            &#x00A9; SVEND MFG &#x2022; MADE IN USA &#x2022; PAT. PENDING
         </div>
     </div>
 </div>

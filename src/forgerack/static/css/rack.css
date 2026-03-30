@@ -1,0 +1,100 @@
+/*
+ * ForgeRack — The Rack Shell
+ *
+ * The workspace where units mount. Handles:
+ * - Rack rails and slot grid
+ * - Unit sizing (1U/2U/3U, half/full width)
+ * - Cable layer (SVG overlay)
+ * - Drag/drop unit placement
+ */
+
+:root {
+    --rack-bg: #080c08;
+    --rack-rail: #141a14;
+    --rack-rail-screw: #2a2f2a;
+    --rack-slot-height: 80px;  /* 1U */
+    --rack-width: 100%;
+    --rack-rail-width: 24px;
+}
+
+.forge-rack {
+    background: var(--rack-bg);
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+}
+
+/* Left and right rails */
+.forge-rack-rail {
+    width: var(--rack-rail-width);
+    background: var(--rack-rail);
+    border-right: 1px solid rgba(255,255,255,0.03);
+    flex-shrink: 0;
+    position: relative;
+}
+.forge-rack-rail.right {
+    border-right: none;
+    border-left: 1px solid rgba(255,255,255,0.03);
+}
+
+/* Rail screw holes (every 1U) */
+.forge-rack-rail-hole {
+    width: 8px; height: 8px;
+    background: radial-gradient(circle, #1a1f1a, #0a0f0a);
+    border: 1px solid #2a2f2a;
+    border-radius: 50%;
+    position: absolute;
+    left: 50%; transform: translateX(-50%);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+}
+
+/* Main area where units live */
+.forge-rack-bay {
+    flex: 1;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow-y: auto;
+}
+
+/* Cable layer — SVG overlay for patch cables */
+.forge-rack-cables {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+}
+.forge-rack-cables svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Cable styling */
+.forge-cable {
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 3px rgba(0,0,0,0.5));
+}
+.forge-cable.audio { stroke: var(--device-accent); stroke-width: 2.5; }
+.forge-cable.control { stroke: var(--status-amber); stroke-width: 1.5; stroke-dasharray: 4,2; }
+.forge-cable.evidence { stroke: var(--status-blue); stroke-width: 1.5; }
+
+/* Empty slot placeholder */
+.forge-rack-empty-slot {
+    min-height: var(--rack-slot-height);
+    border: 1px dashed rgba(74, 159, 110, 0.1);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: rgba(74, 159, 110, 0.2);
+}
+
+/* Drop target highlight */
+.forge-rack-empty-slot.drop-target {
+    border-color: var(--device-accent);
+    background: var(--device-accent-dim);
+}

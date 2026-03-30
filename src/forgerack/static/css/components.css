@@ -1,0 +1,267 @@
+/*
+ * ForgeRack — Shared Analog Components
+ *
+ * Every rack unit uses these primitives.
+ * Units set --device-accent for their color.
+ */
+
+/* ── Foundation ── */
+
+:root {
+    --unit-bg: #111611;
+    --unit-border: rgba(74, 159, 110, 0.12);
+    --unit-groove: #0d120d;
+    --device-accent: #4a9f6e;
+    --device-accent-dim: rgba(74, 159, 110, 0.2);
+    --device-accent-glow: rgba(74, 159, 110, 0.15);
+    --text-bright: #e8efe8;
+    --text-mid: #9aaa9a;
+    --text-dim: #5a6f5a;
+    --text-label: #4a5f4a;
+    --status-green: #22c55e;
+    --status-amber: #f59e0b;
+    --status-red: #ef4444;
+    --status-blue: #60a5fa;
+    --mono: 'JetBrains Mono', 'Fira Code', monospace;
+    --sans: 'Inter', system-ui, sans-serif;
+}
+
+/* ── Rack Unit Shell ── */
+
+.rack-unit {
+    background: var(--unit-bg);
+    border: 1px solid var(--unit-border);
+    border-radius: 3px;
+    position: relative;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 0 2px 6px rgba(0,0,0,0.4);
+    overflow: hidden;
+}
+
+.rack-screw {
+    position: absolute; width: 10px; height: 10px;
+    background: radial-gradient(circle at 40% 40%, #3a3f3a, #1a1f1a);
+    border-radius: 50%;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.04);
+    z-index: 2;
+}
+.rack-screw::after {
+    content: ''; position: absolute; top: 4px; left: 2px;
+    width: 6px; height: 1.5px; background: #1a1f1a; border-radius: 1px;
+}
+.rack-screw.tl { top: 4px; left: 4px; }
+.rack-screw.tr { top: 4px; right: 4px; }
+.rack-screw.bl { bottom: 4px; left: 4px; }
+.rack-screw.br { bottom: 4px; right: 4px; }
+
+.rack-unit-head {
+    display: flex; align-items: center; gap: 6px;
+    padding: 3px 20px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.15));
+    border-bottom: 1px solid var(--unit-border);
+    font: 700 10px/1 var(--sans);
+    color: var(--device-accent);
+    letter-spacing: 0.12em; text-transform: uppercase;
+}
+.rack-unit-version { font-size: 8px; font-weight: 400; color: var(--text-dim); margin-left: auto; letter-spacing: 0; }
+.rack-unit-body { padding: 8px 12px; }
+
+.rack-section { padding: 6px 0; border-bottom: 1px solid var(--unit-groove); }
+.rack-section:last-child { border-bottom: none; }
+.rack-section-label {
+    font: 600 8px/1 var(--sans); text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--text-label); margin-bottom: 4px;
+}
+
+
+/* ── Jacks (patch points) ── */
+
+.jack {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, #1a1f1a, #0a0f0a);
+    border: 2px solid #2a2f2a;
+    box-shadow: inset 0 2px 3px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.04);
+    display: inline-block; cursor: crosshair;
+}
+.jack.connected { border-color: var(--device-accent); box-shadow: inset 0 2px 3px rgba(0,0,0,0.6), 0 0 6px var(--device-accent-glow); }
+
+.jack-bar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 20px;
+    background: rgba(0,0,0,0.15); border-top: 1px solid var(--unit-groove);
+    font-size: 8px; color: var(--text-dim);
+}
+.jack-group { display: flex; align-items: center; gap: 3px; }
+
+
+/* ── Dial (rotary knob) ── */
+
+.dial { display: inline-flex; flex-direction: column; align-items: center; gap: 1px; }
+.dial-knob {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: conic-gradient(from 220deg, #2a2f2a 0%, #3a3f3a 20%, #2a2f2a 40%, #1a1f1a 70%, #2a2f2a 100%);
+    border: 2px solid #1a1f1a;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+    position: relative; cursor: pointer;
+}
+.dial-knob::after {
+    content: ''; position: absolute; top: 3px; left: 50%; transform: translateX(-50%);
+    width: 2px; height: 7px; background: var(--device-accent); border-radius: 1px;
+    box-shadow: 0 0 4px var(--device-accent-glow);
+}
+.dial.sm .dial-knob { width: 24px; height: 24px; }
+.dial.sm .dial-knob::after { height: 5px; top: 2px; }
+.dial-label { font: 400 7px/1 var(--sans); color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; }
+.dial-value { font: 400 9px/1 var(--mono); color: var(--device-accent); }
+
+
+/* ── Switches ── */
+
+.switch-rocker {
+    width: 16px; height: 24px;
+    background: linear-gradient(180deg, #3a3f3a, #2a2f2a);
+    border: 1px solid #1a1f1a; border-radius: 2px; cursor: pointer;
+    position: relative; box-shadow: 0 2px 3px rgba(0,0,0,0.3);
+}
+.switch-rocker.on { background: linear-gradient(180deg, #2a2f2a, #3a3f3a); box-shadow: inset 0 2px 3px rgba(0,0,0,0.3); }
+.switch-rocker::after {
+    content: ''; position: absolute; top: 2px; left: 3px; right: 3px; height: 3px;
+    background: var(--device-accent); border-radius: 1px; opacity: 0; transition: opacity 0.15s;
+}
+.switch-rocker.on::after { opacity: 1; }
+
+.switch-slide {
+    width: 26px; height: 12px; background: #1a1f1a;
+    border-radius: 6px; border: 1px solid #2a2f2a; position: relative; cursor: pointer;
+}
+.switch-slide-thumb {
+    width: 8px; height: 8px; background: #4a4f4a; border-radius: 50%;
+    position: absolute; top: 1px; left: 1px; transition: left 0.15s, background 0.15s;
+}
+.switch-slide.on { border-color: var(--device-accent); }
+.switch-slide.on .switch-slide-thumb { left: 15px; background: var(--device-accent); }
+
+.switch-momentary {
+    width: 18px; height: 18px;
+    background: radial-gradient(circle at 40% 40%, #3a3f3a, #2a2f2a);
+    border: 2px solid #1a1f1a; border-radius: 50%; cursor: pointer;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.3); transition: transform 0.05s;
+}
+.switch-momentary:active { transform: scale(0.9); box-shadow: inset 0 1px 2px rgba(0,0,0,0.3); }
+
+
+/* ── LED ── */
+
+.led {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: #1a1f1a; border: 1px solid #2a2f2a;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.5); transition: all 0.15s;
+}
+.led.lg { width: 10px; height: 10px; }
+.led.on-green  { background: var(--status-green); box-shadow: 0 0 6px var(--status-green); }
+.led.on-amber  { background: var(--status-amber); box-shadow: 0 0 6px var(--status-amber); }
+.led.on-red    { background: var(--status-red);   box-shadow: 0 0 6px var(--status-red); }
+.led.on-blue   { background: var(--status-blue);  box-shadow: 0 0 6px var(--status-blue); }
+.led.on-accent { background: var(--device-accent); box-shadow: 0 0 6px var(--device-accent); }
+
+.led-bank { display: flex; gap: 3px; align-items: center; }
+.led-bank-labels { display: flex; gap: 3px; font-size: 6px; color: var(--text-label); }
+.led-bank-labels span { width: 8px; text-align: center; }
+
+
+/* ── Readout (7-segment style) ── */
+
+.readout { display: inline-flex; flex-direction: column; align-items: center; gap: 1px; }
+.readout-value {
+    font: 700 18px/1 var(--mono); color: var(--device-accent);
+    text-shadow: 0 0 8px var(--device-accent-glow);
+    min-width: 50px; text-align: center;
+    padding: 3px 6px; background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(0,0,0,0.4); border-radius: 2px;
+}
+.readout-label { font: 600 7px/1 var(--sans); color: var(--text-label); text-transform: uppercase; letter-spacing: 0.1em; }
+.readout.sm .readout-value { font-size: 12px; min-width: 36px; }
+.readout.lg .readout-value { font-size: 28px; min-width: 80px; }
+.readout.good .readout-value { color: var(--status-green); text-shadow: 0 0 8px rgba(34,197,94,0.25); }
+.readout.warn .readout-value { color: var(--status-amber); text-shadow: 0 0 8px rgba(245,158,11,0.25); }
+.readout.bad  .readout-value { color: var(--status-red);   text-shadow: 0 0 8px rgba(239,68,68,0.25); }
+
+
+/* ── Meter ── */
+
+.meter {
+    height: 6px; background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(0,0,0,0.4); border-radius: 3px; overflow: hidden;
+}
+.meter-fill { height: 100%; background: var(--device-accent); border-radius: 3px; transition: width 0.3s; }
+.meter.zoned .meter-fill { background: linear-gradient(90deg, var(--status-red), var(--status-amber), var(--status-green)); }
+.meter-ticks { display: flex; justify-content: space-between; font-size: 6px; color: var(--text-label); margin-top: 1px; }
+
+.vu-meter {
+    width: 8px; background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(0,0,0,0.4); border-radius: 4px;
+    display: inline-flex; flex-direction: column-reverse; overflow: hidden;
+}
+.vu-meter-fill { width: 100%; background: var(--device-accent); transition: height 0.3s; border-radius: 3px; }
+
+
+/* ── Fader ── */
+
+.fader { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
+.fader-track {
+    width: 4px; height: 50px; background: #0d120d;
+    border-radius: 2px; border: 1px solid #1a1f1a; position: relative;
+}
+.fader-thumb {
+    width: 14px; height: 6px;
+    background: linear-gradient(180deg, #4a4f4a, #3a3f3a);
+    border: 1px solid #2a2f2a; border-radius: 1px;
+    position: absolute; left: -6px; cursor: grab;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+.fader-label { font: 400 7px/1 var(--sans); color: var(--text-dim); text-transform: uppercase; }
+
+
+/* ── Segment Switch ── */
+
+.segment { display: inline-flex; border: 1px solid rgba(0,0,0,0.4); border-radius: 2px; overflow: hidden; }
+.segment-btn {
+    padding: 3px 8px; font: 600 8px/1 var(--sans);
+    text-transform: uppercase; letter-spacing: 0.04em;
+    background: rgba(0,0,0,0.2); color: var(--text-dim);
+    border: none; border-right: 1px solid rgba(0,0,0,0.3); cursor: pointer; transition: all 0.1s;
+}
+.segment-btn:last-child { border-right: none; }
+.segment-btn:hover { background: rgba(0,0,0,0.3); }
+.segment-btn.active { background: var(--device-accent-dim); color: var(--device-accent); }
+
+
+/* ── Chart Viewport ── */
+
+.chart-viewport {
+    background: rgba(0,0,0,0.2); border: 1px solid rgba(0,0,0,0.4);
+    border-radius: 2px; min-height: 120px; position: relative;
+}
+.chart-viewport::after {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent 0px, rgba(0,0,0,0.03) 1px, transparent 2px);
+    pointer-events: none; border-radius: 2px;
+}
+
+
+/* ── Unit Color DNA ── */
+
+.unit-spc       { --device-accent: #4ade80; --device-accent-dim: rgba(74,222,128,0.15); --device-accent-glow: rgba(74,222,128,0.15); }
+.unit-stat      { --device-accent: #a78bfa; --device-accent-dim: rgba(167,139,250,0.15); --device-accent-glow: rgba(167,139,250,0.15); }
+.unit-doe       { --device-accent: #60a5fa; --device-accent-dim: rgba(96,165,250,0.15);  --device-accent-glow: rgba(96,165,250,0.15); }
+.unit-causal    { --device-accent: #fbbf24; --device-accent-dim: rgba(251,191,36,0.15);  --device-accent-glow: rgba(251,191,36,0.15); }
+.unit-msa       { --device-accent: #94a3b8; --device-accent-dim: rgba(148,163,184,0.15); --device-accent-glow: rgba(148,163,184,0.15); }
+.unit-graph     { --device-accent: #2dd4bf; --device-accent-dim: rgba(45,212,191,0.15);  --device-accent-glow: rgba(45,212,191,0.15); }
+.unit-risk      { --device-accent: #f97316; --device-accent-dim: rgba(249,115,22,0.15);  --device-accent-glow: rgba(249,115,22,0.15); }
+.unit-strategy  { --device-accent: #eab308; --device-accent-dim: rgba(234,179,8,0.15);   --device-accent-glow: rgba(234,179,8,0.15); }
+.unit-ops       { --device-accent: #14b8a6; --device-accent-dim: rgba(20,184,166,0.15);  --device-accent-glow: rgba(20,184,166,0.15); }
+.unit-supply    { --device-accent: #3b82f6; --device-accent-dim: rgba(59,130,246,0.15);  --device-accent-glow: rgba(59,130,246,0.15); }
+.unit-queue     { --device-accent: #fb923c; --device-accent-dim: rgba(251,146,60,0.15);  --device-accent-glow: rgba(251,146,60,0.15); }
+.unit-lean      { --device-accent: #84cc16; --device-accent-dim: rgba(132,204,22,0.15);  --device-accent-glow: rgba(132,204,22,0.15); }
+.unit-doc       { --device-accent: #a8a29e; --device-accent-dim: rgba(168,162,158,0.15); --device-accent-glow: rgba(168,162,158,0.15); }
+.unit-cmd       { --device-accent: #22c55e; --device-accent-dim: rgba(34,197,94,0.15);   --device-accent-glow: rgba(34,197,94,0.15); }
+.unit-narrative { --device-accent: #e2e8f0; --device-accent-dim: rgba(226,232,240,0.1);  --device-accent-glow: rgba(226,232,240,0.1); }

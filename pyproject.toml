@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "forgerack"
+version = "0.1.0"
+description = "Modular instrument rack UI — analog controls, patch routing, device faceplates for the Forge ecosystem."
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [{name = "Eric Wolters", email = "eric.wolters@svend.ai"}]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+forgerack = [
+    "static/css/*.css",
+    "static/js/*.js",
+    "templates/forgerack/**/*.html",
+]

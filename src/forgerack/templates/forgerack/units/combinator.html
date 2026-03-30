@@ -1,0 +1,62 @@
+<!--
+  COMBINATOR — Container Device
+  Identity: The crate. Wraps multiple units into one collapsible group.
+  Macro controls on the front, contained units inside.
+  Like Reason's Combinator — encapsulation + macro knobs.
+  Color: warm metal (#78716c)
+  Size: 2U (collapsed) — expands when opened
+-->
+<div class="rack-unit u2" data-unit="combinator" style="
+    --device-accent:#78716c;
+    --device-accent-dim:rgba(120,113,108,0.1);
+    background: linear-gradient(180deg, #131210, #0e0d0c);
+    border-color: rgba(120,113,108,0.08);
+">
+    <span class="rack-screw tl"></span><span class="rack-screw tr"></span>
+    <span class="rack-screw bl"></span><span class="rack-screw br"></span>
+
+    <!-- Head with fold/unfold toggle -->
+    <div style="display:flex;align-items:center;gap:6px;padding:3px 20px;border-bottom:1px solid rgba(120,113,108,0.06);background:rgba(0,0,0,0.15);">
+        <span class="led on-amber" id="${id}-led"></span>
+        <span style="font:700 9px/1 'Inter',sans-serif;color:#78716c;letter-spacing:0.1em;text-transform:uppercase;">Combinator</span>
+        <span style="font:400 8px/1 'Inter',sans-serif;color:rgba(120,113,108,0.3);margin-left:4px;" id="${id}-name">untitled</span>
+        <button onclick="ForgeRack.units['${id}'].toggle()" style="margin-left:auto;background:none;border:1px solid rgba(120,113,108,0.12);
+            color:rgba(120,113,108,0.4);font:600 8px/1 'JetBrains Mono',monospace;padding:2px 6px;
+            border-radius:1px;cursor:pointer;text-transform:uppercase;" id="${id}-toggleBtn">&#x25BC; Open</button>
+    </div>
+
+    <!-- Macro controls (always visible) -->
+    <div style="padding:6px 12px;display:flex;gap:12px;align-items:center;">
+        <div class="dial sm" data-dial='{"min":0,"max":100,"value":50}'>
+            <div class="dial-knob" style="width:22px;height:22px;"></div>
+            <div class="dial-label" style="color:rgba(120,113,108,0.25);">macro 1</div>
+        </div>
+        <div class="dial sm" data-dial='{"min":0,"max":100,"value":50}'>
+            <div class="dial-knob" style="width:22px;height:22px;"></div>
+            <div class="dial-label" style="color:rgba(120,113,108,0.25);">macro 2</div>
+        </div>
+        <div class="dial sm" data-dial='{"min":0,"max":100,"value":50}'>
+            <div class="dial-knob" style="width:22px;height:22px;"></div>
+            <div class="dial-label" style="color:rgba(120,113,108,0.25);">macro 3</div>
+        </div>
+        <div class="dial sm" data-dial='{"min":0,"max":100,"value":50}'>
+            <div class="dial-knob" style="width:22px;height:22px;"></div>
+            <div class="dial-label" style="color:rgba(120,113,108,0.25);">macro 4</div>
+        </div>
+
+        <!-- I/O jacks -->
+        <div style="margin-left:auto;display:flex;align-items:center;gap:6px;">
+            <div class="jack" data-input="signal" id="${id}-in"></div>
+            <span style="font:600 6px/1 'JetBrains Mono',monospace;color:rgba(120,113,108,0.2);">&#x2192;</span>
+            <div class="jack" data-output="signal" id="${id}-out"></div>
+        </div>
+    </div>
+
+    <!-- Contained units (hidden when collapsed) -->
+    <div id="${id}-body" style="display:none;border-top:1px dashed rgba(120,113,108,0.08);padding:4px;background:rgba(0,0,0,0.1);">
+        <!-- Child units mount here -->
+        <div style="font:300 9px/1 'Inter',sans-serif;color:rgba(120,113,108,0.15);text-align:center;padding:16px;">
+            Drop units here to combine
+        </div>
+    </div>
+</div>

@@ -267,68 +267,46 @@
 .unit-narrative { --device-accent: #e2e8f0; --device-accent-dim: rgba(226,232,240,0.1);  --device-accent-glow: rgba(226,232,240,0.1); }
 
 
-/* ── Rack Ears — mounting brackets that bolt to rack rails ── */
+/* ── Rack-mounted units — children of #rackBay, between rails ── */
 /*
- * Bolt pattern math (matches rack.html rail generation):
- *   Bolt: 14px × 14px
- *   Between bolts in U-group: 3px margin-top
- *   Between U-groups: 10px margin-top on first bolt
- *   3 bolts per U-group
- *   1U = 58px (bolt center to bolt center between groups)
- *
- * Bolt centers from unit top (relative):
- *   U0: 10px, 27px, 44px
- *   U1: 68px, 85px, 102px
- *   U2: 126px, 143px, 160px
- *   U3: 184px, 201px, 218px
- *
- * Ear holes are positioned absolutely to match.
+ * Units stack in .rack-body / #rackBay between the two .rack-rail elements.
+ * The rails provide the mounting — no separate ears or bolt holes on units.
+ * Units are flush: no border-radius, no margins, no side borders.
+ * The rail's inner edge (border-right on left rail, border-left on right rail)
+ * is the visual boundary. Units fill the space between.
  */
 
-.rack-ear {
-    position: absolute;
-    top: 0; bottom: 0;
-    width: 22px;
-    z-index: 1;
-    /* Brushed metal ear bracket */
-    background: linear-gradient(90deg, rgba(255,255,255,0.01), transparent);
-}
-.rack-ear.left { left: -22px; }
-.rack-ear.right { right: -22px; }
-
-.rack-ear-hole {
-    width: 12px; height: 12px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 40% 35%, #1a1e1a, #0a0c0a 70%);
-    border: 1.5px solid #2a2e2a;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.03);
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-}
-/* Hex socket in the hole */
-.rack-ear-hole::after {
-    content: '';
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 5px; height: 5px;
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    background: #080a08;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
-}
-
-/* Front/back panel visibility for rack flip */
 .rack-unit-front {
-    backface-visibility: hidden;
     position: relative;
-    border-radius: 3px;
-    margin: 2px 0;  /* ears extend beyond, no horizontal margin needed */
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.015);
+    backface-visibility: hidden;
+    /* Override any inline border styles from unit HTML */
+    border-left: none !important;
+    border-right: none !important;
+    border-top: none !important;
 }
 
 .rack-unit-back {
-    backface-visibility: hidden;
     position: relative;
-    border-radius: 3px;
-    margin: 2px 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(74,222,128,0.02);
+    backface-visibility: hidden;
+    border-left: none !important;
+    border-right: none !important;
+    border-top: none !important;
+}
+
+/* Hide any leftover rack-screw or rack-ear elements from old unit HTML */
+.rack-unit-front .rack-screw,
+.rack-unit-back .rack-screw,
+.rack-unit-front .rack-ear,
+.rack-unit-back .rack-ear {
+    display: none !important;
 }

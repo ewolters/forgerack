@@ -237,12 +237,88 @@ function _initJackInteraction() {
     });
 }
 
+// ── Disconnect ──
+
+FR.disconnect = function(sourceUnitId, sourceOutput, targetUnitId, targetInput) {
+    // Remove from cables array
+    for (var i = cables.length - 1; i >= 0; i--) {
+        var c = cables[i];
+        if (c.source.unitId === sourceUnitId && c.source.output === sourceOutput &&
+            c.target.unitId === targetUnitId && c.target.input === targetInput) {
+            cables.splice(i, 1);
+        }
+    }
+    // Remove from listeners
+    var key = sourceUnitId + ':' + sourceOutput;
+    if (listeners[key]) {
+        listeners[key] = listeners[key].filter(function(link) {
+            return !(link.targetUnitId === targetUnitId && link.targetInput === targetInput);
+        });
+    }
+    _renderCables();
+    console.log('[ForgeRack] Disconnected:', sourceUnitId, sourceOutput, '→', targetUnitId, targetInput);
+};
+
+FR.disconnectJack = function(jack) {
+    // Disconnect all cables touching this jack
+    var unitId = _resolveUnitId(jack);
+    var output = jack.dataset.output;
+    var input = jack.dataset.input;
+    var removed = 0;
+
+    for (var i = cables.length - 1; i >= 0; i--) {
+        var c = cables[i];
+        var match = false;
+        if (output && c.source.unitId === unitId && c.source.output === output) match = true;
+        if (input && c.target.unitId === unitId && c.target.input === input) match = true;
+        if (match) {
+            // Remove listener
+            var key = c.source.unitId + ':' + c.source.output;
+            if (listeners[key]) {
+                listeners[key] = listeners[key].filter(function(link) {
+                    return !(link.targetUnitId === c.target.unitId && link.targetInput === c.target.input);
+                });
+            }
+            cables.splice(i, 1);
+            removed++;
+        }
+    }
+    if (removed > 0) {
+        jack.classList.remove('connected');
+        _renderCables();
+        console.log('[ForgeRack] Disconnected', removed, 'cable(s) from jack');
+    }
+    return removed;
+};
+
+// ── Right-click jack to disconnect + Escape to cancel pending ──
+
+function _initDisconnect() {
+    document.addEventListener('contextmenu', function(e) {
+        var jack = e.target.closest('.patch-jack, .jack');
+        if (jack && jack.classList.contains('connected')) {
+            e.preventDefault();
+            FR.disconnectJack(jack);
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && pendingJack) {
+            pendingJack.classList.remove('pending');
+            pendingJack.style.boxShadow = '';
+            pendingJack = null;
+            console.log('[ForgeRack] Wiring cancelled');
+        }
+    });
+}
+
 // ── Re-render cables on resize/scroll ──
 window.addEventListener('resize', function() { _renderCables(); });
 
 // ── Init ──
 FR._initWiring = function() {
     _initJackInteraction();
+    _initDisconnect();
 };
 
 // Auto-init

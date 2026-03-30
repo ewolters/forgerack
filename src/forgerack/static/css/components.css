@@ -276,32 +276,36 @@
  * is the visual boundary. Units fill the space between.
  */
 
+/*
+ * 1U = 42px (matches rack-body score line grid).
+ * Unit heights should be multiples: 1U=42, 2U=84, 3U=126, 4U=168, 5U=210, 6U=252
+ */
+
 .rack-unit-front {
     position: relative;
     margin: 0;
-    padding: 0;
     border: none;
     border-radius: 0;
-    border-bottom: 1px solid rgba(255,255,255,0.015);
-    backface-visibility: hidden;
-    /* Override any inline border styles from unit HTML */
-    border-left: none !important;
-    border-right: none !important;
-    border-top: none !important;
+    /* backface-visibility intentionally NOT set here —
+       the rack template controls this per-context */
 }
 
 .rack-unit-back {
     position: relative;
     margin: 0;
-    padding: 0;
     border: none;
     border-radius: 0;
-    border-bottom: 1px solid rgba(74,222,128,0.02);
-    backface-visibility: hidden;
-    border-left: none !important;
-    border-right: none !important;
-    border-top: none !important;
 }
+
+/* U-height classes — snap to 42px grid */
+.rack-unit-front.u1, .rack-unit-back.u1 { height: 42px; }
+.rack-unit-front.u2, .rack-unit-back.u2 { height: 84px; }
+.rack-unit-front.u3, .rack-unit-back.u3 { height: 126px; }
+.rack-unit-front.u4, .rack-unit-back.u4 { height: 168px; }
+.rack-unit-front.u5, .rack-unit-back.u5 { height: 210px; }
+.rack-unit-front.u6, .rack-unit-back.u6 { height: 252px; }
+.rack-unit-front.u8, .rack-unit-back.u8 { height: 336px; }
+.rack-unit-front.u10, .rack-unit-back.u10 { height: 420px; }
 
 /* Hide any leftover rack-screw or rack-ear elements from old unit HTML */
 .rack-unit-front .rack-screw,

@@ -51,6 +51,10 @@ function _resolveUnitId(jack) {
 
 const listeners = {};  // { unitId:outputName → [{targetUnitId, targetInput}] }
 
+// Debug: expose internals
+FR._listeners = listeners;
+FR._cables = cables;
+
 FR.emit = function(unitId, outputName, data) {
     const key = unitId + ':' + outputName;
     (listeners[key] || []).forEach(function(link) {

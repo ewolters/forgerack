@@ -6,7 +6,7 @@
 'use strict';
 
 // ═══════════════════════════════════════════════════════════
-// CSV INPUT — already has unit-csv-input.js, but let's consolidate
+// INGEST DT-100 — already has unit-csv-input.js, but let's consolidate
 // ═══════════════════════════════════════════════════════════
 
 FR.registerUnit('csv-input', {
@@ -99,7 +99,7 @@ FR.registerUnit('csv-input', {
 
 
 // ═══════════════════════════════════════════════════════════
-// CHART PANEL (LENS) — renders ForgeViz ChartSpec
+// SCOPE LS-800 — renders ForgeViz ChartSpec
 // ═══════════════════════════════════════════════════════════
 
 FR.registerUnit('chart-panel', {
@@ -280,7 +280,7 @@ function _quantile(arr, p) {
 
 
 // ═══════════════════════════════════════════════════════════
-// FILTER — pass/reject based on condition
+// SIEVE FG-01 — pass/reject based on condition
 // ═══════════════════════════════════════════════════════════
 
 FR.registerUnit('filter', {
@@ -344,7 +344,7 @@ FR.registerUnit('filter', {
 
 
 // ═══════════════════════════════════════════════════════════
-// READOUT — numeric display panel
+// REGISTER RD-04 — numeric display panel
 // ═══════════════════════════════════════════════════════════
 
 FR.registerUnit('readout', {
@@ -394,7 +394,7 @@ FR.registerUnit('readout', {
 
 
 // ═══════════════════════════════════════════════════════════
-// NARRATIVE — text output
+// HERALD TT-01 — text output
 // ═══════════════════════════════════════════════════════════
 
 FR.registerUnit('narrative', {
@@ -433,7 +433,7 @@ FR.registerUnit('narrative', {
 
 
 // ═══════════════════════════════════════════════════════════
-// COMBINATOR — container device
+// CRATE CM-01 — container device
 // ═══════════════════════════════════════════════════════════
 
 FR.registerUnit('combinator', {
@@ -459,7 +459,7 @@ FR.registerUnit('combinator', {
 
 
 // ═══════════════════════════════════════════════════════════
-// SPLITTER — passive fan-out (no behavior needed beyond wiring)
+// MANIFOLD SP-04 — passive fan-out (no behavior needed beyond wiring)
 // ═══════════════════════════════════════════════════════════
 
 FR.registerUnit('splitter', {

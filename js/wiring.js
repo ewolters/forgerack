@@ -14,6 +14,39 @@ let pendingJack = null;
 let pendingSvgLine = null;
 let svgLayer = null;
 
+// ── Resolve unit ID from a jack element ──
+// Handles: data-unit-id on the jack, data-id on parent unit,
+// or literal ${id} that wasn't substituted (traverse DOM to find real ID)
+
+function _resolveUnitId(jack) {
+    // Direct attribute
+    var uid = jack.dataset.unitId;
+    if (uid && uid !== '${id}' && uid !== '') return uid;
+
+    // Walk up to find the nearest unit wrapper with a real data-id
+    var parent = jack.closest('[data-id]');
+    if (parent) {
+        uid = parent.dataset.id;
+        if (uid && uid !== '${id}') return uid;
+    }
+
+    // Walk up to find rack-unit-front or rack-unit-back with data-unit attribute
+    var unitEl = jack.closest('.rack-unit-front, .rack-unit-back, [data-unit], [data-unit-back]');
+    if (unitEl) {
+        uid = unitEl.dataset.id || unitEl.dataset.unitId;
+        if (uid && uid !== '${id}') return uid;
+
+        // Last resort: use the unit type + index as ID
+        var unitType = unitEl.dataset.unit || unitEl.dataset.unitBack || 'unknown';
+        var siblings = document.querySelectorAll('[data-unit="' + unitType + '"], [data-unit-back="' + unitType + '"]');
+        for (var i = 0; i < siblings.length; i++) {
+            if (siblings[i] === unitEl) return unitType + '-' + i;
+        }
+    }
+
+    return 'unknown';
+}
+
 // ── Event bus for unit-to-unit data flow ──
 
 const listeners = {};  // { unitId:outputName → [{targetUnitId, targetInput}] }
@@ -138,7 +171,7 @@ function _initJackInteraction() {
             return;
         }
 
-        const unitId = jack.dataset.unitId || jack.closest('[data-id]')?.dataset.id || '';
+        const unitId = _resolveUnitId(jack);
         const output = jack.dataset.output;
         const input = jack.dataset.input;
 
@@ -149,12 +182,17 @@ function _initJackInteraction() {
             jack.style.boxShadow = '0 0 8px rgba(74,222,128,0.5)';
         } else {
             // Complete cable
-            const firstUnitId = pendingJack.dataset.unitId || pendingJack.closest('[data-id]')?.dataset.id || '';
+            const firstUnitId = _resolveUnitId(pendingJack);
             const firstOutput = pendingJack.dataset.output;
             const firstInput = pendingJack.dataset.input;
 
             // Determine direction: output → input
             let srcId, srcOut, tgtId, tgtIn;
+            console.log('[ForgeRack] Wire attempt:', {
+                first: { unitId: firstUnitId, output: firstOutput, input: firstInput },
+                second: { unitId: unitId, output: output, input: input }
+            });
+
             if (firstOutput && input) {
                 srcId = firstUnitId; srcOut = firstOutput;
                 tgtId = unitId; tgtIn = input;
@@ -162,12 +200,14 @@ function _initJackInteraction() {
                 srcId = unitId; srcOut = output;
                 tgtId = firstUnitId; tgtIn = firstInput;
             } else {
-                // Same type — cancel
+                console.warn('[ForgeRack] Cannot wire: both jacks are same direction (both input or both output)');
                 pendingJack.classList.remove('pending');
                 pendingJack.style.boxShadow = '';
                 pendingJack = null;
                 return;
             }
+
+            console.log('[ForgeRack] Connected:', srcId, srcOut, '→', tgtId, tgtIn);
 
             FR.connect(srcId, srcOut, tgtId, tgtIn);
 

@@ -1,62 +1,98 @@
 <!--
   COMBINATOR — Container Device
-  Identity: The crate. Wraps multiple units into one collapsible group.
-  Macro controls on the front, contained units inside.
-  Like Reason's Combinator — encapsulation + macro knobs.
-  Color: warm metal (#78716c)
-  Size: 2U (collapsed) — expands when opened
+  Identity: Heavy-duty equipment crate. Riveted steel. Olive drab / warm metal.
+  Like a transit case that opens to reveal contained instruments.
+  FRONT: 4 macro dials, fold toggle, name plate
+  BACK: Through I/O jacks, model plate
 -->
-<div class="rack-unit u2" data-unit="combinator" style="
+<div class="rack-unit-front" data-unit="combinator" data-id="${id}" data-u="2" style="
     --device-accent:#78716c;
-    --device-accent-dim:rgba(120,113,108,0.1);
-    background: linear-gradient(180deg, #131210, #0e0d0c);
-    border-color: rgba(120,113,108,0.08);
+    min-height:116px;
+    background:
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.003) 0px, transparent 1px, transparent 3px),
+        repeating-linear-gradient(180deg, rgba(255,255,255,0.002) 0px, transparent 1px, transparent 4px),
+        linear-gradient(135deg, #131210 0%, #100f0d 40%, #12110f 60%, #0e0d0c 100%);
+    border:1px solid rgba(120,113,108,0.06);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.01), 0 3px 8px rgba(0,0,0,0.5);
 ">
-    <span class="rack-screw tl"></span><span class="rack-screw tr"></span>
-    <span class="rack-screw bl"></span><span class="rack-screw br"></span>
-
-    <!-- Head with fold/unfold toggle -->
-    <div style="display:flex;align-items:center;gap:6px;padding:3px 20px;border-bottom:1px solid rgba(120,113,108,0.06);background:rgba(0,0,0,0.15);">
+    <!-- Nameplate — riveted equipment plate -->
+    <div style="
+        display:flex;align-items:center;gap:8px;padding:4px 22px;
+        border-bottom:2px solid rgba(0,0,0,0.3);
+        background: linear-gradient(180deg, rgba(255,255,255,0.005), rgba(0,0,0,0.1));
+    ">
         <span class="led on-amber" id="${id}-led"></span>
-        <span style="font:700 9px/1 'Inter',sans-serif;color:#78716c;letter-spacing:0.1em;text-transform:uppercase;">Combinator</span>
-        <span style="font:400 8px/1 'Inter',sans-serif;color:rgba(120,113,108,0.3);margin-left:4px;" id="${id}-name">untitled</span>
-        <button onclick="ForgeRack.units['${id}'].toggle()" style="margin-left:auto;background:none;border:1px solid rgba(120,113,108,0.12);
-            color:rgba(120,113,108,0.4);font:600 8px/1 'JetBrains Mono',monospace;padding:2px 6px;
-            border-radius:1px;cursor:pointer;text-transform:uppercase;" id="${id}-toggleBtn">&#x25BC; Open</button>
+        <span style="
+            font:900 10px/1 'Impact','Arial Black',sans-serif;
+            color:transparent;
+            text-shadow: 0 1px 0 rgba(120,113,108,0.3), 0 -1px 0 rgba(0,0,0,0.6);
+            -webkit-text-stroke: 0.3px rgba(120,113,108,0.15);
+            letter-spacing:0.15em;text-transform:uppercase;
+        ">Combinator</span>
+        <span id="${id}-name" style="font:400 8px/1 'Courier New',monospace;color:rgba(120,113,108,0.2);margin-left:4px;">untitled</span>
+        <button onclick="ForgeRack.units['${id}']&&ForgeRack.units['${id}'].toggle()" style="
+            margin-left:auto;background:linear-gradient(180deg, rgba(120,113,108,0.08), rgba(120,113,108,0.03));
+            border:1px solid rgba(120,113,108,0.1);color:rgba(120,113,108,0.35);
+            font:700 7px/1 'Arial',sans-serif;padding:3px 8px;border-radius:1px;cursor:pointer;
+            text-transform:uppercase;letter-spacing:0.1em;
+            box-shadow:0 1px 2px rgba(0,0,0,0.3);
+        " id="${id}-toggleBtn">&#x25BC; Open</button>
     </div>
 
-    <!-- Macro controls (always visible) -->
-    <div style="padding:6px 12px;display:flex;gap:12px;align-items:center;">
+    <!-- Macro knobs — in recessed cutout panel -->
+    <div style="
+        margin:6px 14px;padding:8px 12px;
+        background:rgba(0,0,0,0.2);border:1px solid rgba(0,0,0,0.3);border-radius:2px;
+        box-shadow:inset 0 1px 4px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.006);
+        display:flex;gap:16px;align-items:center;
+    ">
         <div class="dial sm" data-dial='{"min":0,"max":100,"value":50}'>
-            <div class="dial-knob" style="width:22px;height:22px;"></div>
-            <div class="dial-label" style="color:rgba(120,113,108,0.25);">macro 1</div>
-        </div>
-        <div class="dial sm" data-dial='{"min":0,"max":100,"value":50}'>
-            <div class="dial-knob" style="width:22px;height:22px;"></div>
-            <div class="dial-label" style="color:rgba(120,113,108,0.25);">macro 2</div>
-        </div>
-        <div class="dial sm" data-dial='{"min":0,"max":100,"value":50}'>
-            <div class="dial-knob" style="width:22px;height:22px;"></div>
-            <div class="dial-label" style="color:rgba(120,113,108,0.25);">macro 3</div>
+            <div class="dial-knob" style="width:24px;height:24px;"></div>
+            <div class="dial-label" style="color:rgba(120,113,108,0.2);">macro 1</div>
         </div>
         <div class="dial sm" data-dial='{"min":0,"max":100,"value":50}'>
-            <div class="dial-knob" style="width:22px;height:22px;"></div>
-            <div class="dial-label" style="color:rgba(120,113,108,0.25);">macro 4</div>
+            <div class="dial-knob" style="width:24px;height:24px;"></div>
+            <div class="dial-label" style="color:rgba(120,113,108,0.2);">macro 2</div>
         </div>
-
-        <!-- I/O jacks -->
-        <div style="margin-left:auto;display:flex;align-items:center;gap:6px;">
-            <div class="jack" data-input="signal" id="${id}-in"></div>
-            <span style="font:600 6px/1 'JetBrains Mono',monospace;color:rgba(120,113,108,0.2);">&#x2192;</span>
-            <div class="jack" data-output="signal" id="${id}-out"></div>
+        <div class="dial sm" data-dial='{"min":0,"max":100,"value":50}'>
+            <div class="dial-knob" style="width:24px;height:24px;"></div>
+            <div class="dial-label" style="color:rgba(120,113,108,0.2);">macro 3</div>
         </div>
+        <div class="dial sm" data-dial='{"min":0,"max":100,"value":50}'>
+            <div class="dial-knob" style="width:24px;height:24px;"></div>
+            <div class="dial-label" style="color:rgba(120,113,108,0.2);">macro 4</div>
+        </div>
+        <span style="font:400 6px/1 'Courier New',monospace;color:rgba(200,180,140,0.1);margin-left:auto;">CMB-01</span>
     </div>
 
     <!-- Contained units (hidden when collapsed) -->
-    <div id="${id}-body" style="display:none;border-top:1px dashed rgba(120,113,108,0.08);padding:4px;background:rgba(0,0,0,0.1);">
-        <!-- Child units mount here -->
-        <div style="font:300 9px/1 'Inter',sans-serif;color:rgba(120,113,108,0.15);text-align:center;padding:16px;">
+    <div id="${id}-body" style="display:none;margin:0 14px 6px;border-top:1px dashed rgba(120,113,108,0.06);
+        padding:6px;background:rgba(0,0,0,0.08);border-radius:0 0 2px 2px;">
+        <div style="font:300 9px/1 'Courier New',monospace;color:rgba(120,113,108,0.1);text-align:center;padding:16px;">
             Drop units here to combine
         </div>
+    </div>
+</div>
+
+<div class="rack-unit-back" data-unit-back="combinator" data-id="${id}" data-u="2" style="
+    min-height:116px;
+    background:repeating-linear-gradient(90deg, rgba(255,255,255,0.003) 0px, transparent 1px, transparent 3px),
+        linear-gradient(135deg, #1d1c1a, #201f1d 40%, #1e1d1b);
+    border:1px solid rgba(255,255,255,0.03);
+">
+    <div style="display:flex;align-items:center;gap:8px;padding:4px 22px;border-bottom:1px solid rgba(255,255,255,0.04);">
+        <span style="font:900 8px/1 'Impact',sans-serif;color:rgba(255,255,255,0.1);letter-spacing:0.12em;text-transform:uppercase;">CMB-01 Combinator</span>
+        <span style="font:400 6px/1 'Courier New',monospace;color:rgba(255,255,255,0.05);margin-left:auto;">S/N ${id}</span>
+    </div>
+    <div style="padding:10px 22px;display:flex;gap:16px;">
+        <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label">in</div></div>
+        <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label">out</div></div>
+        <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label">cv 1</div></div>
+        <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label">cv 2</div></div>
+        <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label">cv 3</div></div>
+        <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label">cv 4</div></div>
+    </div>
+    <div style="padding:4px 22px;font:400 6px/1 'Courier New',monospace;color:rgba(74,222,128,0.04);">
+        FORGERACK COMBINATOR &#x2022; CMB-01 REV.A &#x2022; 4-MACRO &#x2022; SVEND MFG
     </div>
 </div>

@@ -1,44 +1,72 @@
 <!--
-  READOUT — Numeric Display Panel
-  Identity: Instrument cluster. Multiple 7-segment readouts in a row.
-  Like a cockpit instrument panel — each readout has a label and threshold coloring.
-  Color: device-accent inherited from input source
-  Size: 1U
+  READOUT — Instrument Cluster
+  Identity: Cockpit gauge cluster. Multiple recessed 7-segment windows.
+  Dark instrument panel with chrome bezels around each readout.
+  FRONT: 4 configurable numeric displays
+  BACK: Single values input jack
 -->
-<div class="rack-unit u1" data-unit="readout" style="
+<div class="rack-unit-front" data-unit="readout" data-id="${id}" data-u="1" style="
     --device-accent:#e2e8f0;
-    --device-accent-dim:rgba(226,232,240,0.08);
-    background: linear-gradient(180deg, #0e110e, #0a0d0a);
-    border-color: rgba(226,232,240,0.05);
+    min-height:58px;
+    background:
+        repeating-linear-gradient(180deg, rgba(255,255,255,0.002) 0px, transparent 1px, transparent 3px),
+        linear-gradient(135deg, #0e100e 0%, #0c0e0c 40%, #0d0f0d 60%, #0b0d0b 100%);
+    border:1px solid rgba(226,232,240,0.04);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.008), 0 2px 6px rgba(0,0,0,0.5);
 ">
-    <span class="rack-screw tl"></span><span class="rack-screw tr"></span>
+    <div style="display:flex;align-items:center;padding:4px 12px;height:100%;gap:6px;">
+        <!-- Vertical stamp -->
+        <span style="
+            font:800 7px/1 'Arial Narrow',Impact,sans-serif;
+            color:transparent;
+            text-shadow: 0 1px 0 rgba(226,232,240,0.12), 0 -1px 0 rgba(0,0,0,0.5);
+            -webkit-text-stroke: 0.2px rgba(226,232,240,0.08);
+            letter-spacing:0.2em;text-transform:uppercase;
+            writing-mode:vertical-lr;transform:rotate(180deg);
+        ">READOUT</span>
 
-    <div style="display:flex;align-items:center;padding:4px 20px;height:100%;gap:12px;">
-        <!-- Unit label -->
-        <span style="font:600 7px/1 'Inter',sans-serif;color:rgba(226,232,240,0.15);letter-spacing:0.15em;text-transform:uppercase;writing-mode:vertical-lr;transform:rotate(180deg);">readout</span>
+        <!-- 4 instrument windows — each recessed with chrome bezel -->
+        <div style="display:flex;gap:6px;flex:1;justify-content:center;">
+            <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(226,232,240,0.04);border-radius:2px;
+                box-shadow:inset 0 1px 3px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.006);padding:3px 6px;text-align:center;">
+                <div id="${id}-v0" style="font:700 15px/1 'JetBrains Mono',monospace;color:#e2e8f0;
+                    text-shadow:0 0 6px rgba(226,232,240,0.08);min-width:40px;">&#x2014;</div>
+                <div id="${id}-l0" style="font:700 5px/1 'Arial',sans-serif;color:rgba(226,232,240,0.15);
+                    text-transform:uppercase;letter-spacing:0.15em;margin-top:1px;">—</div>
+            </div>
+            <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(226,232,240,0.04);border-radius:2px;
+                box-shadow:inset 0 1px 3px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.006);padding:3px 6px;text-align:center;">
+                <div id="${id}-v1" style="font:700 15px/1 'JetBrains Mono',monospace;color:#e2e8f0;
+                    text-shadow:0 0 6px rgba(226,232,240,0.08);min-width:40px;">&#x2014;</div>
+                <div id="${id}-l1" style="font:700 5px/1 'Arial',sans-serif;color:rgba(226,232,240,0.15);
+                    text-transform:uppercase;letter-spacing:0.15em;margin-top:1px;">—</div>
+            </div>
+            <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(226,232,240,0.04);border-radius:2px;
+                box-shadow:inset 0 1px 3px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.006);padding:3px 6px;text-align:center;">
+                <div id="${id}-v2" style="font:700 15px/1 'JetBrains Mono',monospace;color:#e2e8f0;
+                    text-shadow:0 0 6px rgba(226,232,240,0.08);min-width:40px;">&#x2014;</div>
+                <div id="${id}-l2" style="font:700 5px/1 'Arial',sans-serif;color:rgba(226,232,240,0.15);
+                    text-transform:uppercase;letter-spacing:0.15em;margin-top:1px;">—</div>
+            </div>
+            <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(226,232,240,0.04);border-radius:2px;
+                box-shadow:inset 0 1px 3px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.006);padding:3px 6px;text-align:center;">
+                <div id="${id}-v3" style="font:700 15px/1 'JetBrains Mono',monospace;color:#e2e8f0;
+                    text-shadow:0 0 6px rgba(226,232,240,0.08);min-width:40px;">&#x2014;</div>
+                <div id="${id}-l3" style="font:700 5px/1 'Arial',sans-serif;color:rgba(226,232,240,0.15);
+                    text-transform:uppercase;letter-spacing:0.15em;margin-top:1px;">—</div>
+            </div>
+        </div>
 
-        <!-- 4 readout slots -->
-        <div class="readout sm" id="${id}-r0">
-            <div class="readout-value" style="font-size:14px;min-width:44px;">&#x2014;</div>
-            <div class="readout-label">—</div>
-        </div>
-        <div class="readout sm" id="${id}-r1">
-            <div class="readout-value" style="font-size:14px;min-width:44px;">&#x2014;</div>
-            <div class="readout-label">—</div>
-        </div>
-        <div class="readout sm" id="${id}-r2">
-            <div class="readout-value" style="font-size:14px;min-width:44px;">&#x2014;</div>
-            <div class="readout-label">—</div>
-        </div>
-        <div class="readout sm" id="${id}-r3">
-            <div class="readout-value" style="font-size:14px;min-width:44px;">&#x2014;</div>
-            <div class="readout-label">—</div>
-        </div>
+        <span style="font:400 6px/1 'Courier New',monospace;color:rgba(200,180,140,0.08);">RD-04</span>
+    </div>
+</div>
 
-        <!-- Input jack -->
-        <div style="margin-left:auto;display:flex;align-items:center;gap:3px;">
-            <span style="font:600 6px/1 'JetBrains Mono',monospace;color:rgba(226,232,240,0.12);text-transform:uppercase;">in</span>
-            <div class="jack" data-input="values" id="${id}-in"></div>
-        </div>
+<div class="rack-unit-back" data-unit-back="readout" data-id="${id}" data-u="1" style="
+    min-height:58px;background:linear-gradient(180deg, #1c1c1c, #181818);border:1px solid rgba(255,255,255,0.03);
+">
+    <div style="display:flex;align-items:center;padding:4px 12px;height:100%;gap:8px;">
+        <span style="font:700 7px/1 'Arial',sans-serif;color:rgba(255,255,255,0.08);letter-spacing:0.15em;text-transform:uppercase;">RD-04</span>
+        <div class="patch-group"><div class="patch-jack"></div><div class="patch-jack-label">values</div></div>
+        <span style="font:400 6px/1 'Courier New',monospace;color:rgba(74,222,128,0.04);margin-left:auto;">FORGERACK READOUT REV.A</span>
     </div>
 </div>

@@ -256,9 +256,11 @@ FR.registerUnit('chart-panel', {
             return;
         }
 
-        // Render with full ForgeViz interactive toolkit via options
+        // Render with ForgeViz interactive toolkit
+        // Disable theme toggle — rack is always dark
         ForgeViz.render(viewport, spec, {
             toolbar: true,
+            showThemeToggle: false,  // no theme switching in the rack
             editableTitle: true,
             editableAxes: true,
             colorPicker: true,

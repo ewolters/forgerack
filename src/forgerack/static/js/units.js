@@ -3377,6 +3377,53 @@ FR.registerUnit('sentinel', {
         var self = this;
         var runBtn = document.getElementById(id + '-btn-run');
         if (runBtn) runBtn.addEventListener('click', function() { self._run(); });
+
+        // Export buttons
+        var viewport = document.getElementById(id + '-viewport');
+        var copyBtn = document.getElementById(id + '-btn-copy');
+        var svgBtn = document.getElementById(id + '-btn-svg');
+        var pngBtn = document.getElementById(id + '-btn-png');
+
+        if (copyBtn) copyBtn.addEventListener('click', function() {
+            var svg = viewport && viewport.querySelector('svg');
+            if (svg) {
+                var data = new XMLSerializer().serializeToString(svg);
+                navigator.clipboard.writeText(data).then(function() {
+                    copyBtn.textContent = 'OK';
+                    setTimeout(function() { copyBtn.textContent = 'Copy'; }, 1200);
+                });
+            }
+        });
+        if (svgBtn) svgBtn.addEventListener('click', function() {
+            var svg = viewport && viewport.querySelector('svg');
+            if (svg) {
+                var data = new XMLSerializer().serializeToString(svg);
+                var blob = new Blob([data], { type: 'image/svg+xml' });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a'); a.href = url; a.download = 'sentinel-chart.svg'; a.click();
+                URL.revokeObjectURL(url);
+            }
+        });
+        if (pngBtn) pngBtn.addEventListener('click', function() {
+            var svg = viewport && viewport.querySelector('svg');
+            if (svg) {
+                var data = new XMLSerializer().serializeToString(svg);
+                var img = new Image();
+                var canvas = document.createElement('canvas');
+                canvas.width = svg.clientWidth * 2; canvas.height = svg.clientHeight * 2;
+                img.onload = function() {
+                    var ctx = canvas.getContext('2d');
+                    ctx.scale(2, 2);
+                    ctx.drawImage(img, 0, 0);
+                    canvas.toBlob(function(blob) {
+                        var url = URL.createObjectURL(blob);
+                        var a = document.createElement('a'); a.href = url; a.download = 'sentinel-chart.png'; a.click();
+                        URL.revokeObjectURL(url);
+                    });
+                };
+                img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(data)));
+            }
+        });
     },
 
     receive(inputName, data) {

@@ -23,5 +23,6 @@ src/forgerack/templates/forgerack/units/intake.html
 src/forgerack/templates/forgerack/units/narrative.html
 src/forgerack/templates/forgerack/units/readout.html
 src/forgerack/templates/forgerack/units/scribble.html
+src/forgerack/templates/forgerack/units/sentinel.html
 src/forgerack/templates/forgerack/units/splitter.html
 src/forgerack/templates/forgerack/units/triage.html

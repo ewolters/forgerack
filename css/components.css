@@ -943,6 +943,289 @@
 }
 
 
+/* ── MFR: KOSMOS (Soviet space program)
+ *    Olive/khaki sheet metal. Cyrillic-stencil labels. Chunky toggles.
+ *    Mechanical digit wheels. Raw, functional, no decoration.
+ *    Used by: countdown timers, sequence controllers, batch counters.
+ */
+.mfr-kosmos { --device-accent: #a3b18a; }
+.mfr-kosmos .dial-knob {
+    background:
+        radial-gradient(circle at 40% 38%, rgba(255,255,255,0.04), transparent 55%),
+        conic-gradient(from 210deg, #5a5e4a 0%, #686c56 20%, #5a5e4a 40%, #484c3a 70%, #5a5e4a 100%);
+    border-color: #383c2e;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03);
+}
+.mfr-kosmos .dial-knob::after { background: #c8d0a8; width: 3px; box-shadow: none; }
+.mfr-kosmos .segment-btn {
+    background: rgba(163,177,138,0.06); color: rgba(163,177,138,0.35);
+    border-color: rgba(163,177,138,0.1);
+    font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: 0.15em;
+}
+.mfr-kosmos .segment-btn.active {
+    background: rgba(163,177,138,0.15); color: #a3b18a;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
+}
+.mfr-kosmos .led { border-color: #383c2e; }
+.mfr-kosmos .led.on-green {
+    background: radial-gradient(circle at 40% 35%, #b8d88a, #5a7a2a);
+    box-shadow: 0 0 6px rgba(138,180,74,0.5), 0 0 14px rgba(138,180,74,0.15);
+}
+.mfr-kosmos .readout-value { font-family: 'Courier New', monospace; letter-spacing: 0.08em; }
+.mfr-kosmos .btn-metal {
+    background: linear-gradient(180deg, #5a5e4a, #484c3a);
+    border-color: rgba(0,0,0,0.4); color: rgba(200,210,168,0.6);
+    font-family: 'Courier New', monospace; letter-spacing: 0.12em;
+}
+/* Mechanical digit wheel — KOSMOS specialty */
+.kosmos-wheel {
+    display: inline-flex; gap: 1px;
+    background: #1a1c14; border: 1px solid #383c2e;
+    border-radius: 2px; padding: 2px; overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+}
+.kosmos-digit {
+    width: 18px; height: 26px;
+    background: linear-gradient(180deg,
+        rgba(0,0,0,0.3) 0%, transparent 15%,
+        transparent 85%, rgba(0,0,0,0.3) 100%),
+        linear-gradient(180deg, #2a2c22, #22241a);
+    display: flex; align-items: center; justify-content: center;
+    font: 700 18px/1 'Courier New', monospace;
+    color: #c8d0a8;
+    border-right: 1px solid rgba(0,0,0,0.4);
+    position: relative;
+}
+.kosmos-digit:last-child { border-right: none; }
+/* Top/bottom shadow = the roller drum illusion */
+.kosmos-digit::before, .kosmos-digit::after {
+    content: ''; position: absolute; left: 0; right: 0; height: 6px;
+    pointer-events: none;
+}
+.kosmos-digit::before { top: 0; background: linear-gradient(180deg, rgba(0,0,0,0.5), transparent); }
+.kosmos-digit::after { bottom: 0; background: linear-gradient(0deg, rgba(0,0,0,0.5), transparent); }
+
+
+/* ── MFR: TEKTRONIX (1970s oscilloscope)
+ *    Blue-gray chassis, white knob skirts, bright yellow/cyan accents.
+ *    Rectangular button arrays. Classic scope aesthetic.
+ *    Used by: waveform displays, signal analyzers, spectrum views.
+ */
+.mfr-tektronix { --device-accent: #38bdf8; }
+.mfr-tektronix .dial-knob {
+    background:
+        radial-gradient(circle at 38% 35%, rgba(255,255,255,0.1), transparent 55%),
+        conic-gradient(from 220deg, #e8e4d8 0%, #f0ece0 20%, #e8e4d8 40%, #d0ccc0 70%, #e8e4d8 100%);
+    border: 3px solid #c8c4b8;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+}
+/* White skirt ring around knob */
+.mfr-tektronix .dial-knob::before {
+    content: ''; position: absolute; inset: -6px; border-radius: 50%;
+    border: 2px solid rgba(200,196,184,0.3);
+    pointer-events: none;
+}
+.mfr-tektronix .dial-knob::after { background: #1a3a4a; width: 2px; height: 10px; box-shadow: none; }
+.mfr-tektronix .segment-btn {
+    background: rgba(56,189,248,0.04); color: rgba(56,189,248,0.4);
+    border-color: rgba(56,189,248,0.1);
+}
+.mfr-tektronix .segment-btn.active {
+    background: rgba(56,189,248,0.15); color: #38bdf8;
+}
+.mfr-tektronix .led { border-color: #2a3a4a; }
+.mfr-tektronix .readout-value {
+    color: #38bdf8; text-shadow: 0 0 6px rgba(56,189,248,0.2);
+}
+/* Rectangular button array — Tek specialty */
+.tek-btn-row { display: flex; gap: 2px; }
+.tek-btn {
+    padding: 4px 8px; font: 700 8px/1 'Helvetica', 'Arial', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    background: linear-gradient(180deg, #e0dcd0, #c8c4b8);
+    border: 1px solid #a0a098; border-radius: 1px;
+    color: #2a2a28; cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
+    transition: transform 0.05s;
+}
+.tek-btn:active { transform: translateY(1px); box-shadow: inset 0 1px 2px rgba(0,0,0,0.2); }
+.tek-btn.active {
+    background: linear-gradient(180deg, #38bdf8, #0ea5e9);
+    color: #fff; border-color: #0284c7;
+    box-shadow: 0 0 6px rgba(56,189,248,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.tek-btn.yellow {
+    background: linear-gradient(180deg, #fde68a, #f59e0b);
+    color: #451a03; border-color: #d97706;
+}
+.mfr-tektronix .panel-recessed {
+    background: rgba(56,189,248,0.01);
+    border-color: rgba(56,189,248,0.06);
+}
+/* Tek chassis — lighter blue-gray */
+.mfr-tektronix.rack-unit-front {
+    background:
+        repeating-linear-gradient(180deg, rgba(255,255,255,0.004) 0px, transparent 1px, transparent 3px),
+        linear-gradient(160deg, #2a3040 0%, #242a36 30%, #282e3a 50%, #202630 80%) !important;
+}
+
+
+/* ── MFR: FLUKE (Handheld multimeter)
+ *    Bright yellow rubber armor, LCD (not CRT), rotary selector ring.
+ *    Banana jacks. Portable, tough, direct reading.
+ *    Used by: quick readouts, spot-check instruments, point probes.
+ */
+.mfr-fluke { --device-accent: #f59e0b; }
+.mfr-fluke .dial-knob {
+    background:
+        radial-gradient(circle at 38% 35%, rgba(255,255,255,0.08), transparent 55%),
+        conic-gradient(from 220deg, #3a3a3a 0%, #4a4a4a 20%, #3a3a3a 40%, #2a2a2a 70%, #3a3a3a 100%);
+    border-color: #1a1a1a;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+.mfr-fluke .dial-knob::after { background: #f59e0b; }
+/* Selector ring with printed positions — Fluke specialty */
+.fluke-selector {
+    width: 48px; height: 48px; border-radius: 50%;
+    background:
+        radial-gradient(circle at 38% 35%, rgba(255,255,255,0.06), transparent 55%),
+        conic-gradient(from 0deg, #3a3a3a, #4a4a4a 15%, #3a3a3a 30%, #2a2a2a 50%, #3a3a3a 70%, #4a4a4a 85%, #3a3a3a);
+    border: 3px solid #1a1a1a;
+    position: relative; cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.fluke-selector::after {
+    content: ''; position: absolute; top: 3px; left: 50%; transform: translateX(-50%);
+    width: 3px; height: 10px; background: #f59e0b; border-radius: 1px;
+}
+/* Printed ring labels */
+.fluke-ring-labels {
+    position: absolute; inset: -14px; border-radius: 50%;
+}
+.fluke-ring-label {
+    position: absolute; font: 700 7px/1 'Arial', sans-serif;
+    color: rgba(245,158,11,0.4); text-transform: uppercase;
+}
+/* LCD display — gray-green, reflective, NO glow */
+.fluke-lcd {
+    background: linear-gradient(180deg, #9aaa8a, #8a9a7a);
+    border: 2px solid #2a2a2a; border-radius: 2px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.25);
+    padding: 6px 8px; text-align: right;
+    position: relative; overflow: hidden;
+}
+/* Glass reflection */
+.fluke-lcd::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg,
+        rgba(255,255,255,0.08), transparent 40%, rgba(0,0,0,0.04));
+    pointer-events: none;
+}
+.fluke-lcd-ghost {
+    font: 700 22px/1 'JetBrains Mono', monospace;
+    color: rgba(40,50,35,0.08);
+}
+.fluke-lcd-value {
+    font: 700 22px/1 'JetBrains Mono', monospace;
+    color: #0a1208;
+    position: absolute; inset: 0; display: flex;
+    align-items: center; justify-content: flex-end;
+    padding: 0 8px;
+}
+.mfr-fluke .segment-btn {
+    background: rgba(245,158,11,0.06); color: rgba(245,158,11,0.4);
+    border-color: rgba(245,158,11,0.12);
+}
+.mfr-fluke .segment-btn.active {
+    background: rgba(245,158,11,0.2); color: #f59e0b;
+}
+.mfr-fluke .led { border-color: #2a2a2a; }
+/* Yellow rubber armor — the iconic Fluke housing */
+.fluke-armor {
+    background: linear-gradient(135deg, #e8a820, #d09010);
+    border-radius: 6px; padding: 3px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+}
+.fluke-armor-grip {
+    background: repeating-linear-gradient(0deg,
+        rgba(0,0,0,0.06) 0px, transparent 1px, transparent 3px);
+}
+
+
+/* ── MFR: APOTHECARY (Laboratory analytical balance)
+ *    White enamel, delicate precision. Glass draft shields.
+ *    Bubble levels. Fine adjustment thumbwheels. Tare knobs.
+ *    Used by: precision measurement, tolerance, gage instruments.
+ */
+.mfr-apothecary { --device-accent: #6b8e6b; }
+.mfr-apothecary .dial-knob {
+    background:
+        radial-gradient(circle at 38% 35%, rgba(255,255,255,0.15), transparent 55%),
+        conic-gradient(from 220deg, #d8d8d0 0%, #e8e8e0 20%, #d8d8d0 40%, #c0c0b8 70%, #d8d8d0 100%);
+    border-color: #a0a098;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.4);
+}
+.mfr-apothecary .dial-knob::after { background: #4a5e4a; box-shadow: none; }
+.mfr-apothecary .segment-btn {
+    background: rgba(107,142,107,0.04); color: rgba(107,142,107,0.4);
+    border-color: rgba(107,142,107,0.1);
+    font-family: 'Georgia', 'Times New Roman', serif;
+}
+.mfr-apothecary .segment-btn.active {
+    background: rgba(107,142,107,0.12); color: #6b8e6b;
+}
+.mfr-apothecary .led { border-color: #a0a098; }
+.mfr-apothecary .led.on-green {
+    background: radial-gradient(circle at 40% 35%, #a8d8a8, #4a7a4a);
+    box-shadow: 0 0 4px rgba(107,142,107,0.4), 0 0 10px rgba(107,142,107,0.1);
+}
+.mfr-apothecary .readout-value {
+    color: #4a5e4a; text-shadow: none;
+    font-family: 'Georgia', serif;
+}
+/* Enamel white faceplate */
+.mfr-apothecary.rack-unit-front {
+    background:
+        repeating-linear-gradient(180deg, rgba(0,0,0,0.003) 0px, transparent 1px, transparent 3px),
+        linear-gradient(160deg, #e8e4dc 0%, #e0dcd4 30%, #e4e0d8 50%, #d8d4cc 80%) !important;
+    color: #4a5040;
+}
+.mfr-apothecary .rack-unit-head {
+    color: #6b8e6b; border-bottom-color: rgba(107,142,107,0.15);
+}
+/* Bubble level — APOTHECARY specialty */
+.apothecary-level {
+    width: 32px; height: 10px;
+    background: linear-gradient(180deg, rgba(180,220,180,0.3), rgba(160,200,160,0.2));
+    border: 1px solid rgba(107,142,107,0.2); border-radius: 5px;
+    position: relative; overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+.apothecary-bubble {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, rgba(255,255,255,0.6), rgba(200,240,200,0.3));
+    position: absolute; top: 1px; left: 50%; transform: translateX(-50%);
+    box-shadow: 0 0 2px rgba(255,255,255,0.3);
+}
+/* Fine adjustment thumbwheel */
+.apothecary-thumbwheel {
+    width: 8px; height: 24px;
+    background: repeating-linear-gradient(0deg,
+        #c8c4b8 0px, #c8c4b8 2px, #a8a498 2px, #a8a498 3px);
+    border: 1px solid #908c80; border-radius: 1px;
+    cursor: ns-resize;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+/* Glass draft shield — transparent protective panel */
+.apothecary-glass {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 1px;
+    box-shadow: inset 0 0 8px rgba(255,255,255,0.02), 0 1px 2px rgba(0,0,0,0.1);
+    backdrop-filter: blur(1px);
+}
+
+
 /* ── Unit Color DNA ── */
 
 .unit-spc       { --device-accent: #4ade80; --device-accent-dim: rgba(74,222,128,0.15); --device-accent-glow: rgba(74,222,128,0.15); }

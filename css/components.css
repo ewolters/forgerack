@@ -289,6 +289,160 @@
 }
 
 
+/* ── Panels & Housings ── */
+
+/* Recessed dark panel — for grouping controls, dial wells, log windows */
+.panel-recessed {
+    background: rgba(0,0,0,0.25); border: 1px solid rgba(0,0,0,0.4); border-radius: 2px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.006);
+}
+
+/* Bare metal control panel — lighter, machined aluminum */
+.panel-bare-metal {
+    background: linear-gradient(180deg, #3a3d3a, #2e312e);
+    border: 1px solid rgba(0,0,0,0.5); border-radius: 2px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), inset 0 -1px 0 rgba(255,255,255,0.04);
+}
+
+/* Olive/clinical variant — for lighter-faced devices */
+.panel-olive {
+    background: linear-gradient(180deg, #5a6050, #4e5446);
+    border: 1px solid rgba(0,0,0,0.35); border-radius: 2px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), inset 0 -1px 0 rgba(255,255,255,0.03);
+}
+
+/* Beveled viewport frame — CRT / screen surround */
+.frame-bezel {
+    padding: 4px;
+    background: linear-gradient(145deg, rgba(255,255,255,0.04), rgba(0,0,0,0.2));
+    border-radius: 3px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03), inset 0 -1px 0 rgba(0,0,0,0.3);
+}
+
+
+/* ── CRT Screen ── */
+
+.crt-screen {
+    background: #020402; border: 2px solid #000; border-radius: 2px;
+    box-shadow: inset 0 3px 10px rgba(0,0,0,0.7), inset 0 0 20px rgba(0,0,0,0.3);
+    position: relative; overflow: hidden;
+}
+/* Scanlines overlay — add as child div */
+.crt-scanlines {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent 0px, rgba(0,0,0,0.05) 1px, transparent 2px);
+    pointer-events: none; z-index: 2;
+}
+/* Phosphor bloom — add as child div */
+.crt-bloom {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 50%, rgba(74,222,128,0.015), transparent 70%);
+    pointer-events: none; z-index: 2;
+}
+/* Edge shadow — add as child div */
+.crt-edge {
+    position: absolute; inset: 0;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.4); pointer-events: none; z-index: 3;
+}
+
+
+/* ── 7-Segment Readout Window ── */
+
+.readout-window {
+    background: #030503; border: 1px solid rgba(0,0,0,0.7); border-radius: 1px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.006);
+    text-align: center; position: relative; padding: 4px 8px;
+}
+/* Ghost digits — unlit segments behind the value */
+.readout-ghost {
+    font: 700 26px/1 'JetBrains Mono', monospace;
+    color: rgba(255,255,255,0.02);
+}
+/* Active value — positioned over ghost */
+.readout-active {
+    font: 700 26px/1 'JetBrains Mono', monospace;
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    text-shadow: 0 0 8px currentColor;
+}
+/* Readout label — below the value */
+.readout-tag {
+    font: 700 9px/1 'Arial', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.15em; margin-top: 2px;
+    opacity: 0.4;
+}
+
+
+/* ── LED Housing ── */
+
+.led-housing {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: rgba(0,0,0,0.3);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+    display: flex; align-items: center; justify-content: center;
+}
+
+
+/* ── Control Labels ── */
+
+.control-label {
+    font: 700 10px/1 'Arial', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.2em; text-align: center;
+}
+.control-label-sm { font-size: 9px; letter-spacing: 0.15em; }
+.control-label-lg { font-size: 11px; }
+/* Color variants via inline style or parent --device-accent */
+.control-label-dim { opacity: 0.15; }
+.control-label-mid { opacity: 0.4; }
+.control-label-bright { opacity: 0.7; }
+
+
+/* ── Buttons ── */
+
+/* Bare metal momentary button with press effect */
+.btn-metal {
+    padding: 4px 8px; font: 700 8px/1 'Arial', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    background: linear-gradient(180deg, #4a4d4a, #3a3d3a);
+    border: 1px solid rgba(0,0,0,0.35); color: rgba(220,220,210,0.7);
+    border-radius: 1px; cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
+    transition: transform 0.05s;
+}
+.btn-metal:active { transform: translateY(1px); box-shadow: 0 0 1px rgba(0,0,0,0.4); }
+
+/* Accent action button (green-tinted) */
+.btn-action {
+    padding: 6px 12px; font: 800 9px/1 'Arial', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    background: linear-gradient(180deg, rgba(34,197,94,0.2), rgba(34,197,94,0.08));
+    border: 1px solid rgba(34,197,94,0.25); color: rgba(34,197,94,0.7);
+    border-radius: 1px; cursor: pointer;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.03);
+    transition: transform 0.05s;
+}
+.btn-action:active { transform: translateY(1px); }
+
+/* Ghost button — minimal border, for secondary actions */
+.btn-ghost {
+    padding: 4px 8px; font: 600 8px/1 'Arial', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    background: transparent; border: 1px solid rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.25); border-radius: 1px; cursor: pointer;
+}
+
+
+/* ── Mono Input ── */
+
+.input-mono {
+    background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08);
+    color: rgba(220,220,210,0.7); padding: 3px 6px; border-radius: 1px;
+    font: 10px/1 'JetBrains Mono', monospace;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+}
+.input-mono::placeholder { color: rgba(255,255,255,0.15); }
+
+
 /* ── Unit Color DNA ── */
 
 .unit-spc       { --device-accent: #4ade80; --device-accent-dim: rgba(74,222,128,0.15); --device-accent-glow: rgba(74,222,128,0.15); }

@@ -1170,11 +1170,21 @@ FR.registerUnit('splitter', {
     receive(inputName, data) {
         console.log('[MANIFOLD]', this.id, 'receive:', inputName, 'data:', data ? 'yes' : 'no');
         this._data = data;
-        // Fan out to all outputs
-        FR.emit(this.id, 'a', data);
-        FR.emit(this.id, 'b', data);
-        FR.emit(this.id, 'c', data);
-        FR.emit(this.id, 'd', data);
+
+        // Light up main LED
+        FR.LED(document.getElementById(this.id + '-led')).set('green');
+
+        // Fan out to all outputs + light per-channel LEDs
+        var channels = ['a', 'b', 'c', 'd'];
+        var self = this;
+        channels.forEach(function(ch) {
+            FR.emit(self.id, ch, data);
+            // Light channel LED if someone is listening
+            var key = self.id + ':' + ch;
+            if (FR._listeners[key] && FR._listeners[key].length > 0) {
+                FR.LED(document.getElementById(self.id + '-led-' + ch)).set('green');
+            }
+        });
     },
 
     getOutput(channel) {

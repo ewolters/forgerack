@@ -1226,6 +1226,133 @@
 }
 
 
+/* ── MFR: BEHRINGER (Pro audio rack gear)
+ *    Brushed silver/chrome faceplate, black bakelite knobs, backlit VU meters,
+ *    green LEDs, toggle switches, visible tube window with warm glow.
+ *    The Tube Composer T1952 aesthetic — affordable vintage authority.
+ *    Used by: dynamics processors, channel strips, audio-style signal chains.
+ */
+.mfr-behringer { --device-accent: #c8b080; --device-accent-dim: rgba(200,176,128,0.15); --device-accent-glow: rgba(200,176,128,0.15); }
+/* Silver brushed faceplate */
+.mfr-behringer.rack-unit-front {
+    background:
+        repeating-linear-gradient(90deg,
+            rgba(255,255,255,0.015) 0px, transparent 1px, transparent 3px),
+        repeating-linear-gradient(88deg,
+            rgba(0,0,0,0.008) 0px, transparent 1px, transparent 4px),
+        linear-gradient(160deg, #b0b0a8 0%, #a0a098 30%, #a8a8a0 50%, #989890 80%) !important;
+    color: #2a2a28;
+}
+/* Black bakelite knobs */
+.mfr-behringer .dial-knob {
+    background:
+        radial-gradient(circle at 38% 35%, rgba(255,255,255,0.06), transparent 55%),
+        conic-gradient(from 220deg, #2a2a28 0%, #3a3a38 20%, #2a2a28 40%, #1a1a18 70%, #2a2a28 100%);
+    border: 2px solid #0a0a08;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.mfr-behringer .dial-knob::after { background: #e0e0d8; width: 2px; box-shadow: none; }
+.mfr-behringer .dial-label { color: #3a3a38; }
+.mfr-behringer .dial-value { color: #2a2a28; text-shadow: none; }
+/* Dark silk-screened labels on silver */
+.mfr-behringer .control-label { color: #2a2a28; opacity: 0.7; }
+.mfr-behringer .rack-section-label { color: #4a4a48; }
+/* Toggle switches — black on silver */
+.mfr-behringer .switch-rocker {
+    background: linear-gradient(180deg, #3a3a38, #2a2a28);
+    border-color: #1a1a18;
+}
+.mfr-behringer .switch-rocker.on::after { background: #22c55e; }
+/* Green LEDs */
+.mfr-behringer .led { border-color: #5a5a58; }
+.mfr-behringer .led.on-green {
+    background: radial-gradient(circle at 40% 35%, #88ee88, #1a8a1a);
+    box-shadow: 0 0 6px rgba(34,197,94,0.7), 0 0 14px rgba(34,197,94,0.25);
+}
+/* Segment buttons — dark on silver */
+.mfr-behringer .segment-btn {
+    background: rgba(0,0,0,0.06); color: #4a4a48;
+    border-color: rgba(0,0,0,0.15);
+}
+.mfr-behringer .segment-btn.active {
+    background: rgba(0,0,0,0.12); color: #1a1a18;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+}
+/* Readout on silver — dark text, no glow */
+.mfr-behringer .readout-value {
+    color: #1a1a18; text-shadow: none;
+    background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.15);
+}
+/* Backlit VU meter — warm cream face with needle */
+.behringer-vu {
+    background:
+        radial-gradient(ellipse at 50% 100%, #f0e8d0, #e0d8c0 60%, #c8c0a8 100%);
+    border: 2px solid #3a3a38;
+    border-radius: 3px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.15), 0 1px 0 rgba(255,255,255,0.3);
+    position: relative; overflow: hidden;
+}
+/* Warm backlight glow */
+.behringer-vu::after {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 80%, rgba(255,200,100,0.08), transparent 60%);
+    pointer-events: none;
+}
+/* Scale markings — dark on cream */
+.behringer-vu-scale {
+    font: 700 7px/1 'Arial', sans-serif; color: #4a4a40;
+}
+.behringer-vu-redzone {
+    font: 700 7px/1 'Arial', sans-serif; color: #c03030;
+}
+/* Black needle */
+.behringer-vu-needle {
+    background: #1a1a18;
+    width: 1.5px;
+    transform-origin: bottom center;
+    box-shadow: 0 0 1px rgba(0,0,0,0.5);
+}
+/* Tube window — visible vacuum tube with warm glow */
+.behringer-tube-window {
+    width: 28px; height: 28px;
+    background: #0a0804;
+    border: 2px solid #3a3a38;
+    border-radius: 50%;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.2);
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+}
+/* Tube filament — warm orange glow when powered */
+.behringer-tube-filament {
+    width: 8px; height: 12px;
+    background: radial-gradient(ellipse at 50% 60%, rgba(255,160,60,0.4), rgba(255,120,20,0.15) 50%, transparent 80%);
+    border-radius: 40%;
+}
+.behringer-tube-window.on .behringer-tube-filament {
+    background: radial-gradient(ellipse at 50% 60%, rgba(255,180,80,0.7), rgba(255,140,40,0.3) 50%, transparent 80%);
+    box-shadow: 0 0 8px rgba(255,150,50,0.3), 0 0 16px rgba(255,120,30,0.1);
+}
+/* Warm glow bleeding onto faceplate around tube */
+.behringer-tube-window.on::after {
+    content: ''; position: absolute; inset: -8px;
+    background: radial-gradient(circle, rgba(255,150,50,0.06), transparent 60%);
+    pointer-events: none;
+}
+.mfr-behringer .panel-recessed {
+    background: rgba(0,0,0,0.06);
+    border-color: rgba(0,0,0,0.12);
+}
+/* Metal buttons — dark on silver */
+.mfr-behringer .btn-metal {
+    background: linear-gradient(180deg, #3a3a38, #2a2a28);
+    color: #c0c0b8; border-color: #1a1a18;
+}
+.mfr-behringer .btn-action {
+    background: linear-gradient(180deg, rgba(34,197,94,0.15), rgba(34,197,94,0.06));
+    border-color: rgba(34,197,94,0.2); color: rgba(34,197,94,0.7);
+}
+
+
 /* ── Unit Color DNA ── */
 
 .unit-spc       { --device-accent: #4ade80; --device-accent-dim: rgba(74,222,128,0.15); --device-accent-glow: rgba(74,222,128,0.15); }

@@ -4502,4 +4502,249 @@ FR.registerUnit('probe', {
     getOutput(channel) { return null; }
 });
 
+// ═══════════════════════════════════════════════════════════
+// COMPARATOR CMP-01 — Dual-Input Comparison Meter
+// Two inputs, four modes: Δ (difference), A/B (ratio), t, p
+// Welch's t-test (unequal variance, unequal n)
+// ═══════════════════════════════════════════════════════════
+
+FR.registerUnit('comparator', {
+    init(el, id) {
+        this.el = el;
+        this.id = id;
+        this._dataA = null;
+        this._dataB = null;
+        this._mode = 'diff';
+
+        var self = this;
+        // Mode segment
+        var modeContainer = document.getElementById(id + '-mode-seg');
+        if (modeContainer) {
+            modeContainer.querySelectorAll('.segment-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    modeContainer.querySelectorAll('.segment-btn').forEach(function(b) { b.classList.remove('active'); });
+                    btn.classList.add('active');
+                    self._mode = btn.dataset.mode;
+                    self._compute();
+                });
+            });
+        }
+
+        // Column selectors
+        var colA = document.getElementById(id + '-col-a');
+        var colB = document.getElementById(id + '-col-b');
+        if (colA) colA.addEventListener('change', function() { self._compute(); });
+        if (colB) colB.addEventListener('change', function() { self._compute(); });
+    },
+
+    _getNumeric(data, col) {
+        if (!data || !col || !data.data[col]) return [];
+        var vals = [];
+        var raw = data.data[col];
+        for (var i = 0; i < raw.length; i++) {
+            var v = parseFloat(raw[i]);
+            if (!isNaN(v)) vals.push(v);
+        }
+        return vals;
+    },
+
+    _mean(v) { return v.reduce(function(a,b){return a+b},0)/v.length; },
+    _variance(v) { var m=this._mean(v); return v.reduce(function(a,b){return a+(b-m)*(b-m)},0)/(v.length-1); },
+
+    _welchT(a, b) {
+        var mA = this._mean(a), mB = this._mean(b);
+        var vA = this._variance(a), vB = this._variance(b);
+        var nA = a.length, nB = b.length;
+        var se = Math.sqrt(vA/nA + vB/nB);
+        if (se === 0) return { t: 0, df: nA+nB-2, p: 1 };
+        var t = (mA - mB) / se;
+        // Welch-Satterthwaite degrees of freedom
+        var num = Math.pow(vA/nA + vB/nB, 2);
+        var den = Math.pow(vA/nA,2)/(nA-1) + Math.pow(vB/nB,2)/(nB-1);
+        var df = num / den;
+        // Approximate p-value using t-distribution (regularized incomplete beta)
+        var p = this._tPValue(Math.abs(t), df);
+        return { t: t, df: df, p: p };
+    },
+
+    // Two-tailed p-value approximation for t-distribution
+    _tPValue(t, df) {
+        // Use approximation: p ≈ 2 * (1 - Φ(t * sqrt(df/(df-2)))) for large df
+        // For small df, use regularized incomplete beta function
+        var x = df / (df + t*t);
+        var p = this._regIncBeta(df/2, 0.5, x);
+        return p;
+    },
+
+    // Regularized incomplete beta function (series approximation)
+    _regIncBeta(a, b, x) {
+        if (x <= 0) return 0;
+        if (x >= 1) return 1;
+        // Use continued fraction (Lentz's method)
+        var lnBeta = this._lnGamma(a) + this._lnGamma(b) - this._lnGamma(a+b);
+        var front = Math.exp(Math.log(x)*a + Math.log(1-x)*b - lnBeta) / a;
+        // Continued fraction
+        var f = 1, c = 1, d = 1 - (a+1)*(a+b)/(a+2)*x;
+        if (Math.abs(d) < 1e-30) d = 1e-30;
+        d = 1/d; f = d;
+        for (var i = 1; i <= 100; i++) {
+            var m = i;
+            var num = m*(b-m)*x / ((a+2*m-1)*(a+2*m));
+            d = 1 + num*d; if (Math.abs(d) < 1e-30) d = 1e-30; d = 1/d;
+            c = 1 + num/c; if (Math.abs(c) < 1e-30) c = 1e-30;
+            f *= d*c;
+            num = -(a+m)*(a+b+m)*x / ((a+2*m)*(a+2*m+1));
+            d = 1 + num*d; if (Math.abs(d) < 1e-30) d = 1e-30; d = 1/d;
+            c = 1 + num/c; if (Math.abs(c) < 1e-30) c = 1e-30;
+            var delta = d*c;
+            f *= delta;
+            if (Math.abs(delta-1) < 1e-8) break;
+        }
+        return front * f;
+    },
+
+    _lnGamma(x) {
+        // Stirling/Lanczos approximation
+        var g = 7;
+        var c = [0.99999999999980993,676.5203681218851,-1259.1392167224028,771.32342877765313,
+            -176.61502916214059,12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,
+            1.5056327351493116e-7];
+        x -= 1;
+        var a = c[0];
+        var t = x + g + 0.5;
+        for (var i = 1; i < g+2; i++) a += c[i]/(x+i);
+        return 0.5*Math.log(2*Math.PI) + (x+0.5)*Math.log(t) - t + Math.log(a);
+    },
+
+    _compute() {
+        var colASelect = document.getElementById(this.id + '-col-a');
+        var colBSelect = document.getElementById(this.id + '-col-b');
+        var colA = colASelect ? colASelect.value : '';
+        var colB = colBSelect ? colBSelect.value : '';
+
+        var valsA = this._getNumeric(this._dataA, colA);
+        var valsB = this._getNumeric(this._dataB, colB);
+
+        // Update secondary readouts
+        var meanAEl = document.getElementById(this.id + '-mean-a');
+        var meanBEl = document.getElementById(this.id + '-mean-b');
+        var nAEl = document.getElementById(this.id + '-n-a');
+        var nBEl = document.getElementById(this.id + '-n-b');
+        if (meanAEl) meanAEl.textContent = valsA.length > 0 ? this._mean(valsA).toFixed(3) : '—';
+        if (meanBEl) meanBEl.textContent = valsB.length > 0 ? this._mean(valsB).toFixed(3) : '—';
+        if (nAEl) nAEl.textContent = valsA.length || '—';
+        if (nBEl) nBEl.textContent = valsB.length || '—';
+
+        if (valsA.length < 2 || valsB.length < 2) {
+            this._setMain('—');
+            this._setLabel(this._modeLabel());
+            this._setVerdict('');
+            return;
+        }
+
+        var mA = this._mean(valsA), mB = this._mean(valsB);
+        var result, display, verdict = '';
+
+        switch(this._mode) {
+            case 'diff':
+                result = mA - mB;
+                display = result.toFixed(4);
+                break;
+            case 'ratio':
+                result = mB !== 0 ? mA / mB : NaN;
+                display = isNaN(result) ? 'DIV/0' : result.toFixed(4);
+                break;
+            case 'tstat':
+                var test = this._welchT(valsA, valsB);
+                result = test.t;
+                display = result.toFixed(3);
+                verdict = 'df=' + test.df.toFixed(1);
+                break;
+            case 'pval':
+                var test2 = this._welchT(valsA, valsB);
+                result = test2.p;
+                display = result < 0.001 ? result.toExponential(2) : result.toFixed(4);
+                verdict = result < 0.05 ? 'SIGNIFICANT' : 'NOT SIG';
+                break;
+        }
+
+        this._setMain(display);
+        this._setLabel(this._modeLabel());
+        this._setVerdict(verdict);
+        FR.LED(document.getElementById(this.id + '-led')).set('green');
+
+        // Emit result
+        FR.emit(this.id, 'result', {
+            mode: this._mode, value: result,
+            mean_a: mA, mean_b: mB,
+            n_a: valsA.length, n_b: valsB.length
+        });
+    },
+
+    _modeLabel() {
+        var labels = { diff: 'DIFFERENCE', ratio: 'RATIO A/B', tstat: 'T-STATISTIC', pval: 'P-VALUE' };
+        return labels[this._mode] || '';
+    },
+
+    _setMain(text) {
+        var el = document.getElementById(this.id + '-main-value');
+        if (el) el.textContent = text;
+    },
+    _setLabel(text) {
+        var el = document.getElementById(this.id + '-mode-label');
+        if (el) el.textContent = text;
+    },
+    _setVerdict(text) {
+        var el = document.getElementById(this.id + '-verdict');
+        if (el) el.textContent = text;
+    },
+
+    _populateSelect(selectId, data) {
+        var sel = document.getElementById(selectId);
+        if (!sel || !data) return;
+        var prev = sel.value;
+        sel.innerHTML = '<option value="">column</option>';
+        data.columns.forEach(function(c) {
+            var opt = document.createElement('option');
+            opt.value = c; opt.textContent = c;
+            sel.appendChild(opt);
+        });
+        if (prev && data.columns.indexOf(prev) !== -1) sel.value = prev;
+        else {
+            for (var i = 0; i < data.columns.length; i++) {
+                var v = data.data[data.columns[i]];
+                if (v && v.length > 0 && !isNaN(parseFloat(v[0]))) { sel.value = data.columns[i]; break; }
+            }
+        }
+    },
+
+    receive(inputName, data, fromUnit) {
+        if (!data || (!data.columns && !Array.isArray(data))) return;
+        var normalized = data;
+        if (Array.isArray(data)) normalized = { columns: ['x'], data: { x: data } };
+
+        if (inputName === 'a') {
+            this._dataA = normalized;
+            this._populateSelect(this.id + '-col-a', normalized);
+            FR.LED(document.getElementById(this.id + '-led-a')).set('green');
+        } else if (inputName === 'b') {
+            this._dataB = normalized;
+            this._populateSelect(this.id + '-col-b', normalized);
+            FR.LED(document.getElementById(this.id + '-led-b')).set('green');
+        } else {
+            // Single data input — use for both A and B (different columns)
+            this._dataA = normalized;
+            this._dataB = normalized;
+            this._populateSelect(this.id + '-col-a', normalized);
+            this._populateSelect(this.id + '-col-b', normalized);
+            FR.LED(document.getElementById(this.id + '-led-a')).set('green');
+            FR.LED(document.getElementById(this.id + '-led-b')).set('green');
+        }
+
+        this._compute();
+    },
+
+    getOutput(channel) { return null; }
+});
+
 })(ForgeRack);

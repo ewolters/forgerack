@@ -101,70 +101,73 @@
             </div>
         </div>
 
-        <!-- ── Display mode selector — recessed ── -->
+        <!-- ── Display mode selector — recessed bare metal ── -->
         <div style="
-            background:rgba(0,0,0,0.2);border:1px solid rgba(0,0,0,0.35);border-radius:2px;
-            box-shadow:inset 0 1px 3px rgba(0,0,0,0.3);
+            background:linear-gradient(180deg, #3a3d3a, #2e312e);
+            border:1px solid rgba(0,0,0,0.5);border-radius:2px;
+            box-shadow:inset 0 2px 4px rgba(0,0,0,0.3), inset 0 -1px 0 rgba(255,255,255,0.04);
             padding:6px 10px;display:flex;flex-direction:column;gap:4px;justify-content:center;
         ">
-            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(74,222,128,0.1);
+            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(0,0,0,0.5);
                 text-transform:uppercase;letter-spacing:0.2em;text-align:center;">Display</div>
-            <div class="segment" id="${id}-type-seg" style="border-color:rgba(74,222,128,0.06);">
-                <button class="segment-btn active" data-chart-type="line" style="font:700 7px/1 'Arial',sans-serif;padding:4px 6px;">Line</button>
-                <button class="segment-btn" data-chart-type="scatter" style="font:700 7px/1 'Arial',sans-serif;padding:4px 6px;">Scat</button>
-                <button class="segment-btn" data-chart-type="bar" style="font:700 7px/1 'Arial',sans-serif;padding:4px 6px;">Bar</button>
-                <button class="segment-btn" data-chart-type="hist" style="font:700 7px/1 'Arial',sans-serif;padding:4px 6px;">Hist</button>
+            <div class="segment" id="${id}-type-seg" style="border-color:rgba(0,0,0,0.3);">
+                <button class="segment-btn active" data-chart-type="line" style="font:700 8px/1 'Arial',sans-serif;padding:4px 6px;color:#1a1a1a;">Line</button>
+                <button class="segment-btn" data-chart-type="scatter" style="font:700 8px/1 'Arial',sans-serif;padding:4px 6px;color:#1a1a1a;">Scat</button>
+                <button class="segment-btn" data-chart-type="bar" style="font:700 8px/1 'Arial',sans-serif;padding:4px 6px;color:#1a1a1a;">Bar</button>
+                <button class="segment-btn" data-chart-type="hist" style="font:700 8px/1 'Arial',sans-serif;padding:4px 6px;color:#1a1a1a;">Hist</button>
             </div>
-            <div class="segment" id="${id}-type-seg2" style="border-color:rgba(74,222,128,0.06);">
-                <button class="segment-btn" data-chart-type="box" style="font:700 7px/1 'Arial',sans-serif;padding:4px 6px;">Box</button>
-                <button class="segment-btn" data-chart-type="control" style="font:700 7px/1 'Arial',sans-serif;padding:4px 6px;">SPC</button>
-                <button class="segment-btn" data-chart-type="heatmap" style="font:700 7px/1 'Arial',sans-serif;padding:4px 6px;">Heat</button>
+            <div class="segment" id="${id}-type-seg2" style="border-color:rgba(0,0,0,0.3);">
+                <button class="segment-btn" data-chart-type="box" style="font:700 8px/1 'Arial',sans-serif;padding:4px 6px;color:#1a1a1a;">Box</button>
+                <button class="segment-btn" data-chart-type="control" style="font:700 8px/1 'Arial',sans-serif;padding:4px 6px;color:#1a1a1a;">SPC</button>
+                <button class="segment-btn" data-chart-type="heatmap" style="font:700 8px/1 'Arial',sans-serif;padding:4px 6px;color:#1a1a1a;">Heat</button>
             </div>
         </div>
 
-        <!-- ── Export controls — machined momentary buttons ── -->
+        <!-- ── Export controls — recessed bare metal ── -->
         <div style="
-            background:rgba(0,0,0,0.2);border:1px solid rgba(0,0,0,0.35);border-radius:2px;
-            box-shadow:inset 0 1px 3px rgba(0,0,0,0.3);
+            background:linear-gradient(180deg, #3a3d3a, #2e312e);
+            border:1px solid rgba(0,0,0,0.5);border-radius:2px;
+            box-shadow:inset 0 2px 4px rgba(0,0,0,0.3), inset 0 -1px 0 rgba(255,255,255,0.04);
             padding:6px 10px;display:flex;flex-direction:column;gap:4px;justify-content:center;
         ">
-            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(74,222,128,0.1);
+            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(0,0,0,0.5);
                 text-transform:uppercase;letter-spacing:0.2em;text-align:center;">Export</div>
             <div style="display:flex;gap:4px;">
                 <button id="${id}-btn-copy" style="
-                    padding:4px 8px;font:700 7px/1 'Arial',sans-serif;text-transform:uppercase;letter-spacing:0.08em;
-                    background:linear-gradient(180deg, rgba(74,222,128,0.08), rgba(74,222,128,0.03));
-                    border:1px solid rgba(74,222,128,0.1);color:rgba(74,222,128,0.35);
+                    padding:4px 8px;font:700 8px/1 'Arial',sans-serif;text-transform:uppercase;letter-spacing:0.08em;
+                    background:linear-gradient(180deg, #4a4d4a, #3a3d3a);
+                    border:1px solid rgba(0,0,0,0.35);color:#111;
                     border-radius:1px;cursor:pointer;
-                    box-shadow:0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.02);
+                    box-shadow:0 1px 2px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
                     transition:transform 0.05s;
                 " onmousedown="this.style.transform='translateY(1px)'" onmouseup="this.style.transform=''">Copy</button>
                 <button id="${id}-btn-svg" style="
-                    padding:4px 8px;font:700 7px/1 'Arial',sans-serif;text-transform:uppercase;letter-spacing:0.08em;
-                    background:linear-gradient(180deg, rgba(74,222,128,0.08), rgba(74,222,128,0.03));
-                    border:1px solid rgba(74,222,128,0.1);color:rgba(74,222,128,0.35);
+                    padding:4px 8px;font:700 8px/1 'Arial',sans-serif;text-transform:uppercase;letter-spacing:0.08em;
+                    background:linear-gradient(180deg, #4a4d4a, #3a3d3a);
+                    border:1px solid rgba(0,0,0,0.35);color:#111;
                     border-radius:1px;cursor:pointer;
-                    box-shadow:0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.02);
+                    box-shadow:0 1px 2px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
                     transition:transform 0.05s;
                 " onmousedown="this.style.transform='translateY(1px)'" onmouseup="this.style.transform=''">SVG</button>
                 <button id="${id}-btn-png" style="
-                    padding:4px 8px;font:700 7px/1 'Arial',sans-serif;text-transform:uppercase;letter-spacing:0.08em;
-                    background:linear-gradient(180deg, rgba(74,222,128,0.08), rgba(74,222,128,0.03));
-                    border:1px solid rgba(74,222,128,0.1);color:rgba(74,222,128,0.35);
+                    padding:4px 8px;font:700 8px/1 'Arial',sans-serif;text-transform:uppercase;letter-spacing:0.08em;
+                    background:linear-gradient(180deg, #4a4d4a, #3a3d3a);
+                    border:1px solid rgba(0,0,0,0.35);color:#111;
                     border-radius:1px;cursor:pointer;
-                    box-shadow:0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.02);
+                    box-shadow:0 1px 2px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
                     transition:transform 0.05s;
                 " onmousedown="this.style.transform='translateY(1px)'" onmouseup="this.style.transform=''">PNG</button>
             </div>
         </div>
 
-        <!-- ── Labels — title and axis text inputs ── -->
+        <!-- ── Labels — recessed bare metal ── -->
         <div style="
-            background:rgba(0,0,0,0.2);border:1px solid rgba(0,0,0,0.35);border-radius:2px;
-            box-shadow:inset 0 1px 3px rgba(0,0,0,0.3);
+            background:linear-gradient(180deg, #3a3d3a, #2e312e);
+            border:1px solid rgba(0,0,0,0.5);border-radius:2px;
+            box-shadow:inset 0 2px 4px rgba(0,0,0,0.3), inset 0 -1px 0 rgba(255,255,255,0.04);
             padding:6px 10px;display:flex;flex-direction:column;gap:4px;justify-content:center;
         ">
-            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(74,222,128,0.1);
+            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(0,0,0,0.5);
                 text-transform:uppercase;letter-spacing:0.2em;text-align:center;">Labels</div>
             <div style="display:flex;flex-direction:column;gap:3px;">
                 <div style="display:flex;gap:3px;align-items:center;">
@@ -202,13 +205,14 @@
             </div>
         </div>
 
-        <!-- ── Color controls — native color pickers on the faceplate ── -->
+        <!-- ── Color controls — recessed bare metal ── -->
         <div style="
-            background:rgba(0,0,0,0.2);border:1px solid rgba(0,0,0,0.35);border-radius:2px;
-            box-shadow:inset 0 1px 3px rgba(0,0,0,0.3);
+            background:linear-gradient(180deg, #3a3d3a, #2e312e);
+            border:1px solid rgba(0,0,0,0.5);border-radius:2px;
+            box-shadow:inset 0 2px 4px rgba(0,0,0,0.3), inset 0 -1px 0 rgba(255,255,255,0.04);
             padding:6px 10px;display:flex;flex-direction:column;gap:4px;justify-content:center;align-items:center;
         ">
-            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(74,222,128,0.1);
+            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(0,0,0,0.5);
                 text-transform:uppercase;letter-spacing:0.2em;text-align:center;">Color</div>
             <div style="display:flex;gap:8px;align-items:center;">
                 <!-- Trace color -->
@@ -221,7 +225,7 @@
                             box-shadow:0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.02);
                         ">
                     </div>
-                    <span style="font:600 10px/1 'Arial',sans-serif;color:rgba(74,222,128,0.2);text-transform:uppercase;letter-spacing:0.06em;">Trace</span>
+                    <span style="font:600 10px/1 'Arial',sans-serif;color:rgba(0,0,0,0.45);text-transform:uppercase;letter-spacing:0.06em;">Trace</span>
                 </div>
                 <!-- Background color -->
                 <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
@@ -233,7 +237,7 @@
                             box-shadow:0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.02);
                         ">
                     </div>
-                    <span style="font:600 10px/1 'Arial',sans-serif;color:rgba(74,222,128,0.2);text-transform:uppercase;letter-spacing:0.06em;">BG</span>
+                    <span style="font:600 10px/1 'Arial',sans-serif;color:rgba(0,0,0,0.45);text-transform:uppercase;letter-spacing:0.06em;">BG</span>
                 </div>
                 <!-- Grid color -->
                 <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
@@ -245,7 +249,7 @@
                             box-shadow:0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.02);
                         ">
                     </div>
-                    <span style="font:600 10px/1 'Arial',sans-serif;color:rgba(74,222,128,0.2);text-transform:uppercase;letter-spacing:0.06em;">Grid</span>
+                    <span style="font:600 10px/1 'Arial',sans-serif;color:rgba(0,0,0,0.45);text-transform:uppercase;letter-spacing:0.06em;">Grid</span>
                 </div>
                 <!-- Axis/border color -->
                 <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
@@ -257,34 +261,35 @@
                             box-shadow:0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.02);
                         ">
                     </div>
-                    <span style="font:600 10px/1 'Arial',sans-serif;color:rgba(74,222,128,0.2);text-transform:uppercase;letter-spacing:0.06em;">Axis</span>
+                    <span style="font:600 10px/1 'Arial',sans-serif;color:rgba(0,0,0,0.45);text-transform:uppercase;letter-spacing:0.06em;">Axis</span>
                 </div>
             </div>
         </div>
 
-        <!-- ── Annotation + Data Table toggles — rocker switches ── -->
+        <!-- ── Annotation + Data Table toggles — recessed bare metal ── -->
         <div style="
-            background:rgba(0,0,0,0.2);border:1px solid rgba(0,0,0,0.35);border-radius:2px;
-            box-shadow:inset 0 1px 3px rgba(0,0,0,0.3);
+            background:linear-gradient(180deg, #3a3d3a, #2e312e);
+            border:1px solid rgba(0,0,0,0.5);border-radius:2px;
+            box-shadow:inset 0 2px 4px rgba(0,0,0,0.3), inset 0 -1px 0 rgba(255,255,255,0.04);
             padding:6px 10px;display:flex;flex-direction:column;gap:6px;justify-content:center;align-items:center;
         ">
-            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(74,222,128,0.1);
+            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(0,0,0,0.5);
                 text-transform:uppercase;letter-spacing:0.2em;text-align:center;">Tools</div>
             <div style="display:flex;gap:10px;align-items:center;">
                 <!-- Annotate toggle -->
                 <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
                     <div class="switch-rocker" id="${id}-sw-annotate" style="width:14px;height:20px;"></div>
-                    <span style="font:600 7px/1 'Arial',sans-serif;color:rgba(74,222,128,0.12);text-transform:uppercase;letter-spacing:0.1em;">Note</span>
+                    <span style="font:600 8px/1 'Arial',sans-serif;color:rgba(0,0,0,0.4);text-transform:uppercase;letter-spacing:0.08em;">Note</span>
                 </div>
                 <!-- Data table toggle -->
                 <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
                     <div class="switch-rocker" id="${id}-sw-table" style="width:14px;height:20px;"></div>
-                    <span style="font:600 7px/1 'Arial',sans-serif;color:rgba(74,222,128,0.12);text-transform:uppercase;letter-spacing:0.1em;">Table</span>
+                    <span style="font:600 8px/1 'Arial',sans-serif;color:rgba(0,0,0,0.4);text-transform:uppercase;letter-spacing:0.08em;">Table</span>
                 </div>
                 <!-- Expand -->
                 <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
                     <div class="switch-momentary" id="${id}-btn-expand" style="width:16px;height:16px;"></div>
-                    <span style="font:600 7px/1 'Arial',sans-serif;color:rgba(74,222,128,0.12);text-transform:uppercase;letter-spacing:0.1em;">Full</span>
+                    <span style="font:600 8px/1 'Arial',sans-serif;color:rgba(0,0,0,0.4);text-transform:uppercase;letter-spacing:0.08em;">Full</span>
                 </div>
             </div>
         </div>

@@ -4849,4 +4849,185 @@ FR.registerUnit('correlator', {
     getOutput(channel) { return null; }
 });
 
+// ═══════════════════════════════════════════════════════════
+// SPECTRUM SP-01 — Distribution Analyzer (Tektronix)
+// Histogram + normal overlay. All math server-side.
+// ═══════════════════════════════════════════════════════════
+
+FR.registerUnit('spectrum', {
+    init(el, id) {
+        this.el = el; this.id = id;
+        this._data = null; this._bins = 15; this._showNormal = true; this._showRug = false;
+
+        var self = this;
+        var colSel = document.getElementById(id + '-col');
+        if (colSel) colSel.addEventListener('change', function() { self._render(); });
+
+        // Bin buttons
+        [8,15,25].forEach(function(b) {
+            var btn = document.getElementById(id + '-bin-' + b);
+            if (btn) btn.addEventListener('click', function() {
+                self._bins = b;
+                el.querySelectorAll('.tek-btn-row .tek-btn').forEach(function(t) { t.classList.remove('active'); });
+                btn.classList.add('active');
+                self._render();
+            });
+        });
+        var autoBtn = document.getElementById(id + '-bin-auto');
+        if (autoBtn) autoBtn.addEventListener('click', function() {
+            self._bins = 0;
+            el.querySelectorAll('.tek-btn-row .tek-btn').forEach(function(t) { t.classList.remove('active'); });
+            autoBtn.classList.add('active');
+            self._render();
+        });
+
+        // Overlay toggles
+        var normalBtn = document.getElementById(id + '-btn-normal');
+        if (normalBtn) normalBtn.addEventListener('click', function() {
+            self._showNormal = !self._showNormal;
+            normalBtn.classList.toggle('active', self._showNormal);
+            self._render();
+        });
+        var rugBtn = document.getElementById(id + '-btn-rug');
+        if (rugBtn) rugBtn.addEventListener('click', function() {
+            self._showRug = !self._showRug;
+            rugBtn.classList.toggle('active', self._showRug);
+            self._render();
+        });
+    },
+
+    _render() {
+        if (!this._data) return;
+        var colSel = document.getElementById(this.id + '-col');
+        var col = colSel ? colSel.value : '';
+        var viewport = document.getElementById(this.id + '-viewport');
+        var empty = document.getElementById(this.id + '-empty');
+
+        if (!col || !this._data.data[col]) {
+            if (viewport) viewport.innerHTML = '';
+            if (empty) empty.style.display = 'flex';
+            return;
+        }
+
+        var raw = this._data.data[col] || [];
+        var vals = [];
+        for (var i = 0; i < raw.length; i++) { var v = parseFloat(raw[i]); if (!isNaN(v)) vals.push(v); }
+        if (vals.length < 2) return;
+
+        var self = this;
+        var csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+        fetch('/api/rack/compute/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf ? csrf.value : document.cookie.replace(/.*csrftoken=([^;]*).*/, '$1') },
+            body: JSON.stringify({ op: 'histogram', data: { values: vals, bins: self._bins } })
+        })
+        .then(function(resp) { return resp.json(); })
+        .then(function(json) {
+            if (json.error) { console.warn('spectrum error:', json.error); return; }
+            self._drawHistogram(json.result, vals, col);
+        })
+        .catch(function(e) { console.warn('spectrum fetch error:', e); });
+    },
+
+    _drawHistogram(r, vals, col) {
+        var viewport = document.getElementById(this.id + '-viewport');
+        var empty = document.getElementById(this.id + '-empty');
+        if (empty) empty.style.display = 'none';
+
+        // Update readouts
+        var ids = { mean: r.mean, std: r.std, skew: r.skewness, kurt: r.kurtosis, n: r.n };
+        for (var k in ids) {
+            var el = document.getElementById(this.id + '-' + k);
+            if (el) el.textContent = k === 'n' ? String(r.n) : ids[k].toFixed(3);
+        }
+
+        if (!viewport) return;
+        var w = viewport.clientWidth || 400, h = viewport.clientHeight || 250;
+        var pad = { top: 10, right: 10, bottom: 25, left: 10 };
+        var pw = w - pad.left - pad.right, ph = h - pad.top - pad.bottom;
+
+        var maxCount = Math.max.apply(null, r.bins) || 1;
+        var nBins = r.bins.length;
+        var barW = pw / nBins;
+
+        function sx(i) { return pad.left + i * barW; }
+        function sy(count) { return pad.top + ph * (1 - count / maxCount); }
+
+        var svg = '<svg width="'+w+'" height="'+h+'" xmlns="http://www.w3.org/2000/svg">';
+
+        // Histogram bars
+        for (var i = 0; i < nBins; i++) {
+            var bh = (r.bins[i] / maxCount) * ph;
+            var bx = sx(i);
+            var by = pad.top + ph - bh;
+            svg += '<rect x="'+(bx+0.5)+'" y="'+by.toFixed(1)+'" width="'+(barW-1)+'" height="'+bh.toFixed(1)+'" fill="#38bdf8" opacity="0.6" rx="1">';
+            svg += '<title>'+r.edges[i].toFixed(2)+' – '+r.edges[i+1].toFixed(2)+': '+r.bins[i]+'</title></rect>';
+        }
+
+        // Normal curve overlay
+        if (this._showNormal && r.std > 0) {
+            var mean = r.mean, std = r.std;
+            var totalArea = vals.length * r.bin_width;
+            var pathD = '';
+            for (var px = 0; px <= pw; px += 2) {
+                var xVal = r.min + (px / pw) * (r.max - r.min);
+                var z = (xVal - mean) / std;
+                var density = Math.exp(-0.5 * z * z) / (std * Math.sqrt(2 * Math.PI));
+                var yPx = pad.top + ph * (1 - (density * totalArea) / maxCount);
+                pathD += (px === 0 ? 'M' : 'L') + (pad.left + px) + ',' + yPx.toFixed(1);
+            }
+            svg += '<path d="'+pathD+'" fill="none" stroke="#fde68a" stroke-width="1.5" opacity="0.7"/>';
+        }
+
+        // Rug plot
+        if (this._showRug) {
+            for (var i = 0; i < vals.length; i++) {
+                var rx = pad.left + ((vals[i] - r.min) / (r.max - r.min || 1)) * pw;
+                svg += '<line x1="'+rx.toFixed(1)+'" y1="'+(h-pad.bottom)+'" x2="'+rx.toFixed(1)+'" y2="'+(h-pad.bottom+4)+'" stroke="#38bdf8" stroke-width="0.5" opacity="0.3"/>';
+            }
+        }
+
+        // X axis labels
+        var labelStep = Math.max(1, Math.floor(nBins / 6));
+        for (var i = 0; i <= nBins; i += labelStep) {
+            svg += '<text x="'+sx(i).toFixed(1)+'" y="'+(h-pad.bottom+14)+'" fill="rgba(56,189,248,0.25)" font-size="7" text-anchor="middle" font-family="Helvetica,Arial">'+r.edges[i].toFixed(1)+'</text>';
+        }
+
+        svg += '</svg>';
+        viewport.innerHTML = svg;
+        FR.LED(document.getElementById(this.id + '-led')).set('green');
+        FR.emit(this.id, 'result', r);
+        FR.emit(this.id, 'thru', this._data);
+    },
+
+    receive(inputName, data, fromUnit) {
+        if (!data) return;
+        if (data.columns && data.data) { this._data = data; }
+        else if (Array.isArray(data)) { this._data = { columns: ['x'], data: { x: data } }; }
+        else return;
+
+        var self = this;
+        var colSel = document.getElementById(this.id + '-col');
+        if (colSel) {
+            var prev = colSel.value;
+            colSel.innerHTML = '<option value="">column</option>';
+            this._data.columns.forEach(function(c) {
+                var opt = document.createElement('option'); opt.value = c; opt.textContent = c;
+                colSel.appendChild(opt);
+            });
+            if (prev && this._data.columns.indexOf(prev) !== -1) colSel.value = prev;
+            else {
+                for (var i = 0; i < this._data.columns.length; i++) {
+                    var v = this._data.data[this._data.columns[i]];
+                    if (v && v.length > 0 && !isNaN(parseFloat(v[0]))) { colSel.value = this._data.columns[i]; break; }
+                }
+            }
+        }
+        this._render();
+        FR.emit(this.id, 'thru', data);
+    },
+
+    getOutput(channel) { return null; }
+});
+
 })(ForgeRack);

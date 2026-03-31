@@ -1,0 +1,191 @@
+<!--
+ ╔══════════════════════════════════════════════════════════════╗
+ ║  INTAKE IO-200 — File Loader & Data Viewer                  ║
+ ║  Manufacturer: FORGERACK / SVEND MFG                        ║
+ ║  Identity: Precision data workstation. Medium blue-gray      ║
+ ║  faceplate, clean and technical. RV7000 lineage.             ║
+ ║  The table IS the instrument.                                ║
+ ╚══════════════════════════════════════════════════════════════╝
+-->
+
+<!-- ════════ FRONT PANEL ════════ -->
+<div class="rack-unit-front u10" data-unit="intake" data-id="${id}" style="
+    --device-accent:#7ca0c4;
+    background:
+        repeating-linear-gradient(180deg, rgba(255,255,255,0.004) 0px, transparent 1px, transparent 3px),
+        linear-gradient(160deg, #2a3040 0%, #263040 30%, #2c3444 50%, #242e3c 80%, #202a36 100%);
+    overflow:hidden;
+">
+    <!-- ── Nameplate ── -->
+    <div style="
+        display:flex;align-items:center;gap:8px;
+        padding:4px 48px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.08));
+        border-bottom:1px solid rgba(0,0,0,0.25);
+    ">
+        <div class="led-housing">
+            <span class="led" id="${id}-led" style="width:6px;height:6px;"></span>
+        </div>
+        <span style="
+            font:600 15px/1 'Helvetica Neue','Arial',sans-serif;
+            color:rgba(160,185,210,0.6);
+            letter-spacing:0.18em;text-transform:uppercase;
+        ">Intake</span>
+        <div style="width:1px;height:10px;background:rgba(160,185,210,0.08);"></div>
+        <span style="font:300 10px/1 'Helvetica Neue',sans-serif;color:rgba(160,185,210,0.25);letter-spacing:0.06em;">File Loader &amp; Data Viewer</span>
+        <!-- File info -->
+        <div id="${id}-fileinfo" style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+            <span id="${id}-filename" style="font:400 10px/1 'JetBrains Mono',monospace;color:rgba(160,185,210,0.2);">no file loaded</span>
+            <span style="font:500 10px/1 'Courier New',monospace;color:rgba(160,185,210,0.2);letter-spacing:0.06em;">IO-200</span>
+        </div>
+    </div>
+
+    <!-- ── Drop zone + controls strip ── -->
+    <div style="
+        margin:4px 48px 0;padding:4px 10px;
+        display:flex;gap:10px;align-items:center;
+        background:rgba(0,0,0,0.12);
+        border:1px solid rgba(0,0,0,0.2);border-radius:2px;
+    ">
+        <!-- Drop zone -->
+        <div id="${id}-dropzone" style="
+            flex:1;padding:6px 12px;
+            border:1px dashed rgba(124,160,196,0.15);border-radius:2px;
+            text-align:center;cursor:pointer;
+            font:10px/1 'Helvetica Neue',sans-serif;color:rgba(124,160,196,0.25);
+            transition:border-color 0.15s, background 0.15s;
+        ">
+            Drop CSV / TSV / Excel here — or click to browse
+            <input type="file" id="${id}-fileinput" accept=".csv,.tsv,.txt,.xlsx,.xls" style="display:none;">
+        </div>
+
+        <!-- Format selector -->
+        <div class="panel-recessed" style="padding:4px 8px;display:flex;flex-direction:column;gap:2px;align-items:center;">
+            <div class="control-label-sm" style="color:rgba(124,160,196,0.3);">Format</div>
+            <div class="segment" id="${id}-fmt-seg" style="border-color:rgba(124,160,196,0.1);">
+                <button class="segment-btn active" data-fmt="auto" style="font:700 7px/1 'Arial',sans-serif;padding:3px 6px;">Auto</button>
+                <button class="segment-btn" data-fmt="csv" style="font:700 7px/1 'Arial',sans-serif;padding:3px 6px;">CSV</button>
+                <button class="segment-btn" data-fmt="tsv" style="font:700 7px/1 'Arial',sans-serif;padding:3px 6px;">TSV</button>
+            </div>
+        </div>
+
+        <!-- Stats readouts -->
+        <div style="display:flex;gap:8px;align-items:center;">
+            <div style="text-align:center;">
+                <div id="${id}-stat-rows" style="font:700 16px/1 'JetBrains Mono',monospace;color:rgba(124,160,196,0.2);">—</div>
+                <div style="font:600 7px/1 'Arial',sans-serif;color:rgba(124,160,196,0.15);text-transform:uppercase;letter-spacing:0.1em;">Rows</div>
+            </div>
+            <div style="font:300 14px/1 sans-serif;color:rgba(124,160,196,0.08);">&times;</div>
+            <div style="text-align:center;">
+                <div id="${id}-stat-cols" style="font:700 16px/1 'JetBrains Mono',monospace;color:rgba(124,160,196,0.2);">—</div>
+                <div style="font:600 7px/1 'Arial',sans-serif;color:rgba(124,160,196,0.15);text-transform:uppercase;letter-spacing:0.1em;">Cols</div>
+            </div>
+        </div>
+
+        <!-- Column LEDs -->
+        <div style="display:flex;gap:2px;">
+            <span class="led" id="${id}-col0" style="width:4px;height:4px;"></span>
+            <span class="led" id="${id}-col1" style="width:4px;height:4px;"></span>
+            <span class="led" id="${id}-col2" style="width:4px;height:4px;"></span>
+            <span class="led" id="${id}-col3" style="width:4px;height:4px;"></span>
+            <span class="led" id="${id}-col4" style="width:4px;height:4px;"></span>
+            <span class="led" id="${id}-col5" style="width:4px;height:4px;"></span>
+            <span class="led" id="${id}-col6" style="width:4px;height:4px;"></span>
+            <span class="led" id="${id}-col7" style="width:4px;height:4px;"></span>
+        </div>
+    </div>
+
+    <!-- ── Table viewport — the main instrument ── -->
+    <div style="
+        margin:4px 48px;padding:3px;flex:1;
+        background: linear-gradient(145deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));
+        border-radius:2px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.02);
+    ">
+        <div id="${id}-table-viewport" style="
+            background:#060a10;border:1px solid rgba(0,0,0,0.6);border-radius:1px;
+            box-shadow: inset 0 3px 10px rgba(0,0,0,0.6);
+            position:relative;overflow:hidden;height:280px;
+        ">
+            <!-- Scanlines -->
+            <div class="crt-scanlines"></div>
+            <!-- Edge shadow -->
+            <div style="position:absolute;inset:0;box-shadow:inset 0 0 20px rgba(0,0,0,0.3);pointer-events:none;z-index:3;"></div>
+
+            <!-- Empty state -->
+            <div id="${id}-empty" style="
+                display:flex;flex-direction:column;align-items:center;justify-content:center;
+                height:100%;gap:6px;position:relative;z-index:1;
+            ">
+                <span style="font:300 13px/1 'Courier New',monospace;color:rgba(124,160,196,0.06);">NO DATA</span>
+                <span style="font:300 9px/1 'Courier New',monospace;color:rgba(124,160,196,0.03);">load a file to populate table</span>
+            </div>
+
+            <!-- Table container (hidden until data loaded) -->
+            <div id="${id}-table-container" style="
+                display:none;height:100%;overflow:auto;position:relative;z-index:1;
+            "></div>
+        </div>
+    </div>
+
+    <!-- ── Bottom control strip ── -->
+    <div style="
+        margin:0 48px 4px;padding:4px 10px;
+        display:flex;gap:10px;align-items:center;
+        background:rgba(0,0,0,0.1);border-radius:2px;
+    ">
+        <!-- Column type badges -->
+        <div id="${id}-col-badges" style="display:flex;gap:4px;flex:1;flex-wrap:wrap;overflow:hidden;max-height:18px;">
+            <span style="font:10px/1 'JetBrains Mono',monospace;color:rgba(124,160,196,0.12);">columns appear here after load</span>
+        </div>
+
+        <!-- Emit selector -->
+        <div class="panel-recessed" style="padding:3px 8px;display:flex;gap:6px;align-items:center;">
+            <div style="font:600 8px/1 'Arial',sans-serif;color:rgba(124,160,196,0.25);text-transform:uppercase;letter-spacing:0.1em;">Emit</div>
+            <select id="${id}-emit-col" style="
+                background:rgba(0,0,0,0.4);border:1px solid rgba(124,160,196,0.1);
+                color:rgba(124,160,196,0.5);padding:2px 4px;border-radius:1px;
+                font:9px/1 'JetBrains Mono',monospace;
+            ">
+                <option value="all">All Columns</option>
+            </select>
+        </div>
+
+        <!-- Emit button -->
+        <button id="${id}-btn-emit" class="btn-action" style="padding:4px 10px;">&#x25B6; Emit</button>
+    </div>
+</div>
+
+<!-- ════════ BACK PANEL ════════ -->
+<div class="rack-unit-back u10" data-unit-back="intake" data-id="${id}" style="
+    background:
+        repeating-linear-gradient(180deg, rgba(255,255,255,0.005) 0px, transparent 1px, transparent 2px),
+        linear-gradient(160deg, #1c1c1c 0%, #1f1f1f 40%, #1d1d1d 70%, #1a1a1a 100%);
+    overflow:hidden;
+">
+    <div style="display:flex;align-items:center;gap:8px;padding:5px 48px;border-bottom:1px solid rgba(255,255,255,0.05);">
+        <span style="font:600 11px/1 'Helvetica Neue',sans-serif;color:rgba(255,255,255,0.1);letter-spacing:0.12em;text-transform:uppercase;">Intake</span>
+        <span style="font:400 11px/1 'Courier New',monospace;color:rgba(255,255,255,0.06);">IO-200</span>
+        <span style="font:400 6px/1 'Courier New',monospace;color:rgba(255,255,255,0.04);margin-left:auto;">S/N ${id}</span>
+    </div>
+    <div style="padding:10px 48px;">
+        <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(255,255,255,0.07);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:10px;">Output</div>
+        <div style="display:flex;gap:18px;flex-wrap:wrap;">
+            <div class="patch-group"><div class="patch-jack" data-output="full" data-unit-id="${id}"></div><div class="patch-jack-label">full</div></div>
+            <div class="patch-group"><div class="patch-jack" data-output="headers" data-unit-id="${id}"></div><div class="patch-jack-label">headers</div></div>
+            <div class="patch-group"><div class="patch-jack" data-output="meta" data-unit-id="${id}"></div><div class="patch-jack-label">meta</div></div>
+        </div>
+        <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(255,255,255,0.07);text-transform:uppercase;letter-spacing:0.2em;margin:14px 0 10px;">Channels</div>
+        <div id="${id}-back-jacks" style="display:flex;gap:14px;flex-wrap:wrap;">
+            <div style="font:300 9px/1 'Courier New',monospace;color:rgba(255,255,255,0.05);">Load file to populate channel outputs</div>
+        </div>
+    </div>
+    <div style="padding:6px 48px;margin-top:auto;border-top:1px solid rgba(124,160,196,0.02);">
+        <div style="font:400 7px/1 'Courier New',monospace;color:rgba(124,160,196,0.04);letter-spacing:0.04em;line-height:1.8;">
+            FORGERACK INTAKE &#x2022; MODEL IO-200 REV.A &#x2022; SVEND MANUFACTURING<br>
+            FORMATS: CSV TSV XLSX XLS &#x2022; AUTO-DETECT DELIMITER &#x2022; 100K ROW MAX<br>
+            OUTPUT: FULL DATASET &#x2022; PER-COLUMN CHANNELS &#x2022; HEADERS &#x2022; META<br>
+            &#x00A9; SVEND MFG &#x2022; MADE IN USA
+        </div>
+    </div>
+</div>

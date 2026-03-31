@@ -698,6 +698,372 @@ FR.registerUnit('splitter', {
 
 
 // ═══════════════════════════════════════════════════════════
+// INTAKE IO-200 — File Loader & Data Viewer
+// ═══════════════════════════════════════════════════════════
+
+FR.registerUnit('intake', {
+    init(el, id) {
+        this.el = el;
+        this.id = id;
+        this._data = null;      // {data: {col: [vals]}, columns: ['col1',...]}
+        this._filename = null;
+        this._format = 'auto';
+
+        var self = this;
+
+        // Format selector
+        el.querySelectorAll('[data-fmt]').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                el.querySelectorAll('[data-fmt]').forEach(function(b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                self._format = btn.dataset.fmt;
+            });
+        });
+
+        // Drop zone
+        var dropzone = document.getElementById(id + '-dropzone');
+        var fileInput = document.getElementById(id + '-fileinput');
+
+        if (dropzone) {
+            dropzone.addEventListener('click', function() { fileInput && fileInput.click(); });
+
+            dropzone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                dropzone.style.borderColor = 'rgba(124,160,196,0.5)';
+                dropzone.style.background = 'rgba(124,160,196,0.04)';
+            });
+            dropzone.addEventListener('dragleave', function() {
+                dropzone.style.borderColor = 'rgba(124,160,196,0.15)';
+                dropzone.style.background = '';
+            });
+            dropzone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                dropzone.style.borderColor = 'rgba(124,160,196,0.15)';
+                dropzone.style.background = '';
+                if (e.dataTransfer.files.length > 0) self._loadFile(e.dataTransfer.files[0]);
+            });
+        }
+
+        if (fileInput) {
+            fileInput.addEventListener('change', function() {
+                if (fileInput.files.length > 0) self._loadFile(fileInput.files[0]);
+            });
+        }
+
+        // Emit button
+        var emitBtn = document.getElementById(id + '-btn-emit');
+        if (emitBtn) emitBtn.addEventListener('click', function() {
+            if (self._data) self._emit();
+        });
+    },
+
+    getOutput(name) {
+        if (!this._data) return null;
+        if (name === 'full') return this._data;
+        if (name === 'headers') return this._data.columns;
+        if (name === 'meta') return {
+            filename: this._filename,
+            rows: this._data.columns.length > 0 ? (this._data.data[this._data.columns[0]] || []).length : 0,
+            columns: this._data.columns.length,
+            columnTypes: this._detectTypes()
+        };
+        // Per-column output
+        if (this._data.data[name]) return this._data.data[name];
+        return null;
+    },
+
+    _loadFile(file) {
+        var self = this;
+        this._filename = file.name;
+
+        var nameEl = document.getElementById(this.id + '-filename');
+        if (nameEl) nameEl.textContent = file.name;
+
+        FR.LED(document.getElementById(this.id + '-led')).set('amber');
+
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var text = e.target.result;
+            self._parseText(text, file.name);
+        };
+        reader.readAsText(file);
+    },
+
+    _parseText(text, filename) {
+        // Detect delimiter
+        var delim = ',';
+        if (this._format === 'tsv') {
+            delim = '\t';
+        } else if (this._format === 'auto') {
+            var firstLine = text.split('\n')[0] || '';
+            var tabs = (firstLine.match(/\t/g) || []).length;
+            var commas = (firstLine.match(/,/g) || []).length;
+            var semis = (firstLine.match(/;/g) || []).length;
+            if (tabs > commas && tabs > semis) delim = '\t';
+            else if (semis > commas) delim = ';';
+        }
+
+        var lines = text.split('\n').filter(function(l) { return l.trim() !== ''; });
+        if (lines.length === 0) return;
+
+        // Parse header
+        var headers = this._parseLine(lines[0], delim);
+
+        // Parse rows
+        var data = {};
+        headers.forEach(function(h) { data[h] = []; });
+
+        for (var i = 1; i < lines.length; i++) {
+            var cells = this._parseLine(lines[i], delim);
+            for (var j = 0; j < headers.length; j++) {
+                var val = cells[j] !== undefined ? cells[j] : null;
+                // Try numeric conversion
+                if (val !== null && val !== '') {
+                    var num = Number(val);
+                    if (!isNaN(num) && val.trim() !== '') val = num;
+                }
+                data[headers[j]].push(val);
+            }
+        }
+
+        this._data = { data: data, columns: headers };
+        var rowCount = lines.length - 1;
+
+        // Update stats
+        var rowsEl = document.getElementById(this.id + '-stat-rows');
+        var colsEl = document.getElementById(this.id + '-stat-cols');
+        if (rowsEl) { rowsEl.textContent = rowCount; rowsEl.style.color = 'rgba(124,160,196,0.6)'; }
+        if (colsEl) { colsEl.textContent = headers.length; colsEl.style.color = 'rgba(124,160,196,0.6)'; }
+
+        // Column LEDs
+        for (var ci = 0; ci < 8; ci++) {
+            var led = document.getElementById(this.id + '-col' + ci);
+            if (led) FR.LED(led).set(ci < headers.length ? 'blue' : false);
+        }
+
+        // Column badges
+        var badgeEl = document.getElementById(this.id + '-col-badges');
+        if (badgeEl) {
+            var types = this._detectTypes();
+            badgeEl.innerHTML = '';
+            headers.forEach(function(h, i) {
+                var type = types[h] || 'txt';
+                var colors = { num: '#60a5fa', txt: '#94a3b8', date: '#fbbf24' };
+                var badge = document.createElement('span');
+                badge.style.cssText = 'font:700 8px/1 "JetBrains Mono",monospace;padding:1px 4px;border-radius:1px;' +
+                    'background:rgba(0,0,0,0.3);border:1px solid ' + (colors[type] || '#94a3b8') + '30;' +
+                    'color:' + (colors[type] || '#94a3b8') + ';';
+                badge.textContent = h + ' ' + type;
+                badgeEl.appendChild(badge);
+            });
+        }
+
+        // Emit selector
+        var emitSel = document.getElementById(this.id + '-emit-col');
+        if (emitSel) {
+            emitSel.innerHTML = '<option value="all">All Columns</option>';
+            headers.forEach(function(h) {
+                var opt = document.createElement('option');
+                opt.value = h; opt.textContent = h;
+                emitSel.appendChild(opt);
+            });
+        }
+
+        // Back panel jacks
+        var backJacks = document.getElementById(this.id + '-back-jacks');
+        if (backJacks) {
+            backJacks.innerHTML = '';
+            headers.forEach(function(h) {
+                var group = document.createElement('div');
+                group.className = 'patch-group';
+                group.innerHTML = '<div class="patch-jack" data-output="' + h + '" data-unit-id="' + self.id + '"></div>' +
+                    '<div class="patch-jack-label">' + h + '</div>';
+                backJacks.appendChild(group);
+            });
+        }
+
+        // Render table
+        this._renderTable();
+
+        FR.LED(document.getElementById(this.id + '-led')).set('green');
+    },
+
+    _parseLine(line, delim) {
+        // Simple CSV parse with quote handling
+        var cells = [];
+        var current = '';
+        var inQuotes = false;
+
+        for (var i = 0; i < line.length; i++) {
+            var ch = line[i];
+            if (ch === '"') {
+                if (inQuotes && line[i + 1] === '"') {
+                    current += '"';
+                    i++;
+                } else {
+                    inQuotes = !inQuotes;
+                }
+            } else if (ch === delim && !inQuotes) {
+                cells.push(current.trim());
+                current = '';
+            } else {
+                current += ch;
+            }
+        }
+        cells.push(current.trim());
+        return cells;
+    },
+
+    _detectTypes() {
+        if (!this._data) return {};
+        var types = {};
+        var cols = this._data.columns;
+        var data = this._data.data;
+
+        cols.forEach(function(col) {
+            var vals = data[col] || [];
+            var numCount = 0, total = 0;
+            for (var i = 0; i < vals.length; i++) {
+                var v = vals[i];
+                if (v === null || v === undefined || v === '') continue;
+                total++;
+                if (typeof v === 'number') numCount++;
+            }
+            types[col] = (total > 0 && numCount / total > 0.7) ? 'num' : 'txt';
+        });
+        return types;
+    },
+
+    _renderTable() {
+        var container = document.getElementById(this.id + '-table-container');
+        var empty = document.getElementById(this.id + '-empty');
+        if (!container || !this._data) return;
+
+        if (empty) empty.style.display = 'none';
+        container.style.display = 'block';
+
+        var cols = this._data.columns;
+        var data = this._data.data;
+        var rowCount = cols.length > 0 ? (data[cols[0]] || []).length : 0;
+        var maxRows = Math.min(rowCount, 500); // Cap for performance
+
+        var html = '<table style="width:100%;border-collapse:collapse;font:11px/1.3 \'JetBrains Mono\',monospace;">';
+
+        // Header
+        html += '<thead><tr style="position:sticky;top:0;z-index:1;">';
+        html += '<th style="padding:4px 6px;text-align:right;background:#0e1520;color:rgba(124,160,196,0.25);' +
+            'border-bottom:1px solid rgba(124,160,196,0.15);font-weight:400;min-width:30px;">#</th>';
+        cols.forEach(function(col) {
+            html += '<th style="padding:4px 8px;text-align:left;background:#0e1520;' +
+                'color:rgba(124,160,196,0.6);border-bottom:1px solid rgba(124,160,196,0.15);' +
+                'font-weight:700;letter-spacing:0.04em;white-space:nowrap;cursor:pointer;' +
+                'border-right:1px solid rgba(124,160,196,0.04);" data-col="' + col + '">' + col + '</th>';
+        });
+        html += '</tr></thead><tbody>';
+
+        // Rows
+        for (var i = 0; i < maxRows; i++) {
+            var bgColor = i % 2 === 0 ? 'transparent' : 'rgba(124,160,196,0.015)';
+            html += '<tr style="background:' + bgColor + ';">';
+            html += '<td style="padding:3px 6px;text-align:right;color:rgba(124,160,196,0.12);' +
+                'border-right:1px solid rgba(124,160,196,0.04);">' + (i + 1) + '</td>';
+            cols.forEach(function(col) {
+                var val = data[col][i];
+                var display = val === null || val === undefined ? '' : val;
+                var isNum = typeof val === 'number';
+                var color = val === null || val === undefined || val === ''
+                    ? 'rgba(124,160,196,0.08)'
+                    : isNum ? 'rgba(160,200,230,0.5)' : 'rgba(180,190,200,0.35)';
+                var align = isNum ? 'right' : 'left';
+                if (isNum && typeof display === 'number') {
+                    display = display % 1 !== 0 ? display.toFixed(4) : display;
+                }
+                html += '<td style="padding:3px 8px;text-align:' + align + ';color:' + color + ';' +
+                    'border-right:1px solid rgba(124,160,196,0.02);white-space:nowrap;">' + display + '</td>';
+            });
+            html += '</tr>';
+        }
+
+        if (maxRows < rowCount) {
+            html += '<tr><td colspan="' + (cols.length + 1) + '" style="padding:6px;text-align:center;' +
+                'color:rgba(124,160,196,0.15);font-style:italic;">... ' + (rowCount - maxRows) + ' more rows</td></tr>';
+        }
+
+        html += '</tbody></table>';
+        container.innerHTML = html;
+
+        // Sort on header click
+        var self = this;
+        container.querySelectorAll('th[data-col]').forEach(function(th) {
+            th.addEventListener('click', function() {
+                self._sortBy(th.dataset.col);
+            });
+        });
+    },
+
+    _sortBy(col) {
+        if (!this._data || !this._data.data[col]) return;
+
+        var cols = this._data.columns;
+        var data = this._data.data;
+        var n = data[col].length;
+
+        // Build index array and sort
+        var indices = [];
+        for (var i = 0; i < n; i++) indices.push(i);
+
+        // Toggle direction
+        if (this._sortCol === col && this._sortDir === 'asc') {
+            this._sortDir = 'desc';
+        } else {
+            this._sortCol = col;
+            this._sortDir = 'asc';
+        }
+        var dir = this._sortDir === 'asc' ? 1 : -1;
+
+        indices.sort(function(a, b) {
+            var va = data[col][a], vb = data[col][b];
+            if (va === null || va === undefined) return 1;
+            if (vb === null || vb === undefined) return -1;
+            if (typeof va === 'number' && typeof vb === 'number') return (va - vb) * dir;
+            return String(va).localeCompare(String(vb)) * dir;
+        });
+
+        // Reorder all columns
+        var newData = {};
+        cols.forEach(function(c) {
+            newData[c] = indices.map(function(i) { return data[c][i]; });
+        });
+        this._data.data = newData;
+        this._renderTable();
+    },
+
+    _emit() {
+        var emitSel = document.getElementById(this.id + '-emit-col');
+        var col = emitSel ? emitSel.value : 'all';
+
+        if (col === 'all') {
+            // Emit full dataset
+            FR.emit(this.id, 'full', this._data);
+            // Also emit per-column for any wired jacks
+            var self = this;
+            this._data.columns.forEach(function(c) {
+                FR.emit(self.id, c, self._data.data[c]);
+            });
+            console.log('[INTAKE] Emitted full dataset:', this._data.columns.length, 'columns');
+        } else {
+            // Emit single column
+            FR.emit(this.id, col, this._data.data[col]);
+            console.log('[INTAKE] Emitted column:', col, this._data.data[col].length, 'values');
+        }
+
+        FR.emit(this.id, 'headers', this._data.columns);
+        FR.emit(this.id, 'meta', this.getOutput('meta'));
+    }
+});
+
+
+// ═══════════════════════════════════════════════════════════
 // TRIAGE TR-200 — Data Validation & Cleaning Station
 // ═══════════════════════════════════════════════════════════
 

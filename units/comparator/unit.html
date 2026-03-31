@@ -75,17 +75,23 @@
                         </div>
                     </div>
                 </div>
-                <!-- Mode selector + n counts -->
-                <div style="display:flex;gap:6px;align-items:center;">
-                    <div class="segment" id="${id}-mode-seg" style="border-color:rgba(100,70,0,0.3);">
-                        <button class="segment-btn active" data-mode="diff" style="font-size:9px;padding:3px 6px;color:rgba(80,50,0,0.6);background:rgba(80,50,0,0.08);border-color:rgba(100,70,0,0.15);">&#x0394;</button>
-                        <button class="segment-btn" data-mode="ratio" style="font-size:9px;padding:3px 6px;color:rgba(80,50,0,0.6);background:rgba(80,50,0,0.08);border-color:rgba(100,70,0,0.15);">A/B</button>
-                        <button class="segment-btn" data-mode="tstat" style="font-size:9px;padding:3px 6px;color:rgba(80,50,0,0.6);background:rgba(80,50,0,0.08);border-color:rgba(100,70,0,0.15);">t</button>
-                        <button class="segment-btn" data-mode="pval" style="font-size:9px;padding:3px 6px;color:rgba(80,50,0,0.6);background:rgba(80,50,0,0.08);border-color:rgba(100,70,0,0.15);">p</button>
+                <!-- Mode selector -->
+                <div class="segment" id="${id}-mode-seg" style="border-color:rgba(100,70,0,0.3);">
+                    <button class="segment-btn active" data-mode="diff" style="font-size:9px;padding:4px 8px;color:rgba(80,50,0,0.6);background:rgba(80,50,0,0.08);border-color:rgba(100,70,0,0.15);">&#x0394;</button>
+                    <button class="segment-btn" data-mode="ratio" style="font-size:9px;padding:4px 8px;color:rgba(80,50,0,0.6);background:rgba(80,50,0,0.08);border-color:rgba(100,70,0,0.15);">A/B</button>
+                    <button class="segment-btn" data-mode="tstat" style="font-size:9px;padding:4px 8px;color:rgba(80,50,0,0.6);background:rgba(80,50,0,0.08);border-color:rgba(100,70,0,0.15);">t</button>
+                    <button class="segment-btn" data-mode="pval" style="font-size:9px;padding:4px 8px;color:rgba(80,50,0,0.6);background:rgba(80,50,0,0.08);border-color:rgba(100,70,0,0.15);">p</button>
+                </div>
+                <!-- N counts in small LCD -->
+                <div style="display:flex;gap:4px;">
+                    <div class="fluke-lcd" style="flex:1;padding:2px 4px;text-align:center;">
+                        <div class="fluke-lcd-ghost" style="font-size:10px;">888</div>
+                        <div class="fluke-lcd-value" id="${id}-n-a" style="font-size:10px;color:#8b2020;">—</div>
                     </div>
-                    <span style="font:600 8px/1 'Arial',sans-serif;color:rgba(20,10,0,0.3);">n</span>
-                    <span id="${id}-n-a" style="font:700 9px/1 'JetBrains Mono',monospace;color:rgba(180,40,40,0.35);">—</span>
-                    <span id="${id}-n-b" style="font:700 9px/1 'JetBrains Mono',monospace;color:rgba(40,80,180,0.35);">—</span>
+                    <div class="fluke-lcd" style="flex:1;padding:2px 4px;text-align:center;">
+                        <div class="fluke-lcd-ghost" style="font-size:10px;">888</div>
+                        <div class="fluke-lcd-value" id="${id}-n-b" style="font-size:10px;color:#1e40af;">—</div>
+                    </div>
                 </div>
             </div>
 

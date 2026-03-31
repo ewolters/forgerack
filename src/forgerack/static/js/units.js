@@ -371,12 +371,11 @@ FR.registerUnit('chart-panel', {
             return;
         }
 
-        // Render clean — no ForgeViz toolbar (physical panel buttons handle export)
-        // Color picker: RIGHT-CLICK a trace line to pick color
+        // Render with ForgeViz toolbar — includes Style panel, export, expand
         ForgeViz.render(viewport, spec, {
-            toolbar: false,
+            toolbar: true,
+            showThemeToggle: false,
             colorPicker: true,
-            onColorChange: function(i, c) { console.log('[SCOPE] Color:', i, c); },
         });
 
         // Threshold drag for SPC mode

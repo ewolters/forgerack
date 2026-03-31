@@ -4548,73 +4548,8 @@ FR.registerUnit('comparator', {
         return vals;
     },
 
+    // Client-side helpers for display only (means, counts)
     _mean(v) { return v.reduce(function(a,b){return a+b},0)/v.length; },
-    _variance(v) { var m=this._mean(v); return v.reduce(function(a,b){return a+(b-m)*(b-m)},0)/(v.length-1); },
-
-    _welchT(a, b) {
-        var mA = this._mean(a), mB = this._mean(b);
-        var vA = this._variance(a), vB = this._variance(b);
-        var nA = a.length, nB = b.length;
-        var se = Math.sqrt(vA/nA + vB/nB);
-        if (se === 0) return { t: 0, df: nA+nB-2, p: 1 };
-        var t = (mA - mB) / se;
-        // Welch-Satterthwaite degrees of freedom
-        var num = Math.pow(vA/nA + vB/nB, 2);
-        var den = Math.pow(vA/nA,2)/(nA-1) + Math.pow(vB/nB,2)/(nB-1);
-        var df = num / den;
-        // Approximate p-value using t-distribution (regularized incomplete beta)
-        var p = this._tPValue(Math.abs(t), df);
-        return { t: t, df: df, p: p };
-    },
-
-    // Two-tailed p-value approximation for t-distribution
-    _tPValue(t, df) {
-        // Use approximation: p ≈ 2 * (1 - Φ(t * sqrt(df/(df-2)))) for large df
-        // For small df, use regularized incomplete beta function
-        var x = df / (df + t*t);
-        var p = this._regIncBeta(df/2, 0.5, x);
-        return p;
-    },
-
-    // Regularized incomplete beta function (series approximation)
-    _regIncBeta(a, b, x) {
-        if (x <= 0) return 0;
-        if (x >= 1) return 1;
-        // Use continued fraction (Lentz's method)
-        var lnBeta = this._lnGamma(a) + this._lnGamma(b) - this._lnGamma(a+b);
-        var front = Math.exp(Math.log(x)*a + Math.log(1-x)*b - lnBeta) / a;
-        // Continued fraction
-        var f = 1, c = 1, d = 1 - (a+1)*(a+b)/(a+2)*x;
-        if (Math.abs(d) < 1e-30) d = 1e-30;
-        d = 1/d; f = d;
-        for (var i = 1; i <= 100; i++) {
-            var m = i;
-            var num = m*(b-m)*x / ((a+2*m-1)*(a+2*m));
-            d = 1 + num*d; if (Math.abs(d) < 1e-30) d = 1e-30; d = 1/d;
-            c = 1 + num/c; if (Math.abs(c) < 1e-30) c = 1e-30;
-            f *= d*c;
-            num = -(a+m)*(a+b+m)*x / ((a+2*m)*(a+2*m+1));
-            d = 1 + num*d; if (Math.abs(d) < 1e-30) d = 1e-30; d = 1/d;
-            c = 1 + num/c; if (Math.abs(c) < 1e-30) c = 1e-30;
-            var delta = d*c;
-            f *= delta;
-            if (Math.abs(delta-1) < 1e-8) break;
-        }
-        return front * f;
-    },
-
-    _lnGamma(x) {
-        // Stirling/Lanczos approximation
-        var g = 7;
-        var c = [0.99999999999980993,676.5203681218851,-1259.1392167224028,771.32342877765313,
-            -176.61502916214059,12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,
-            1.5056327351493116e-7];
-        x -= 1;
-        var a = c[0];
-        var t = x + g + 0.5;
-        for (var i = 1; i < g+2; i++) a += c[i]/(x+i);
-        return 0.5*Math.log(2*Math.PI) + (x+0.5)*Math.log(t) - t + Math.log(a);
-    },
 
     _compute() {
         var colASelect = document.getElementById(this.id + '-col-a');
@@ -4625,7 +4560,7 @@ FR.registerUnit('comparator', {
         var valsA = this._getNumeric(this._dataA, colA);
         var valsB = this._getNumeric(this._dataB, colB);
 
-        // Update secondary readouts
+        // Update secondary readouts (client-side, just means and counts)
         var meanAEl = document.getElementById(this.id + '-mean-a');
         var meanBEl = document.getElementById(this.id + '-mean-b');
         var nAEl = document.getElementById(this.id + '-n-a');
@@ -4642,36 +4577,62 @@ FR.registerUnit('comparator', {
             return;
         }
 
+        // Diff and ratio are trivial — compute client-side
         var mA = this._mean(valsA), mB = this._mean(valsB);
-        var result, display, verdict = '';
-
-        switch(this._mode) {
-            case 'diff':
-                result = mA - mB;
-                display = result.toFixed(4);
-                break;
-            case 'ratio':
-                result = mB !== 0 ? mA / mB : NaN;
-                display = isNaN(result) ? 'DIV/0' : result.toFixed(4);
-                break;
-            case 'tstat':
-                var test = this._welchT(valsA, valsB);
-                result = test.t;
-                display = result.toFixed(3);
-                verdict = 'df=' + test.df.toFixed(1);
-                break;
-            case 'pval':
-                var test2 = this._welchT(valsA, valsB);
-                result = test2.p;
-                display = result < 0.001 ? result.toExponential(2) : result.toFixed(4);
-                verdict = result < 0.05 ? 'SIGNIFICANT' : 'NOT SIG';
-                break;
+        if (this._mode === 'diff') {
+            this._setMain((mA - mB).toFixed(4));
+            this._setLabel(this._modeLabel());
+            this._setVerdict('');
+            FR.LED(document.getElementById(this.id + '-led')).set('green');
+            FR.emit(this.id, 'result', { mode: 'diff', value: mA - mB, mean_a: mA, mean_b: mB });
+            return;
+        }
+        if (this._mode === 'ratio') {
+            var r = mB !== 0 ? mA / mB : NaN;
+            this._setMain(isNaN(r) ? 'DIV/0' : r.toFixed(4));
+            this._setLabel(this._modeLabel());
+            this._setVerdict('');
+            FR.LED(document.getElementById(this.id + '-led')).set('green');
+            FR.emit(this.id, 'result', { mode: 'ratio', value: r, mean_a: mA, mean_b: mB });
+            return;
         }
 
-        this._setMain(display);
-        this._setLabel(this._modeLabel());
-        this._setVerdict(verdict);
-        FR.LED(document.getElementById(this.id + '-led')).set('green');
+        // t-stat and p-value — call server (forgestat)
+        var self = this;
+        var csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+        fetch('/api/rack/compute/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrf ? csrf.value : document.cookie.replace(/.*csrftoken=([^;]*).*/, '$1')
+            },
+            body: JSON.stringify({ op: 'ttest_2sample', data: { a: valsA, b: valsB } })
+        })
+        .then(function(resp) { return resp.json(); })
+        .then(function(json) {
+            if (json.error) {
+                self._setMain('ERR');
+                self._setVerdict(json.error);
+                FR.LED(document.getElementById(self.id + '-led')).set('red');
+                return;
+            }
+            var r = json.result;
+            if (self._mode === 'tstat') {
+                self._setMain(r.t.toFixed(3));
+                self._setVerdict('df=' + r.df.toFixed(1));
+            } else {
+                self._setMain(r.p < 0.001 ? r.p.toExponential(2) : r.p.toFixed(4));
+                self._setVerdict(r.significant ? 'SIGNIFICANT' : 'NOT SIG');
+            }
+            self._setLabel(self._modeLabel());
+            FR.LED(document.getElementById(self.id + '-led')).set('green');
+            FR.emit(self.id, 'result', r);
+        })
+        .catch(function(err) {
+            self._setMain('ERR');
+            self._setVerdict(String(err));
+            FR.LED(document.getElementById(self.id + '-led')).set('red');
+        });
 
         // Emit result
         FR.emit(this.id, 'result', {

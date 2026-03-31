@@ -35,7 +35,8 @@ const _UNIT_ACCENTS = {
     'narrative':   '#22c55e',
     'splitter':    '#78716c',
     'combinator':  '#78716c',
-    'analyst':     '#f43f5e'
+    'analyst':     '#f43f5e',
+    'sentinel':    '#d97706'
 };
 
 // ── Resolve unit ID from a jack element ──

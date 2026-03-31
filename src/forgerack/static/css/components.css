@@ -612,6 +612,38 @@
 }
 
 
+/* ── MFR: GUARDIAN (Radar station / watchman)
+ *    Used by: SENTINEL, future monitoring/alerting units
+ *    Deep navy steel. Amber/gold accent. Condensed typography.
+ *    Radar station aesthetic. Always-on vigilance.
+ */
+.mfr-guardian .dial-knob {
+    background:
+        radial-gradient(circle at 38% 35%, rgba(217,119,6,0.06), transparent 50%),
+        conic-gradient(from 220deg, #1e2230 0%, #2a3040 20%, #1e2230 40%, #141824 70%, #1e2230 100%);
+    border-color: #0a0e18;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03);
+}
+.mfr-guardian .dial-knob::after { background: #d97706; box-shadow: 0 0 4px rgba(217,119,6,0.3); }
+.mfr-guardian .segment-btn {
+    background: rgba(217,119,6,0.03); color: rgba(217,119,6,0.25);
+    font-family: 'Arial Narrow', 'Arial', sans-serif; font-weight: 700;
+}
+.mfr-guardian .segment-btn.active {
+    background: rgba(217,119,6,0.12); color: #d97706;
+    text-shadow: 0 0 4px rgba(217,119,6,0.2);
+}
+.mfr-guardian .led { border-color: #141824; }
+.mfr-guardian .led.on-amber {
+    background: radial-gradient(circle at 40% 35%, #fcd34d, #92400e);
+    box-shadow: 0 0 8px rgba(217,119,6,0.6), 0 0 18px rgba(217,119,6,0.15);
+}
+.mfr-guardian .panel-recessed {
+    background: rgba(217,119,6,0.015);
+    border-color: rgba(217,119,6,0.05);
+}
+
+
 /* ── MFR: TOKAMAK (Fusion reactor)
  *    Used by: ANALYST, future heavy computation units
  *    Deep charcoal-black. Plasma rose accent. Chrome bezels.

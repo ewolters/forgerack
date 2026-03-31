@@ -2537,22 +2537,11 @@ FR.registerUnit('analyst', {
                 { value: 'power_chi', label: 'Power: Chi-Square', needsB: false },
                 { value: 'sample_size_ci', label: 'Sample Size for CI', needsB: false },
             ],
-            'Quality': [
-                { value: 'attr_capability', label: 'Attribute Capability', needsB: false },
-                { value: 'nonnormal_cap', label: 'Nonnormal Capability', needsB: false, needsSpec: true },
-                { value: 'variance_components', label: 'Variance Components', needsB: true },
-            ],
             'Reliability': [
                 { value: 'weibull', label: 'Weibull Fit', needsB: false },
                 { value: 'kaplan_meier', label: 'Kaplan-Meier', needsB: false },
                 { value: 'log_rank', label: 'Log-Rank Test', needsB: true },
                 { value: 'cox_ph', label: 'Cox PH Regression', needsB: true },
-            ],
-            'MSA': [
-                { value: 'gage_rr', label: 'Gage R&R (Crossed)', needsB: true },
-                { value: 'icc', label: 'ICC', needsB: true },
-                { value: 'bland_altman', label: 'Bland-Altman', needsB: true },
-                { value: 'linearity_bias', label: 'Linearity & Bias', needsB: true },
             ],
             'Time Series': [
                 { value: 'adf_test', label: 'ADF Stationarity', needsB: false },
@@ -2564,48 +2553,9 @@ FR.registerUnit('analyst', {
                 { value: 'anomaly', label: 'Anomaly Detection', needsB: false },
             ],
         },
-        forgespc: {
-            'Control Charts': [
-                { value: 'imr_chart', label: 'I-MR Chart', needsB: false },
-                { value: 'xbar_r', label: 'X-bar/R Chart', needsB: false },
-                { value: 'xbar_s', label: 'X-bar/S Chart', needsB: false },
-                { value: 'p_chart', label: 'p-Chart', needsB: false },
-                { value: 'np_chart', label: 'np-Chart', needsB: false },
-                { value: 'c_chart', label: 'c-Chart', needsB: false },
-                { value: 'u_chart', label: 'u-Chart', needsB: false },
-                { value: 'cusum', label: 'CUSUM', needsB: false },
-                { value: 'ewma', label: 'EWMA', needsB: false },
-            ],
-            'Capability': [
-                { value: 'process_cap', label: 'Cp/Cpk/Pp/Ppk', needsB: false, needsSpec: true },
-                { value: 'bayes_cap', label: 'Bayesian Capability', needsB: false, needsSpec: true },
-            ],
-            'Gage R&R': [
-                { value: 'grr_crossed', label: 'Crossed Design', needsB: true },
-                { value: 'grr_nested', label: 'Nested Design', needsB: true },
-                { value: 'attr_agreement', label: 'Attribute Agreement', needsB: true },
-                { value: 'hotelling_t2', label: "Hotelling T\u00b2", needsB: false },
-            ],
-        },
-        forgedoe: {
-            'Generate Design': [
-                { value: 'full_factorial', label: 'Full Factorial', needsB: false },
-                { value: 'frac_factorial', label: 'Fractional Factorial', needsB: false },
-                { value: 'plackett_burman', label: 'Plackett-Burman', needsB: false },
-                { value: 'ccd', label: 'Central Composite', needsB: false },
-                { value: 'box_behnken', label: 'Box-Behnken', needsB: false },
-                { value: 'dsd', label: 'Definitive Screening', needsB: false },
-                { value: 'latin_hypercube', label: 'Latin Hypercube', needsB: false },
-            ],
-            'Analysis': [
-                { value: 'fit_model', label: 'Fit DOE Model', needsB: true },
-                { value: 'optimize', label: 'Optimize Responses', needsB: true },
-            ],
-            'Power': [
-                { value: 'power_factorial', label: 'Factorial Power', needsB: false },
-                { value: 'required_reps', label: 'Required Replicates', needsB: false },
-            ],
-        }
+        // forgespc → SENTINEL SpX-481
+        // forgedoe → CRUCIBLE (future)
+        // MSA → CALIBER (future)
     },
 
     init(el, id) {
@@ -2616,12 +2566,10 @@ FR.registerUnit('analyst', {
 
         var self = this;
 
-        // Wire up cascading selectors
-        var pkgSel = document.getElementById(id + '-pkg');
+        // Wire up cascading selectors (package is always forgestat now)
         var catSel = document.getElementById(id + '-cat');
         var analysisSel = document.getElementById(id + '-analysis');
 
-        if (pkgSel) pkgSel.addEventListener('change', function() { self._populateCategories(); });
         if (catSel) catSel.addEventListener('change', function() { self._populateAnalyses(); });
         if (analysisSel) analysisSel.addEventListener('change', function() { self._onAnalysisChange(); });
 
@@ -2642,11 +2590,10 @@ FR.registerUnit('analyst', {
     },
 
     _populateCategories() {
-        var pkgSel = document.getElementById(this.id + '-pkg');
         var catSel = document.getElementById(this.id + '-cat');
-        if (!pkgSel || !catSel) return;
+        if (!catSel) return;
 
-        var pkg = pkgSel.value;
+        var pkg = 'forgestat';
         var cats = this._CATALOG[pkg] || {};
         catSel.innerHTML = '';
         Object.keys(cats).forEach(function(cat) {
@@ -2658,12 +2605,11 @@ FR.registerUnit('analyst', {
     },
 
     _populateAnalyses() {
-        var pkgSel = document.getElementById(this.id + '-pkg');
         var catSel = document.getElementById(this.id + '-cat');
         var analysisSel = document.getElementById(this.id + '-analysis');
-        if (!pkgSel || !catSel || !analysisSel) return;
+        if (!catSel || !analysisSel) return;
 
-        var pkg = pkgSel.value;
+        var pkg = 'forgestat';
         var cat = catSel.value;
         var analyses = (this._CATALOG[pkg] || {})[cat] || [];
         analysisSel.innerHTML = '';
@@ -2712,12 +2658,11 @@ FR.registerUnit('analyst', {
     },
 
     _getSelectedAnalysis() {
-        var pkgSel = document.getElementById(this.id + '-pkg');
         var catSel = document.getElementById(this.id + '-cat');
         var analysisSel = document.getElementById(this.id + '-analysis');
-        if (!pkgSel || !catSel || !analysisSel) return null;
+        if (!catSel || !analysisSel) return null;
 
-        var pkg = pkgSel.value, cat = catSel.value, val = analysisSel.value;
+        var pkg = 'forgestat', cat = catSel.value, val = analysisSel.value;
         var analyses = (this._CATALOG[pkg] || {})[cat] || [];
         for (var i = 0; i < analyses.length; i++) {
             if (analyses[i].value === val) return analyses[i];
@@ -2867,7 +2812,7 @@ FR.registerUnit('analyst', {
             case 'pearson': case 'spearman': case 'kendall':
                 result = this._correlation(valsA, valsB, analysis, alpha, colA, colB); break;
             case 'mann_whitney': result = this._mannWhitney(valsA, valsB, alpha, colA, colB); break;
-            case 'process_cap': result = this._capability(valsA, colA); break;
+            // process_cap → SENTINEL SpX-481
             case 'outliers': result = this._outliers(valsA, colA); break;
             case 'runs_test': result = this._runsTest(valsA, colA, alpha); break;
             default:
@@ -3413,6 +3358,279 @@ FR.registerUnit('analyst', {
         if (channel === 'summary' && this._lastResult && this._lastResult.summary) {
             return { text: this._lastResult.summary, narrative: (this._lastResult.lines || []).join('\n') };
         }
+        return null;
+    }
+});
+
+
+// ═══════════════════════════════════════════════════════════
+// SENTINEL SpX-481 — SPC Process Monitor (GUARDIAN)
+// ═══════════════════════════════════════════════════════════
+
+FR.registerUnit('sentinel', {
+    init(el, id) {
+        this.el = el;
+        this.id = id;
+        this._data = null;
+        this._lastResult = null;
+
+        var self = this;
+        var runBtn = document.getElementById(id + '-btn-run');
+        if (runBtn) runBtn.addEventListener('click', function() { self._run(); });
+    },
+
+    receive(inputName, data) {
+        if (!data || !data.data || !data.columns) return;
+        this._data = data;
+
+        FR.LED(document.getElementById(this.id + '-led-power')).set('amber');
+        FR.emit(this.id, 'thru', data);
+
+        // Populate column selectors
+        var colSel = document.getElementById(this.id + '-col');
+        var subSel = document.getElementById(this.id + '-subgroup');
+
+        var numericCols = [], factorCols = [];
+        data.columns.forEach(function(c) {
+            var vals = data.data[c] || [];
+            var hasNum = vals.some(function(v) { return typeof v === 'number'; });
+            var hasStr = vals.some(function(v) { return typeof v === 'string'; });
+            if (hasNum && !hasStr) numericCols.push(c);
+            else if (hasStr) factorCols.push(c);
+            else numericCols.push(c);
+        });
+
+        if (colSel) {
+            var prev = colSel.value;
+            colSel.innerHTML = '<option value="">—</option>';
+            numericCols.forEach(function(c) {
+                var opt = document.createElement('option');
+                opt.value = c; opt.textContent = c;
+                colSel.appendChild(opt);
+            });
+            if (prev && numericCols.indexOf(prev) !== -1) colSel.value = prev;
+            else if (numericCols.length > 0) colSel.value = numericCols[0];
+        }
+
+        if (subSel) {
+            var prevS = subSel.value;
+            subSel.innerHTML = '<option value="">none</option>';
+            factorCols.concat(numericCols).forEach(function(c) {
+                var opt = document.createElement('option');
+                opt.value = c; opt.textContent = c;
+                subSel.appendChild(opt);
+            });
+            if (prevS && data.columns.indexOf(prevS) !== -1) subSel.value = prevS;
+        }
+
+        var n = data.data[data.columns[0]] ? data.data[data.columns[0]].length : 0;
+        var nEl = document.getElementById(this.id + '-n-val');
+        if (nEl) nEl.textContent = n;
+    },
+
+    _run() {
+        if (!this._data) return;
+
+        var colSel = document.getElementById(this.id + '-col');
+        var chartSel = document.getElementById(this.id + '-chart-type');
+        var rulesSel = document.getElementById(this.id + '-rules');
+        var lslInput = document.getElementById(this.id + '-lsl');
+        var uslInput = document.getElementById(this.id + '-usl');
+
+        var col = colSel ? colSel.value : '';
+        var chartType = chartSel ? chartSel.value : 'imr';
+        var rules = rulesSel ? rulesSel.value : 'nelson';
+        var lsl = lslInput && lslInput.value !== '' ? parseFloat(lslInput.value) : null;
+        var usl = uslInput && uslInput.value !== '' ? parseFloat(uslInput.value) : null;
+
+        if (!col) return;
+
+        var vals = (this._data.data[col] || []).filter(function(v) { return typeof v === 'number' && !isNaN(v); });
+        if (vals.length < 3) return;
+
+        var n = vals.length;
+        var x = vals.map(function(_, i) { return i + 1; });
+
+        // Compute control limits (I-chart for all types currently)
+        var sum = 0; for (var i = 0; i < n; i++) sum += vals[i];
+        var mean = sum / n;
+        var mr = [];
+        for (var i = 1; i < n; i++) mr.push(Math.abs(vals[i] - vals[i - 1]));
+        var mrSum = 0; for (var i = 0; i < mr.length; i++) mrSum += mr[i];
+        var mrBar = mr.length > 0 ? mrSum / mr.length : 0;
+        var sigma = mrBar / 1.128;
+        var ucl = mean + 3 * sigma;
+        var lcl = mean - 3 * sigma;
+
+        // Nelson Rule 1: points beyond ±3σ
+        var violations = [];
+        for (var i = 0; i < n; i++) {
+            if (vals[i] > ucl || vals[i] < lcl) {
+                violations.push({ index: i, value: vals[i], rule: 1, desc: 'Beyond ±3σ' });
+            }
+        }
+
+        // Nelson Rule 2: 9 consecutive points on same side of CL
+        if (rules !== 'none') {
+            for (var i = 8; i < n; i++) {
+                var allAbove = true, allBelow = true;
+                for (var j = i - 8; j <= i; j++) {
+                    if (vals[j] <= mean) allAbove = false;
+                    if (vals[j] >= mean) allBelow = false;
+                }
+                if (allAbove || allBelow) {
+                    violations.push({ index: i, value: vals[i], rule: 2, desc: '9 pts same side' });
+                }
+            }
+        }
+
+        // Nelson Rule 3: 6 consecutive increasing or decreasing
+        if (rules !== 'none') {
+            for (var i = 5; i < n; i++) {
+                var inc = true, dec = true;
+                for (var j = i - 4; j <= i; j++) {
+                    if (vals[j] <= vals[j - 1]) inc = false;
+                    if (vals[j] >= vals[j - 1]) dec = false;
+                }
+                if (inc || dec) {
+                    violations.push({ index: i, value: vals[i], rule: 3, desc: '6 pts trending' });
+                }
+            }
+        }
+
+        var oocIndices = [];
+        var seen = {};
+        violations.forEach(function(v) {
+            if (!seen[v.index]) { oocIndices.push(v.index); seen[v.index] = true; }
+        });
+
+        var inControl = oocIndices.length === 0;
+
+        // Status LEDs
+        FR.LED(document.getElementById(this.id + '-led-ic')).set(inControl ? 'green' : 'off');
+        FR.LED(document.getElementById(this.id + '-led-ooc')).set(inControl ? 'off' : 'red');
+
+        // Capability if spec limits provided
+        var cpk = null, ppm = null;
+        if (lsl !== null || usl !== null) {
+            var cpu = usl !== null ? (usl - mean) / (3 * sigma) : null;
+            var cpl = lsl !== null ? (mean - lsl) / (3 * sigma) : null;
+            if (cpu !== null && cpl !== null) cpk = Math.min(cpu, cpl);
+            else cpk = cpu !== null ? cpu : cpl;
+
+            if (cpk !== null) {
+                var zVal = cpk * 3;
+                // Approximate PPM from z-score
+                ppm = Math.round(1000000 * 2 * (1 - this._normalCdf(Math.abs(zVal))));
+            }
+        }
+
+        var cpkEl = document.getElementById(this.id + '-cpk');
+        var ppmEl = document.getElementById(this.id + '-ppm');
+        if (cpkEl) cpkEl.textContent = cpk !== null ? cpk.toFixed(2) : '—';
+        if (ppmEl) ppmEl.textContent = ppm !== null ? ppm : '—';
+
+        // Build chart in viewport
+        var viewport = document.getElementById(this.id + '-viewport');
+        var empty = document.getElementById(this.id + '-empty');
+        if (empty) empty.style.display = 'none';
+
+        if (viewport) {
+            // Build SVG chart directly (no ForgeViz dependency)
+            var w = viewport.clientWidth || 600;
+            var h = viewport.clientHeight || 200;
+            var pad = { top: 15, right: 20, bottom: 25, left: 50 };
+            var pw = w - pad.left - pad.right;
+            var ph = h - pad.top - pad.bottom;
+
+            var yMin = Math.min(lcl, Math.min.apply(null, vals)) - sigma;
+            var yMax = Math.max(ucl, Math.max.apply(null, vals)) + sigma;
+            if (lsl !== null) yMin = Math.min(yMin, lsl - sigma);
+            if (usl !== null) yMax = Math.max(yMax, usl + sigma);
+            var yRange = yMax - yMin || 1;
+
+            function sx(i) { return pad.left + (i / (n - 1 || 1)) * pw; }
+            function sy(v) { return pad.top + (1 - (v - yMin) / yRange) * ph; }
+
+            var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '" style="font-family:JetBrains Mono,monospace;">';
+
+            // Grid lines
+            var gridSteps = 5;
+            for (var g = 0; g <= gridSteps; g++) {
+                var gy = pad.top + (g / gridSteps) * ph;
+                var gv = yMax - (g / gridSteps) * yRange;
+                svg += '<line x1="' + pad.left + '" y1="' + gy + '" x2="' + (w - pad.right) + '" y2="' + gy + '" stroke="rgba(217,119,6,0.04)" stroke-width="0.5"/>';
+                svg += '<text x="' + (pad.left - 4) + '" y="' + (gy + 3) + '" fill="rgba(217,119,6,0.2)" font-size="8" text-anchor="end">' + gv.toFixed(1) + '</text>';
+            }
+
+            // UCL/CL/LCL reference lines
+            svg += '<line x1="' + pad.left + '" y1="' + sy(ucl) + '" x2="' + (w - pad.right) + '" y2="' + sy(ucl) + '" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"/>';
+            svg += '<text x="' + (w - pad.right + 3) + '" y="' + (sy(ucl) + 3) + '" fill="#ef4444" font-size="7" opacity="0.6">UCL</text>';
+            svg += '<line x1="' + pad.left + '" y1="' + sy(mean) + '" x2="' + (w - pad.right) + '" y2="' + sy(mean) + '" stroke="#4ade80" stroke-width="1" opacity="0.5"/>';
+            svg += '<text x="' + (w - pad.right + 3) + '" y="' + (sy(mean) + 3) + '" fill="#4ade80" font-size="7" opacity="0.5">CL</text>';
+            svg += '<line x1="' + pad.left + '" y1="' + sy(lcl) + '" x2="' + (w - pad.right) + '" y2="' + sy(lcl) + '" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"/>';
+            svg += '<text x="' + (w - pad.right + 3) + '" y="' + (sy(lcl) + 3) + '" fill="#ef4444" font-size="7" opacity="0.6">LCL</text>';
+
+            // Spec limits
+            if (lsl !== null) {
+                svg += '<line x1="' + pad.left + '" y1="' + sy(lsl) + '" x2="' + (w - pad.right) + '" y2="' + sy(lsl) + '" stroke="#f59e0b" stroke-width="1" stroke-dasharray="2,2" opacity="0.4"/>';
+                svg += '<text x="' + (w - pad.right + 3) + '" y="' + (sy(lsl) + 3) + '" fill="#f59e0b" font-size="7" opacity="0.4">LSL</text>';
+            }
+            if (usl !== null) {
+                svg += '<line x1="' + pad.left + '" y1="' + sy(usl) + '" x2="' + (w - pad.right) + '" y2="' + sy(usl) + '" stroke="#f59e0b" stroke-width="1" stroke-dasharray="2,2" opacity="0.4"/>';
+                svg += '<text x="' + (w - pad.right + 3) + '" y="' + (sy(usl) + 3) + '" fill="#f59e0b" font-size="7" opacity="0.4">USL</text>';
+            }
+
+            // Data line
+            var pathD = '';
+            for (var i = 0; i < n; i++) {
+                pathD += (i === 0 ? 'M' : 'L') + sx(i).toFixed(1) + ',' + sy(vals[i]).toFixed(1);
+            }
+            svg += '<path d="' + pathD + '" fill="none" stroke="#d97706" stroke-width="1.5" opacity="0.8"/>';
+
+            // Data points — green for in-control, red for OOC
+            for (var i = 0; i < n; i++) {
+                var isOOC = seen[i];
+                var color = isOOC ? '#ef4444' : '#d97706';
+                var r = isOOC ? 4 : 2.5;
+                svg += '<circle cx="' + sx(i).toFixed(1) + '" cy="' + sy(vals[i]).toFixed(1) + '" r="' + r + '" fill="' + color + '" opacity="0.9"/>';
+                if (isOOC) {
+                    svg += '<circle cx="' + sx(i).toFixed(1) + '" cy="' + sy(vals[i]).toFixed(1) + '" r="7" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.3"/>';
+                }
+            }
+
+            // Title
+            svg += '<text x="' + (pad.left + 4) + '" y="' + (pad.top - 4) + '" fill="rgba(217,119,6,0.4)" font-size="9" font-weight="700">' +
+                chartType.toUpperCase() + ' — ' + col + '  (n=' + n + ', OOC=' + oocIndices.length + ')</text>';
+
+            svg += '</svg>';
+            viewport.innerHTML = svg;
+        }
+
+        // Emit results
+        this._lastResult = {
+            chartType: chartType, column: col, n: n,
+            mean: mean, sigma: sigma, ucl: ucl, lcl: lcl,
+            cpk: cpk, ppm: ppm,
+            violations: violations, oocCount: oocIndices.length,
+            inControl: inControl
+        };
+        FR.emit(this.id, 'result', this._lastResult);
+        if (violations.length > 0) FR.emit(this.id, 'violations', violations);
+    },
+
+    _normalCdf(x) {
+        var a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
+        var sign = x < 0 ? -1 : 1;
+        x = Math.abs(x) / Math.sqrt(2);
+        var t = 1 / (1 + p * x);
+        var y = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+        return 0.5 * (1 + sign * y);
+    },
+
+    getOutput(channel) {
+        if (channel === 'result' && this._lastResult) return this._lastResult;
+        if (channel === 'thru' && this._data) return this._data;
         return null;
     }
 });

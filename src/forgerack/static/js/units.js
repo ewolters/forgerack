@@ -249,11 +249,43 @@ FR.registerUnit('chart-panel', {
 
     _renderSpec(viewport, spec) {
         viewport.innerHTML = '';
-        if (typeof ForgeViz !== 'undefined' && ForgeViz.render) {
-            ForgeViz.render(viewport, spec, { toolbar: false });
-        } else {
+        this._spec = spec;
+
+        if (typeof ForgeViz === 'undefined' || !ForgeViz.render) {
             viewport.innerHTML = '<div style="padding:10px;font:9px monospace;color:rgba(74,222,128,0.2);">ForgeViz not loaded</div>';
+            return;
         }
+
+        // Render with full interactive toolkit enabled
+        ForgeViz.render(viewport, spec, {
+            toolbar: true,          // Copy, SVG, PNG, data table
+        });
+
+        // Enable interactive features if available
+        if (ForgeViz.enableThresholdDrag && this.chartType === 'control') {
+            ForgeViz.enableThresholdDrag(viewport, function(lineValue) {
+                console.log('[SCOPE] Threshold dragged to:', lineValue);
+            });
+        }
+
+        if (ForgeViz.enableAnnotation) {
+            ForgeViz.enableAnnotation(viewport, function(annotation) {
+                console.log('[SCOPE] Annotation added:', annotation);
+            });
+        }
+
+        if (ForgeViz.enableColorPicker) {
+            ForgeViz.enableColorPicker(viewport, function(traceIdx, newColor) {
+                console.log('[SCOPE] Color changed:', traceIdx, newColor);
+            });
+        }
+
+        if (ForgeViz.enableTitleEdit) {
+            ForgeViz.enableTitleEdit(viewport, function(newTitle) {
+                console.log('[SCOPE] Title changed:', newTitle);
+            });
+        }
+
         FR.LED(document.getElementById(this.id + '-led')).set('green');
     },
 

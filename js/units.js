@@ -2609,6 +2609,14 @@ FR.registerUnit('analyst', {
         if (catSel) catSel.addEventListener('change', function() { self._populateAnalyses(); });
         if (analysisSel) analysisSel.addEventListener('change', function() { self._onAnalysisChange(); });
 
+        // Format toggle
+        var fmtSel = document.getElementById(id + '-data-fmt');
+        if (fmtSel) fmtSel.addEventListener('change', function() {
+            self._updateColBLabel();
+            // Re-populate Col B with appropriate columns (numeric vs all)
+            if (self._data) self._populateColSelectors(self._data);
+        });
+
         // Run button
         var runBtn = document.getElementById(id + '-btn-run');
         if (runBtn) runBtn.addEventListener('click', function() { self._run(); });
@@ -2655,17 +2663,36 @@ FR.registerUnit('analyst', {
         var info = this._getSelectedAnalysis();
         if (!info) return;
 
-        // Toggle Col B
+        // Toggle Factor/Col B panel
         var colBPanel = document.getElementById(this.id + '-colb-panel');
         var colBSel = document.getElementById(this.id + '-col-b');
+        var colBLabel = document.getElementById(this.id + '-colb-label');
         if (colBPanel) colBPanel.style.opacity = info.needsB ? '1' : '0.3';
         if (colBSel) colBSel.disabled = !info.needsB;
+
+        // Toggle format selector for two-sample tests
+        var fmtPanel = document.getElementById(this.id + '-fmt-panel');
+        var fmtSel = document.getElementById(this.id + '-data-fmt');
+        var showFmt = info.needsB && !info.needsSpec;
+        if (fmtPanel) fmtPanel.style.opacity = showFmt ? '1' : '0.3';
+        if (fmtSel) fmtSel.disabled = !showFmt;
+
+        // Update Col B label based on format
+        this._updateColBLabel();
 
         // Toggle spec limits
         var lslPanel = document.getElementById(this.id + '-lsl-panel');
         var uslPanel = document.getElementById(this.id + '-usl-panel');
         if (lslPanel) lslPanel.style.opacity = info.needsSpec ? '1' : '0.3';
         if (uslPanel) uslPanel.style.opacity = info.needsSpec ? '1' : '0.3';
+    },
+
+    _updateColBLabel() {
+        var colBLabel = document.getElementById(this.id + '-colb-label');
+        var fmtSel = document.getElementById(this.id + '-data-fmt');
+        if (!colBLabel) return;
+        var fmt = fmtSel ? fmtSel.value : 'factor';
+        colBLabel.textContent = fmt === 'factor' ? 'Factor' : 'Col B';
     },
 
     _getSelectedAnalysis() {
@@ -2688,23 +2715,83 @@ FR.registerUnit('analyst', {
 
         FR.LED(document.getElementById(this.id + '-led-power')).set('red');
 
-        // Populate column selectors
-        var colA = document.getElementById(this.id + '-col-a');
-        var colB = document.getElementById(this.id + '-col-b');
-        [colA, colB].forEach(function(sel) {
-            if (!sel) return;
-            var prev = sel.value;
-            sel.innerHTML = '<option value="">—</option>';
-            data.columns.forEach(function(c) {
-                var opt = document.createElement('option');
-                opt.value = c; opt.textContent = c;
-                sel.appendChild(opt);
-            });
-            if (prev && data.columns.indexOf(prev) !== -1) sel.value = prev;
-        });
+        this._populateColSelectors(data);
 
         var n = data.data[data.columns[0]] ? data.data[data.columns[0]].length : 0;
         this._log('Received ' + data.columns.length + ' cols, ' + n + ' rows');
+    },
+
+    _populateColSelectors(data) {
+        var colA = document.getElementById(this.id + '-col-a');
+        var colB = document.getElementById(this.id + '-col-b');
+        var fmtSel = document.getElementById(this.id + '-data-fmt');
+        var fmt = fmtSel ? fmtSel.value : 'factor';
+
+        // Classify columns
+        var numericCols = [];
+        var factorCols = [];
+        data.columns.forEach(function(c) {
+            var vals = data.data[c] || [];
+            var hasNum = vals.some(function(v) { return typeof v === 'number'; });
+            var hasStr = vals.some(function(v) { return typeof v === 'string'; });
+            if (hasNum && !hasStr) numericCols.push(c);
+            else if (hasStr) factorCols.push(c);
+            else numericCols.push(c); // default to numeric
+        });
+
+        // Response: always numeric columns
+        if (colA) {
+            var prevA = colA.value;
+            colA.innerHTML = '<option value="">—</option>';
+            numericCols.forEach(function(c) {
+                var opt = document.createElement('option');
+                opt.value = c; opt.textContent = c;
+                colA.appendChild(opt);
+            });
+            if (prevA && numericCols.indexOf(prevA) !== -1) colA.value = prevA;
+            // Smart pre-select: first column matching response/y/value/measurement
+            if (!colA.value) {
+                var hints = /response|^y$|output|result|measure|value|yield|strength|weight/i;
+                for (var i = 0; i < numericCols.length; i++) {
+                    if (hints.test(numericCols[i])) { colA.value = numericCols[i]; break; }
+                }
+            }
+        }
+
+        // Col B: factor columns when stacked, numeric when "2 Cols" mode
+        if (colB) {
+            var prevB = colB.value;
+            colB.innerHTML = '<option value="">—</option>';
+            var bCols = fmt === 'factor' ? factorCols.concat(numericCols) : numericCols;
+            // In factor mode, show factor columns first
+            if (fmt === 'factor') {
+                factorCols.forEach(function(c) {
+                    var opt = document.createElement('option');
+                    opt.value = c; opt.textContent = c + ' \u2022';  // dot = factor
+                    colB.appendChild(opt);
+                });
+                numericCols.forEach(function(c) {
+                    var opt = document.createElement('option');
+                    opt.value = c; opt.textContent = c;
+                    colB.appendChild(opt);
+                });
+            } else {
+                numericCols.forEach(function(c) {
+                    var opt = document.createElement('option');
+                    opt.value = c; opt.textContent = c;
+                    colB.appendChild(opt);
+                });
+            }
+            if (prevB && data.columns.indexOf(prevB) !== -1) colB.value = prevB;
+            // Smart pre-select factor
+            if (!colB.value && fmt === 'factor' && factorCols.length > 0) {
+                var fHints = /factor|group|treatment|category|type|machine|operator|batch/i;
+                for (var i = 0; i < factorCols.length; i++) {
+                    if (fHints.test(factorCols[i])) { colB.value = factorCols[i]; break; }
+                }
+                if (!colB.value) colB.value = factorCols[0];
+            }
+        }
     },
 
     _run() {
@@ -2715,23 +2802,46 @@ FR.registerUnit('analyst', {
         var colBSel = document.getElementById(this.id + '-col-b');
         var alphaInput = document.getElementById(this.id + '-alpha');
         var muInput = document.getElementById(this.id + '-mu');
+        var fmtSel = document.getElementById(this.id + '-data-fmt');
 
         var analysis = analysisSel ? analysisSel.value : '';
         var colA = colASel ? colASel.value : '';
         var colB = colBSel ? colBSel.value : '';
         var alpha = alphaInput ? parseFloat(alphaInput.value) || 0.05 : 0.05;
         var mu = muInput ? parseFloat(muInput.value) || 0 : 0;
+        var dataFmt = fmtSel ? fmtSel.value : 'factor';
 
-        if (!colA) { this._log('Select Col A', '#ef4444'); return; }
+        if (!colA) { this._log('Select Response column', '#ef4444'); return; }
 
-        var valsA = (this._data.data[colA] || []).filter(function(v) { return typeof v === 'number' && !isNaN(v); });
-        var valsB = colB ? (this._data.data[colB] || []).filter(function(v) { return typeof v === 'number' && !isNaN(v); }) : [];
+        // Extract data based on format
+        var valsA, valsB;
+        var info = this._getSelectedAnalysis();
+        var needsB = info && info.needsB;
 
-        if (valsA.length < 2) { this._log('Col A has < 2 numeric values', '#ef4444'); return; }
+        if (needsB && dataFmt === 'factor' && colB) {
+            // STACKED: colA = response (numeric), colB = factor (grouping)
+            var extracted = this._extractStacked(colA, colB);
+            if (extracted.error) { this._log(extracted.error, '#ef4444'); return; }
+            valsA = extracted.group1;
+            valsB = extracted.group2;
+            // Override labels for display
+            colA = extracted.label1;
+            colB = extracted.label2;
+        } else if (needsB && dataFmt === 'columns' && colB) {
+            // UNSTACKED: two separate numeric columns
+            valsA = (this._data.data[colA] || []).filter(function(v) { return typeof v === 'number' && !isNaN(v); });
+            valsB = (this._data.data[colB] || []).filter(function(v) { return typeof v === 'number' && !isNaN(v); });
+        } else {
+            // Single column analysis
+            valsA = (this._data.data[colA] || []).filter(function(v) { return typeof v === 'number' && !isNaN(v); });
+            valsB = [];
+        }
+
+        if (valsA.length < 2) { this._log('Response has < 2 numeric values', '#ef4444'); return; }
 
         var result = null;
 
-        // Client-side implementations for common analyses
+        // Client-side implementations
         switch (analysis) {
             case 'descriptive': result = this._descriptive(valsA, colA); break;
             case 'normality': result = this._normality(valsA, colA); break;
@@ -2745,12 +2855,61 @@ FR.registerUnit('analyst', {
             case 'outliers': result = this._outliers(valsA, colA); break;
             case 'runs_test': result = this._runsTest(valsA, colA, alpha); break;
             default:
-                // Emit a structured request for server-side computation
                 result = this._emitServerRequest(analysis, colA, colB, alpha, mu);
                 break;
         }
 
         if (result) this._displayResult(result);
+    },
+
+    // Extract two groups from stacked data (response + factor columns)
+    _extractStacked(responseCol, factorCol) {
+        var response = this._data.data[responseCol] || [];
+        var factor = this._data.data[factorCol] || [];
+        var n = Math.min(response.length, factor.length);
+
+        // Find unique levels
+        var levelSet = {};
+        for (var i = 0; i < n; i++) {
+            var f = factor[i];
+            if (f !== null && f !== undefined && f !== '') levelSet[f] = true;
+        }
+        var levels = Object.keys(levelSet);
+
+        if (levels.length < 2) {
+            return { error: 'Factor "' + factorCol + '" has < 2 levels (found: ' + levels.join(', ') + ')' };
+        }
+        if (levels.length > 2) {
+            // For two-sample tests, use first two levels. ANOVA would use all.
+            // Show what we found so user knows
+        }
+
+        var groups = {};
+        for (var i = 0; i < n; i++) {
+            var f = factor[i];
+            var v = response[i];
+            if (f === null || f === undefined || f === '') continue;
+            if (typeof v !== 'number' || isNaN(v)) continue;
+            if (!groups[f]) groups[f] = [];
+            groups[f].push(v);
+        }
+
+        // For two-sample: use first two levels
+        var g1 = groups[levels[0]] || [];
+        var g2 = groups[levels[1]] || [];
+
+        if (g1.length < 2 || g2.length < 2) {
+            return { error: 'Groups too small: ' + levels[0] + ' (n=' + g1.length + '), ' + levels[1] + ' (n=' + g2.length + ')' };
+        }
+
+        return {
+            group1: g1,
+            group2: g2,
+            label1: levels[0],
+            label2: levels[1],
+            allLevels: levels,
+            allGroups: groups
+        };
     },
 
     // ── Client-side analysis implementations ──

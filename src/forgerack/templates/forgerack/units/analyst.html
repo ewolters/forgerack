@@ -96,24 +96,37 @@
                     "></select>
                 </div>
 
-                <!-- Col A -->
+                <!-- Response / Value column -->
                 <div class="panel-recessed" style="padding:3px 5px;display:flex;flex-direction:column;gap:2px;align-items:center;">
-                    <div style="font:700 7px/1 'Arial Narrow',sans-serif;color:rgba(244,63,94,0.25);text-transform:uppercase;letter-spacing:0.12em;">Col A</div>
+                    <div style="font:700 7px/1 'Arial Narrow',sans-serif;color:rgba(244,63,94,0.25);text-transform:uppercase;letter-spacing:0.12em;">Response</div>
                     <select id="${id}-col-a" style="
                         background:#0a0a0c;border:1px solid rgba(244,63,94,0.2);
                         color:#e8a0b0;padding:2px 4px;border-radius:1px;
-                        font:10px/1 'JetBrains Mono',monospace;min-width:60px;height:20px;
+                        font:10px/1 'JetBrains Mono',monospace;min-width:68px;height:20px;
                     "><option value="">—</option></select>
                 </div>
 
-                <!-- Col B -->
+                <!-- Factor / Group / Col B — dynamic label -->
                 <div class="panel-recessed" id="${id}-colb-panel" style="padding:3px 5px;display:flex;flex-direction:column;gap:2px;align-items:center;opacity:0.3;">
-                    <div style="font:700 7px/1 'Arial Narrow',sans-serif;color:rgba(244,63,94,0.25);text-transform:uppercase;letter-spacing:0.12em;">Col B</div>
+                    <div id="${id}-colb-label" style="font:700 7px/1 'Arial Narrow',sans-serif;color:rgba(244,63,94,0.25);text-transform:uppercase;letter-spacing:0.12em;">Factor</div>
                     <select id="${id}-col-b" disabled style="
                         background:#0a0a0c;border:1px solid rgba(244,63,94,0.2);
                         color:#e8a0b0;padding:2px 4px;border-radius:1px;
-                        font:10px/1 'JetBrains Mono',monospace;min-width:60px;height:20px;
+                        font:10px/1 'JetBrains Mono',monospace;min-width:68px;height:20px;
                     "><option value="">—</option></select>
+                </div>
+
+                <!-- Data format toggle -->
+                <div class="panel-recessed" id="${id}-fmt-panel" style="padding:3px 5px;display:flex;flex-direction:column;gap:2px;align-items:center;opacity:0.3;">
+                    <div style="font:700 7px/1 'Arial Narrow',sans-serif;color:rgba(244,63,94,0.25);text-transform:uppercase;letter-spacing:0.12em;">Format</div>
+                    <select id="${id}-data-fmt" disabled style="
+                        background:#0a0a0c;border:1px solid rgba(244,63,94,0.2);
+                        color:#e8a0b0;padding:2px 4px;border-radius:1px;
+                        font:9px/1 'JetBrains Mono',monospace;min-width:58px;height:20px;
+                    ">
+                        <option value="factor">Stacked</option>
+                        <option value="columns">2 Cols</option>
+                    </select>
                 </div>
             </div>
 

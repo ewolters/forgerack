@@ -197,18 +197,46 @@ FR.registerUnit('chart-panel', {
         if (annotateSwitch) annotateSwitch.addEventListener('click', function() {
             self._annotating = !self._annotating;
             annotateSwitch.classList.toggle('on', self._annotating);
-            if (viewport && ForgeViz.enableAnnotation && self._annotating) {
-                ForgeViz.enableAnnotation(viewport, function(a) { console.log('[SCOPE] Annotation:', a); });
-            } else if (viewport && ForgeViz.disableAnnotation) {
-                ForgeViz.disableAnnotation(viewport);
+            if (viewport && self._annotating) {
+                // Enable annotation mode — click data points to add notes
+                if (ForgeViz.enableAnnotation) {
+                    ForgeViz.enableAnnotation(viewport, function(a) {
+                        console.log('[SCOPE] Annotation:', a);
+                    });
+                }
+                viewport.style.cursor = 'crosshair';
+            } else if (viewport) {
+                if (ForgeViz.disableAnnotation) ForgeViz.disableAnnotation(viewport);
+                viewport.style.cursor = '';
             }
         });
 
         if (tableSwitch) tableSwitch.addEventListener('click', function() {
             self._tableVisible = !self._tableVisible;
             tableSwitch.classList.toggle('on', self._tableVisible);
-            if (viewport && ForgeViz.showDataTable && self._spec && self._tableVisible) {
-                ForgeViz.showDataTable(viewport, self._spec);
+            if (!viewport) return;
+
+            if (self._tableVisible && self._spec) {
+                // Show data table below the chart
+                if (ForgeViz.showDataTable) {
+                    ForgeViz.showDataTable(viewport, self._spec);
+                } else {
+                    // Fallback: build simple table from spec data
+                    var table = document.createElement('div');
+                    table.className = 'scope-data-table';
+                    table.style.cssText = 'margin-top:4px;max-height:120px;overflow-y:auto;font:11px/1.4 "JetBrains Mono",monospace;color:rgba(74,222,128,0.4);background:rgba(0,0,0,0.3);padding:4px 8px;border:1px solid rgba(0,0,0,0.4);border-radius:1px;';
+                    var traces = self._spec.traces || [];
+                    if (traces.length > 0 && traces[0].y) {
+                        var rows = traces[0].y.map(function(v, i) { return (i+1) + '\t' + (typeof v === 'number' ? v.toFixed(4) : v); });
+                        table.textContent = 'IDX\tVALUE\n' + rows.join('\n');
+                        table.style.whiteSpace = 'pre';
+                    }
+                    viewport.appendChild(table);
+                }
+            } else {
+                // Remove data table
+                var existing = viewport.querySelector('.scope-data-table, .fv-data-table');
+                if (existing) existing.remove();
             }
         });
     },
@@ -335,13 +363,16 @@ FR.registerUnit('chart-panel', {
         viewport.innerHTML = '';
         this._spec = spec;
 
+        // Viewport needs position:relative for color picker / annotation overlays
+        viewport.style.position = 'relative';
+
         if (typeof ForgeViz === 'undefined' || !ForgeViz.render) {
-            viewport.innerHTML = '<div style="padding:10px;font:9px monospace;color:rgba(74,222,128,0.2);">ForgeViz not loaded</div>';
+            viewport.innerHTML = '<div style="padding:10px;font:11px monospace;color:rgba(74,222,128,0.2);">ForgeViz not loaded</div>';
             return;
         }
 
-        // Render clean — NO ForgeViz toolbar (physical panel buttons handle export)
-        // Color picker enabled — click a trace to change color
+        // Render clean — no ForgeViz toolbar (physical panel buttons handle export)
+        // Color picker: RIGHT-CLICK a trace line to pick color
         ForgeViz.render(viewport, spec, {
             toolbar: false,
             colorPicker: true,

@@ -4054,4 +4054,316 @@ FR.registerUnit('clock', {
     }
 });
 
+// ═══════════════════════════════════════════════════════════
+// FORMULA FX-01 — Programmable Expression Evaluator
+// Safe expression parser — NO eval(), NO Function().
+// Tokenizes → parses → evaluates with whitelisted ops only.
+// ═══════════════════════════════════════════════════════════
+
+// Safe math expression evaluator (module-scoped, not global)
+var _formulaSafe = (function() {
+    var FUNCS = {
+        abs: Math.abs, log: Math.log, sqrt: Math.sqrt,
+        round: Math.round, floor: Math.floor, ceil: Math.ceil,
+        min: Math.min, max: Math.max, pow: Math.pow,
+        sin: Math.sin, cos: Math.cos, tan: Math.tan,
+        exp: Math.exp, log10: Math.log10, sign: Math.sign
+    };
+    var CONSTS = { pi: Math.PI, e: Math.E };
+
+    function tokenize(expr) {
+        var tokens = [];
+        var i = 0;
+        while (i < expr.length) {
+            var ch = expr[i];
+            if (ch === ' ' || ch === '\t') { i++; continue; }
+            if ('+-*/%()^,'.indexOf(ch) !== -1) { tokens.push({type:'op',value:ch}); i++; continue; }
+            if (ch >= '0' && ch <= '9' || ch === '.') {
+                var num = '';
+                while (i < expr.length && ((expr[i] >= '0' && expr[i] <= '9') || expr[i] === '.')) { num += expr[i]; i++; }
+                tokens.push({type:'num',value:parseFloat(num)});
+                continue;
+            }
+            if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch === '_') {
+                var name = '';
+                while (i < expr.length && ((expr[i] >= 'a' && expr[i] <= 'z') || (expr[i] >= 'A' && expr[i] <= 'Z') || (expr[i] >= '0' && expr[i] <= '9') || expr[i] === '_')) { name += expr[i]; i++; }
+                tokens.push({type:'name',value:name});
+                continue;
+            }
+            throw new Error('Unexpected character: ' + ch);
+        }
+        return tokens;
+    }
+
+    function parse(tokens) {
+        var pos = 0;
+        function peek() { return pos < tokens.length ? tokens[pos] : null; }
+        function eat(type, value) {
+            var t = peek();
+            if (!t || (type && t.type !== type) || (value && t.value !== value)) throw new Error('Expected ' + (value||type) + ' at position ' + pos);
+            pos++; return t;
+        }
+
+        function parseExpr() { return parseAdd(); }
+        function parseAdd() {
+            var left = parseMul();
+            while (peek() && peek().type === 'op' && (peek().value === '+' || peek().value === '-')) {
+                var op = eat('op').value;
+                var right = parseMul();
+                left = {type:'bin',op:op,left:left,right:right};
+            }
+            return left;
+        }
+        function parseMul() {
+            var left = parsePow();
+            while (peek() && peek().type === 'op' && (peek().value === '*' || peek().value === '/' || peek().value === '%')) {
+                var op = eat('op').value;
+                var right = parsePow();
+                left = {type:'bin',op:op,left:left,right:right};
+            }
+            return left;
+        }
+        function parsePow() {
+            var left = parseUnary();
+            if (peek() && peek().type === 'op' && peek().value === '^') {
+                eat('op');
+                var right = parseUnary();
+                left = {type:'bin',op:'^',left:left,right:right};
+            }
+            return left;
+        }
+        function parseUnary() {
+            if (peek() && peek().type === 'op' && peek().value === '-') {
+                eat('op');
+                return {type:'neg',child:parseAtom()};
+            }
+            return parseAtom();
+        }
+        function parseAtom() {
+            var t = peek();
+            if (!t) throw new Error('Unexpected end of expression');
+            if (t.type === 'num') { eat('num'); return {type:'num',value:t.value}; }
+            if (t.type === 'op' && t.value === '(') {
+                eat('op','(');
+                var inner = parseExpr();
+                eat('op',')');
+                return inner;
+            }
+            if (t.type === 'name') {
+                var name = eat('name').value;
+                // Function call?
+                if (peek() && peek().type === 'op' && peek().value === '(') {
+                    eat('op','(');
+                    var args = [];
+                    if (!(peek() && peek().type === 'op' && peek().value === ')')) {
+                        args.push(parseExpr());
+                        while (peek() && peek().type === 'op' && peek().value === ',') {
+                            eat('op',',');
+                            args.push(parseExpr());
+                        }
+                    }
+                    eat('op',')');
+                    return {type:'call',name:name,args:args};
+                }
+                // Constant or column reference
+                return {type:'ref',name:name};
+            }
+            throw new Error('Unexpected token: ' + t.value);
+        }
+
+        var ast = parseExpr();
+        if (pos < tokens.length) throw new Error('Unexpected token after expression: ' + tokens[pos].value);
+        return ast;
+    }
+
+    function evaluate(ast, vars) {
+        switch(ast.type) {
+            case 'num': return ast.value;
+            case 'neg': return -evaluate(ast.child, vars);
+            case 'ref':
+                if (CONSTS[ast.name] !== undefined) return CONSTS[ast.name];
+                if (vars[ast.name] !== undefined) return vars[ast.name];
+                throw new Error('Unknown variable: ' + ast.name);
+            case 'call':
+                if (!FUNCS[ast.name]) throw new Error('Unknown function: ' + ast.name + ' (allowed: ' + Object.keys(FUNCS).join(', ') + ')');
+                var argVals = ast.args.map(function(a) { return evaluate(a, vars); });
+                return FUNCS[ast.name].apply(null, argVals);
+            case 'bin':
+                var l = evaluate(ast.left, vars);
+                var r = evaluate(ast.right, vars);
+                switch(ast.op) {
+                    case '+': return l + r;
+                    case '-': return l - r;
+                    case '*': return l * r;
+                    case '/': return r === 0 ? NaN : l / r;
+                    case '%': return l % r;
+                    case '^': return Math.pow(l, r);
+                }
+        }
+        throw new Error('Invalid AST node');
+    }
+
+    return {
+        compile: function(expr) {
+            var tokens = tokenize(expr);
+            var ast = parse(tokens);
+            return function(vars) { return evaluate(ast, vars); };
+        },
+        FUNCS: FUNCS,
+        CONSTS: CONSTS
+    };
+})();
+
+
+FR.registerUnit('formula', {
+    init(el, id) {
+        this.el = el;
+        this.id = id;
+        this._data = null;
+        this._compiled = null;
+        this._exprText = '';
+
+        var self = this;
+        var exprInput = document.getElementById(id + '-expr');
+        var outNameInput = document.getElementById(id + '-out-name');
+        var evalBtn = document.getElementById(id + '-btn-eval');
+
+        if (evalBtn) evalBtn.addEventListener('click', function() { self._evaluate(); });
+        // Also eval on Enter
+        if (exprInput) exprInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); self._evaluate(); }
+        });
+    },
+
+    _log(msg, color) {
+        var logEl = document.getElementById(this.id + '-log');
+        if (!logEl) return;
+        var line = document.createElement('div');
+        line.style.color = color || 'rgba(212,136,74,0.5)';
+        line.textContent = msg;
+        logEl.appendChild(line);
+        logEl.scrollTop = logEl.scrollHeight;
+    },
+
+    _updateNixie(n) {
+        var s = String(n).padStart(4, ' ');
+        for (var i = 0; i < 4; i++) {
+            var el = document.getElementById(this.id + '-nix-' + i);
+            if (el) el.textContent = s[i] === ' ' ? '' : s[i];
+        }
+    },
+
+    _updateColRef() {
+        var refEl = document.getElementById(this.id + '-col-ref');
+        if (!refEl || !this._data) return;
+        refEl.innerHTML = '';
+        var self = this;
+        this._data.columns.forEach(function(col) {
+            var chip = document.createElement('span');
+            chip.style.cssText = 'font:700 8px/1 "JetBrains Mono",monospace;color:#d4884a;background:rgba(212,136,74,0.08);border:1px solid rgba(212,136,74,0.12);padding:1px 4px;border-radius:1px;cursor:pointer;';
+            chip.textContent = col;
+            chip.title = 'Click to insert column name';
+            chip.addEventListener('click', function() {
+                var input = document.getElementById(self.id + '-expr');
+                if (input) {
+                    var pos = input.selectionStart || input.value.length;
+                    input.value = input.value.slice(0, pos) + col + input.value.slice(pos);
+                    input.focus();
+                }
+            });
+            refEl.appendChild(chip);
+        });
+    },
+
+    _evaluate() {
+        if (!this._data) { this._log('ERROR: no data connected', 'rgba(239,68,68,0.6)'); return; }
+
+        var exprInput = document.getElementById(this.id + '-expr');
+        var outNameInput = document.getElementById(this.id + '-out-name');
+        var expr = exprInput ? exprInput.value.trim() : '';
+        var outName = outNameInput ? outNameInput.value.trim() || 'result' : 'result';
+
+        if (!expr) { this._log('ERROR: empty expression', 'rgba(239,68,68,0.6)'); return; }
+
+        // Compile
+        var compiled;
+        try {
+            compiled = _formulaSafe.compile(expr);
+        } catch(e) {
+            this._log('PARSE ERROR: ' + e.message, 'rgba(239,68,68,0.6)');
+            FR.LED(document.getElementById(this.id + '-led')).set('red');
+            return;
+        }
+
+        // Evaluate row by row
+        var data = this._data;
+        var n = data.data[data.columns[0]] ? data.data[data.columns[0]].length : 0;
+        var results = [];
+        var errors = 0;
+
+        for (var i = 0; i < n; i++) {
+            var vars = {};
+            data.columns.forEach(function(col) {
+                vars[col] = data.data[col] ? parseFloat(data.data[col][i]) : NaN;
+            });
+            try {
+                var val = compiled(vars);
+                results.push(typeof val === 'number' ? val : NaN);
+            } catch(e) {
+                results.push(NaN);
+                errors++;
+            }
+        }
+
+        // Build output
+        var outData = { data: {}, columns: data.columns.slice() };
+        data.columns.forEach(function(col) { outData.data[col] = data.data[col]; });
+        outData.data[outName] = results;
+        if (outData.columns.indexOf(outName) === -1) outData.columns.push(outName);
+
+        // Log
+        var validCount = results.filter(function(v) { return !isNaN(v); }).length;
+        this._log(outName + ' = ' + expr, 'rgba(212,136,74,0.7)');
+        this._log('  ' + validCount + '/' + n + ' rows computed' + (errors > 0 ? ', ' + errors + ' errors' : ''), errors > 0 ? 'rgba(245,158,11,0.6)' : 'rgba(34,197,94,0.5)');
+
+        // Preview
+        var prevEl = document.getElementById(this.id + '-preview');
+        if (prevEl) {
+            var preview = results.slice(0, 12).map(function(v, i) {
+                return '<div style="color:rgba(212,136,74,' + (isNaN(v) ? '0.15' : '0.4') + ')">' + (isNaN(v) ? 'NaN' : v.toFixed(4)) + '</div>';
+            }).join('');
+            if (n > 12) preview += '<div style="color:rgba(212,136,74,0.15);">...' + (n - 12) + ' more</div>';
+            prevEl.innerHTML = preview;
+        }
+
+        this._updateNixie(n);
+        FR.LED(document.getElementById(this.id + '-led')).set(errors > 0 ? 'amber' : 'green');
+
+        // Emit
+        FR.emit(this.id, 'result', outData);
+        FR.emit(this.id, 'column', { data: outData.data, columns: [outName] });
+        FR.emit(this.id, 'thru', data);
+    },
+
+    receive(inputName, data, fromUnit) {
+        if (!data) return;
+        this._source = fromUnit || '?';
+        if (data.columns && data.data) {
+            this._data = { columns: data.columns.slice(), data: {} };
+            data.columns.forEach(function(c) { this._data.data[c] = data.data[c] ? data.data[c].slice() : []; }.bind(this));
+        } else if (Array.isArray(data)) {
+            this._data = { columns: ['x'], data: { x: data.slice() } };
+        }
+
+        var n = this._data.data[this._data.columns[0]] ? this._data.data[this._data.columns[0]].length : 0;
+        this._updateNixie(n);
+        this._updateColRef();
+        this._log('Received ' + this._data.columns.length + ' columns, ' + n + ' rows', 'rgba(212,136,74,0.5)');
+        FR.LED(document.getElementById(this.id + '-led')).set('green');
+        FR.emit(this.id, 'thru', data);
+    },
+
+    getOutput(channel) { return null; }
+});
+
 })(ForgeRack);

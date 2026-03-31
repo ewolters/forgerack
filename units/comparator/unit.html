@@ -84,34 +84,20 @@
                 </div>
             </div>
 
-            <!-- Right: secondary readouts -->
-            <div style="width:62px;flex-shrink:0;display:flex;flex-direction:column;gap:3px;justify-content:center;overflow:hidden;">
-                <!-- Mean A -->
-                <div style="text-align:center;">
-                    <div class="fluke-lcd" style="padding:2px 4px;">
-                        <div class="fluke-lcd-ghost" style="font-size:11px;">888.88</div>
-                        <div class="fluke-lcd-value" id="${id}-mean-a" style="font-size:11px;color:#8b2020;">—</div>
-                    </div>
-                    <span style="font:700 7px/1 'Arial',sans-serif;color:rgba(180,40,40,0.5);letter-spacing:0.08em;">x&#x0304; A</span>
+            <!-- Right: simple text readouts matching dropdown height -->
+            <div style="width:62px;flex-shrink:0;display:flex;flex-direction:column;gap:6px;justify-content:center;">
+                <div>
+                    <span style="font:700 8px/1 'Arial',sans-serif;color:rgba(180,40,40,0.5);letter-spacing:0.06em;">x&#x0304; A</span>
+                    <div id="${id}-mean-a" style="font:700 12px/1 'JetBrains Mono',monospace;color:rgba(180,40,40,0.6);margin-top:2px;">—</div>
                 </div>
-                <!-- Mean B -->
-                <div style="text-align:center;">
-                    <div class="fluke-lcd" style="padding:2px 4px;">
-                        <div class="fluke-lcd-ghost" style="font-size:11px;">888.88</div>
-                        <div class="fluke-lcd-value" id="${id}-mean-b" style="font-size:11px;color:#1e40af;">—</div>
-                    </div>
-                    <span style="font:700 7px/1 'Arial',sans-serif;color:rgba(40,80,180,0.5);letter-spacing:0.08em;">x&#x0304; B</span>
+                <div>
+                    <span style="font:700 8px/1 'Arial',sans-serif;color:rgba(40,80,180,0.5);letter-spacing:0.06em;">x&#x0304; B</span>
+                    <div id="${id}-mean-b" style="font:700 12px/1 'JetBrains Mono',monospace;color:rgba(40,80,180,0.6);margin-top:2px;">—</div>
                 </div>
-                <!-- N counts -->
-                <div style="display:flex;gap:4px;justify-content:center;">
-                    <div style="text-align:center;">
-                        <span id="${id}-n-a" style="font:700 10px/1 'JetBrains Mono',monospace;color:rgba(180,40,40,0.4);">—</span>
-                        <div style="font:600 6px/1 'Arial',sans-serif;color:rgba(20,10,0,0.3);">nA</div>
-                    </div>
-                    <div style="text-align:center;">
-                        <span id="${id}-n-b" style="font:700 10px/1 'JetBrains Mono',monospace;color:rgba(40,80,180,0.4);">—</span>
-                        <div style="font:600 6px/1 'Arial',sans-serif;color:rgba(20,10,0,0.3);">nB</div>
-                    </div>
+                <div style="display:flex;gap:6px;">
+                    <span style="font:600 8px/1 'Arial',sans-serif;color:rgba(20,10,0,0.35);">n</span>
+                    <span id="${id}-n-a" style="font:700 9px/1 'JetBrains Mono',monospace;color:rgba(180,40,40,0.4);">—</span>
+                    <span id="${id}-n-b" style="font:700 9px/1 'JetBrains Mono',monospace;color:rgba(40,80,180,0.4);">—</span>
                 </div>
             </div>
         </div>

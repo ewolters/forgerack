@@ -1,11 +1,10 @@
 <!--
  ╔══════════════════════════════════════════════════════════════╗
  ║  MANIFOLD SP-04 — Passive Signal Splitter                   ║
- ║  Manufacturer: FORGERACK / SVEND MFG                        ║
- ║  Identity: Clean Scandinavian lab equipment. LIGHT faceplate ║
- ║  — warm off-white / birch. Contrast against the dark rack.  ║
- ║  Like a Bang & Olufsen piece dropped into a server room.    ║
- ║  Rounded sans-serif. Minimal chrome. Calm.                  ║
+ ║  Manufacturer: NORDKRAFT                                    ║
+ ║  Identity: Clean Scandinavian lab equipment. Warm birch.    ║
+ ║  Front panel: status LEDs, signal meter, data shape LCD.    ║
+ ║  All routing happens on the back panel jacks.               ║
  ╚══════════════════════════════════════════════════════════════╝
 -->
 
@@ -13,10 +12,8 @@
 <div class="rack-unit-front u2 mfr-nordkraft" data-unit="splitter" data-id="${id}" style="
     --device-accent:#78716c;
     background:
-        /* Fine linen texture */
         repeating-linear-gradient(45deg,
             rgba(0,0,0,0.008) 0px, transparent 1px, transparent 3px),
-        /* Warm birch / off-white base — LIGHT */
         linear-gradient(180deg, #2a2720 0%, #262320 40%, #28251f 60%, #242118 100%);
     overflow:hidden;
 ">
@@ -24,9 +21,9 @@
         display:flex;align-items:center;
         padding:6px 48px;
         height:100%;
-        gap:14px;
+        gap:16px;
     ">
-        <!-- Brand — clean, round, Scandinavian -->
+        <!-- Brand -->
         <div style="display:flex;flex-direction:column;gap:1px;">
             <span style="
                 font:300 17px/1 'Helvetica Neue','Helvetica','Arial',sans-serif;
@@ -41,86 +38,64 @@
             ">signal splitter</span>
         </div>
 
-        <!-- Status LED — lights when data flows through -->
-        <div class="led-housing" style="margin-left:8px;">
+        <!-- Input status: LED + label -->
+        <div style="display:flex;align-items:center;gap:5px;margin-left:6px;">
+            <span style="font:600 8px/1 'Helvetica Neue',sans-serif;color:rgba(180,170,155,0.25);text-transform:uppercase;letter-spacing:0.1em;">In</span>
             <span class="led lg" id="${id}-led"></span>
         </div>
 
-        <!-- Input jack — larger recessed circle -->
-        <div style="display:flex;align-items:center;gap:6px;">
-            <span style="
-                font:600 9px/1 'Helvetica Neue',sans-serif;
-                color:rgba(180,170,155,0.3);
-                text-transform:uppercase;
-                letter-spacing:0.12em;
-            ">in</span>
+        <!-- Signal flow meter — horizontal bar -->
+        <div style="width:60px;display:flex;flex-direction:column;gap:2px;align-items:center;">
             <div style="
-                width:26px;height:26px;border-radius:50%;
-                background:rgba(0,0,0,0.25);
-                box-shadow:inset 0 2px 4px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.02);
-                display:flex;align-items:center;justify-content:center;
+                width:100%;height:6px;
+                background:rgba(0,0,0,0.3);border:1px solid rgba(0,0,0,0.4);border-radius:1px;
+                box-shadow:inset 0 1px 2px rgba(0,0,0,0.3);
+                overflow:hidden;
             ">
-                <div class="jack" data-input="signal" data-unit-id="${id}" style="width:16px;height:16px;border-color:rgba(180,170,155,0.25);border-width:2px;"></div>
+                <div id="${id}-meter" style="height:100%;width:0%;background:#4ade80;border-radius:1px;transition:width 0.3s;"></div>
             </div>
+            <span style="font:500 7px/1 'Helvetica Neue',sans-serif;color:rgba(180,170,155,0.15);letter-spacing:0.1em;">SIGNAL</span>
         </div>
 
-        <!-- Flow indicator arrow -->
+        <!-- Flow arrow -->
         <div style="display:flex;align-items:center;gap:2px;">
-            <div style="width:20px;height:1px;background:linear-gradient(90deg, rgba(180,170,155,0.2), rgba(180,170,155,0.1));"></div>
-            <div style="width:0;height:0;border-top:3px solid transparent;border-bottom:3px solid transparent;border-left:5px solid rgba(180,170,155,0.1);"></div>
+            <div style="width:14px;height:1px;background:linear-gradient(90deg, rgba(180,170,155,0.15), rgba(180,170,155,0.06));"></div>
+            <div style="width:0;height:0;border-top:3px solid transparent;border-bottom:3px solid transparent;border-left:5px solid rgba(180,170,155,0.08);"></div>
         </div>
 
-        <!-- Output jacks — larger, with LEDs -->
-        <div style="display:flex;gap:14px;align-items:center;">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
-                <div style="display:flex;align-items:center;gap:3px;">
-                    <span class="led" id="${id}-led-a" style="width:6px;height:6px;"></span>
-                    <div style="width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,0.2);
-                        box-shadow:inset 0 2px 3px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;">
-                        <div class="jack" data-output="a" data-unit-id="${id}" style="width:14px;height:14px;border-color:rgba(180,170,155,0.2);border-width:2px;"></div>
-                    </div>
-                </div>
+        <!-- Output channel LED bank -->
+        <div style="display:flex;gap:10px;align-items:center;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                <span class="led lg" id="${id}-led-a"></span>
                 <span style="font:600 9px/1 'Helvetica Neue',sans-serif;color:rgba(180,170,155,0.25);letter-spacing:0.08em;">a</span>
             </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
-                <div style="display:flex;align-items:center;gap:3px;">
-                    <span class="led" id="${id}-led-b" style="width:6px;height:6px;"></span>
-                    <div style="width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,0.2);
-                        box-shadow:inset 0 2px 3px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;">
-                        <div class="jack" data-output="b" data-unit-id="${id}" style="width:14px;height:14px;border-color:rgba(180,170,155,0.2);border-width:2px;"></div>
-                    </div>
-                </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                <span class="led lg" id="${id}-led-b"></span>
                 <span style="font:600 9px/1 'Helvetica Neue',sans-serif;color:rgba(180,170,155,0.25);letter-spacing:0.08em;">b</span>
             </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
-                <div style="display:flex;align-items:center;gap:3px;">
-                    <span class="led" id="${id}-led-c" style="width:6px;height:6px;"></span>
-                    <div style="width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,0.2);
-                        box-shadow:inset 0 2px 3px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;">
-                        <div class="jack" data-output="c" data-unit-id="${id}" style="width:14px;height:14px;border-color:rgba(180,170,155,0.2);border-width:2px;"></div>
-                    </div>
-                </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                <span class="led lg" id="${id}-led-c"></span>
                 <span style="font:600 9px/1 'Helvetica Neue',sans-serif;color:rgba(180,170,155,0.25);letter-spacing:0.08em;">c</span>
             </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
-                <div style="display:flex;align-items:center;gap:3px;">
-                    <span class="led" id="${id}-led-d" style="width:6px;height:6px;"></span>
-                    <div style="width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,0.2);
-                        box-shadow:inset 0 2px 3px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;">
-                        <div class="jack" data-output="d" data-unit-id="${id}" style="width:14px;height:14px;border-color:rgba(180,170,155,0.2);border-width:2px;"></div>
-                    </div>
-                </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                <span class="led lg" id="${id}-led-d"></span>
                 <span style="font:600 9px/1 'Helvetica Neue',sans-serif;color:rgba(180,170,155,0.25);letter-spacing:0.08em;">d</span>
             </div>
         </div>
 
-        <!-- Model — right aligned, whisper quiet -->
-        <span style="
-            font:300 9px/1 'Helvetica Neue',sans-serif;
-            color:rgba(180,170,155,0.12);
-            margin-left:auto;
-            letter-spacing:0.08em;
-        ">sp&#x2011;04</span>
+        <!-- Mini data shape LCD -->
+        <div style="margin-left:auto;display:flex;flex-direction:column;gap:1px;align-items:flex-end;">
+            <div style="
+                background:linear-gradient(180deg, #9aaa8a, #8a9a7a);
+                border:1px solid #2a2a2a;border-radius:1px;
+                box-shadow:inset 0 1px 2px rgba(0,0,0,0.2);
+                padding:2px 5px;position:relative;overflow:hidden;
+            ">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.06),transparent 40%,rgba(0,0,0,0.04));pointer-events:none;"></div>
+                <div id="${id}-shape" style="font:700 9px/1 'JetBrains Mono',monospace;color:#0a1208;letter-spacing:0.02em;position:relative;white-space:nowrap;">—</div>
+            </div>
+            <span style="font:300 6px/1 'Helvetica Neue',sans-serif;color:rgba(180,170,155,0.12);letter-spacing:0.08em;">sp&#x2011;04</span>
+        </div>
     </div>
 </div>
 

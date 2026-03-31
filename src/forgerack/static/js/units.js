@@ -1164,25 +1164,61 @@ FR.registerUnit('splitter', {
         this.el = el;
         this.id = id;
         this._data = null;
-        console.log('[MANIFOLD] init:', id);
+        this._healthy = false;
     },
 
     receive(inputName, data) {
-        console.log('[MANIFOLD]', this.id, 'receive:', inputName, 'data:', data ? 'yes' : 'no');
         this._data = data;
 
-        // Light up main LED
-        FR.LED(document.getElementById(this.id + '-led')).set('green');
+        // Determine health
+        var healthy = false;
+        var shapeText = '—';
+        var meterPct = 0;
 
-        // Fan out to all outputs + light per-channel LEDs
+        if (data && data.data && data.columns) {
+            var cols = data.columns.length;
+            var rows = data.data[data.columns[0]] ? data.data[data.columns[0]].length : 0;
+            healthy = cols > 0 && rows > 0;
+            shapeText = rows + ' \u00d7 ' + cols;
+            meterPct = Math.min(100, Math.round(rows / 10)); // scale: 1000 rows = full
+        } else if (Array.isArray(data) && data.length > 0) {
+            healthy = true;
+            shapeText = data.length + ' vals';
+            meterPct = Math.min(100, Math.round(data.length / 10));
+        } else if (data) {
+            healthy = true;
+            shapeText = typeof data === 'string' ? data.length + ' ch' : 'obj';
+            meterPct = 50;
+        }
+
+        this._healthy = healthy;
+
+        // Main input LED
+        FR.LED(document.getElementById(this.id + '-led')).set(healthy ? 'green' : 'red');
+
+        // Signal meter
+        var meter = document.getElementById(this.id + '-meter');
+        if (meter) {
+            meter.style.width = meterPct + '%';
+            meter.style.background = healthy ? '#4ade80' : '#ef4444';
+        }
+
+        // Shape LCD
+        var shape = document.getElementById(this.id + '-shape');
+        if (shape) shape.textContent = shapeText;
+
+        // Fan out to all outputs + per-channel LEDs
         var channels = ['a', 'b', 'c', 'd'];
         var self = this;
         channels.forEach(function(ch) {
             FR.emit(self.id, ch, data);
-            // Light channel LED if someone is listening
+            var led = document.getElementById(self.id + '-led-' + ch);
             var key = self.id + ':' + ch;
-            if (FR._listeners[key] && FR._listeners[key].length > 0) {
-                FR.LED(document.getElementById(self.id + '-led-' + ch)).set('green');
+            var hasListener = FR._listeners[key] && FR._listeners[key].length > 0;
+            if (hasListener) {
+                FR.LED(led).set(healthy ? 'green' : 'red');
+            } else {
+                FR.LED(led).off();
             }
         });
     },

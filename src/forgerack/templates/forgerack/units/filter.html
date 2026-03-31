@@ -69,15 +69,21 @@
                     </div>
                 </div>
 
-                <!-- Threshold -->
+                <!-- Value — numeric input OR factor dropdown -->
                 <div class="panel-recessed" style="padding:4px 6px;display:flex;flex-direction:column;gap:2px;align-items:center;">
                     <div style="font:700 8px/1 'Helvetica Neue',sans-serif;color:rgba(34,211,238,0.2);text-transform:uppercase;letter-spacing:0.15em;">Value</div>
-                    <input type="number" id="${id}-threshold" value="0" step="any" style="
-                        width:60px;background:rgba(0,0,0,0.5);border:1px solid rgba(34,211,238,0.12);
+                    <input type="text" id="${id}-threshold" value="0" style="
+                        width:70px;background:rgba(0,0,0,0.5);border:1px solid rgba(34,211,238,0.12);
                         color:#22d3ee;padding:2px 5px;border-radius:1px;text-align:center;
                         font:700 11px/1 'JetBrains Mono',monospace;
                         box-shadow:inset 0 1px 3px rgba(0,0,0,0.4);
                     ">
+                    <select id="${id}-factor-select" style="
+                        display:none;width:70px;
+                        background:rgba(0,0,0,0.5);border:1px solid rgba(34,211,238,0.12);
+                        color:rgba(34,211,238,0.6);padding:2px 4px;border-radius:1px;
+                        font:10px/1 'JetBrains Mono',monospace;
+                    "></select>
                 </div>
 
                 <!-- Add button -->
@@ -114,33 +120,68 @@
             </div>
         </div>
 
-        <!-- ── RIGHT: Readouts ── -->
+        <!-- ── RIGHT: Digital clock readouts ── -->
         <div style="width:90px;display:flex;flex-direction:column;gap:5px;">
-            <!-- Rows remaining — big readout -->
-            <div class="readout-window" style="padding:8px 6px;">
-                <div class="readout-ghost" style="font-size:32px;">8888</div>
-                <div id="${id}-rows-out" class="readout-active" style="font-size:32px;color:rgba(34,211,238,0.2);">—</div>
-                <div class="readout-tag" style="color:rgba(34,211,238,0.3);">Rows</div>
+            <!-- Rows remaining — big LCD -->
+            <div style="
+                background:#020404;border:1px solid rgba(0,0,0,0.7);border-radius:2px;
+                box-shadow:inset 0 2px 6px rgba(0,0,0,0.7);
+                padding:6px 4px 4px;text-align:center;
+            ">
+                <div style="position:relative;">
+                    <div style="font:italic 700 36px/1 'Courier New',monospace;color:rgba(34,211,238,0.04);letter-spacing:0.05em;">8888</div>
+                    <div id="${id}-rows-out" style="font:italic 700 36px/1 'Courier New',monospace;color:rgba(34,211,238,0.2);
+                        letter-spacing:0.05em;position:absolute;inset:0;">—</div>
+                </div>
+                <div style="font:600 9px/1 'Arial',sans-serif;color:rgba(34,211,238,0.3);
+                    text-transform:uppercase;letter-spacing:0.15em;margin-top:3px;">Rows</div>
             </div>
 
-            <!-- Pass counter -->
-            <div class="readout-window" style="padding:5px 6px;">
-                <div class="readout-ghost">888</div>
-                <div id="${id}-pass" class="readout-active" style="color:#22c55e;">—</div>
-                <div class="readout-tag" style="color:rgba(34,197,94,0.3);">Pass</div>
+            <!-- Pass — LCD -->
+            <div style="
+                background:#020404;border:1px solid rgba(0,0,0,0.7);border-radius:2px;
+                box-shadow:inset 0 2px 6px rgba(0,0,0,0.7);
+                padding:4px 4px 3px;text-align:center;
+            ">
+                <div style="position:relative;">
+                    <div style="font:italic 700 26px/1 'Courier New',monospace;color:rgba(74,222,128,0.04);letter-spacing:0.05em;">8888</div>
+                    <div id="${id}-pass" style="font:italic 700 26px/1 'Courier New',monospace;color:#4ade80;
+                        text-shadow:0 0 10px rgba(74,222,128,0.4);letter-spacing:0.05em;
+                        position:absolute;inset:0;">—</div>
+                </div>
+                <div style="font:600 9px/1 'Arial',sans-serif;color:rgba(74,222,128,0.5);
+                    text-transform:uppercase;letter-spacing:0.15em;margin-top:2px;">Pass</div>
             </div>
 
-            <!-- Reject counter -->
-            <div class="readout-window" style="padding:5px 6px;">
-                <div class="readout-ghost">888</div>
-                <div id="${id}-reject" class="readout-active" style="color:#ef4444;">—</div>
-                <div class="readout-tag" style="color:rgba(239,68,68,0.3);">Reject</div>
+            <!-- Reject — LCD -->
+            <div style="
+                background:#020404;border:1px solid rgba(0,0,0,0.7);border-radius:2px;
+                box-shadow:inset 0 2px 6px rgba(0,0,0,0.7);
+                padding:4px 4px 3px;text-align:center;
+            ">
+                <div style="position:relative;">
+                    <div style="font:italic 700 26px/1 'Courier New',monospace;color:rgba(248,113,113,0.04);letter-spacing:0.05em;">8888</div>
+                    <div id="${id}-reject" style="font:italic 700 26px/1 'Courier New',monospace;color:#f87171;
+                        text-shadow:0 0 10px rgba(248,113,113,0.4);letter-spacing:0.05em;
+                        position:absolute;inset:0;">—</div>
+                </div>
+                <div style="font:600 9px/1 'Arial',sans-serif;color:rgba(248,113,113,0.5);
+                    text-transform:uppercase;letter-spacing:0.15em;margin-top:2px;">Reject</div>
             </div>
 
-            <!-- Filter count -->
-            <div style="text-align:center;margin-top:auto;">
-                <div id="${id}-filter-count" style="font:700 18px/1 'JetBrains Mono',monospace;color:rgba(34,211,238,0.15);">0</div>
-                <div style="font:600 7px/1 'Arial',sans-serif;color:rgba(34,211,238,0.12);text-transform:uppercase;letter-spacing:0.1em;">Filters</div>
+            <!-- Filter count — small LCD -->
+            <div style="
+                background:#020404;border:1px solid rgba(0,0,0,0.7);border-radius:2px;
+                box-shadow:inset 0 1px 4px rgba(0,0,0,0.6);
+                padding:3px 4px 2px;text-align:center;margin-top:auto;
+            ">
+                <div style="position:relative;">
+                    <div style="font:italic 700 20px/1 'Courier New',monospace;color:rgba(34,211,238,0.04);letter-spacing:0.05em;">88</div>
+                    <div id="${id}-filter-count" style="font:italic 700 20px/1 'Courier New',monospace;color:rgba(34,211,238,0.3);
+                        letter-spacing:0.05em;position:absolute;inset:0;">0</div>
+                </div>
+                <div style="font:600 8px/1 'Arial',sans-serif;color:rgba(34,211,238,0.2);
+                    text-transform:uppercase;letter-spacing:0.12em;margin-top:2px;">Filters</div>
             </div>
         </div>
     </div>

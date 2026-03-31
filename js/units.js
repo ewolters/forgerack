@@ -538,6 +538,62 @@ FR.registerUnit('filter', {
         if (threshInput) threshInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') self._addFilter();
         });
+
+        // Column selector change — swap between numeric input and factor dropdown
+        var colSelect = document.getElementById(id + '-col-select');
+        if (colSelect) {
+            colSelect.addEventListener('change', function() {
+                self._updateValueInput(colSelect.value);
+            });
+        }
+    },
+
+    _isNumericCol(col) {
+        if (!this._inputData || !this._inputData.data[col]) return true;
+        var vals = this._inputData.data[col];
+        var numCount = 0, total = 0;
+        for (var i = 0; i < vals.length; i++) {
+            if (vals[i] !== null && vals[i] !== undefined && vals[i] !== '') {
+                total++;
+                if (typeof vals[i] === 'number') numCount++;
+            }
+        }
+        return total > 0 && numCount / total > 0.5;
+    },
+
+    _updateValueInput(col) {
+        var threshInput = document.getElementById(this.id + '-threshold');
+        var factorSelect = document.getElementById(this.id + '-factor-select');
+        if (!threshInput || !factorSelect) return;
+
+        if (!col || this._isNumericCol(col)) {
+            // Show numeric input
+            threshInput.style.display = '';
+            factorSelect.style.display = 'none';
+        } else {
+            // Show factor dropdown with unique values
+            threshInput.style.display = 'none';
+            factorSelect.style.display = '';
+            factorSelect.innerHTML = '';
+            var vals = this._inputData.data[col] || [];
+            var unique = [];
+            var seen = {};
+            for (var i = 0; i < vals.length; i++) {
+                var v = vals[i];
+                if (v === null || v === undefined || v === '') continue;
+                var key = String(v).toLowerCase();
+                if (!seen[key]) {
+                    seen[key] = true;
+                    unique.push(String(v));
+                }
+            }
+            unique.sort();
+            unique.forEach(function(u) {
+                var opt = document.createElement('option');
+                opt.value = u; opt.textContent = u;
+                factorSelect.appendChild(opt);
+            });
+        }
     },
 
     receive(inputName, data) {
@@ -578,12 +634,21 @@ FR.registerUnit('filter', {
     _addFilter() {
         var colSelect = document.getElementById(this.id + '-col-select');
         var threshInput = document.getElementById(this.id + '-threshold');
-        if (!colSelect || !threshInput) return;
+        var factorSelect = document.getElementById(this.id + '-factor-select');
+        if (!colSelect) return;
 
         var col = colSelect.value;
         if (!col) return;
 
-        var rawValue = threshInput.value.trim();
+        var rawValue;
+        if (factorSelect && factorSelect.style.display !== 'none') {
+            rawValue = factorSelect.value;
+        } else if (threshInput) {
+            rawValue = threshInput.value.trim();
+        } else {
+            return;
+        }
+
         // Store as number if possible, string otherwise (for factor columns)
         var numVal = Number(rawValue);
         var value = (rawValue !== '' && !isNaN(numVal)) ? numVal : rawValue;

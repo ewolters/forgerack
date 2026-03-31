@@ -256,33 +256,21 @@ FR.registerUnit('chart-panel', {
             return;
         }
 
-        // Render with full interactive toolkit enabled
+        // Render with full ForgeViz interactive toolkit via options
         ForgeViz.render(viewport, spec, {
-            toolbar: true,          // Copy, SVG, PNG, data table
+            toolbar: true,
+            editableTitle: true,
+            editableAxes: true,
+            colorPicker: true,
+            onTitleSave: function(t) { console.log('[SCOPE] Title:', t); },
+            onAxisSave: function(a, v) { console.log('[SCOPE] Axis:', a, v); },
+            onColorChange: function(i, c) { console.log('[SCOPE] Color:', i, c); },
         });
 
-        // Enable interactive features if available
-        if (ForgeViz.enableThresholdDrag && this.chartType === 'control') {
-            ForgeViz.enableThresholdDrag(viewport, function(lineValue) {
-                console.log('[SCOPE] Threshold dragged to:', lineValue);
-            });
-        }
-
-        if (ForgeViz.enableAnnotation) {
-            ForgeViz.enableAnnotation(viewport, function(annotation) {
-                console.log('[SCOPE] Annotation added:', annotation);
-            });
-        }
-
-        if (ForgeViz.enableColorPicker) {
-            ForgeViz.enableColorPicker(viewport, function(traceIdx, newColor) {
-                console.log('[SCOPE] Color changed:', traceIdx, newColor);
-            });
-        }
-
-        if (ForgeViz.enableTitleEdit) {
-            ForgeViz.enableTitleEdit(viewport, function(newTitle) {
-                console.log('[SCOPE] Title changed:', newTitle);
+        // Threshold drag for SPC mode (separate call, not an option)
+        if (this.chartType === 'control' && ForgeViz.enableThresholdDrag) {
+            ForgeViz.enableThresholdDrag(viewport, function(val) {
+                console.log('[SCOPE] Threshold dragged:', val);
             });
         }
 

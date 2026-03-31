@@ -184,6 +184,9 @@
 .switch-momentary:active { transform: scale(0.9); box-shadow: inset 0 1px 2px rgba(0,0,0,0.3); }
 
 
+/* ── Jack z-index — jacks must sit above cable SVG overlay ── */
+.patch-jack, .jack { position: relative; z-index: 15; }
+
 /* ── LED ── */
 
 .led {

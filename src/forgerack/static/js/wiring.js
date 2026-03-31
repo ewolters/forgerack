@@ -434,11 +434,16 @@ function _hideCableTooltip() {
 
 function _initJackInteraction() {
     document.addEventListener('click', function(e) {
-        if (e.target.closest('.rack-back, .rack-unit-back, [data-unit-back]')) {
-            console.log('[ForgeRack] Back panel click:', e.target.tagName, e.target.className, e.target);
+        // Jacks have higher z-index than cables — but cable hit areas can
+        // overlap jacks. Ensure jacks always win by checking both targets.
+        var jack = e.target.closest('.patch-jack, .jack');
+
+        // If click landed on cable hit area, check if a jack is underneath
+        if (!jack && e.target.closest('.forge-cable-hit')) {
+            // Cable hit area click — not a jack click, ignore for wiring
+            return;
         }
 
-        const jack = e.target.closest('.patch-jack, .jack');
         if (!jack) {
             if (pendingJack) {
                 pendingJack.classList.remove('pending');
@@ -449,18 +454,31 @@ function _initJackInteraction() {
             return;
         }
 
+        // Prevent event from bubbling to cable hit areas
+        e.stopPropagation();
+
         const unitId = _resolveUnitId(jack);
         const output = jack.dataset.output;
         const input = jack.dataset.input;
 
         if (!pendingJack) {
+            // Start a new cable — works even if jack is already connected (fan-out)
             pendingJack = jack;
             jack.classList.add('pending');
             jack.style.boxShadow = '0 0 8px rgba(74,222,128,0.5)';
         } else {
+            // Complete cable
             const firstUnitId = _resolveUnitId(pendingJack);
             const firstOutput = pendingJack.dataset.output;
             const firstInput = pendingJack.dataset.input;
+
+            // Don't wire a jack to itself
+            if (pendingJack === jack) {
+                pendingJack.classList.remove('pending');
+                pendingJack.style.boxShadow = '';
+                pendingJack = null;
+                return;
+            }
 
             let srcId, srcOut, tgtId, tgtIn;
 
@@ -472,6 +490,19 @@ function _initJackInteraction() {
                 tgtId = firstUnitId; tgtIn = firstInput;
             } else {
                 console.warn('[ForgeRack] Cannot wire: both jacks are same direction');
+                pendingJack.classList.remove('pending');
+                pendingJack.style.boxShadow = '';
+                pendingJack = null;
+                return;
+            }
+
+            // Check for duplicate cable
+            var isDuplicate = cables.some(function(c) {
+                return c.source.unitId === srcId && c.source.output === srcOut &&
+                       c.target.unitId === tgtId && c.target.input === tgtIn;
+            });
+            if (isDuplicate) {
+                console.warn('[ForgeRack] Cable already exists');
                 pendingJack.classList.remove('pending');
                 pendingJack.style.boxShadow = '';
                 pendingJack = null;
@@ -573,7 +604,64 @@ function _initDisconnect() {
         var jack = e.target.closest('.patch-jack, .jack');
         if (jack && jack.classList.contains('connected')) {
             e.preventDefault();
-            FR.disconnectJack(jack);
+
+            // Find all cables touching this jack
+            var unitId = _resolveUnitId(jack);
+            var output = jack.dataset.output;
+            var input = jack.dataset.input;
+            var matching = [];
+            cables.forEach(function(c, i) {
+                if (output && c.source.unitId === unitId && c.source.output === output) matching.push(i);
+                if (input && c.target.unitId === unitId && c.target.input === input) matching.push(i);
+            });
+
+            if (matching.length <= 1) {
+                // Single cable — just disconnect
+                FR.disconnectJack(jack);
+                return;
+            }
+
+            // Multiple cables — show picker popup
+            var popup = document.createElement('div');
+            popup.style.cssText = 'position:fixed;left:' + e.clientX + 'px;top:' + e.clientY + 'px;z-index:10000;' +
+                'background:#1a1a1a;border:1px solid rgba(255,255,255,0.15);border-radius:4px;padding:4px;' +
+                'font:10px/1.4 "JetBrains Mono",monospace;color:#e8efe8;' +
+                'box-shadow:0 4px 12px rgba(0,0,0,0.6);display:flex;flex-direction:column;gap:2px;';
+
+            matching.forEach(function(idx) {
+                var c = cables[idx];
+                if (!c) return;
+                var srcType = (_unitType(c.source.unitId) || c.source.unitId).toUpperCase();
+                var tgtType = (_unitType(c.target.unitId) || c.target.unitId).toUpperCase();
+                var btn = document.createElement('button');
+                btn.textContent = '\u2715 ' + srcType + ':' + c.source.output + ' \u2192 ' + tgtType + ':' + c.target.input;
+                btn.style.cssText = 'background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);' +
+                    'color:#f87171;padding:3px 8px;border-radius:2px;cursor:pointer;font:inherit;text-align:left;';
+                btn.addEventListener('click', function() {
+                    FR.disconnect(c.source.unitId, c.source.output, c.target.unitId, c.target.input);
+                    popup.remove();
+                });
+                popup.appendChild(btn);
+            });
+
+            // "Disconnect all" option
+            var allBtn = document.createElement('button');
+            allBtn.textContent = '\u2715 Disconnect all (' + matching.length + ')';
+            allBtn.style.cssText = 'background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.3);' +
+                'color:#ef4444;padding:3px 8px;border-radius:2px;cursor:pointer;font:inherit;font-weight:700;margin-top:2px;';
+            allBtn.addEventListener('click', function() {
+                FR.disconnectJack(jack);
+                popup.remove();
+            });
+            popup.appendChild(allBtn);
+
+            document.body.appendChild(popup);
+            setTimeout(function() {
+                document.addEventListener('click', function handler(ev) {
+                    if (!popup.contains(ev.target)) { popup.remove(); document.removeEventListener('click', handler); }
+                });
+            }, 10);
+            return;
         }
     });
 

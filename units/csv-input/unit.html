@@ -9,12 +9,16 @@
 -->
 
 <!-- ════════ FRONT PANEL ════════ -->
-<div class="rack-unit-front u4 mfr-steelwerk wear-scratched wear-polished tex-brushed" data-unit="csv-input" data-id="${id}" style="
+<div class="rack-unit-front u4 mfr-steelwerk" data-unit="csv-input" data-id="${id}" style="
     --device-accent:#9ca3af;
     background:
-        /* Brushed steel grain — vertical */
-        repeating-linear-gradient(180deg,
-            rgba(255,255,255,0.004) 0px, transparent 1px, transparent 3px),
+        /* Brushed steel grain — horizontal lines at two frequencies */
+        repeating-linear-gradient(90deg,
+            rgba(255,255,255,0.08) 0px, transparent 1px, transparent 4px,
+            rgba(0,0,0,0.06) 5px, transparent 6px, transparent 9px),
+        repeating-linear-gradient(89deg,
+            rgba(255,255,255,0.05) 0px, transparent 1px, transparent 7px,
+            rgba(0,0,0,0.04) 8px, transparent 9px, transparent 14px),
         /* Base metal — slightly warm, aged */
         linear-gradient(160deg, #141714 0%, #111411 30%, #131613 50%, #101310 80%, #0e110e 100%);
     overflow:hidden;

@@ -9,10 +9,15 @@
 -->
 
 <!-- ════════ FRONT PANEL ════════ -->
-<div class="rack-unit-front u10 mfr-cobalt tex-brushed-v" data-unit="intake" data-id="${id}" style="
+<div class="rack-unit-front u10 mfr-cobalt" data-unit="intake" data-id="${id}" style="
     --device-accent:#7ca0c4;
     background:
-        repeating-linear-gradient(180deg, rgba(255,255,255,0.004) 0px, transparent 1px, transparent 3px),
+        /* Vertical brushed aluminum */
+        repeating-linear-gradient(0deg,
+            rgba(255,255,255,0.06) 0px, transparent 1px, transparent 4px,
+            rgba(0,0,0,0.05) 5px, transparent 6px, transparent 9px),
+        repeating-linear-gradient(1deg,
+            rgba(255,255,255,0.03) 0px, transparent 1px, transparent 7px),
         linear-gradient(160deg, #2a3040 0%, #263040 30%, #2c3444 50%, #242e3c 80%, #202a36 100%);
     overflow:hidden;
 ">

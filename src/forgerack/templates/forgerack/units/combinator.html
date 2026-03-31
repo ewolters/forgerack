@@ -7,11 +7,14 @@
  ╚══════════════════════════════════════════════════════════════╝
 -->
 
-<div class="rack-unit-front u3 mfr-milspec tex-crosshatch wear-scratched wear-chipped patina-dusty" data-unit="combinator" data-id="${id}" style="
+<div class="rack-unit-front u3 mfr-milspec" data-unit="combinator" data-id="${id}" style="
     --device-accent:#78716c;
     background:
-        repeating-linear-gradient(45deg, rgba(255,255,255,0.003) 0px, transparent 1px, transparent 3px),
-        repeating-linear-gradient(135deg, rgba(255,255,255,0.002) 0px, transparent 1px, transparent 3px),
+        /* Crosshatch weave — diamond pattern */
+        repeating-linear-gradient(45deg,
+            rgba(255,255,255,0.05) 0px, transparent 1px, transparent 4px),
+        repeating-linear-gradient(-45deg,
+            rgba(255,255,255,0.05) 0px, transparent 1px, transparent 4px),
         linear-gradient(160deg, #141311 0%, #111010 30%, #131211 50%, #100f0e 80%);
     overflow:hidden;
 ">

@@ -9,10 +9,14 @@
 -->
 
 <!-- ════════ FRONT PANEL ════════ -->
-<div class="rack-unit-front u4 mfr-vakuum tex-tolex" data-unit="calc" data-id="${id}" style="
+<div class="rack-unit-front u4 mfr-vakuum" data-unit="calc" data-id="${id}" style="
     --device-accent:#d4884a;
     background:
-        repeating-linear-gradient(180deg, rgba(255,255,255,0.004) 0px, transparent 1px, transparent 3px),
+        /* Tolex leatherette — fine grid texture */
+        repeating-linear-gradient(0deg,
+            rgba(0,0,0,0.1) 0px, transparent 1px, transparent 3px),
+        repeating-linear-gradient(90deg,
+            rgba(0,0,0,0.07) 0px, transparent 1px, transparent 4px),
         linear-gradient(160deg, #1e1216 0%, #1a0f14 30%, #1c1015 50%, #160c10 80%);
     overflow:hidden;
 ">

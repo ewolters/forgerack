@@ -4747,4 +4747,218 @@ FR.registerUnit('comparator', {
     getOutput(channel) { return null; }
 });
 
+// ═══════════════════════════════════════════════════════════
+// CORRELATOR SC-01 — Scatter & Correlation Analyzer
+// Scope-grid scatter plot. Pearson, Spearman, R², regression.
+// ═══════════════════════════════════════════════════════════
+
+FR.registerUnit('correlator', {
+    init(el, id) {
+        this.el = el;
+        this.id = id;
+        this._data = null;
+        this._showRegr = true;
+        this._showLabels = false;
+
+        var self = this;
+        var colX = document.getElementById(id + '-col-x');
+        var colY = document.getElementById(id + '-col-y');
+        if (colX) colX.addEventListener('change', function() { self._render(); });
+        if (colY) colY.addEventListener('change', function() { self._render(); });
+
+        var regrBtn = document.getElementById(id + '-btn-regr');
+        if (regrBtn) regrBtn.addEventListener('click', function() {
+            self._showRegr = !self._showRegr;
+            regrBtn.classList.toggle('active', self._showRegr);
+            self._render();
+        });
+        var labelsBtn = document.getElementById(id + '-btn-labels');
+        if (labelsBtn) labelsBtn.addEventListener('click', function() {
+            self._showLabels = !self._showLabels;
+            labelsBtn.classList.toggle('active', self._showLabels);
+            self._render();
+        });
+    },
+
+    _getNumeric(col) {
+        if (!this._data || !col || !this._data.data[col]) return [];
+        return this._data.data[col].map(function(v) { return parseFloat(v); });
+    },
+
+    _pearson(x, y) {
+        var n = x.length;
+        var mx = x.reduce(function(a,b){return a+b},0)/n;
+        var my = y.reduce(function(a,b){return a+b},0)/n;
+        var num = 0, dx2 = 0, dy2 = 0;
+        for (var i = 0; i < n; i++) {
+            var dx = x[i]-mx, dy = y[i]-my;
+            num += dx*dy; dx2 += dx*dx; dy2 += dy*dy;
+        }
+        return dx2 === 0 || dy2 === 0 ? 0 : num / Math.sqrt(dx2*dy2);
+    },
+
+    _spearman(x, y) {
+        function rank(arr) {
+            var sorted = arr.map(function(v,i){return {v:v,i:i}}).sort(function(a,b){return a.v-b.v});
+            var ranks = new Array(arr.length);
+            for (var i = 0; i < sorted.length; i++) ranks[sorted[i].i] = i+1;
+            return ranks;
+        }
+        return this._pearson(rank(x), rank(y));
+    },
+
+    _regression(x, y) {
+        var n = x.length;
+        var mx = x.reduce(function(a,b){return a+b},0)/n;
+        var my = y.reduce(function(a,b){return a+b},0)/n;
+        var num = 0, den = 0;
+        for (var i = 0; i < n; i++) {
+            num += (x[i]-mx)*(y[i]-my);
+            den += (x[i]-mx)*(x[i]-mx);
+        }
+        var slope = den === 0 ? 0 : num/den;
+        var intercept = my - slope*mx;
+        return { slope: slope, intercept: intercept };
+    },
+
+    _render() {
+        var colXSel = document.getElementById(this.id + '-col-x');
+        var colYSel = document.getElementById(this.id + '-col-y');
+        var colX = colXSel ? colXSel.value : '';
+        var colY = colYSel ? colYSel.value : '';
+        var viewport = document.getElementById(this.id + '-viewport');
+        var empty = document.getElementById(this.id + '-empty');
+
+        if (!colX || !colY || !this._data) {
+            if (viewport) viewport.innerHTML = '';
+            if (empty) empty.style.display = 'flex';
+            this._setReadouts('—','—','—','—');
+            return;
+        }
+
+        var rawX = this._getNumeric(colX);
+        var rawY = this._getNumeric(colY);
+        // Pair only valid rows
+        var x = [], y = [];
+        for (var i = 0; i < Math.min(rawX.length, rawY.length); i++) {
+            if (!isNaN(rawX[i]) && !isNaN(rawY[i])) { x.push(rawX[i]); y.push(rawY[i]); }
+        }
+
+        if (x.length < 3) {
+            if (viewport) viewport.innerHTML = '';
+            if (empty) { empty.style.display = 'flex'; empty.querySelector('span').textContent = 'Need 3+ paired points'; }
+            this._setReadouts('—','—','—', x.length);
+            return;
+        }
+
+        if (empty) empty.style.display = 'none';
+
+        // Stats
+        var r = this._pearson(x, y);
+        var rho = this._spearman(x, y);
+        var rsq = r * r;
+        this._setReadouts(r.toFixed(3), rho.toFixed(3), rsq.toFixed(3), x.length);
+
+        // Render scatter SVG
+        var rect = viewport.getBoundingClientRect();
+        var w = rect.width || 300, h = rect.height || 180;
+        var pad = { top: 8, right: 8, bottom: 8, left: 8 };
+
+        var xMin = Math.min.apply(null,x), xMax = Math.max.apply(null,x);
+        var yMin = Math.min.apply(null,y), yMax = Math.max.apply(null,y);
+        // Add 5% margin
+        var xRng = (xMax-xMin) || 1; var yRng = (yMax-yMin) || 1;
+        xMin -= xRng*0.05; xMax += xRng*0.05;
+        yMin -= yRng*0.05; yMax += yRng*0.05;
+
+        function sx(v) { return pad.left + (v-xMin)/(xMax-xMin) * (w-pad.left-pad.right); }
+        function sy(v) { return h - pad.bottom - (v-yMin)/(yMax-yMin) * (h-pad.top-pad.bottom); }
+
+        var svg = '<svg width="'+w+'" height="'+h+'" xmlns="http://www.w3.org/2000/svg">';
+
+        // Regression line
+        if (this._showRegr) {
+            var reg = this._regression(x, y);
+            var rx0 = xMin, ry0 = reg.slope*xMin + reg.intercept;
+            var rx1 = xMax, ry1 = reg.slope*xMax + reg.intercept;
+            svg += '<line x1="'+sx(rx0).toFixed(1)+'" y1="'+sy(ry0).toFixed(1)+'" x2="'+sx(rx1).toFixed(1)+'" y2="'+sy(ry1).toFixed(1)+'" stroke="#fde68a" stroke-width="1.5" opacity="0.5" stroke-dasharray="4,3">';
+            svg += '<title>y = '+reg.slope.toFixed(3)+'x + '+reg.intercept.toFixed(3)+'</title></line>';
+        }
+
+        // Data points
+        for (var i = 0; i < x.length; i++) {
+            var px = sx(x[i]).toFixed(1), py = sy(y[i]).toFixed(1);
+            svg += '<circle cx="'+px+'" cy="'+py+'" r="2.5" fill="#38bdf8" opacity="0.7" style="cursor:pointer;">';
+            svg += '<title>'+colX+': '+x[i].toFixed(3)+', '+colY+': '+y[i].toFixed(3)+'</title></circle>';
+        }
+
+        // Axis labels
+        if (this._showLabels) {
+            svg += '<text x="'+(w/2)+'" y="'+(h-1)+'" text-anchor="middle" fill="rgba(56,189,248,0.25)" font-size="8" font-family="Helvetica,Arial">'+colX+'</text>';
+            svg += '<text x="4" y="'+(h/2)+'" text-anchor="middle" fill="rgba(56,189,248,0.25)" font-size="8" font-family="Helvetica,Arial" transform="rotate(-90,4,'+(h/2)+')">'+colY+'</text>';
+        }
+
+        svg += '</svg>';
+        viewport.innerHTML = svg;
+
+        FR.LED(document.getElementById(this.id + '-led')).set('green');
+
+        // Emit
+        FR.emit(this.id, 'result', {
+            pearson: r, spearman: rho, r_squared: rsq, n: x.length,
+            col_x: colX, col_y: colY
+        });
+        FR.emit(this.id, 'thru', this._data);
+    },
+
+    _setReadouts(pearson, spearman, rsq, n) {
+        var pEl = document.getElementById(this.id + '-pearson');
+        var sEl = document.getElementById(this.id + '-spearman');
+        var rEl = document.getElementById(this.id + '-rsq');
+        var nEl = document.getElementById(this.id + '-n');
+        if (pEl) pEl.textContent = pearson;
+        if (sEl) sEl.textContent = spearman;
+        if (rEl) rEl.textContent = rsq;
+        if (nEl) nEl.textContent = n;
+    },
+
+    receive(inputName, data, fromUnit) {
+        if (!data) return;
+        if (data.columns && data.data) {
+            this._data = data;
+        } else if (Array.isArray(data)) {
+            this._data = { columns: ['x'], data: { x: data } };
+        } else return;
+
+        // Populate selectors
+        var self = this;
+        ['col-x','col-y'].forEach(function(selId, idx) {
+            var sel = document.getElementById(self.id + '-' + selId);
+            if (!sel) return;
+            var prev = sel.value;
+            sel.innerHTML = '<option value="">column</option>';
+            self._data.columns.forEach(function(c) {
+                var opt = document.createElement('option');
+                opt.value = c; opt.textContent = c;
+                sel.appendChild(opt);
+            });
+            // Auto-select first two numeric columns
+            if (!prev || self._data.columns.indexOf(prev) === -1) {
+                var numCols = self._data.columns.filter(function(c) {
+                    var v = self._data.data[c];
+                    return v && v.length > 0 && !isNaN(parseFloat(v[0]));
+                });
+                if (numCols[idx]) sel.value = numCols[idx];
+            } else {
+                sel.value = prev;
+            }
+        });
+
+        this._render();
+        FR.emit(this.id, 'thru', data);
+    },
+
+    getOutput(channel) { return null; }
+});
+
 })(ForgeRack);

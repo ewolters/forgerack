@@ -227,8 +227,19 @@
             <div class="patch-group"><div class="patch-jack" data-output="reject" data-unit-id="${id}"></div><div class="patch-jack-label">reject</div></div>
         </div>
     </div>
-    <div style="padding:6px 48px;margin-top:auto;border-top:1px solid rgba(34,211,238,0.02);">
-        <div style="font:400 7px/1 'Courier New',monospace;color:rgba(34,211,238,0.04);letter-spacing:0.04em;line-height:1.8;">
+    <div style="padding:6px 48px;display:flex;align-items:center;gap:12px;margin-top:auto;border-top:1px solid rgba(34,211,238,0.02);">
+        <!-- Calibration trimpots -->
+        <div style="display:flex;gap:6px;align-items:center;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:1px;">
+                <div class="trimpot" style="--trim-angle:30deg;"></div>
+                <span style="font:600 5px/1 'Arial',sans-serif;color:rgba(34,211,238,0.06);text-transform:uppercase;">cal</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:1px;">
+                <div class="trimpot" style="--trim-angle:-15deg;"></div>
+                <span style="font:600 5px/1 'Arial',sans-serif;color:rgba(34,211,238,0.06);text-transform:uppercase;">bias</span>
+            </div>
+        </div>
+        <div style="font:400 7px/1 'Courier New',monospace;color:rgba(34,211,238,0.04);letter-spacing:0.04em;line-height:1.8;margin-left:auto;">
             FORGERACK SIEVE &#x2022; MODEL FG-02 REV.A &#x2022; MULTI-COLUMN GATE<br>
             MODES: GT LT EQ NE &#x2022; FILTER STACK &#x2022; AND LOGIC &#x2022; SVEND MFG
         </div>

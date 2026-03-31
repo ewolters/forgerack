@@ -2159,6 +2159,12 @@ FR.registerUnit('calc', {
         var n = firstCol ? (data.data[firstCol] || []).length : 0;
         var rowEl = document.getElementById(this.id + '-row-count');
         if (rowEl) rowEl.textContent = n;
+        // Nixie tube row display
+        var nStr = String(n).padStart(4, ' ');
+        for (var ni = 0; ni < 4; ni++) {
+            var nxEl = document.getElementById(this.id + '-nix-' + ni);
+            if (nxEl) nxEl.textContent = nStr[ni] === ' ' ? '' : nStr[ni];
+        }
 
         this._log('Received ' + data.columns.length + ' columns, ' + n + ' rows', 'rgba(212,136,74,0.5)');
         this._updateChainCount();

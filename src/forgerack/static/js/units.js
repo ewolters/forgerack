@@ -116,6 +116,10 @@ FR.registerUnit('chart-panel', {
         this._rawData = null;
         this._source = null;
         this.chartType = 'line';
+        this._annotating = false;
+        this._tableVisible = false;
+
+        var self = this;
 
         // Wire up chart type buttons
         el.querySelectorAll('[data-chart-type]').forEach(btn => {
@@ -126,6 +130,86 @@ FR.registerUnit('chart-panel', {
                 this._updateSettingsCRT();
                 if (this._rawData) this._buildAndRender(this._rawData);
             });
+        });
+
+        // Wire physical export buttons
+        var copyBtn = document.getElementById(id + '-btn-copy');
+        var svgBtn = document.getElementById(id + '-btn-svg');
+        var pngBtn = document.getElementById(id + '-btn-png');
+        var expandBtn = document.getElementById(id + '-btn-expand');
+        var annotateSwitch = document.getElementById(id + '-sw-annotate');
+        var tableSwitch = document.getElementById(id + '-sw-table');
+        var viewport = document.getElementById(id + '-viewport');
+
+        if (copyBtn) copyBtn.addEventListener('click', function() {
+            var svg = viewport && viewport.querySelector('svg');
+            if (svg) {
+                var data = new XMLSerializer().serializeToString(svg);
+                navigator.clipboard.writeText(data).then(function() {
+                    copyBtn.textContent = 'OK';
+                    setTimeout(function() { copyBtn.textContent = 'Copy'; }, 1200);
+                });
+            }
+        });
+
+        if (svgBtn) svgBtn.addEventListener('click', function() {
+            var svg = viewport && viewport.querySelector('svg');
+            if (svg) {
+                var data = new XMLSerializer().serializeToString(svg);
+                var blob = new Blob([data], { type: 'image/svg+xml' });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url; a.download = 'scope-chart.svg'; a.click();
+                URL.revokeObjectURL(url);
+            }
+        });
+
+        if (pngBtn) pngBtn.addEventListener('click', function() {
+            var svg = viewport && viewport.querySelector('svg');
+            if (svg) {
+                var data = new XMLSerializer().serializeToString(svg);
+                var img = new Image();
+                var canvas = document.createElement('canvas');
+                canvas.width = svg.clientWidth * 2; canvas.height = svg.clientHeight * 2;
+                img.onload = function() {
+                    var ctx = canvas.getContext('2d');
+                    ctx.scale(2, 2);
+                    ctx.drawImage(img, 0, 0);
+                    canvas.toBlob(function(blob) {
+                        var url = URL.createObjectURL(blob);
+                        var a = document.createElement('a');
+                        a.href = url; a.download = 'scope-chart.png'; a.click();
+                        URL.revokeObjectURL(url);
+                    });
+                };
+                img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(data)));
+            }
+        });
+
+        if (expandBtn) expandBtn.addEventListener('click', function() {
+            if (!document.fullscreenElement) {
+                (self.el || el).requestFullscreen().catch(function() {});
+            } else {
+                document.exitFullscreen();
+            }
+        });
+
+        if (annotateSwitch) annotateSwitch.addEventListener('click', function() {
+            self._annotating = !self._annotating;
+            annotateSwitch.classList.toggle('on', self._annotating);
+            if (viewport && ForgeViz.enableAnnotation && self._annotating) {
+                ForgeViz.enableAnnotation(viewport, function(a) { console.log('[SCOPE] Annotation:', a); });
+            } else if (viewport && ForgeViz.disableAnnotation) {
+                ForgeViz.disableAnnotation(viewport);
+            }
+        });
+
+        if (tableSwitch) tableSwitch.addEventListener('click', function() {
+            self._tableVisible = !self._tableVisible;
+            tableSwitch.classList.toggle('on', self._tableVisible);
+            if (viewport && ForgeViz.showDataTable && self._spec && self._tableVisible) {
+                ForgeViz.showDataTable(viewport, self._spec);
+            }
         });
     },
 
@@ -256,20 +340,15 @@ FR.registerUnit('chart-panel', {
             return;
         }
 
-        // Render with ForgeViz interactive toolkit
-        // Disable theme toggle — rack is always dark
+        // Render clean — NO ForgeViz toolbar (physical panel buttons handle export)
+        // Color picker enabled — click a trace to change color
         ForgeViz.render(viewport, spec, {
-            toolbar: true,
-            showThemeToggle: false,  // no theme switching in the rack
-            editableTitle: true,
-            editableAxes: true,
+            toolbar: false,
             colorPicker: true,
-            onTitleSave: function(t) { console.log('[SCOPE] Title:', t); },
-            onAxisSave: function(a, v) { console.log('[SCOPE] Axis:', a, v); },
             onColorChange: function(i, c) { console.log('[SCOPE] Color:', i, c); },
         });
 
-        // Threshold drag for SPC mode (separate call, not an option)
+        // Threshold drag for SPC mode
         if (this.chartType === 'control' && ForgeViz.enableThresholdDrag) {
             ForgeViz.enableThresholdDrag(viewport, function(val) {
                 console.log('[SCOPE] Threshold dragged:', val);

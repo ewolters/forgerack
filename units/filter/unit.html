@@ -121,77 +121,85 @@
         </div>
 
         <!-- ── RIGHT: LCD displays (calculator/multimeter style) ── -->
-        <div style="width:90px;display:flex;flex-direction:column;gap:5px;">
-            <!-- Rows remaining — large LCD -->
-            <div style="
-                background:linear-gradient(180deg, #9aaa8a, #8a9a7a);
-                border:2px solid #2a2a2a;border-radius:2px;
-                box-shadow:inset 0 1px 3px rgba(0,0,0,0.25), 0 1px 0 rgba(255,255,255,0.03);
-                padding:6px 4px 4px;text-align:right;
-                position:relative;overflow:hidden;
-            ">
-                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.06),transparent 40%,rgba(0,0,0,0.04));pointer-events:none;"></div>
-                <div style="position:relative;">
-                    <div style="font:700 30px/1 'JetBrains Mono',monospace;color:rgba(40,50,35,0.08);letter-spacing:0.06em;padding-right:4px;">8888</div>
-                    <div id="${id}-rows-out" style="font:700 30px/1 'JetBrains Mono',monospace;color:#1a2518;letter-spacing:0.06em;
-                        position:absolute;inset:0;text-align:right;padding-right:4px;">—</div>
+        <div style="width:86px;display:flex;flex-direction:column;gap:3px;">
+            <!-- Rows remaining -->
+            <div style="text-align:center;">
+                <div style="
+                    background:linear-gradient(180deg, #9aaa8a, #8a9a7a);
+                    border:2px solid #2a2a2a;border-radius:2px;
+                    box-shadow:inset 0 1px 3px rgba(0,0,0,0.25), 0 1px 0 rgba(255,255,255,0.03);
+                    padding:4px 3px;text-align:right;
+                    position:relative;overflow:hidden;
+                ">
+                    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.06),transparent 40%,rgba(0,0,0,0.04));pointer-events:none;"></div>
+                    <div style="position:relative;">
+                        <div style="font:700 22px/1 'JetBrains Mono',monospace;color:rgba(40,50,35,0.08);letter-spacing:0.06em;padding-right:3px;">8888</div>
+                        <div id="${id}-rows-out" style="font:700 22px/1 'JetBrains Mono',monospace;color:#1a2518;letter-spacing:0.06em;
+                            position:absolute;inset:0;text-align:right;padding-right:3px;">—</div>
+                    </div>
                 </div>
-                <div style="font:600 8px/1 'Arial',sans-serif;color:rgba(40,50,35,0.4);
-                    text-transform:uppercase;letter-spacing:0.12em;margin-top:3px;text-align:center;">Rows</div>
+                <div style="font:600 8px/1 'Arial',sans-serif;color:rgba(34,211,238,0.3);
+                    text-transform:uppercase;letter-spacing:0.12em;margin-top:3px;">Rows</div>
             </div>
 
-            <!-- Pass — LCD -->
-            <div style="
-                background:linear-gradient(180deg, #9aaa8a, #8a9a7a);
-                border:2px solid #2a2a2a;border-radius:2px;
-                box-shadow:inset 0 1px 3px rgba(0,0,0,0.25), 0 1px 0 rgba(255,255,255,0.03);
-                padding:4px 4px 3px;text-align:right;
-                position:relative;overflow:hidden;
-            ">
-                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.06),transparent 40%,rgba(0,0,0,0.04));pointer-events:none;"></div>
-                <div style="position:relative;">
-                    <div style="font:700 24px/1 'JetBrains Mono',monospace;color:rgba(40,50,35,0.08);letter-spacing:0.06em;padding-right:4px;">8888</div>
-                    <div id="${id}-pass" style="font:700 24px/1 'JetBrains Mono',monospace;color:#1a3518;letter-spacing:0.06em;
-                        position:absolute;inset:0;text-align:right;padding-right:4px;">—</div>
+            <!-- Pass -->
+            <div style="text-align:center;">
+                <div style="
+                    background:linear-gradient(180deg, #9aaa8a, #8a9a7a);
+                    border:2px solid #2a2a2a;border-radius:2px;
+                    box-shadow:inset 0 1px 3px rgba(0,0,0,0.25), 0 1px 0 rgba(255,255,255,0.03);
+                    padding:3px 3px;text-align:right;
+                    position:relative;overflow:hidden;
+                ">
+                    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.06),transparent 40%,rgba(0,0,0,0.04));pointer-events:none;"></div>
+                    <div style="position:relative;">
+                        <div style="font:700 18px/1 'JetBrains Mono',monospace;color:rgba(40,50,35,0.08);letter-spacing:0.06em;padding-right:3px;">8888</div>
+                        <div id="${id}-pass" style="font:700 18px/1 'JetBrains Mono',monospace;color:#1a3518;letter-spacing:0.06em;
+                            position:absolute;inset:0;text-align:right;padding-right:3px;">—</div>
+                    </div>
                 </div>
-                <div style="font:600 8px/1 'Arial',sans-serif;color:rgba(30,60,30,0.5);
-                    text-transform:uppercase;letter-spacing:0.12em;margin-top:2px;text-align:center;">Pass</div>
+                <div style="font:600 8px/1 'Arial',sans-serif;color:rgba(34,197,94,0.4);
+                    text-transform:uppercase;letter-spacing:0.12em;margin-top:2px;">Pass</div>
             </div>
 
-            <!-- Reject — LCD -->
-            <div style="
-                background:linear-gradient(180deg, #9aaa8a, #8a9a7a);
-                border:2px solid #2a2a2a;border-radius:2px;
-                box-shadow:inset 0 1px 3px rgba(0,0,0,0.25), 0 1px 0 rgba(255,255,255,0.03);
-                padding:4px 4px 3px;text-align:right;
-                position:relative;overflow:hidden;
-            ">
-                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.06),transparent 40%,rgba(0,0,0,0.04));pointer-events:none;"></div>
-                <div style="position:relative;">
-                    <div style="font:700 24px/1 'JetBrains Mono',monospace;color:rgba(40,50,35,0.08);letter-spacing:0.06em;padding-right:4px;">8888</div>
-                    <div id="${id}-reject" style="font:700 24px/1 'JetBrains Mono',monospace;color:#3a1818;letter-spacing:0.06em;
-                        position:absolute;inset:0;text-align:right;padding-right:4px;">—</div>
+            <!-- Reject -->
+            <div style="text-align:center;">
+                <div style="
+                    background:linear-gradient(180deg, #9aaa8a, #8a9a7a);
+                    border:2px solid #2a2a2a;border-radius:2px;
+                    box-shadow:inset 0 1px 3px rgba(0,0,0,0.25), 0 1px 0 rgba(255,255,255,0.03);
+                    padding:3px 3px;text-align:right;
+                    position:relative;overflow:hidden;
+                ">
+                    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.06),transparent 40%,rgba(0,0,0,0.04));pointer-events:none;"></div>
+                    <div style="position:relative;">
+                        <div style="font:700 18px/1 'JetBrains Mono',monospace;color:rgba(40,50,35,0.08);letter-spacing:0.06em;padding-right:3px;">8888</div>
+                        <div id="${id}-reject" style="font:700 18px/1 'JetBrains Mono',monospace;color:#3a1818;letter-spacing:0.06em;
+                            position:absolute;inset:0;text-align:right;padding-right:3px;">—</div>
+                    </div>
                 </div>
-                <div style="font:600 8px/1 'Arial',sans-serif;color:rgba(60,30,30,0.5);
-                    text-transform:uppercase;letter-spacing:0.12em;margin-top:2px;text-align:center;">Reject</div>
+                <div style="font:600 8px/1 'Arial',sans-serif;color:rgba(239,68,68,0.4);
+                    text-transform:uppercase;letter-spacing:0.12em;margin-top:2px;">Reject</div>
             </div>
 
-            <!-- Filter count — small LCD -->
-            <div style="
-                background:linear-gradient(180deg, #9aaa8a, #8a9a7a);
-                border:2px solid #2a2a2a;border-radius:2px;
-                box-shadow:inset 0 1px 3px rgba(0,0,0,0.25), 0 1px 0 rgba(255,255,255,0.03);
-                padding:3px 4px 2px;text-align:right;margin-top:auto;
-                position:relative;overflow:hidden;
-            ">
-                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.06),transparent 40%,rgba(0,0,0,0.04));pointer-events:none;"></div>
-                <div style="position:relative;">
-                    <div style="font:700 18px/1 'JetBrains Mono',monospace;color:rgba(40,50,35,0.08);letter-spacing:0.06em;padding-right:4px;">88</div>
-                    <div id="${id}-filter-count" style="font:700 18px/1 'JetBrains Mono',monospace;color:#1a2518;letter-spacing:0.06em;
-                        position:absolute;inset:0;text-align:right;padding-right:4px;">0</div>
+            <!-- Filter count -->
+            <div style="text-align:center;margin-top:auto;">
+                <div style="
+                    background:linear-gradient(180deg, #9aaa8a, #8a9a7a);
+                    border:2px solid #2a2a2a;border-radius:2px;
+                    box-shadow:inset 0 1px 3px rgba(0,0,0,0.25), 0 1px 0 rgba(255,255,255,0.03);
+                    padding:2px 3px;text-align:right;
+                    position:relative;overflow:hidden;
+                ">
+                    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.06),transparent 40%,rgba(0,0,0,0.04));pointer-events:none;"></div>
+                    <div style="position:relative;">
+                        <div style="font:700 14px/1 'JetBrains Mono',monospace;color:rgba(40,50,35,0.08);letter-spacing:0.06em;padding-right:3px;">88</div>
+                        <div id="${id}-filter-count" style="font:700 14px/1 'JetBrains Mono',monospace;color:#1a2518;letter-spacing:0.06em;
+                            position:absolute;inset:0;text-align:right;padding-right:3px;">0</div>
+                    </div>
                 </div>
-                <div style="font:600 7px/1 'Arial',sans-serif;color:rgba(40,50,35,0.4);
-                    text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;text-align:center;">Filters</div>
+                <div style="font:600 7px/1 'Arial',sans-serif;color:rgba(34,211,238,0.25);
+                    text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;">Filters</div>
             </div>
         </div>
     </div>

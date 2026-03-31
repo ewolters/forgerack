@@ -11,6 +11,7 @@ src/forgerack/static/js/components.js
 src/forgerack/static/js/unit-csv-input.js
 src/forgerack/static/js/units.js
 src/forgerack/static/js/wiring.js
+src/forgerack/templates/forgerack/units/calc.html
 src/forgerack/templates/forgerack/units/chart-panel.html
 src/forgerack/templates/forgerack/units/combinator.html
 src/forgerack/templates/forgerack/units/csv-input.html

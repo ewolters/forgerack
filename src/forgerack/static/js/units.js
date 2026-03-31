@@ -4366,4 +4366,140 @@ FR.registerUnit('formula', {
     getOutput(channel) { return null; }
 });
 
+// ═══════════════════════════════════════════════════════════
+// PROBE PR-01 — Spot-Check Multimeter
+// Rotary selector, single stat, one number.
+// ═══════════════════════════════════════════════════════════
+
+FR.registerUnit('probe', {
+    _STATS: [
+        { name: 'mean',   label: 'MEAN',   angle: -90,  fn: function(v) { return v.reduce(function(a,b){return a+b},0)/v.length; } },
+        { name: 'median', label: 'MED',    angle: -60,  fn: function(v) { var s=v.slice().sort(function(a,b){return a-b}); var m=Math.floor(s.length/2); return s.length%2?s[m]:(s[m-1]+s[m])/2; } },
+        { name: 'std',    label: 'STD',    angle: -30,  fn: function(v) { var m=v.reduce(function(a,b){return a+b},0)/v.length; var ss=v.reduce(function(a,b){return a+(b-m)*(b-m)},0); return Math.sqrt(ss/(v.length-1)); } },
+        { name: 'min',    label: 'MIN',    angle: 0,    fn: function(v) { return Math.min.apply(null,v); } },
+        { name: 'max',    label: 'MAX',    angle: 30,   fn: function(v) { return Math.max.apply(null,v); } },
+        { name: 'range',  label: 'RNG',    angle: 60,   fn: function(v) { return Math.max.apply(null,v)-Math.min.apply(null,v); } },
+        { name: 'count',  label: 'n',      angle: 90,   fn: function(v) { return v.length; } },
+        { name: 'sum',    label: 'SUM',    angle: 120,  fn: function(v) { return v.reduce(function(a,b){return a+b},0); } }
+    ],
+
+    init(el, id) {
+        this.el = el;
+        this.id = id;
+        this._data = null;
+        this._statIdx = 0;
+
+        var self = this;
+        var selector = document.getElementById(id + '-selector');
+        var colSelect = document.getElementById(id + '-col');
+
+        // Click selector to cycle through stats
+        if (selector) {
+            selector.addEventListener('click', function() {
+                self._statIdx = (self._statIdx + 1) % self._STATS.length;
+                self._updateSelector();
+                self._compute();
+            });
+        }
+
+        // Column change
+        if (colSelect) {
+            colSelect.addEventListener('change', function() { self._compute(); });
+        }
+
+        this._updateSelector();
+    },
+
+    _updateSelector() {
+        var stat = this._STATS[this._statIdx];
+        var selector = document.getElementById(this.id + '-selector');
+        if (selector) selector.style.transform = 'rotate(' + stat.angle + 'deg)';
+        var label = document.getElementById(this.id + '-stat-label');
+        if (label) label.textContent = stat.label;
+    },
+
+    _compute() {
+        if (!this._data) return;
+        var colSelect = document.getElementById(this.id + '-col');
+        var col = colSelect ? colSelect.value : '';
+        if (!col || !this._data.data[col]) {
+            this._setDisplay('—');
+            return;
+        }
+
+        var raw = this._data.data[col];
+        var vals = [];
+        for (var i = 0; i < raw.length; i++) {
+            var v = parseFloat(raw[i]);
+            if (!isNaN(v)) vals.push(v);
+        }
+
+        if (vals.length === 0) {
+            this._setDisplay('NaN');
+            FR.LED(document.getElementById(this.id + '-led')).set('red');
+            return;
+        }
+
+        var stat = this._STATS[this._statIdx];
+        var result = stat.fn(vals);
+        var display;
+        if (stat.name === 'count') {
+            display = String(Math.round(result));
+        } else if (Math.abs(result) >= 1000) {
+            display = result.toFixed(1);
+        } else if (Math.abs(result) >= 1) {
+            display = result.toFixed(3);
+        } else {
+            display = result.toFixed(4);
+        }
+        this._setDisplay(display);
+        FR.LED(document.getElementById(this.id + '-led')).set('green');
+    },
+
+    _setDisplay(text) {
+        var el = document.getElementById(this.id + '-value');
+        if (el) el.textContent = text;
+    },
+
+    receive(inputName, data, fromUnit) {
+        if (!data) return;
+        if (data.columns && data.data) {
+            this._data = data;
+        } else if (Array.isArray(data)) {
+            this._data = { columns: ['x'], data: { x: data } };
+        } else return;
+
+        // Populate column selector
+        var colSelect = document.getElementById(this.id + '-col');
+        if (colSelect) {
+            var prev = colSelect.value;
+            colSelect.innerHTML = '<option value="">column</option>';
+            this._data.columns.forEach(function(c) {
+                var opt = document.createElement('option');
+                opt.value = c; opt.textContent = c;
+                colSelect.appendChild(opt);
+            });
+            // Auto-select first numeric column
+            if (!prev || this._data.columns.indexOf(prev) === -1) {
+                for (var i = 0; i < this._data.columns.length; i++) {
+                    var c = this._data.columns[i];
+                    var v = this._data.data[c];
+                    if (v && v.length > 0 && !isNaN(parseFloat(v[0]))) {
+                        colSelect.value = c;
+                        break;
+                    }
+                }
+            } else {
+                colSelect.value = prev;
+            }
+        }
+
+        this._compute();
+        FR.LED(document.getElementById(this.id + '-led')).set('green');
+        FR.emit(this.id, 'thru', data);
+    },
+
+    getOutput(channel) { return null; }
+});
+
 })(ForgeRack);

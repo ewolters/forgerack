@@ -146,9 +146,22 @@
                 </div>
 
                 <!-- N -->
-                <div style="display:flex;align-items:center;justify-content:center;gap:4px;">
-                    <span style="font:700 8px/1 'Helvetica',sans-serif;color:rgba(56,189,248,0.25);">n =</span>
-                    <span id="${id}-n" style="font:700 12px/1 'JetBrains Mono',monospace;color:rgba(56,189,248,0.3);">—</span>
+                <div style="text-align:center;">
+                    <div style="
+                        background:linear-gradient(180deg, #9aaa8a, #8a9a7a);
+                        border:2px solid #2a2a2a;border-radius:2px;
+                        box-shadow:inset 0 1px 3px rgba(0,0,0,0.25);
+                        padding:3px 4px;text-align:right;
+                        position:relative;overflow:hidden;
+                    ">
+                        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.06),transparent 40%,rgba(0,0,0,0.04));pointer-events:none;"></div>
+                        <div style="position:relative;">
+                            <div style="font:700 14px/1 'JetBrains Mono',monospace;color:rgba(40,50,35,0.08);">888</div>
+                            <div id="${id}-n" style="font:700 14px/1 'JetBrains Mono',monospace;color:#0a1208;
+                                position:absolute;inset:0;text-align:right;">—</div>
+                        </div>
+                    </div>
+                    <div style="font:700 8px/1 'Helvetica',sans-serif;color:rgba(56,189,248,0.4);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px;">n</div>
                 </div>
             </div>
         </div>

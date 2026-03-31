@@ -4739,40 +4739,13 @@ FR.registerUnit('correlator', {
         return this._data.data[col].map(function(v) { return parseFloat(v); });
     },
 
-    _pearson(x, y) {
-        var n = x.length;
-        var mx = x.reduce(function(a,b){return a+b},0)/n;
-        var my = y.reduce(function(a,b){return a+b},0)/n;
-        var num = 0, dx2 = 0, dy2 = 0;
-        for (var i = 0; i < n; i++) {
-            var dx = x[i]-mx, dy = y[i]-my;
-            num += dx*dy; dx2 += dx*dx; dy2 += dy*dy;
-        }
-        return dx2 === 0 || dy2 === 0 ? 0 : num / Math.sqrt(dx2*dy2);
-    },
-
-    _spearman(x, y) {
-        function rank(arr) {
-            var sorted = arr.map(function(v,i){return {v:v,i:i}}).sort(function(a,b){return a.v-b.v});
-            var ranks = new Array(arr.length);
-            for (var i = 0; i < sorted.length; i++) ranks[sorted[i].i] = i+1;
-            return ranks;
-        }
-        return this._pearson(rank(x), rank(y));
-    },
-
-    _regression(x, y) {
-        var n = x.length;
-        var mx = x.reduce(function(a,b){return a+b},0)/n;
-        var my = y.reduce(function(a,b){return a+b},0)/n;
-        var num = 0, den = 0;
-        for (var i = 0; i < n; i++) {
-            num += (x[i]-mx)*(y[i]-my);
-            den += (x[i]-mx)*(x[i]-mx);
-        }
-        var slope = den === 0 ? 0 : num/den;
-        var intercept = my - slope*mx;
-        return { slope: slope, intercept: intercept };
+    _fetchCompute(op, data, callback) {
+        var csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+        fetch('/api/rack/compute/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf ? csrf.value : document.cookie.replace(/.*csrftoken=([^;]*).*/, '$1') },
+            body: JSON.stringify({ op: op, data: data })
+        }).then(function(r) { return r.json(); }).then(function(j) { if (j.result) callback(j.result); }).catch(function() {});
     },
 
     _render() {
@@ -4792,7 +4765,6 @@ FR.registerUnit('correlator', {
 
         var rawX = this._getNumeric(colX);
         var rawY = this._getNumeric(colY);
-        // Pair only valid rows
         var x = [], y = [];
         for (var i = 0; i < Math.min(rawX.length, rawY.length); i++) {
             if (!isNaN(rawX[i]) && !isNaN(rawY[i])) { x.push(rawX[i]); y.push(rawY[i]); }
@@ -4806,21 +4778,24 @@ FR.registerUnit('correlator', {
         }
 
         if (empty) empty.style.display = 'none';
+        var self = this;
 
-        // Stats
-        var r = this._pearson(x, y);
-        var rho = this._spearman(x, y);
-        var rsq = r * r;
-        this._setReadouts(r.toFixed(3), rho.toFixed(3), rsq.toFixed(3), x.length);
+        // Fetch stats from server (forgestat)
+        this._fetchCompute('pearson', { x: x, y: y }, function(r) {
+            self._setReadouts(r.r.toFixed(3), null, r.r_squared.toFixed(3), r.n);
+        });
+        this._fetchCompute('spearman', { x: x, y: y }, function(r) {
+            var el = document.getElementById(self.id + '-spearman');
+            if (el) el.textContent = r.rho.toFixed(3);
+        });
 
-        // Render scatter SVG
+        // Render scatter SVG (UI only — no math)
         var rect = viewport.getBoundingClientRect();
         var w = rect.width || 300, h = rect.height || 180;
         var pad = { top: 8, right: 8, bottom: 8, left: 8 };
 
         var xMin = Math.min.apply(null,x), xMax = Math.max.apply(null,x);
         var yMin = Math.min.apply(null,y), yMax = Math.max.apply(null,y);
-        // Add 5% margin
         var xRng = (xMax-xMin) || 1; var yRng = (yMax-yMin) || 1;
         xMin -= xRng*0.05; xMax += xRng*0.05;
         yMin -= yRng*0.05; yMax += yRng*0.05;
@@ -4830,13 +4805,22 @@ FR.registerUnit('correlator', {
 
         var svg = '<svg width="'+w+'" height="'+h+'" xmlns="http://www.w3.org/2000/svg">';
 
-        // Regression line
+        // Regression line — fetch from server
         if (this._showRegr) {
-            var reg = this._regression(x, y);
-            var rx0 = xMin, ry0 = reg.slope*xMin + reg.intercept;
-            var rx1 = xMax, ry1 = reg.slope*xMax + reg.intercept;
-            svg += '<line x1="'+sx(rx0).toFixed(1)+'" y1="'+sy(ry0).toFixed(1)+'" x2="'+sx(rx1).toFixed(1)+'" y2="'+sy(ry1).toFixed(1)+'" stroke="#fde68a" stroke-width="1.5" opacity="0.5" stroke-dasharray="4,3">';
-            svg += '<title>y = '+reg.slope.toFixed(3)+'x + '+reg.intercept.toFixed(3)+'</title></line>';
+            this._fetchCompute('regression', { x: x, y: y }, function(reg) {
+                var rx0 = xMin, ry0 = reg.slope*xMin + reg.intercept;
+                var rx1 = xMax, ry1 = reg.slope*xMax + reg.intercept;
+                var line = document.createElementNS('http://www.w3.org/2000/svg','line');
+                line.setAttribute('x1', sx(rx0).toFixed(1)); line.setAttribute('y1', sy(ry0).toFixed(1));
+                line.setAttribute('x2', sx(rx1).toFixed(1)); line.setAttribute('y2', sy(ry1).toFixed(1));
+                line.setAttribute('stroke','#fde68a'); line.setAttribute('stroke-width','1.5');
+                line.setAttribute('opacity','0.5'); line.setAttribute('stroke-dasharray','4,3');
+                var title = document.createElementNS('http://www.w3.org/2000/svg','title');
+                title.textContent = 'y = '+reg.slope.toFixed(3)+'x + '+reg.intercept.toFixed(3);
+                line.appendChild(title);
+                var svgEl = viewport.querySelector('svg');
+                if (svgEl) svgEl.insertBefore(line, svgEl.firstChild);
+            });
         }
 
         // Data points
@@ -4846,7 +4830,6 @@ FR.registerUnit('correlator', {
             svg += '<title>'+colX+': '+x[i].toFixed(3)+', '+colY+': '+y[i].toFixed(3)+'</title></circle>';
         }
 
-        // Axis labels
         if (this._showLabels) {
             svg += '<text x="'+(w/2)+'" y="'+(h-1)+'" text-anchor="middle" fill="rgba(56,189,248,0.25)" font-size="8" font-family="Helvetica,Arial">'+colX+'</text>';
             svg += '<text x="4" y="'+(h/2)+'" text-anchor="middle" fill="rgba(56,189,248,0.25)" font-size="8" font-family="Helvetica,Arial" transform="rotate(-90,4,'+(h/2)+')">'+colY+'</text>';
@@ -4856,12 +4839,6 @@ FR.registerUnit('correlator', {
         viewport.innerHTML = svg;
 
         FR.LED(document.getElementById(this.id + '-led')).set('green');
-
-        // Emit
-        FR.emit(this.id, 'result', {
-            pearson: r, spearman: rho, r_squared: rsq, n: x.length,
-            col_x: colX, col_y: colY
-        });
         FR.emit(this.id, 'thru', this._data);
     },
 

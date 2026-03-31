@@ -3522,104 +3522,68 @@ FR.registerUnit('sentinel', {
 
         if (!col) return;
 
-        var vals = (this._data.data[col] || []).filter(function(v) { return typeof v === 'number' && !isNaN(v); });
+        var rawVals = this._data.data[col] || [];
+        var vals = [];
+        for (var i = 0; i < rawVals.length; i++) {
+            var v = parseFloat(rawVals[i]);
+            if (!isNaN(v)) vals.push(v);
+        }
         if (vals.length < 3) return;
 
+        var self = this;
+        var csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+        var payload = { op: 'control_chart', data: { values: vals, chart_type: chartType, rules: rules } };
+        if (lsl !== null) payload.data.lsl = lsl;
+        if (usl !== null) payload.data.usl = usl;
+
+        fetch('/api/rack/compute/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf ? csrf.value : document.cookie.replace(/.*csrftoken=([^;]*).*/, '$1') },
+            body: JSON.stringify(payload)
+        })
+        .then(function(resp) { return resp.json(); })
+        .then(function(json) {
+            if (json.error) { console.warn('sentinel compute error:', json.error); return; }
+            var r = json.result;
+            self._renderChart(vals, r, col, chartType, lsl, usl);
+        })
+        .catch(function(e) { console.warn('sentinel fetch error:', e); });
+    },
+
+    _renderChart(vals, r, col, chartType, lsl, usl) {
         var n = vals.length;
-        var x = vals.map(function(_, i) { return i + 1; });
+        var mean = r.mean, ucl = r.ucl, lcl = r.lcl;
 
-        // Compute control limits (I-chart for all types currently)
-        var sum = 0; for (var i = 0; i < n; i++) sum += vals[i];
-        var mean = sum / n;
-        var mr = [];
-        for (var i = 1; i < n; i++) mr.push(Math.abs(vals[i] - vals[i - 1]));
-        var mrSum = 0; for (var i = 0; i < mr.length; i++) mrSum += mr[i];
-        var mrBar = mr.length > 0 ? mrSum / mr.length : 0;
-        var sigma = mrBar / 1.128;
-        var ucl = mean + 3 * sigma;
-        var lcl = mean - 3 * sigma;
-
-        // Nelson Rule 1: points beyond ±3σ
-        var violations = [];
-        for (var i = 0; i < n; i++) {
-            if (vals[i] > ucl || vals[i] < lcl) {
-                violations.push({ index: i, value: vals[i], rule: 1, desc: 'Beyond ±3σ' });
-            }
-        }
-
-        // Nelson Rule 2: 9 consecutive points on same side of CL
-        if (rules !== 'none') {
-            for (var i = 8; i < n; i++) {
-                var allAbove = true, allBelow = true;
-                for (var j = i - 8; j <= i; j++) {
-                    if (vals[j] <= mean) allAbove = false;
-                    if (vals[j] >= mean) allBelow = false;
-                }
-                if (allAbove || allBelow) {
-                    violations.push({ index: i, value: vals[i], rule: 2, desc: '9 pts same side' });
-                }
-            }
-        }
-
-        // Nelson Rule 3: 6 consecutive increasing or decreasing
-        if (rules !== 'none') {
-            for (var i = 5; i < n; i++) {
-                var inc = true, dec = true;
-                for (var j = i - 4; j <= i; j++) {
-                    if (vals[j] <= vals[j - 1]) inc = false;
-                    if (vals[j] >= vals[j - 1]) dec = false;
-                }
-                if (inc || dec) {
-                    violations.push({ index: i, value: vals[i], rule: 3, desc: '6 pts trending' });
-                }
-            }
-        }
-
-        var oocIndices = [];
+        // Build OOC index set from server results
         var seen = {};
-        violations.forEach(function(v) {
-            if (!seen[v.index]) { oocIndices.push(v.index); seen[v.index] = true; }
-        });
-
-        var inControl = oocIndices.length === 0;
+        var allViolations = (r.out_of_control || []).concat(r.violations || []);
+        allViolations.forEach(function(v) { seen[v.index] = true; });
+        var oocCount = Object.keys(seen).length;
+        var inControl = oocCount === 0;
 
         // Status LEDs
         FR.LED(document.getElementById(this.id + '-led-ic')).set(inControl ? 'green' : 'off');
         FR.LED(document.getElementById(this.id + '-led-ooc')).set(inControl ? 'off' : 'red');
 
-        // Capability if spec limits provided
-        var cpk = null, ppm = null;
-        if (lsl !== null || usl !== null) {
-            var cpu = usl !== null ? (usl - mean) / (3 * sigma) : null;
-            var cpl = lsl !== null ? (mean - lsl) / (3 * sigma) : null;
-            if (cpu !== null && cpl !== null) cpk = Math.min(cpu, cpl);
-            else cpk = cpu !== null ? cpu : cpl;
-
-            if (cpk !== null) {
-                var zVal = cpk * 3;
-                // Approximate PPM from z-score
-                ppm = Math.round(1000000 * 2 * (1 - this._normalCdf(Math.abs(zVal))));
-            }
-        }
-
+        // Capability readouts
         var cpkEl = document.getElementById(this.id + '-cpk');
         var ppmEl = document.getElementById(this.id + '-ppm');
-        if (cpkEl) cpkEl.textContent = cpk !== null ? cpk.toFixed(2) : '—';
-        if (ppmEl) ppmEl.textContent = ppm !== null ? ppm : '—';
+        if (cpkEl) cpkEl.textContent = r.cpk != null ? r.cpk.toFixed(2) : '—';
+        if (ppmEl) ppmEl.textContent = r.ppm != null ? r.ppm : '—';
 
-        // Build chart in viewport
+        // Build SVG chart
         var viewport = document.getElementById(this.id + '-viewport');
         var empty = document.getElementById(this.id + '-empty');
         if (empty) empty.style.display = 'none';
 
         if (viewport) {
-            // Build SVG chart directly (no ForgeViz dependency)
             var w = viewport.clientWidth || 600;
             var h = viewport.clientHeight || 200;
             var pad = { top: 15, right: 20, bottom: 25, left: 50 };
             var pw = w - pad.left - pad.right;
             var ph = h - pad.top - pad.bottom;
 
+            var sigma = (ucl - mean) / 3;
             var yMin = Math.min(lcl, Math.min.apply(null, vals)) - sigma;
             var yMax = Math.max(ucl, Math.max.apply(null, vals)) + sigma;
             if (lsl !== null) yMin = Math.min(yMin, lsl - sigma);
@@ -3631,19 +3595,18 @@ FR.registerUnit('sentinel', {
 
             var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '" style="font-family:JetBrains Mono,monospace;">';
 
-            // Grid lines
-            var gridSteps = 5;
-            for (var g = 0; g <= gridSteps; g++) {
-                var gy = pad.top + (g / gridSteps) * ph;
-                var gv = yMax - (g / gridSteps) * yRange;
+            // Grid
+            for (var g = 0; g <= 5; g++) {
+                var gy = pad.top + (g / 5) * ph;
+                var gv = yMax - (g / 5) * yRange;
                 svg += '<line x1="' + pad.left + '" y1="' + gy + '" x2="' + (w - pad.right) + '" y2="' + gy + '" stroke="rgba(217,119,6,0.04)" stroke-width="0.5"/>';
                 svg += '<text x="' + (pad.left - 4) + '" y="' + (gy + 3) + '" fill="rgba(217,119,6,0.2)" font-size="8" text-anchor="end">' + gv.toFixed(1) + '</text>';
             }
 
-            // UCL/CL/LCL reference lines
+            // UCL/CL/LCL
             svg += '<line x1="' + pad.left + '" y1="' + sy(ucl) + '" x2="' + (w - pad.right) + '" y2="' + sy(ucl) + '" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"><title>UCL = ' + ucl.toFixed(3) + '</title></line>';
             svg += '<text x="' + (w - pad.right + 3) + '" y="' + (sy(ucl) + 3) + '" fill="#ef4444" font-size="7" opacity="0.6">UCL</text>';
-            svg += '<line x1="' + pad.left + '" y1="' + sy(mean) + '" x2="' + (w - pad.right) + '" y2="' + sy(mean) + '" stroke="#4ade80" stroke-width="1" opacity="0.5"><title>CL (mean) = ' + mean.toFixed(3) + '</title></line>';
+            svg += '<line x1="' + pad.left + '" y1="' + sy(mean) + '" x2="' + (w - pad.right) + '" y2="' + sy(mean) + '" stroke="#4ade80" stroke-width="1" opacity="0.5"><title>CL = ' + mean.toFixed(3) + '</title></line>';
             svg += '<text x="' + (w - pad.right + 3) + '" y="' + (sy(mean) + 3) + '" fill="#4ade80" font-size="7" opacity="0.5">CL</text>';
             svg += '<line x1="' + pad.left + '" y1="' + sy(lcl) + '" x2="' + (w - pad.right) + '" y2="' + sy(lcl) + '" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"><title>LCL = ' + lcl.toFixed(3) + '</title></line>';
             svg += '<text x="' + (w - pad.right + 3) + '" y="' + (sy(lcl) + 3) + '" fill="#ef4444" font-size="7" opacity="0.6">LCL</text>';
@@ -3660,50 +3623,31 @@ FR.registerUnit('sentinel', {
 
             // Data line
             var pathD = '';
-            for (var i = 0; i < n; i++) {
-                pathD += (i === 0 ? 'M' : 'L') + sx(i).toFixed(1) + ',' + sy(vals[i]).toFixed(1);
-            }
+            for (var i = 0; i < n; i++) { pathD += (i === 0 ? 'M' : 'L') + sx(i).toFixed(1) + ',' + sy(vals[i]).toFixed(1); }
             svg += '<path d="' + pathD + '" fill="none" stroke="#d97706" stroke-width="1.5" opacity="0.8"/>';
 
-            // Data points — green for in-control, red for OOC
+            // Data points
             for (var i = 0; i < n; i++) {
                 var isOOC = seen[i];
+                var ptR = isOOC ? 4 : 2.5;
                 var color = isOOC ? '#ef4444' : '#d97706';
-                var r = isOOC ? 4 : 2.5;
-                var tip = '#' + (i + 1) + ': ' + vals[i].toFixed(3) + (isOOC ? ' ⚠ OOC' : '');
-                svg += '<circle cx="' + sx(i).toFixed(1) + '" cy="' + sy(vals[i]).toFixed(1) + '" r="' + r + '" fill="' + color + '" opacity="0.9" style="cursor:pointer;"><title>' + tip + '</title></circle>';
-                if (isOOC) {
-                    svg += '<circle cx="' + sx(i).toFixed(1) + '" cy="' + sy(vals[i]).toFixed(1) + '" r="7" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.3"/>';
-                }
+                var tip = '#' + (i + 1) + ': ' + vals[i].toFixed(3) + (isOOC ? ' \u26A0 OOC' : '');
+                svg += '<circle cx="' + sx(i).toFixed(1) + '" cy="' + sy(vals[i]).toFixed(1) + '" r="' + ptR + '" fill="' + color + '" opacity="0.9" style="cursor:pointer;"><title>' + tip + '</title></circle>';
+                if (isOOC) svg += '<circle cx="' + sx(i).toFixed(1) + '" cy="' + sy(vals[i]).toFixed(1) + '" r="7" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.3"/>';
             }
 
-            // Title
             svg += '<text x="' + (pad.left + 4) + '" y="' + (pad.top - 4) + '" fill="rgba(217,119,6,0.4)" font-size="9" font-weight="700">' +
-                chartType.toUpperCase() + ' — ' + col + '  (n=' + n + ', OOC=' + oocIndices.length + ')</text>';
-
+                chartType.toUpperCase() + ' \u2014 ' + col + '  (n=' + n + ', OOC=' + oocCount + ')</text>';
             svg += '</svg>';
             viewport.innerHTML = svg;
         }
 
-        // Emit results
-        this._lastResult = {
-            chartType: chartType, column: col, n: n,
-            mean: mean, sigma: sigma, ucl: ucl, lcl: lcl,
-            cpk: cpk, ppm: ppm,
-            violations: violations, oocCount: oocIndices.length,
-            inControl: inControl
-        };
+        // Emit
+        this._lastResult = r;
+        this._lastResult.column = col;
+        this._lastResult.chartType = chartType;
         FR.emit(this.id, 'result', this._lastResult);
-        if (violations.length > 0) FR.emit(this.id, 'violations', violations);
-    },
-
-    _normalCdf(x) {
-        var a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
-        var sign = x < 0 ? -1 : 1;
-        x = Math.abs(x) / Math.sqrt(2);
-        var t = 1 / (1 + p * x);
-        var y = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
-        return 0.5 * (1 + sign * y);
+        if (allViolations.length > 0) FR.emit(this.id, 'violations', allViolations);
     },
 
     getOutput(channel) {

@@ -20,6 +20,7 @@ src/forgerack/templates/forgerack/units/clock.html
 src/forgerack/templates/forgerack/units/combinator.html
 src/forgerack/templates/forgerack/units/csv-input.html
 src/forgerack/templates/forgerack/units/filter.html
+src/forgerack/templates/forgerack/units/formula.html
 src/forgerack/templates/forgerack/units/intake.html
 src/forgerack/templates/forgerack/units/mixer.html
 src/forgerack/templates/forgerack/units/narrative.html

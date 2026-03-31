@@ -9,7 +9,7 @@
 -->
 
 <!-- ════════ FRONT PANEL ════════ -->
-<div class="rack-unit-front u2 mfr-fluke" data-unit="probe" data-id="${id}" style="
+<div class="rack-unit-front u3 mfr-fluke" data-unit="probe" data-id="${id}" style="
     --device-accent:#f59e0b;
     background: linear-gradient(160deg, #1a1a1a 0%, #222 30%, #1e1e1e 50%, #181818 80%);
     overflow:hidden;
@@ -19,21 +19,21 @@
         <!-- Yellow rubber armor housing — left grip -->
         <div class="fluke-armor" style="
             display:flex;align-items:center;gap:10px;
-            padding:6px 14px;flex:1;height:62px;
+            padding:10px 14px;flex:1;height:104px;
         ">
             <!-- Rotary selector — the big dial -->
-            <div style="position:relative;flex-shrink:0;">
-                <div class="fluke-selector" id="${id}-selector" style="width:44px;height:44px;">
+            <div style="position:relative;flex-shrink:0;margin:0 16px;">
+                <div class="fluke-selector" id="${id}-selector" style="width:52px;height:52px;">
                 </div>
-                <!-- Ring labels -->
-                <span style="position:absolute;top:-9px;left:50%;transform:translateX(-50%);font:700 6px/1 'Arial',sans-serif;color:rgba(20,10,0,0.5);text-transform:uppercase;letter-spacing:0.05em;">Mean</span>
-                <span style="position:absolute;top:6px;right:-12px;font:700 6px/1 'Arial',sans-serif;color:rgba(20,10,0,0.4);text-transform:uppercase;">Med</span>
-                <span style="position:absolute;top:22px;right:-10px;font:700 6px/1 'Arial',sans-serif;color:rgba(20,10,0,0.4);text-transform:uppercase;">Std</span>
-                <span style="position:absolute;bottom:4px;right:-10px;font:700 6px/1 'Arial',sans-serif;color:rgba(20,10,0,0.4);text-transform:uppercase;">Min</span>
-                <span style="position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);font:700 6px/1 'Arial',sans-serif;color:rgba(20,10,0,0.4);text-transform:uppercase;">Max</span>
-                <span style="position:absolute;bottom:4px;left:-14px;font:700 6px/1 'Arial',sans-serif;color:rgba(20,10,0,0.4);text-transform:uppercase;">Rng</span>
-                <span style="position:absolute;top:22px;left:-8px;font:700 6px/1 'Arial',sans-serif;color:rgba(20,10,0,0.4);text-transform:uppercase;">n</span>
-                <span style="position:absolute;top:6px;left:-12px;font:700 6px/1 'Arial',sans-serif;color:rgba(20,10,0,0.4);text-transform:uppercase;">Sum</span>
+                <!-- Ring labels — 8 positions around the dial -->
+                <span style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);font:700 9px/1 'Arial',sans-serif;color:rgba(20,10,0,0.55);text-transform:uppercase;">Mean</span>
+                <span style="position:absolute;top:4px;right:-18px;font:700 9px/1 'Arial',sans-serif;color:rgba(20,10,0,0.45);text-transform:uppercase;">Med</span>
+                <span style="position:absolute;top:24px;right:-16px;font:700 9px/1 'Arial',sans-serif;color:rgba(20,10,0,0.45);text-transform:uppercase;">Std</span>
+                <span style="position:absolute;bottom:2px;right:-16px;font:700 9px/1 'Arial',sans-serif;color:rgba(20,10,0,0.45);text-transform:uppercase;">Min</span>
+                <span style="position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);font:700 9px/1 'Arial',sans-serif;color:rgba(20,10,0,0.45);text-transform:uppercase;">Max</span>
+                <span style="position:absolute;bottom:2px;left:-18px;font:700 9px/1 'Arial',sans-serif;color:rgba(20,10,0,0.45);text-transform:uppercase;">Rng</span>
+                <span style="position:absolute;top:24px;left:-10px;font:700 9px/1 'Arial',sans-serif;color:rgba(20,10,0,0.45);text-transform:uppercase;">n</span>
+                <span style="position:absolute;top:4px;left:-18px;font:700 9px/1 'Arial',sans-serif;color:rgba(20,10,0,0.45);text-transform:uppercase;">Sum</span>
             </div>
 
             <!-- LCD display -->
@@ -50,9 +50,9 @@
                     <span class="led" id="${id}-led" style="width:5px;height:5px;"></span>
                 </div>
                 <!-- Main LCD readout -->
-                <div class="fluke-lcd" style="padding:4px 8px;">
-                    <div class="fluke-lcd-ghost">888.888</div>
-                    <div class="fluke-lcd-value" id="${id}-value">—</div>
+                <div class="fluke-lcd" style="padding:8px 10px;">
+                    <div class="fluke-lcd-ghost" style="font-size:28px;">888.888</div>
+                    <div class="fluke-lcd-value" id="${id}-value" style="font-size:28px;">—</div>
                 </div>
                 <!-- Stat label under LCD -->
                 <div style="display:flex;justify-content:space-between;align-items:center;">
@@ -80,7 +80,7 @@
 </div>
 
 <!-- ════════ BACK PANEL ════════ -->
-<div class="rack-unit-back u2" data-unit-back="probe" data-id="${id}" style="
+<div class="rack-unit-back u3" data-unit-back="probe" data-id="${id}" style="
     background: linear-gradient(180deg, #1c1c1c, #181818);overflow:hidden;
 ">
     <div style="display:flex;align-items:center;padding:6px 48px;height:100%;gap:10px;">

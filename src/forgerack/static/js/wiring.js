@@ -199,15 +199,27 @@ function _renderCables() {
     svg.innerHTML = '';
 
     cables.forEach(function(cable, i) {
-        const sourceJack = document.querySelector(
-            '[data-output="' + cable.source.output + '"][data-unit-id="' + cable.source.unitId + '"]'
+        // Only find jacks on BACK panels (inside .rack-back or [data-unit-back])
+        // Front panel jacks are decorative — cables render on the back.
+        var backPanel = document.querySelector('[data-unit-back="' + _unitType(cable.source.unitId) + '"][data-id="' + cable.source.unitId + '"]')
+            || document.querySelector('[data-unit-back]');
+        var sourceJack = document.querySelector(
+            '.rack-unit-back [data-output="' + cable.source.output + '"][data-unit-id="' + cable.source.unitId + '"]'
         ) || document.querySelector(
-            '.patch-jack[data-output="' + cable.source.output + '"]'
+            '.rack-back [data-output="' + cable.source.output + '"][data-unit-id="' + cable.source.unitId + '"]'
+        ) || document.querySelector(
+            '.mainframe-rear [data-output="' + cable.source.output + '"][data-unit-id="' + cable.source.unitId + '"]'
+        ) || document.querySelector(
+            '[data-unit-back] [data-output="' + cable.source.output + '"][data-unit-id="' + cable.source.unitId + '"]'
         );
-        const targetJack = document.querySelector(
-            '[data-input="' + cable.target.input + '"][data-unit-id="' + cable.target.unitId + '"]'
+        var targetJack = document.querySelector(
+            '.rack-unit-back [data-input="' + cable.target.input + '"][data-unit-id="' + cable.target.unitId + '"]'
         ) || document.querySelector(
-            '.patch-jack[data-input="' + cable.target.input + '"]'
+            '.rack-back [data-input="' + cable.target.input + '"][data-unit-id="' + cable.target.unitId + '"]'
+        ) || document.querySelector(
+            '.mainframe-rear [data-input="' + cable.target.input + '"][data-unit-id="' + cable.target.unitId + '"]'
+        ) || document.querySelector(
+            '[data-unit-back] [data-input="' + cable.target.input + '"][data-unit-id="' + cable.target.unitId + '"]'
         );
 
         if (!sourceJack || !targetJack) return;

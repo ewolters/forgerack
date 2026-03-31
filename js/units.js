@@ -194,6 +194,57 @@ FR.registerUnit('chart-panel', {
             }
         });
 
+        // Wire color picker inputs on the faceplate
+        var colorTrace = document.getElementById(id + '-color-trace');
+        var colorBg = document.getElementById(id + '-color-bg');
+        var colorGrid = document.getElementById(id + '-color-grid');
+        var colorAxis = document.getElementById(id + '-color-axis');
+
+        // Which color controls are active per chart type
+        // All types support trace + bg. Grid/axis active for line, scatter, bar, control.
+        var GRID_AXIS_TYPES = { line:1, scatter:1, bar:1, control:1, hist:1 };
+
+        function _updateColorLEDs() {
+            var ga = GRID_AXIS_TYPES[self.chartType];
+            FR.LED(document.getElementById(self.id + '-led-trace')).set('green');
+            FR.LED(document.getElementById(self.id + '-led-bg')).set('green');
+            FR.LED(document.getElementById(self.id + '-led-grid')).set(ga ? 'green' : 'off');
+            FR.LED(document.getElementById(self.id + '-led-axis')).set(ga ? 'green' : 'off');
+        }
+        _updateColorLEDs();
+
+        function _applyColors() {
+            if (!self._spec) return;
+            // Trace color → all traces
+            if (colorTrace) {
+                var tc = colorTrace.value;
+                (self._spec.traces || []).forEach(function(t) {
+                    if (typeof t === 'object') t.color = tc;
+                });
+            }
+            // Background, grid, axis via style overrides
+            if (!self._spec._styleOverrides) self._spec._styleOverrides = {};
+            if (colorBg) {
+                self._spec._styleOverrides.bg = colorBg.value;
+                self._spec._styleOverrides.plotBg = colorBg.value;
+            }
+            if (colorGrid) self._spec._styleOverrides.grid = colorGrid.value;
+            if (colorAxis) self._spec._styleOverrides.axis = colorAxis.value;
+
+            // Re-render
+            if (viewport) self._renderSpec(viewport, self._spec);
+        }
+
+        [colorTrace, colorBg, colorGrid, colorAxis].forEach(function(inp) {
+            if (inp) inp.addEventListener('input', _applyColors);
+        });
+
+        // Update LEDs when chart type changes
+        var _origChartTypeClick = el.querySelectorAll('[data-chart-type]');
+        _origChartTypeClick.forEach(function(btn) {
+            btn.addEventListener('click', _updateColorLEDs);
+        });
+
         if (annotateSwitch) annotateSwitch.addEventListener('click', function() {
             self._annotating = !self._annotating;
             annotateSwitch.classList.toggle('on', self._annotating);
@@ -371,11 +422,10 @@ FR.registerUnit('chart-panel', {
             return;
         }
 
-        // Render with ForgeViz toolbar — includes Style panel, export, expand
+        // Render — no toolbar, faceplate has all controls
         ForgeViz.render(viewport, spec, {
-            toolbar: true,
+            toolbar: false,
             showThemeToggle: false,
-            colorPicker: true,
         });
 
         // Threshold drag for SPC mode

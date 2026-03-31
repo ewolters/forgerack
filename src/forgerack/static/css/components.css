@@ -459,7 +459,156 @@
     text-transform: uppercase; letter-spacing: 0.1em;
     background: transparent; border: 1px solid rgba(255,255,255,0.08);
     color: rgba(255,255,255,0.25); border-radius: 1px; cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
 }
+.btn-ghost:hover { border-color: rgba(255,255,255,0.18); color: rgba(255,255,255,0.4); }
+
+/* Danger / emergency — guarded red. Recessed to prevent accidental press. */
+.btn-danger {
+    padding: 5px 12px; font: 800 9px/1 'Arial Narrow', 'Arial', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    background: linear-gradient(180deg, rgba(239,68,68,0.12), rgba(239,68,68,0.04));
+    border: 1px solid rgba(239,68,68,0.25); color: rgba(239,68,68,0.6);
+    border-radius: 1px; cursor: pointer;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.02);
+    transition: transform 0.05s, color 0.15s, background 0.15s;
+}
+.btn-danger:hover { color: rgba(239,68,68,0.85); background: linear-gradient(180deg, rgba(239,68,68,0.2), rgba(239,68,68,0.08)); }
+.btn-danger:active { transform: translateY(1px); box-shadow: inset 0 2px 4px rgba(0,0,0,0.4); }
+
+/* Toggle — latching push-button with illuminated state ring */
+.btn-toggle {
+    padding: 5px 10px; font: 700 9px/1 'Arial', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    background: linear-gradient(180deg, #3a3d3a, #2e312e);
+    border: 2px solid #1a1d1a; color: rgba(220,220,210,0.4);
+    border-radius: 2px; cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+    transition: all 0.1s;
+}
+.btn-toggle:active { transform: translateY(1px); }
+.btn-toggle.on {
+    border-color: var(--device-accent, #4ade80);
+    color: var(--device-accent, #4ade80);
+    box-shadow: 0 0 8px var(--device-accent-glow, rgba(74,222,128,0.2)), inset 0 1px 3px rgba(0,0,0,0.3);
+    text-shadow: 0 0 6px var(--device-accent-glow, rgba(74,222,128,0.15));
+    background: linear-gradient(180deg, #2e312e, #252825);
+}
+
+/* Flush — recessed precision button. Sits below panel surface. Keysight-inspired. */
+.btn-flush {
+    padding: 4px 10px; font: 600 8px/1 'Arial', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    background: rgba(0,0,0,0.2); color: rgba(220,220,210,0.45);
+    border: 1px solid rgba(0,0,0,0.4); border-radius: 1px; cursor: pointer;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), inset 0 -1px 0 rgba(255,255,255,0.02);
+    transition: color 0.1s, background 0.1s;
+}
+.btn-flush:hover { background: rgba(0,0,0,0.3); color: rgba(220,220,210,0.65); }
+.btn-flush:active { box-shadow: inset 0 3px 6px rgba(0,0,0,0.5); }
+.btn-flush.active {
+    color: var(--device-accent, #4ade80);
+    background: rgba(0,0,0,0.3);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 0 4px var(--device-accent-glow, rgba(74,222,128,0.1));
+}
+
+/* Backlit — translucent cap with glow-through label. Arcade / broadcast console. */
+.btn-backlit {
+    padding: 6px 14px; font: 800 9px/1 'Arial', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.15));
+    border: 1px solid rgba(255,255,255,0.06); border-radius: 2px; cursor: pointer;
+    color: rgba(220,220,210,0.3);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04);
+    transition: all 0.15s;
+}
+.btn-backlit:hover {
+    color: var(--device-accent, #4ade80);
+    text-shadow: 0 0 8px var(--device-accent-glow, rgba(74,222,128,0.3));
+    border-color: var(--device-accent-dim, rgba(74,222,128,0.15));
+    background: linear-gradient(180deg, var(--device-accent-dim, rgba(74,222,128,0.06)), rgba(0,0,0,0.1));
+}
+.btn-backlit.on {
+    color: var(--device-accent, #4ade80);
+    text-shadow: 0 0 12px var(--device-accent, rgba(74,222,128,0.5)), 0 0 4px var(--device-accent, rgba(74,222,128,0.3));
+    border-color: var(--device-accent-dim, rgba(74,222,128,0.2));
+    background: linear-gradient(180deg, var(--device-accent-dim, rgba(74,222,128,0.08)), rgba(0,0,0,0.05));
+    box-shadow: 0 0 10px var(--device-accent-glow, rgba(74,222,128,0.15)), 0 2px 4px rgba(0,0,0,0.3);
+}
+.btn-backlit:active { transform: translateY(1px); }
+
+/* Stamp — heavy embossed industrial. Steelwerk pressed-steel aesthetic. */
+.btn-stamp {
+    padding: 5px 12px; font: 900 10px/1 'Arial Black', 'Impact', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.2em;
+    background: linear-gradient(180deg, #4a4a48, #3a3a38);
+    border: 2px solid #2a2a28; color: rgba(156,163,175,0.5);
+    border-radius: 0; cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04),
+                inset 0 -1px 0 rgba(0,0,0,0.3);
+    text-shadow: 0 -1px 0 rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.04);
+    transition: transform 0.05s;
+}
+.btn-stamp:active { transform: translateY(2px); box-shadow: 0 1px 2px rgba(0,0,0,0.5), inset 0 2px 4px rgba(0,0,0,0.3); }
+
+/* Warm — rounded copper-era button. Vakuum tube amp / Buchla. */
+.btn-warm {
+    padding: 5px 14px; font: 600 9px/1 'Georgia', 'Times New Roman', serif;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    background: linear-gradient(180deg, #5a3828, #3a2018);
+    border: 1px solid #6a4838; color: rgba(212,136,74,0.6);
+    border-radius: 10px; cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06),
+                inset 0 -1px 0 rgba(0,0,0,0.3);
+    transition: transform 0.05s, color 0.15s;
+}
+.btn-warm:hover { color: rgba(212,136,74,0.85); }
+.btn-warm:active { transform: translateY(1px); box-shadow: 0 0 2px rgba(0,0,0,0.5), inset 0 2px 4px rgba(0,0,0,0.3); }
+
+/* Tactical — ruggedized milspec. Stencil font. Olive drab. */
+.btn-tactical {
+    padding: 5px 12px; font: 700 9px/1 'Impact', 'Arial Black', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    background: linear-gradient(180deg, #4a4840, #3a3830);
+    border: 2px solid #2a2820; color: rgba(212,160,32,0.5);
+    border-radius: 1px; cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03);
+    transition: transform 0.05s;
+}
+.btn-tactical:hover { color: rgba(212,160,32,0.7); }
+.btn-tactical:active { transform: translateY(2px); box-shadow: inset 0 2px 4px rgba(0,0,0,0.4); }
+
+/* Chrome — polished hard-chrome. Tokamak reactor panel. Sharp, premium. */
+.btn-chrome {
+    padding: 5px 14px; font: 700 9px/1 'Arial Narrow', 'Arial', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    background: linear-gradient(180deg, #50505a, #38383c, #28282c);
+    border: 1px solid rgba(255,255,255,0.08); color: rgba(220,220,225,0.55);
+    border-radius: 1px; cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12),
+                inset 0 -1px 0 rgba(0,0,0,0.2);
+    transition: transform 0.05s, box-shadow 0.1s;
+}
+.btn-chrome:hover { box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.16), 0 0 4px rgba(244,63,94,0.08); }
+.btn-chrome:active { transform: translateY(1px); box-shadow: inset 0 2px 4px rgba(0,0,0,0.4); }
+
+/* Pill — rounded capsule. Nordkraft B&O / Scandinavian design. */
+.btn-pill {
+    padding: 4px 14px; font: 500 9px/1 'Inter', system-ui, sans-serif;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    background: linear-gradient(180deg, rgba(192,184,168,0.1), rgba(192,184,168,0.04));
+    border: 1px solid rgba(192,184,168,0.15); color: rgba(192,184,168,0.5);
+    border-radius: 20px; cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    transition: all 0.15s;
+}
+.btn-pill:hover { border-color: rgba(192,184,168,0.3); color: rgba(192,184,168,0.7); }
+.btn-pill.active {
+    background: rgba(192,184,168,0.12); color: rgba(192,184,168,0.8);
+    border-color: rgba(192,184,168,0.35);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3), inset 0 1px 2px rgba(0,0,0,0.15);
+}
+.btn-pill:active { transform: scale(0.97); }
 
 
 /* ── Mono Input ── */
@@ -773,4 +922,326 @@
 .rack-unit-front .rack-ear,
 .rack-unit-back .rack-ear {
     display: none !important;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+ * MANUFACTURER BUTTON OVERRIDES
+ *
+ * Each manufacturer tints universal button classes to match
+ * their visual DNA. Knobs, segments, and LEDs already do this —
+ * now buttons get the same treatment.
+ * ══════════════════════════════════════════════════════════════ */
+
+/* ── Steelwerk buttons: stamped steel, cold gray, industrial weight ── */
+.mfr-steelwerk .btn-metal {
+    background: linear-gradient(180deg, #4a4a48, #38383a);
+    border-color: #2a2a28; color: rgba(156,163,175,0.6);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.mfr-steelwerk .btn-ghost { border-color: rgba(156,163,175,0.1); color: rgba(156,163,175,0.25); }
+.mfr-steelwerk .btn-ghost:hover { border-color: rgba(156,163,175,0.2); color: rgba(156,163,175,0.45); }
+.mfr-steelwerk .btn-toggle.on { border-color: #9ca3af; color: #9ca3af; text-shadow: none; }
+
+/* ── Keysight buttons: precision flush, cyan data, surgical ── */
+.mfr-keysight .btn-metal {
+    background: linear-gradient(180deg, #1a2025, #141a1e);
+    border-color: rgba(34,211,238,0.12); color: rgba(34,211,238,0.45);
+}
+.mfr-keysight .btn-metal:hover { border-color: rgba(34,211,238,0.25); color: rgba(34,211,238,0.65); }
+.mfr-keysight .btn-flush {
+    border-color: rgba(34,211,238,0.08);
+}
+.mfr-keysight .btn-flush.active {
+    color: #22d3ee; box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 0 6px rgba(34,211,238,0.12);
+}
+.mfr-keysight .btn-ghost { border-color: rgba(34,211,238,0.08); color: rgba(34,211,238,0.2); }
+.mfr-keysight .btn-ghost:hover { border-color: rgba(34,211,238,0.18); color: rgba(34,211,238,0.4); }
+.mfr-keysight .btn-toggle.on {
+    border-color: #22d3ee; color: #22d3ee;
+    box-shadow: 0 0 8px rgba(34,211,238,0.2), inset 0 1px 3px rgba(0,0,0,0.3);
+    text-shadow: 0 0 6px rgba(34,211,238,0.2);
+}
+
+/* ── Klinisch buttons: soft clinical, sage/cream, medical calm ── */
+.mfr-klinisch .btn-metal {
+    background: linear-gradient(180deg, #5a6050, #4e5446);
+    border-color: #3a4030; color: rgba(220,210,180,0.5);
+}
+.mfr-klinisch .btn-metal:hover { color: rgba(220,210,180,0.7); }
+.mfr-klinisch .btn-ghost { border-color: rgba(184,168,120,0.1); color: rgba(220,210,180,0.2); }
+.mfr-klinisch .btn-ghost:hover { border-color: rgba(184,168,120,0.2); color: rgba(220,210,180,0.4); }
+.mfr-klinisch .btn-flush {
+    background: rgba(74,80,64,0.3); border-color: rgba(184,168,120,0.08);
+    color: rgba(220,210,180,0.4);
+}
+.mfr-klinisch .btn-flush.active { color: #b8a878; }
+.mfr-klinisch .btn-toggle.on { border-color: #b8a878; color: #b8a878; text-shadow: none; }
+.mfr-klinisch .btn-danger {
+    background: linear-gradient(180deg, rgba(200,60,60,0.1), rgba(200,60,60,0.04));
+    border-color: rgba(200,60,60,0.2); color: rgba(200,60,60,0.5);
+}
+
+/* ── Cobalt buttons: blue-gray precision, data workstation ── */
+.mfr-cobalt .btn-metal {
+    background: linear-gradient(180deg, #2a3040, #222830);
+    border-color: rgba(124,160,196,0.1); color: rgba(124,160,196,0.45);
+}
+.mfr-cobalt .btn-metal:hover { color: rgba(124,160,196,0.65); }
+.mfr-cobalt .btn-ghost { border-color: rgba(124,160,196,0.08); color: rgba(124,160,196,0.2); }
+.mfr-cobalt .btn-ghost:hover { border-color: rgba(124,160,196,0.18); color: rgba(124,160,196,0.4); }
+.mfr-cobalt .btn-toggle.on {
+    border-color: #7ca0c4; color: #7ca0c4;
+    text-shadow: 0 0 4px rgba(124,160,196,0.2);
+}
+.mfr-cobalt .btn-backlit:hover {
+    color: #7ca0c4; text-shadow: 0 0 8px rgba(124,160,196,0.3);
+    border-color: rgba(124,160,196,0.15);
+}
+.mfr-cobalt .btn-backlit.on {
+    color: #7ca0c4;
+    text-shadow: 0 0 12px rgba(124,160,196,0.5), 0 0 4px rgba(124,160,196,0.3);
+    border-color: rgba(124,160,196,0.2);
+}
+
+/* ── Vakuum buttons: tube warmth, rounded copper, serif lettering ── */
+.mfr-vakuum .btn-metal {
+    background: linear-gradient(180deg, #5a3828, #3a2018);
+    border-color: #6a4838; color: rgba(212,136,74,0.5);
+    font-family: 'Georgia', 'Times New Roman', serif;
+}
+.mfr-vakuum .btn-metal:hover { color: rgba(212,136,74,0.7); }
+.mfr-vakuum .btn-ghost {
+    border-color: rgba(212,136,74,0.08); color: rgba(212,136,74,0.2);
+    font-family: 'Georgia', serif;
+}
+.mfr-vakuum .btn-ghost:hover { border-color: rgba(212,136,74,0.18); color: rgba(212,136,74,0.4); }
+.mfr-vakuum .btn-toggle.on {
+    border-color: #d4884a; color: #d4884a; background: linear-gradient(180deg, #3a2018, #2a1810);
+    box-shadow: 0 0 8px rgba(212,136,74,0.15), inset 0 1px 3px rgba(0,0,0,0.3);
+}
+.mfr-vakuum .btn-danger {
+    border-color: rgba(200,70,50,0.2); color: rgba(200,70,50,0.5);
+    border-radius: 8px;
+}
+
+/* ── Milspec buttons: tactical olive, stencil font, ruggedized ── */
+.mfr-milspec .btn-metal {
+    background: linear-gradient(180deg, #4a4840, #3a3830);
+    border: 2px solid #2a2820; color: rgba(120,113,108,0.5);
+    font-family: 'Impact', 'Arial Black', sans-serif;
+}
+.mfr-milspec .btn-ghost {
+    border-color: rgba(120,113,108,0.1); color: rgba(120,113,108,0.2);
+    font-family: 'Impact', 'Arial Black', sans-serif;
+}
+.mfr-milspec .btn-ghost:hover { border-color: rgba(120,113,108,0.2); color: rgba(120,113,108,0.4); }
+.mfr-milspec .btn-toggle.on { border-color: #d4a020; color: #d4a020; text-shadow: none; }
+
+/* ── Phosphor buttons: green terminal glow, teletype ── */
+.mfr-phosphor .btn-metal {
+    background: linear-gradient(180deg, #1a1f1a, #141914);
+    border-color: rgba(34,197,94,0.1); color: rgba(74,222,128,0.4);
+}
+.mfr-phosphor .btn-metal:hover { color: rgba(74,222,128,0.6); }
+.mfr-phosphor .btn-ghost { border-color: rgba(34,197,94,0.08); color: rgba(74,222,128,0.2); }
+.mfr-phosphor .btn-ghost:hover { border-color: rgba(34,197,94,0.18); color: rgba(74,222,128,0.4); }
+.mfr-phosphor .btn-toggle.on {
+    border-color: #22c55e; color: #4ade80;
+    box-shadow: 0 0 8px rgba(34,197,94,0.25), inset 0 1px 3px rgba(0,0,0,0.3);
+    text-shadow: 0 0 6px rgba(34,197,94,0.3);
+}
+.mfr-phosphor .btn-backlit.on {
+    color: #4ade80;
+    text-shadow: 0 0 12px rgba(74,222,128,0.5), 0 0 4px rgba(74,222,128,0.3);
+}
+
+/* ── Nordkraft buttons: Scandinavian warmth, birch, minimal ── */
+.mfr-nordkraft .btn-metal {
+    background: linear-gradient(180deg, #c0b8a8, #a8a090);
+    border-color: #908878; color: rgba(50,45,38,0.6);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
+}
+.mfr-nordkraft .btn-metal:hover { color: rgba(50,45,38,0.8); }
+.mfr-nordkraft .btn-ghost {
+    border-color: rgba(180,170,155,0.15); color: rgba(180,170,155,0.35);
+    font-family: 'Inter', system-ui, sans-serif;
+}
+.mfr-nordkraft .btn-ghost:hover { border-color: rgba(180,170,155,0.3); color: rgba(180,170,155,0.55); }
+.mfr-nordkraft .btn-pill {
+    border-color: rgba(180,170,155,0.2); color: rgba(180,170,155,0.5);
+}
+.mfr-nordkraft .btn-pill.active {
+    background: rgba(180,170,155,0.15); color: rgba(180,170,155,0.8);
+    border-color: rgba(180,170,155,0.4);
+}
+.mfr-nordkraft .btn-toggle.on {
+    border-color: #b4aa9b; color: #b4aa9b; text-shadow: none;
+    background: linear-gradient(180deg, #a8a090, #908878);
+}
+
+/* ── Guardian buttons: amber vigilance on navy steel ── */
+.mfr-guardian .btn-metal {
+    background: linear-gradient(180deg, #2a3040, #1e2230);
+    border-color: rgba(217,119,6,0.1); color: rgba(217,119,6,0.4);
+}
+.mfr-guardian .btn-metal:hover { color: rgba(217,119,6,0.6); }
+.mfr-guardian .btn-ghost { border-color: rgba(217,119,6,0.08); color: rgba(217,119,6,0.2); }
+.mfr-guardian .btn-ghost:hover { border-color: rgba(217,119,6,0.18); color: rgba(217,119,6,0.4); }
+.mfr-guardian .btn-toggle.on {
+    border-color: #d97706; color: #d97706;
+    box-shadow: 0 0 8px rgba(217,119,6,0.2), inset 0 1px 3px rgba(0,0,0,0.3);
+    text-shadow: 0 0 6px rgba(217,119,6,0.2);
+}
+.mfr-guardian .btn-danger {
+    background: linear-gradient(180deg, rgba(239,68,68,0.1), rgba(239,68,68,0.03));
+    border-color: rgba(239,68,68,0.2); color: rgba(239,68,68,0.5);
+}
+
+/* ── Tokamak buttons: chrome + plasma rose, reactor-grade ── */
+.mfr-tokamak .btn-metal {
+    background: linear-gradient(180deg, #3c3c40, #28282c);
+    border-color: rgba(244,63,94,0.08); color: rgba(220,220,225,0.45);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.mfr-tokamak .btn-metal:hover { color: rgba(220,220,225,0.65); }
+.mfr-tokamak .btn-ghost {
+    border-color: rgba(244,63,94,0.06); color: rgba(244,63,94,0.2);
+    font-family: 'Arial Narrow', 'Arial', sans-serif;
+}
+.mfr-tokamak .btn-ghost:hover { border-color: rgba(244,63,94,0.15); color: rgba(244,63,94,0.4); }
+.mfr-tokamak .btn-toggle.on {
+    border-color: #f43f5e; color: #f43f5e;
+    box-shadow: 0 0 10px rgba(244,63,94,0.25), inset 0 1px 3px rgba(0,0,0,0.3);
+    text-shadow: 0 0 6px rgba(244,63,94,0.3);
+}
+.mfr-tokamak .btn-chrome {
+    background: linear-gradient(180deg, #58585e, #3c3c40, #28282c);
+    border-color: rgba(255,255,255,0.1);
+}
+.mfr-tokamak .btn-chrome:hover {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.16), 0 0 6px rgba(244,63,94,0.1);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+ * NEW PRIMITIVES
+ * ══════════════════════════════════════════════════════════════ */
+
+/* ── Badge — status pill with optional dot indicator ── */
+.badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 10px;
+    font: 600 8px/1 'Arial', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    color: rgba(220,220,210,0.5);
+}
+.badge::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: currentColor; opacity: 0.6;
+}
+.badge.no-dot::before { display: none; }
+.badge-green  { color: var(--status-green); border-color: rgba(34,197,94,0.2); background: rgba(34,197,94,0.06); }
+.badge-amber  { color: var(--status-amber); border-color: rgba(245,158,11,0.2); background: rgba(245,158,11,0.06); }
+.badge-red    { color: var(--status-red);   border-color: rgba(239,68,68,0.2); background: rgba(239,68,68,0.06); }
+.badge-blue   { color: var(--status-blue);  border-color: rgba(96,165,250,0.2); background: rgba(96,165,250,0.06); }
+.badge-accent { color: var(--device-accent); border-color: var(--device-accent-dim); background: var(--device-accent-glow); }
+
+/* ── Progress Ring — SVG-driven circular progress ── */
+.progress-ring {
+    display: inline-block; position: relative;
+}
+.progress-ring svg { transform: rotate(-90deg); }
+.progress-ring-track {
+    fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 3;
+}
+.progress-ring-fill {
+    fill: none; stroke: var(--device-accent, #4ade80); stroke-width: 3;
+    stroke-linecap: round; transition: stroke-dashoffset 0.4s;
+    filter: drop-shadow(0 0 3px var(--device-accent-glow, rgba(74,222,128,0.15)));
+}
+.progress-ring-label {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font: 700 10px/1 var(--mono); color: var(--device-accent, #4ade80);
+}
+
+/* ── Thumb Wheel — horizontal increment control (encoder wheel) ── */
+.thumb-wheel {
+    display: inline-flex; align-items: center; gap: 0;
+}
+.thumb-wheel-display {
+    padding: 3px 10px; min-width: 36px; text-align: center;
+    font: 700 11px/1 var(--mono); color: var(--device-accent, #4ade80);
+    background: rgba(0,0,0,0.35); border: 1px solid rgba(0,0,0,0.4);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
+    text-shadow: 0 0 6px var(--device-accent-glow, rgba(74,222,128,0.1));
+}
+.thumb-wheel-up, .thumb-wheel-down {
+    padding: 3px 5px; font: 700 10px/1 'Arial', sans-serif;
+    background: linear-gradient(180deg, #3a3d3a, #2e312e);
+    border: 1px solid rgba(0,0,0,0.35); color: rgba(220,220,210,0.4);
+    cursor: pointer; transition: color 0.1s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.thumb-wheel-down { border-radius: 2px 0 0 2px; }
+.thumb-wheel-up { border-radius: 0 2px 2px 0; }
+.thumb-wheel-up:hover, .thumb-wheel-down:hover { color: rgba(220,220,210,0.7); }
+.thumb-wheel-up:active, .thumb-wheel-down:active {
+    transform: scaleX(0.95); box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* ── Styled Select — matches component aesthetic ── */
+.select-rack {
+    appearance: none; -webkit-appearance: none;
+    padding: 3px 22px 3px 8px; font: 10px/1 var(--mono);
+    background: rgba(0,0,0,0.3) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 4 4-4' fill='none' stroke='rgba(220,220,210,0.3)' stroke-width='1.2'/%3E%3C/svg%3E") no-repeat right 6px center;
+    border: 1px solid rgba(255,255,255,0.08); color: rgba(220,220,210,0.6);
+    border-radius: 1px; cursor: pointer;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+    transition: border-color 0.15s;
+}
+.select-rack:hover { border-color: rgba(255,255,255,0.15); }
+.select-rack:focus { outline: none; border-color: var(--device-accent-dim, rgba(74,222,128,0.2)); }
+.select-rack option { background: #1a1f1a; color: #ddd; }
+
+/* ── Divider — engraved panel groove ── */
+.divider-h {
+    height: 1px; margin: 4px 0;
+    background: linear-gradient(90deg, transparent, rgba(0,0,0,0.4) 15%, rgba(0,0,0,0.4) 85%, transparent);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.02);
+}
+.divider-v {
+    width: 1px; align-self: stretch;
+    background: linear-gradient(180deg, transparent, rgba(0,0,0,0.4) 15%, rgba(0,0,0,0.4) 85%, transparent);
+    box-shadow: 1px 0 0 rgba(255,255,255,0.02);
+}
+
+/* ── Indicator Dot — tiny inline status circle ── */
+.dot {
+    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+}
+.dot-green  { background: var(--status-green); box-shadow: 0 0 4px rgba(34,197,94,0.4); }
+.dot-amber  { background: var(--status-amber); box-shadow: 0 0 4px rgba(245,158,11,0.4); }
+.dot-red    { background: var(--status-red);   box-shadow: 0 0 4px rgba(239,68,68,0.4); }
+.dot-blue   { background: var(--status-blue);  box-shadow: 0 0 4px rgba(96,165,250,0.4); }
+.dot-accent { background: var(--device-accent); box-shadow: 0 0 4px var(--device-accent-glow); }
+
+/* ── Engraved Text — silk-screened / laser-engraved panel label ── */
+.text-engraved {
+    font: 600 8px/1 'Arial', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: transparent;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.04);
+    background: rgba(0,0,0,0.2);
+    -webkit-background-clip: text; background-clip: text;
+}
+
+/* ── Screw Head (inline, not positioned) — for panel decoration ── */
+.screw-inline {
+    display: inline-block; width: 8px; height: 8px;
+    background: radial-gradient(circle at 35% 35%, #5a5f5a, #2a2f2a 60%, #1a1f1a);
+    border-radius: 50%; flex-shrink: 0;
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.08), 0 1px 2px rgba(0,0,0,0.4);
 }

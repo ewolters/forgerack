@@ -92,6 +92,44 @@ FR.Segment = function(container, o) {
     return {get value(){return o.value},set value(v){o.value=v;render(v);}};
 };
 
+// Toggle button
+FR.Toggle = function(el, o) {
+    o = Object.assign({value:false,onChange:null}, o);
+    function render(v){el.classList.toggle('on',v);}
+    el.addEventListener('click',()=>{o.value=!o.value;render(o.value);if(o.onChange)o.onChange(o.value);});
+    render(o.value);
+    return {get value(){return o.value},set value(v){o.value=v;render(v);}};
+};
+
+// Thumb wheel: increment/decrement with display
+FR.ThumbWheel = function(el, o) {
+    o = Object.assign({min:0,max:100,value:0,step:1,onChange:null}, o);
+    const disp = el.querySelector('.thumb-wheel-display');
+    const up = el.querySelector('.thumb-wheel-up');
+    const dn = el.querySelector('.thumb-wheel-down');
+    function render(v){if(disp) disp.textContent = o.step<1 ? v.toFixed(2) : String(v);}
+    if(up) up.addEventListener('click',()=>{o.value=Math.min(o.max,o.value+o.step);render(o.value);if(o.onChange)o.onChange(o.value);});
+    if(dn) dn.addEventListener('click',()=>{o.value=Math.max(o.min,o.value-o.step);render(o.value);if(o.onChange)o.onChange(o.value);});
+    render(o.value);
+    return {get value(){return o.value},set value(v){o.value=Math.max(o.min,Math.min(o.max,v));render(o.value);}};
+};
+
+// Progress ring: set percentage (0-100)
+FR.ProgressRing = function(el, o) {
+    o = Object.assign({value:0,radius:18,showLabel:true}, o);
+    const circ = 2 * Math.PI * o.radius;
+    const fill = el.querySelector('.progress-ring-fill');
+    const label = el.querySelector('.progress-ring-label');
+    function render(v){
+        v = Math.max(0,Math.min(100,v));
+        if(fill) fill.style.strokeDasharray = circ;
+        if(fill) fill.style.strokeDashoffset = circ * (1 - v/100);
+        if(label && o.showLabel) label.textContent = Math.round(v)+'%';
+    }
+    render(o.value);
+    return {get value(){return o.value},set value(v){o.value=v;render(v);}};
+};
+
 // Auto-init
 FR.init = function(root) {
     root = root || document;
@@ -99,6 +137,9 @@ FR.init = function(root) {
     root.querySelectorAll('[data-switch]').forEach(el=>{el._switch=FR.Switch(el);});
     root.querySelectorAll('[data-meter]').forEach(el=>{el._meter=FR.Meter(el,JSON.parse(el.dataset.meter||'{}'));});
     root.querySelectorAll('[data-readout]').forEach(el=>{el._readout=FR.Readout(el,JSON.parse(el.dataset.readout||'{}'));});
+    root.querySelectorAll('[data-toggle]').forEach(el=>{el._toggle=FR.Toggle(el);});
+    root.querySelectorAll('[data-thumbwheel]').forEach(el=>{el._thumbwheel=FR.ThumbWheel(el,JSON.parse(el.dataset.thumbwheel||'{}'));});
+    root.querySelectorAll('[data-progress-ring]').forEach(el=>{el._ring=FR.ProgressRing(el,JSON.parse(el.dataset.progressRing||'{}'));});
 };
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>FR.init());

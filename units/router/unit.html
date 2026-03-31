@@ -1,0 +1,102 @@
+<!--
+ ╔══════════════════════════════════════════════════════════════╗
+ ║  RELAY RT-02 — Conditional Signal Router                     ║
+ ║  Manufacturer: KEYSIGHT                                      ║
+ ║  Identity: Anodized cyan test instrument. Precision routing.  ║
+ ║  Evaluates condition on a column, routes rows to A or B.     ║
+ ╚══════════════════════════════════════════════════════════════╝
+-->
+
+<!-- ════════ FRONT PANEL ════════ -->
+<div class="rack-unit-front u3 mfr-keysight" data-unit="router" data-id="${id}" style="
+    --device-accent:#22d3ee;
+    background:
+        repeating-linear-gradient(180deg, rgba(255,255,255,0.004) 0px, transparent 1px, transparent 3px),
+        linear-gradient(160deg, #0e1216 0%, #0c1014 30%, #0d1115 50%, #0a0e12 80%);
+    overflow:hidden;
+">
+    <!-- Nameplate -->
+    <div style="
+        display:flex;align-items:center;gap:8px;
+        padding:4px 48px;
+        border-bottom:2px solid rgba(0,0,0,0.3);
+        background: linear-gradient(180deg, rgba(34,211,238,0.006), rgba(0,0,0,0.1));
+    ">
+        <div class="led-housing"><span class="led" id="${id}-led" style="width:6px;height:6px;"></span></div>
+        <span style="font:800 13px/1 'Arial Narrow','Arial',sans-serif;color:rgba(34,211,238,0.35);letter-spacing:0.18em;text-transform:uppercase;">Relay</span>
+        <span style="font:300 9px/1 'Arial',sans-serif;color:rgba(34,211,238,0.12);font-style:italic;">Conditional Router</span>
+        <div style="margin-left:auto;">
+            <span style="font:600 9px/1 'Courier New',monospace;color:rgba(34,211,238,0.1);letter-spacing:0.06em;">RT-02</span>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div style="padding:6px 48px;display:flex;align-items:center;gap:10px;">
+        <!-- Column -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+            <select id="${id}-col" class="styled-select" style="min-width:80px;font-size:9px;background:rgba(0,0,0,0.4);border:1px solid rgba(34,211,238,0.12);color:#22d3ee;padding:3px 5px;border-radius:1px;">
+                <option value="">column</option>
+            </select>
+            <span class="control-label control-label-sm" style="color:rgba(34,211,238,0.2);">Column</span>
+        </div>
+
+        <!-- Operator -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+            <div class="segment">
+                <button class="segment-btn active" id="${id}-op-gt" onclick="FR.units['${id}']?.setOp?.('>')">&#x003E;</button>
+                <button class="segment-btn" id="${id}-op-lt" onclick="FR.units['${id}']?.setOp?.('<')">&#x003C;</button>
+                <button class="segment-btn" id="${id}-op-eq" onclick="FR.units['${id}']?.setOp?.('==')">&#x003D;</button>
+                <button class="segment-btn" id="${id}-op-ne" onclick="FR.units['${id}']?.setOp?.('!=')">&#x2260;</button>
+            </div>
+            <span class="control-label control-label-sm" style="color:rgba(34,211,238,0.2);">Operator</span>
+        </div>
+
+        <!-- Threshold value -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+            <input type="text" id="${id}-threshold" placeholder="value" class="input-mono" style="width:60px;font-size:9px;padding:3px 5px;background:rgba(0,0,0,0.4);border:1px solid rgba(34,211,238,0.12);color:#22d3ee;border-radius:1px;text-align:center;">
+            <span class="control-label control-label-sm" style="color:rgba(34,211,238,0.2);">Threshold</span>
+        </div>
+
+        <!-- Route indicators -->
+        <div style="margin-left:auto;display:flex;gap:14px;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                <span class="led" id="${id}-led-a"></span>
+                <span style="font:700 9px/1 'Arial',sans-serif;color:rgba(34,197,94,0.25);letter-spacing:0.06em;">PASS</span>
+                <div class="readout sm"><div class="readout-value" id="${id}-count-a" style="font-size:13px;color:#22c55e;min-width:36px;">0</div></div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                <span class="led" id="${id}-led-b"></span>
+                <span style="font:700 9px/1 'Arial',sans-serif;color:rgba(245,158,11,0.25);letter-spacing:0.06em;">FAIL</span>
+                <div class="readout sm"><div class="readout-value" id="${id}-count-b" style="font-size:13px;color:#f59e0b;min-width:36px;">0</div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ════════ BACK PANEL ════════ -->
+<div class="rack-unit-back u3" data-unit-back="router" data-id="${id}" style="
+    background: repeating-linear-gradient(180deg, rgba(255,255,255,0.008) 0px, transparent 1px, transparent 4px),
+                linear-gradient(160deg, #1c1c1c, #1f1f1f 40%, #1d1d1d);
+    overflow:hidden;
+">
+    <div style="display:flex;align-items:center;gap:8px;padding:5px 48px;border-bottom:1px solid rgba(255,255,255,0.05);">
+        <span style="font:700 11px/1 'Arial',sans-serif;color:rgba(255,255,255,0.1);text-transform:uppercase;letter-spacing:0.15em;">Relay</span>
+        <span style="font:400 11px/1 'Courier New',monospace;color:rgba(255,255,255,0.06);">RT-02</span>
+        <span style="font:400 9px/1 'Courier New',monospace;color:rgba(255,255,255,0.04);margin-left:auto;">S/N ${id}</span>
+    </div>
+    <div style="padding:10px 48px;display:flex;gap:24px;">
+        <div>
+            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(255,255,255,0.07);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:10px;">Input</div>
+            <div style="display:flex;gap:12px;">
+                <div class="patch-group"><div class="patch-jack" data-input="data" data-unit-id="${id}"></div><div class="patch-jack-label">Data</div></div>
+            </div>
+        </div>
+        <div>
+            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(255,255,255,0.07);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:10px;">Output</div>
+            <div style="display:flex;gap:12px;">
+                <div class="patch-group"><div class="patch-jack" data-output="pass" data-unit-id="${id}"></div><div class="patch-jack-label">Pass</div></div>
+                <div class="patch-group"><div class="patch-jack" data-output="fail" data-unit-id="${id}"></div><div class="patch-jack-label">Fail</div></div>
+            </div>
+        </div>
+    </div>
+</div>

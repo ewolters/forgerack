@@ -1,0 +1,89 @@
+<!--
+ ╔══════════════════════════════════════════════════════════════╗
+ ║  PULSE CK-01 — System Clock & Refresh Timer                  ║
+ ║  Manufacturer: STEELWERK                                     ║
+ ║  Identity: Cold gray industrial, East German precision.      ║
+ ║  Emits periodic tick to trigger upstream data refresh.        ║
+ ║  The heartbeat that makes monitoring live.                   ║
+ ╚══════════════════════════════════════════════════════════════╝
+-->
+
+<!-- ════════ FRONT PANEL ════════ -->
+<div class="rack-unit-front u2 mfr-steelwerk" data-unit="clock" data-id="${id}" style="
+    --device-accent:#94a3b8;
+    background:
+        repeating-linear-gradient(180deg, rgba(255,255,255,0.004) 0px, transparent 1px, transparent 3px),
+        linear-gradient(160deg, #141618 0%, #121416 30%, #131517 50%, #101214 80%);
+    overflow:hidden;
+">
+    <!-- Nameplate -->
+    <div style="
+        display:flex;align-items:center;gap:8px;
+        padding:3px 48px;
+        border-bottom:1px solid rgba(0,0,0,0.4);
+        background: linear-gradient(180deg, rgba(148,163,184,0.005), rgba(0,0,0,0.1));
+    ">
+        <div class="led-housing"><span class="led" id="${id}-led-run" style="width:6px;height:6px;"></span></div>
+        <span style="font:800 12px/1 'Arial',sans-serif;color:rgba(148,163,184,0.3);letter-spacing:0.2em;text-transform:uppercase;">Pulse</span>
+        <span style="font:300 9px/1 'Arial',sans-serif;color:rgba(148,163,184,0.1);font-style:italic;">System Clock</span>
+
+        <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+            <!-- Tick indicator — flashes on each pulse -->
+            <span class="led" id="${id}-led-tick"></span>
+            <span style="font:600 9px/1 'Courier New',monospace;color:rgba(148,163,184,0.1);">CK-01</span>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div style="padding:4px 48px;display:flex;align-items:center;gap:12px;">
+        <!-- Interval selector -->
+        <div class="segment">
+            <button class="segment-btn" id="${id}-int-5" onclick="FR.units['${id}']?.setInterval?.(5)" style="padding:2px 5px;font-size:8px;">5s</button>
+            <button class="segment-btn" id="${id}-int-10" onclick="FR.units['${id}']?.setInterval?.(10)" style="padding:2px 5px;font-size:8px;">10s</button>
+            <button class="segment-btn active" id="${id}-int-30" onclick="FR.units['${id}']?.setInterval?.(30)" style="padding:2px 5px;font-size:8px;">30s</button>
+            <button class="segment-btn" id="${id}-int-60" onclick="FR.units['${id}']?.setInterval?.(60)" style="padding:2px 5px;font-size:8px;">1m</button>
+            <button class="segment-btn" id="${id}-int-300" onclick="FR.units['${id}']?.setInterval?.(300)" style="padding:2px 5px;font-size:8px;">5m</button>
+        </div>
+
+        <!-- Run/Stop -->
+        <button class="btn-toggle on" id="${id}-run" onclick="FR.units['${id}']?.toggleRun?.()" style="padding:3px 10px;font-size:8px;">Running</button>
+
+        <!-- Manual tick -->
+        <button class="btn-metal" onclick="FR.units['${id}']?.manualTick?.()" style="padding:3px 8px;font-size:8px;">Tick</button>
+
+        <!-- Tick counter -->
+        <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+            <div class="readout sm">
+                <div class="readout-value" id="${id}-ticks" style="font-size:13px;color:#94a3b8;min-width:40px;">0</div>
+                <div class="readout-label" style="color:rgba(148,163,184,0.2);">Ticks</div>
+            </div>
+            <!-- Countdown bar -->
+            <div style="width:60px;">
+                <div class="meter" style="height:4px;">
+                    <div class="meter-fill" id="${id}-countdown" style="width:100%;background:#94a3b8;transition:width linear;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ════════ BACK PANEL ════════ -->
+<div class="rack-unit-back u2" data-unit-back="clock" data-id="${id}" style="
+    background: repeating-linear-gradient(180deg, rgba(255,255,255,0.008) 0px, transparent 1px, transparent 4px),
+                linear-gradient(160deg, #1c1c1c, #1f1f1f 40%, #1d1d1d);
+    overflow:hidden;
+">
+    <div style="display:flex;align-items:center;gap:8px;padding:5px 48px;border-bottom:1px solid rgba(255,255,255,0.05);">
+        <span style="font:700 11px/1 'Arial',sans-serif;color:rgba(255,255,255,0.1);text-transform:uppercase;letter-spacing:0.15em;">Pulse</span>
+        <span style="font:400 11px/1 'Courier New',monospace;color:rgba(255,255,255,0.06);">CK-01</span>
+        <span style="font:400 9px/1 'Courier New',monospace;color:rgba(255,255,255,0.04);margin-left:auto;">S/N ${id}</span>
+    </div>
+    <div style="padding:8px 48px;display:flex;gap:24px;">
+        <div>
+            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(255,255,255,0.07);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:8px;">Output</div>
+            <div style="display:flex;gap:12px;">
+                <div class="patch-group"><div class="patch-jack" data-output="tick" data-unit-id="${id}"></div><div class="patch-jack-label">Tick</div></div>
+            </div>
+        </div>
+    </div>
+</div>

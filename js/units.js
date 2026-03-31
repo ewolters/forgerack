@@ -3740,4 +3740,318 @@ FR.registerUnit('scribble', {
     receive() {}
 });
 
+// ═══════════════════════════════════════════════════════════
+// JUNCTION MX-04 — Multi-Source Signal Mixer
+// ═══════════════════════════════════════════════════════════
+
+FR.registerUnit('mixer', {
+    init(el, id) {
+        this.el = el; this.id = id;
+        this.mode = 'append';
+        this.buffers = { a: null, b: null, c: null, d: null };
+    },
+
+    setMode(mode) {
+        this.mode = mode;
+        const el = this.el;
+        el.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+        const btn = el.querySelector(`#${this.id}-mode-${mode}`);
+        if (btn) btn.classList.add('active');
+        const joinCfg = el.querySelector(`#${this.id}-join-cfg`);
+        if (joinCfg) joinCfg.style.display = mode === 'join' ? 'flex' : 'none';
+        this._mix();
+    },
+
+    receive(inputName, data) {
+        if (!['a','b','c','d'].includes(inputName)) return;
+        this.buffers[inputName] = data;
+        const led = document.getElementById(`${this.id}-led-${inputName}`);
+        if (led) FR.LED(led).set('accent');
+        this._mix();
+    },
+
+    _mix() {
+        const filled = Object.entries(this.buffers).filter(([,v]) => v && v.data);
+        if (!filled.length) return;
+
+        let merged;
+        if (this.mode === 'append') {
+            // Row-append: stack all data vertically
+            const allCols = new Set();
+            filled.forEach(([,d]) => (d.columns || Object.keys(d.data)).forEach(c => allCols.add(c)));
+            const cols = [...allCols];
+            const data = {};
+            cols.forEach(c => { data[c] = []; });
+            filled.forEach(([,d]) => {
+                const len = d.data[Object.keys(d.data)[0]]?.length || 0;
+                cols.forEach(c => {
+                    const src = d.data[c] || [];
+                    for (let i = 0; i < len; i++) data[c].push(src[i] ?? null);
+                });
+            });
+            merged = { data, columns: cols };
+        } else {
+            // Join mode — join on key column
+            const key = (document.getElementById(`${this.id}-join-key`)?.value || '').trim();
+            if (!key) { merged = this.buffers[filled[0][0]]; }
+            else {
+                // Simple left join on first buffer
+                const base = filled[0][1];
+                const data = {};
+                (base.columns || Object.keys(base.data)).forEach(c => { data[c] = [...(base.data[c] || [])]; });
+                for (let i = 1; i < filled.length; i++) {
+                    const other = filled[i][1];
+                    const otherCols = (other.columns || Object.keys(other.data)).filter(c => c !== key && !data[c]);
+                    otherCols.forEach(c => { data[c] = new Array(data[key]?.length || 0).fill(null); });
+                    const keyVals = other.data[key] || [];
+                    const baseKeyVals = data[key] || [];
+                    baseKeyVals.forEach((bk, idx) => {
+                        const matchIdx = keyVals.indexOf(bk);
+                        if (matchIdx >= 0) {
+                            otherCols.forEach(c => { data[c][idx] = other.data[c]?.[matchIdx] ?? null; });
+                        }
+                    });
+                }
+                merged = { data, columns: Object.keys(data) };
+            }
+        }
+
+        const rowCount = merged.data[Object.keys(merged.data)[0]]?.length || 0;
+        const countEl = document.getElementById(`${this.id}-count`);
+        if (countEl) countEl.textContent = rowCount;
+        FR.LED(document.getElementById(`${this.id}-led`)).set('green');
+        FR.emit(this.id, 'mixed', merged);
+    }
+});
+
+
+// ═══════════════════════════════════════════════════════════
+// RELAY RT-02 — Conditional Signal Router
+// ═══════════════════════════════════════════════════════════
+
+FR.registerUnit('router', {
+    init(el, id) {
+        this.el = el; this.id = id;
+        this.op = '>';
+        this.data = null;
+    },
+
+    setOp(op) {
+        this.op = op;
+        this.el.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+        const opMap = { '>': 'gt', '<': 'lt', '==': 'eq', '!=': 'ne' };
+        const btn = this.el.querySelector(`#${this.id}-op-${opMap[op]}`);
+        if (btn) btn.classList.add('active');
+        if (this.data) this._route(this.data);
+    },
+
+    receive(inputName, data) {
+        if (inputName !== 'data') return;
+        this.data = data;
+        // Populate column selector
+        const sel = document.getElementById(`${this.id}-col`);
+        if (sel && sel.options.length <= 1 && data.columns) {
+            data.columns.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c; opt.textContent = c;
+                sel.appendChild(opt);
+            });
+        }
+        this._route(data);
+    },
+
+    _route(data) {
+        const col = document.getElementById(`${this.id}-col`)?.value;
+        const threshStr = document.getElementById(`${this.id}-threshold`)?.value;
+        if (!col || !threshStr || !data?.data?.[col]) return;
+
+        const thresh = parseFloat(threshStr);
+        if (isNaN(thresh)) return;
+
+        const vals = data.data[col];
+        const passIdx = [], failIdx = [];
+        const op = this.op;
+
+        vals.forEach((v, i) => {
+            const n = parseFloat(v);
+            if (isNaN(n)) { failIdx.push(i); return; }
+            let pass = false;
+            if (op === '>') pass = n > thresh;
+            else if (op === '<') pass = n < thresh;
+            else if (op === '==') pass = n === thresh;
+            else if (op === '!=') pass = n !== thresh;
+            (pass ? passIdx : failIdx).push(i);
+        });
+
+        const cols = data.columns || Object.keys(data.data);
+        const passData = {}, failData = {};
+        cols.forEach(c => {
+            passData[c] = passIdx.map(i => data.data[c]?.[i]);
+            failData[c] = failIdx.map(i => data.data[c]?.[i]);
+        });
+
+        document.getElementById(`${this.id}-count-a`).textContent = passIdx.length;
+        document.getElementById(`${this.id}-count-b`).textContent = failIdx.length;
+
+        if (passIdx.length) FR.LED(document.getElementById(`${this.id}-led-a`)).set('green');
+        else FR.LED(document.getElementById(`${this.id}-led-a`)).off();
+        if (failIdx.length) FR.LED(document.getElementById(`${this.id}-led-b`)).set('amber');
+        else FR.LED(document.getElementById(`${this.id}-led-b`)).off();
+
+        FR.LED(document.getElementById(`${this.id}-led`)).set('accent');
+        FR.emit(this.id, 'pass', { data: passData, columns: cols });
+        FR.emit(this.id, 'fail', { data: failData, columns: cols });
+    }
+});
+
+
+// ═══════════════════════════════════════════════════════════
+// TRIPWIRE TW-01 — Threshold Alarm Gate
+// ═══════════════════════════════════════════════════════════
+
+FR.registerUnit('threshold', {
+    init(el, id) {
+        this.el = el; this.id = id;
+        this.armed = false;
+        this.direction = 'above';
+        this.tripCount = 0;
+    },
+
+    setDir(dir) {
+        this.direction = dir;
+        this.el.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+        const btn = this.el.querySelector(`#${this.id}-dir-${dir}`);
+        if (btn) btn.classList.add('active');
+    },
+
+    toggleArm() {
+        this.armed = !this.armed;
+        const btn = document.getElementById(`${this.id}-arm`);
+        if (btn) { btn.classList.toggle('on', this.armed); btn.textContent = this.armed ? 'Armed' : 'Disarmed'; }
+        FR.LED(document.getElementById(`${this.id}-led-arm`)).set(this.armed ? 'amber' : undefined);
+        if (!this.armed) FR.LED(document.getElementById(`${this.id}-led-arm`)).off();
+    },
+
+    receive(inputName, data) {
+        if (inputName !== 'data') return;
+        // Pass data through regardless
+        FR.emit(this.id, 'thru', data);
+
+        if (!this.armed) return;
+
+        const col = document.getElementById(`${this.id}-col`)?.value;
+        const limitStr = document.getElementById(`${this.id}-limit`)?.value;
+        if (!col || !limitStr || !data?.data?.[col]) return;
+
+        const limit = parseFloat(limitStr);
+        if (isNaN(limit)) return;
+
+        const vals = data.data[col];
+        let tripped = false;
+
+        vals.forEach(v => {
+            const n = parseFloat(v);
+            if (isNaN(n)) return;
+            if (this.direction === 'above' && n > limit) tripped = true;
+            if (this.direction === 'below' && n < limit) tripped = true;
+        });
+
+        if (tripped) {
+            this.tripCount++;
+            document.getElementById(`${this.id}-trips`).textContent = this.tripCount;
+            FR.LED(document.getElementById(`${this.id}-led-alarm`)).set('red');
+            FR.emit(this.id, 'alarm', {
+                type: 'threshold_violation',
+                column: col,
+                limit: limit,
+                direction: this.direction,
+                timestamp: new Date().toISOString(),
+                unit_id: this.id,
+            });
+        } else {
+            FR.LED(document.getElementById(`${this.id}-led-alarm`)).off();
+        }
+    }
+});
+
+
+// ═══════════════════════════════════════════════════════════
+// PULSE CK-01 — System Clock & Refresh Timer
+// ═══════════════════════════════════════════════════════════
+
+FR.registerUnit('clock', {
+    init(el, id) {
+        this.el = el; this.id = id;
+        this.interval = 30;
+        this.running = true;
+        this.tickCount = 0;
+        this._timer = null;
+        this._countdownTimer = null;
+        this._start();
+    },
+
+    setInterval(secs) {
+        this.interval = secs;
+        this.el.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+        const btn = this.el.querySelector(`#${this.id}-int-${secs}`);
+        if (btn) btn.classList.add('active');
+        if (this.running) { this._stop(); this._start(); }
+    },
+
+    toggleRun() {
+        this.running = !this.running;
+        const btn = document.getElementById(`${this.id}-run`);
+        if (btn) { btn.classList.toggle('on', this.running); btn.textContent = this.running ? 'Running' : 'Stopped'; }
+        FR.LED(document.getElementById(`${this.id}-led-run`)).set(this.running ? 'green' : undefined);
+        if (!this.running) { FR.LED(document.getElementById(`${this.id}-led-run`)).off(); this._stop(); }
+        else this._start();
+    },
+
+    manualTick() {
+        this._tick();
+    },
+
+    _start() {
+        if (this._timer) clearInterval(this._timer);
+        this._timer = setInterval(() => this._tick(), this.interval * 1000);
+        FR.LED(document.getElementById(`${this.id}-led-run`)).set('green');
+        // Countdown animation
+        this._resetCountdown();
+    },
+
+    _stop() {
+        if (this._timer) { clearInterval(this._timer); this._timer = null; }
+        if (this._countdownTimer) { clearInterval(this._countdownTimer); this._countdownTimer = null; }
+    },
+
+    _tick() {
+        this.tickCount++;
+        document.getElementById(`${this.id}-ticks`).textContent = this.tickCount;
+        // Flash tick LED
+        const tickLed = document.getElementById(`${this.id}-led-tick`);
+        if (tickLed) {
+            FR.LED(tickLed).set('accent');
+            setTimeout(() => FR.LED(tickLed).off(), 200);
+        }
+        FR.emit(this.id, 'tick', { tick: this.tickCount, timestamp: new Date().toISOString() });
+        this._resetCountdown();
+    },
+
+    _resetCountdown() {
+        if (this._countdownTimer) clearInterval(this._countdownTimer);
+        const bar = document.getElementById(`${this.id}-countdown`);
+        if (!bar) return;
+        let remaining = this.interval;
+        bar.style.transition = 'none';
+        bar.style.width = '100%';
+        this._countdownTimer = setInterval(() => {
+            remaining--;
+            const pct = Math.max(0, (remaining / this.interval) * 100);
+            bar.style.transition = 'width 1s linear';
+            bar.style.width = pct + '%';
+            if (remaining <= 0) clearInterval(this._countdownTimer);
+        }, 1000);
+    }
+});
+
 })(ForgeRack);

@@ -4723,25 +4723,15 @@ FR.registerUnit('comparator', {
         var normalized = data;
         if (Array.isArray(data)) normalized = { columns: ['x'], data: { x: data } };
 
-        if (inputName === 'a') {
-            this._dataA = normalized;
-            this._populateSelect(this.id + '-col-a', normalized);
-            FR.LED(document.getElementById(this.id + '-led-a')).set('green');
-        } else if (inputName === 'b') {
-            this._dataB = normalized;
-            this._populateSelect(this.id + '-col-b', normalized);
-            FR.LED(document.getElementById(this.id + '-led-b')).set('green');
-        } else {
-            // Single data input — use for both A and B (different columns)
-            this._dataA = normalized;
-            this._dataB = normalized;
-            this._populateSelect(this.id + '-col-a', normalized);
-            this._populateSelect(this.id + '-col-b', normalized);
-            FR.LED(document.getElementById(this.id + '-led-a')).set('green');
-            FR.LED(document.getElementById(this.id + '-led-b')).set('green');
-        }
+        this._dataA = normalized;
+        this._dataB = normalized;
+        this._populateSelect(this.id + '-col-a', normalized);
+        this._populateSelect(this.id + '-col-b', normalized);
+        FR.LED(document.getElementById(this.id + '-led-a')).set('green');
+        FR.LED(document.getElementById(this.id + '-led-b')).set('green');
 
         this._compute();
+        FR.emit(this.id, 'thru', data);
     },
 
     getOutput(channel) { return null; }

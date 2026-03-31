@@ -270,6 +270,46 @@ function _renderCables() {
         sourceJack.classList.add('connected');
         targetJack.classList.add('connected');
     });
+
+    // Update cable count badges on all connected jacks
+    _updateJackBadges();
+}
+
+function _updateJackBadges() {
+    // Clear existing badges
+    document.querySelectorAll('.jack-cable-count').forEach(function(b) { b.remove(); });
+
+    // Count cables per jack
+    var jackCounts = {};
+    cables.forEach(function(cable) {
+        var outKey = cable.source.unitId + ':out:' + cable.source.output;
+        var inKey = cable.target.unitId + ':in:' + cable.target.input;
+        jackCounts[outKey] = (jackCounts[outKey] || 0) + 1;
+        jackCounts[inKey] = (jackCounts[inKey] || 0) + 1;
+    });
+
+    // Add badges to jacks with 2+ cables
+    Object.keys(jackCounts).forEach(function(key) {
+        if (jackCounts[key] < 2) return;
+        var parts = key.split(':');
+        var unitId = parts[0], dir = parts[1], name = parts[2];
+        var selector = dir === 'out'
+            ? '[data-output="' + name + '"][data-unit-id="' + unitId + '"]'
+            : '[data-input="' + name + '"][data-unit-id="' + unitId + '"]';
+        var jack = document.querySelector(selector);
+        if (!jack) return;
+
+        var badge = document.createElement('span');
+        badge.className = 'jack-cable-count';
+        badge.textContent = jackCounts[key];
+        badge.style.cssText = 'position:absolute;top:-6px;right:-6px;' +
+            'background:#f43f5e;color:#fff;font:700 7px/1 Arial,sans-serif;' +
+            'width:12px;height:12px;border-radius:50%;display:flex;' +
+            'align-items:center;justify-content:center;z-index:5;' +
+            'box-shadow:0 1px 3px rgba(0,0,0,0.5);pointer-events:none;';
+        jack.style.position = 'relative';
+        jack.appendChild(badge);
+    });
 }
 
 // ── Signal flow animation — glowing dots travel along cable ──

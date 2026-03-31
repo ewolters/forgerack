@@ -95,6 +95,9 @@ FR.registerUnit('csv-input', {
     },
 
     getOutput(channel) {
+        if (channel === 'parsed' && this.columns.length > 0) {
+            return { data: this.data, columns: this.columns };
+        }
         return this.data[channel] || this.data[this.columns[0]] || [];
     },
 
@@ -2072,6 +2075,9 @@ FR.registerUnit('calc', {
         this._log('Received ' + data.columns.length + ' columns, ' + n + ' rows', 'rgba(212,136,74,0.5)');
         this._updateChainCount();
         this._updateColBState();
+
+        // Thru-jack: pass original data unchanged for parallel routing
+        FR.emit(this.id, 'thru', data);
     },
 
     _apply() {
@@ -2209,6 +2215,7 @@ FR.registerUnit('calc', {
         this._updateChainCount();
 
         FR.emit(this.id, 'result', this._data);
+        FR.emit(this.id, 'column', result);  // just the computed column array
         FR.LED(document.getElementById(this.id + '-led-chain')).set('amber');
     },
 
@@ -2374,6 +2381,7 @@ FR.registerUnit('calc', {
 
     getOutput(channel) {
         if (channel === 'result' && this._data) return this._data;
+        if (channel === 'thru' && this._data) return this._data;
         return null;
     }
 });

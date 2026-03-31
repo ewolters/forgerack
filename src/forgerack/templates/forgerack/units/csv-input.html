@@ -217,8 +217,11 @@
     <!-- Output jacks — appear after parse -->
     <div style="padding:10px 48px;">
         <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(255,255,255,0.07);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:10px;">Output Channels</div>
+        <div style="display:flex;gap:14px;margin-bottom:8px;">
+            <div class="patch-group"><div class="patch-jack" data-output="parsed" data-unit-id="${id}"></div><div class="patch-jack-label">full</div></div>
+        </div>
         <div id="${id}-back-jacks" style="display:flex;gap:14px;flex-wrap:wrap;">
-            <div style="font:300 9px/1 'Courier New',monospace;color:rgba(255,255,255,0.05);">Parse data to populate output jacks</div>
+            <div style="font:300 9px/1 'Courier New',monospace;color:rgba(255,255,255,0.05);">Parse data to populate column jacks</div>
         </div>
     </div>
 

@@ -261,6 +261,97 @@
 .fader-label { font: 400 9px/1 var(--sans); color: var(--text-dim); text-transform: uppercase; }
 
 
+/* ── Grip Selector — grooved plastic category slider ── */
+
+.grip-selector {
+    display: inline-flex; position: relative;
+    background: #0d120d;
+    border: 1px solid rgba(0,0,0,0.5);
+    border-radius: 2px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.02);
+    overflow: hidden;
+}
+.grip-selector-option {
+    padding: 5px 10px;
+    font: 700 8px/1 'Arial', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: rgba(220,220,210,0.2);
+    cursor: pointer; position: relative; z-index: 1;
+    transition: color 0.15s;
+    user-select: none; -webkit-user-select: none;
+}
+.grip-selector-option.active {
+    color: var(--device-accent, #4ade80);
+    text-shadow: 0 0 4px var(--device-accent-glow, rgba(74,222,128,0.15));
+}
+/* The knurled thumb grip — slides to active position */
+.grip-selector-thumb {
+    position: absolute; top: 1px; bottom: 1px;
+    width: 50%; /* spans one option */
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 1px,
+            transparent 1px, transparent 3px
+        ),
+        linear-gradient(180deg, #4a4f4a, #3a3f3a, #2e312e);
+    border: 1px solid rgba(0,0,0,0.3);
+    border-radius: 1px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+    transition: left 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 0;
+    pointer-events: none;
+}
+/* Position states */
+.grip-selector[data-pos="0"] .grip-selector-thumb { left: 1px; }
+.grip-selector[data-pos="1"] .grip-selector-thumb { left: 50%; }
+/* 3-position variant */
+.grip-selector[data-positions="3"] .grip-selector-thumb { width: 33.33%; }
+.grip-selector[data-positions="3"][data-pos="1"] .grip-selector-thumb { left: 33.33%; }
+.grip-selector[data-positions="3"][data-pos="2"] .grip-selector-thumb { left: 66.66%; }
+
+/* Manufacturer grip tints */
+.mfr-klinisch .grip-selector {
+    background: rgba(74,80,64,0.3); border-color: rgba(0,0,0,0.35);
+}
+.mfr-klinisch .grip-selector-thumb {
+    background:
+        repeating-linear-gradient(0deg, rgba(220,210,180,0.06) 0px, rgba(220,210,180,0.06) 1px, transparent 1px, transparent 3px),
+        linear-gradient(180deg, #5a6050, #4e5446, #444c3a);
+    border-color: rgba(0,0,0,0.25);
+}
+.mfr-klinisch .grip-selector-option.active { color: #b8a878; }
+
+.mfr-keysight .grip-selector-thumb {
+    background:
+        repeating-linear-gradient(0deg, rgba(34,211,238,0.04) 0px, rgba(34,211,238,0.04) 1px, transparent 1px, transparent 3px),
+        linear-gradient(180deg, #1a2025, #141a1e, #101518);
+}
+.mfr-keysight .grip-selector-option.active { color: #22d3ee; }
+
+.mfr-guardian .grip-selector-thumb {
+    background:
+        repeating-linear-gradient(0deg, rgba(217,119,6,0.04) 0px, rgba(217,119,6,0.04) 1px, transparent 1px, transparent 3px),
+        linear-gradient(180deg, #2a3040, #1e2230, #181c28);
+}
+.mfr-guardian .grip-selector-option.active { color: #d97706; }
+
+.mfr-vakuum .grip-selector-thumb {
+    background:
+        repeating-linear-gradient(0deg, rgba(212,136,74,0.05) 0px, rgba(212,136,74,0.05) 1px, transparent 1px, transparent 3px),
+        linear-gradient(180deg, #5a3828, #3a2018, #2a1810);
+    border-color: #6a4838;
+}
+.mfr-vakuum .grip-selector-option.active { color: #d4884a; }
+
+.mfr-tokamak .grip-selector-thumb {
+    background:
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 3px),
+        linear-gradient(180deg, #3c3c40, #28282c, #1e1e22);
+}
+.mfr-tokamak .grip-selector-option.active { color: #f43f5e; }
+
+
 /* ── Segment Switch ── */
 
 .segment { display: inline-flex; border: 1px solid rgba(0,0,0,0.4); border-radius: 2px; overflow: hidden; }
@@ -1869,405 +1960,4 @@
 .mfr-phosphor.rack-unit-front::before {
     content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
     background: radial-gradient(ellipse at 50% 60%, rgba(34,197,94,0.008), transparent 60%);
-}
-
-
-/* ═══════════════════════════════════════════════════════════════
- * COMPONENT EXPANSION — Analog Widgets + Patina Effects
- * Manufacturer: FORGEWERKS (internal foundry)
- * ═══════════════════════════════════════════════════════════════ */
-
-
-/* ── VU Needle Meter — analog arc gauge with needle ── */
-
-.vu-arc {
-    position: relative;
-    width: 100%; aspect-ratio: 2 / 1;
-    overflow: hidden;
-}
-.vu-arc-face {
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 50% 100%, #1a1e1a, #0d100d 70%);
-    border-radius: 100% 100% 0 0;
-    border: 1px solid rgba(0,0,0,0.5);
-    box-shadow: inset 0 3px 10px rgba(0,0,0,0.5), inset 0 -2px 0 rgba(255,255,255,0.01);
-}
-/* Scale arc markings — use as background on .vu-arc-face */
-.vu-arc-face::before {
-    content: '';
-    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-    width: 85%; height: 170%;
-    border: 2px solid transparent;
-    border-top-color: rgba(255,255,255,0.06);
-    border-radius: 50%;
-    pointer-events: none;
-}
-/* Green/yellow/red zone arcs */
-.vu-arc-zone-good { position: absolute; bottom: 0; left: 15%; width: 35%; height: 2px; background: rgba(34,197,94,0.3); transform-origin: right center; transform: rotate(-30deg); }
-.vu-arc-zone-warn { position: absolute; bottom: 0; left: 50%; width: 20%; height: 2px; background: rgba(245,158,11,0.3); transform-origin: left center; transform: rotate(-15deg); }
-.vu-arc-zone-bad  { position: absolute; bottom: 0; right: 15%; width: 15%; height: 2px; background: rgba(239,68,68,0.3); transform-origin: left center; transform: rotate(10deg); }
-/* Needle */
-.vu-arc-needle {
-    position: absolute; bottom: 0; left: 50%;
-    width: 2px; height: 80%;
-    background: linear-gradient(to top, rgba(239,68,68,0.9), rgba(239,68,68,0.4));
-    transform-origin: bottom center;
-    transform: rotate(-45deg); /* JS sets rotation: -45deg (min) to 45deg (max) */
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 3;
-    box-shadow: 0 0 3px rgba(239,68,68,0.3);
-}
-/* Pivot cap */
-.vu-arc-pivot {
-    position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
-    width: 8px; height: 8px; border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #5a5f5a, #1a1f1a);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.5);
-    z-index: 4;
-}
-.vu-arc-label { font: 700 9px/1 'Arial', sans-serif; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-label); text-align: center; margin-top: 2px; }
-
-
-/* ── Nixie Tube Display — warm orange digits with stacking ghosts ── */
-
-.nixie-tube {
-    display: inline-flex; align-items: center; gap: 2px;
-    padding: 4px 6px;
-    background: #0a0804;
-    border: 1px solid #1a1510;
-    border-radius: 3px;
-    box-shadow: inset 0 2px 6px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.02);
-}
-.nixie-digit {
-    position: relative;
-    width: 18px; height: 28px;
-    display: flex; align-items: center; justify-content: center;
-}
-/* Ghost cathode stack — all 10 digits dimly visible behind active */
-.nixie-digit::before {
-    content: '8';
-    font: 300 24px/1 'JetBrains Mono', monospace;
-    color: rgba(255,140,50,0.04);
-    position: absolute;
-}
-.nixie-digit-active {
-    font: 400 24px/1 'JetBrains Mono', monospace;
-    color: #ff8c32;
-    text-shadow: 0 0 6px rgba(255,140,50,0.6), 0 0 15px rgba(255,100,20,0.3), 0 0 30px rgba(255,80,10,0.1);
-    position: relative; z-index: 1;
-}
-/* Warm tube glow behind digits */
-.nixie-tube::after {
-    content: ''; position: absolute; inset: 0; pointer-events: none;
-    background: radial-gradient(ellipse at 50% 50%, rgba(255,120,40,0.03), transparent 70%);
-    border-radius: 3px;
-}
-.nixie-label { font: 700 9px/1 'Arial', sans-serif; text-transform: uppercase; letter-spacing: 0.15em; color: rgba(255,140,50,0.25); text-align: center; margin-top: 2px; }
-/* Separator (colon/decimal) */
-.nixie-sep { font: 400 20px/1 'JetBrains Mono', monospace; color: rgba(255,140,50,0.5); padding: 0 1px; }
-
-
-/* ── Rotary Encoder — stepped detent knob with position indicator ── */
-
-.encoder { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
-.encoder-knob {
-    width: 28px; height: 28px; border-radius: 50%;
-    background:
-        radial-gradient(circle at 38% 35%, rgba(255,255,255,0.06), transparent 50%),
-        conic-gradient(from 0deg, #3a3d3a 0deg, #2a2d2a 30deg, #3a3d3a 60deg, #2a2d2a 90deg,
-            #3a3d3a 120deg, #2a2d2a 150deg, #3a3d3a 180deg, #2a2d2a 210deg,
-            #3a3d3a 240deg, #2a2d2a 270deg, #3a3d3a 300deg, #2a2d2a 330deg, #3a3d3a 360deg);
-    border: 2px solid #141814;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
-    position: relative; cursor: pointer;
-}
-/* Detent indicator — bright notch */
-.encoder-knob::after {
-    content: ''; position: absolute; top: 1px; left: 50%; transform: translateX(-50%);
-    width: 3px; height: 4px; background: var(--device-accent);
-    border-radius: 1px;
-    box-shadow: 0 0 4px var(--device-accent-glow);
-}
-/* Knurled edge texture via repeating gradient */
-.encoder-knob::before {
-    content: ''; position: absolute; inset: -1px; border-radius: 50%;
-    background: repeating-conic-gradient(from 0deg, transparent 0deg, transparent 4deg, rgba(0,0,0,0.15) 5deg, transparent 6deg);
-    pointer-events: none;
-}
-.encoder-value { font: 400 10px/1 var(--mono); color: var(--device-accent); }
-.encoder-label { font: 400 9px/1 var(--sans); color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; }
-
-
-/* ── Trimpot — tiny recessed trimmer adjusted with screwdriver ── */
-
-.trimpot {
-    width: 12px; height: 12px; border-radius: 50%;
-    background: radial-gradient(circle at 40% 40%, #4a4d4a, #2a2d2a);
-    border: 1px solid #1a1d1a;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.4), 0 0 0 2px rgba(0,0,0,0.2);
-    position: relative; cursor: pointer;
-}
-/* Flat-head slot */
-.trimpot::after {
-    content: ''; position: absolute; top: 50%; left: 25%; right: 25%;
-    height: 1.5px; background: rgba(0,0,0,0.6);
-    transform: translateY(-50%) rotate(var(--trim-angle, 0deg));
-    border-radius: 1px;
-}
-
-
-/* ── Oscilloscope Grid — proper scope overlay with divisions ── */
-
-.scope-grid {
-    position: relative;
-    background: #020402;
-    border: 2px solid #000;
-    border-radius: 2px;
-    box-shadow: inset 0 3px 10px rgba(0,0,0,0.7);
-    overflow: hidden;
-}
-/* Major grid lines — 8x10 div standard */
-.scope-grid-major {
-    position: absolute; inset: 0;
-    background:
-        repeating-linear-gradient(90deg, transparent, transparent calc(10% - 0.5px), rgba(74,159,110,0.08) calc(10% - 0.5px), rgba(74,159,110,0.08) calc(10% + 0.5px), transparent calc(10% + 0.5px)),
-        repeating-linear-gradient(0deg, transparent, transparent calc(12.5% - 0.5px), rgba(74,159,110,0.08) calc(12.5% - 0.5px), rgba(74,159,110,0.08) calc(12.5% + 0.5px), transparent calc(12.5% + 0.5px));
-    pointer-events: none; z-index: 1;
-}
-/* Center crosshair — brighter */
-.scope-grid-center {
-    position: absolute; inset: 0;
-    background:
-        linear-gradient(90deg, transparent calc(50% - 0.5px), rgba(74,159,110,0.15) calc(50% - 0.5px), rgba(74,159,110,0.15) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
-        linear-gradient(0deg, transparent calc(50% - 0.5px), rgba(74,159,110,0.15) calc(50% - 0.5px), rgba(74,159,110,0.15) calc(50% + 0.5px), transparent calc(50% + 0.5px));
-    pointer-events: none; z-index: 1;
-}
-/* Minor tick marks on center axes */
-.scope-grid-ticks {
-    position: absolute; inset: 0;
-    background:
-        repeating-linear-gradient(90deg, transparent, transparent calc(2% - 0.25px), rgba(74,159,110,0.04) calc(2%), transparent calc(2% + 0.25px)),
-        repeating-linear-gradient(0deg, transparent, transparent calc(2.5% - 0.25px), rgba(74,159,110,0.04) calc(2.5%), transparent calc(2.5% + 0.25px));
-    pointer-events: none; z-index: 1;
-}
-/* Phosphor afterglow */
-.scope-grid::after {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 50% 50%, rgba(74,222,128,0.01), transparent 60%);
-    pointer-events: none; z-index: 0;
-}
-.scope-label { position: absolute; font: 600 8px/1 'Arial', sans-serif; color: rgba(74,159,110,0.25); z-index: 2; }
-.scope-label.tl { top: 3px; left: 4px; }
-.scope-label.tr { top: 3px; right: 4px; }
-.scope-label.bl { bottom: 3px; left: 4px; }
-.scope-label.br { bottom: 3px; right: 4px; }
-/* Trigger indicator */
-.scope-trigger { position: absolute; right: 2px; width: 4px; background: rgba(245,158,11,0.4); z-index: 2; }
-
-
-/* ── Terminal Strip — screw terminal block ── */
-
-.terminal-strip {
-    display: inline-flex; gap: 0;
-    background: #e8e0d0;
-    border: 1px solid #b0a890;
-    border-radius: 1px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
-    padding: 2px;
-}
-.terminal-post {
-    width: 14px; height: 14px;
-    display: flex; align-items: center; justify-content: center;
-    border-right: 1px solid rgba(0,0,0,0.1);
-}
-.terminal-post:last-child { border-right: none; }
-.terminal-screw {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #c0c0b0, #808070);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 1px 1px rgba(0,0,0,0.3);
-    position: relative;
-}
-/* Flat-head slot */
-.terminal-screw::after {
-    content: ''; position: absolute; top: 3px; left: 1px;
-    width: 6px; height: 1.5px; background: rgba(0,0,0,0.3); border-radius: 0.5px;
-}
-.terminal-label { font: 700 7px/1 'Arial', sans-serif; color: #605840; text-align: center; margin-top: 1px; }
-
-
-/* ── Banana Binding Post — large connectors for power/reference ── */
-
-.banana-post {
-    width: 16px; height: 16px; border-radius: 50%;
-    position: relative; display: inline-flex; align-items: center; justify-content: center;
-}
-.banana-post-ring {
-    width: 16px; height: 16px; border-radius: 50%;
-    border: 2px solid #333;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.4), inset 0 1px 2px rgba(0,0,0,0.3);
-}
-.banana-post-hole {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: #0a0a0a;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-}
-.banana-post.red .banana-post-ring { border-color: #8b1a1a; background: radial-gradient(circle, #c62828, #8b1a1a); }
-.banana-post.black .banana-post-ring { border-color: #1a1a1a; background: radial-gradient(circle, #333, #111); }
-.banana-post.green .banana-post-ring { border-color: #1a5c1a; background: radial-gradient(circle, #2e7d32, #1a5c1a); }
-.banana-post.yellow .banana-post-ring { border-color: #8b7a1a; background: radial-gradient(circle, #f9a825, #8b7a1a); }
-.banana-post-label { font: 700 7px/1 'Arial', sans-serif; text-transform: uppercase; color: var(--text-label); text-align: center; margin-top: 1px; }
-
-
-/* ── Ribbon Cable Header — IDC multi-pin connector ── */
-
-.ribbon-header {
-    display: inline-block;
-    background: #1a1a1a;
-    border: 1px solid #333;
-    border-radius: 1px;
-    padding: 2px 3px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.4);
-}
-.ribbon-pins {
-    display: grid;
-    grid-template-columns: repeat(var(--ribbon-cols, 5), 3px);
-    grid-template-rows: repeat(2, 3px);
-    gap: 2px;
-}
-.ribbon-pin {
-    width: 3px; height: 3px;
-    background: #c0a040;
-    border-radius: 0.5px;
-    box-shadow: 0 0 1px rgba(192,160,64,0.3);
-}
-/* Keyed notch */
-.ribbon-header::after {
-    content: ''; display: block; width: 6px; height: 2px;
-    background: #333; border-radius: 0 0 1px 1px;
-    margin: 2px auto 0;
-}
-.ribbon-label { font: 700 7px/1 'Arial', sans-serif; color: var(--text-label); text-align: center; margin-top: 1px; letter-spacing: 0.05em; }
-
-
-/* ── Edge Connector — PCB card-edge for slot-in modules ── */
-
-.edge-connector {
-    display: inline-block;
-    background: linear-gradient(180deg, #1a3a1a, #0d1f0d);
-    border: 1px solid #0a150a;
-    border-radius: 1px;
-    padding: 3px 4px 1px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
-}
-.edge-contacts {
-    display: flex; gap: 2px;
-}
-.edge-contact {
-    width: 4px; height: 10px;
-    background: linear-gradient(180deg, #d4b040, #a08030);
-    border-radius: 0.5px 0.5px 0 0;
-    box-shadow: 0 0 1px rgba(212,176,64,0.2);
-}
-.edge-slot {
-    width: 100%; height: 3px;
-    background: #0a0f0a;
-    border-top: 1px solid #050805;
-    margin-top: 1px;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════
- * PATINA & WEAR EFFECTS
- * Apply as overlay classes on any component.
- * ═══════════════════════════════════════════════════════════════ */
-
-
-/* ── Surface Wear — scratched/brushed metal texture ── */
-
-.patina-scratched {
-    position: relative;
-}
-.patina-scratched::after {
-    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 10;
-    background:
-        repeating-linear-gradient(87deg, transparent 0px, transparent 3px, rgba(255,255,255,0.008) 3px, transparent 4px),
-        repeating-linear-gradient(93deg, transparent 0px, transparent 5px, rgba(255,255,255,0.005) 5px, transparent 6px),
-        repeating-linear-gradient(175deg, transparent 0px, transparent 8px, rgba(0,0,0,0.01) 8px, transparent 9px);
-    mix-blend-mode: overlay;
-}
-
-/* Heavier wear — more visible scratches */
-.patina-worn::after {
-    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 10;
-    background:
-        repeating-linear-gradient(85deg, transparent 0px, transparent 2px, rgba(255,255,255,0.02) 2px, transparent 3px),
-        repeating-linear-gradient(95deg, transparent 0px, transparent 4px, rgba(255,255,255,0.015) 4px, transparent 5px),
-        repeating-linear-gradient(178deg, transparent 0px, transparent 6px, rgba(0,0,0,0.02) 6px, transparent 7px);
-    mix-blend-mode: overlay;
-}
-.patina-worn { position: relative; }
-
-
-/* ── Heat Discoloration — yellowing around hot components ── */
-
-.patina-heat {
-    position: relative;
-}
-.patina-heat::after {
-    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 10;
-    background: radial-gradient(ellipse at 50% 70%, rgba(120,100,40,0.06), transparent 50%);
-}
-
-
-/* ── Dust — fine particle accumulation in recesses ── */
-
-.patina-dusty {
-    position: relative;
-}
-.patina-dusty::after {
-    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 10;
-    background:
-        radial-gradient(circle at 20% 80%, rgba(140,130,110,0.04), transparent 30%),
-        radial-gradient(circle at 75% 90%, rgba(140,130,110,0.03), transparent 25%),
-        radial-gradient(circle at 50% 95%, rgba(140,130,110,0.05), transparent 40%);
-}
-
-
-/* ── Label Wear — faded/peeling silkscreen ── */
-
-.patina-faded { opacity: 0.6; }
-.patina-faded-heavy { opacity: 0.35; }
-
-/* Peeling label — partial transparency with ragged edge */
-.patina-peeling {
-    position: relative;
-}
-.patina-peeling::after {
-    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 10;
-    background: linear-gradient(135deg, transparent 60%, rgba(0,0,0,0.15) 62%, rgba(0,0,0,0.05) 65%, transparent 70%);
-}
-
-
-/* ── Oxidation — green/brown patina on copper/brass ── */
-
-.patina-oxidized {
-    position: relative;
-}
-.patina-oxidized::after {
-    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 10;
-    background:
-        radial-gradient(circle at 30% 40%, rgba(80,140,100,0.08), transparent 40%),
-        radial-gradient(circle at 70% 60%, rgba(100,130,80,0.06), transparent 35%);
-}
-
-
-/* ── Burn Mark — localized darkening from component failure ── */
-
-.patina-burn {
-    position: relative;
-}
-.patina-burn::after {
-    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 10;
-    background: radial-gradient(circle at 50% 50%, rgba(40,20,0,0.15), rgba(20,10,0,0.05) 40%, transparent 60%);
 }

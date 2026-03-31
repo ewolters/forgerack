@@ -92,6 +92,23 @@ FR.Segment = function(container, o) {
     return {get value(){return o.value},set value(v){o.value=v;render(v);}};
 };
 
+// Grip selector: grooved plastic category slider
+FR.GripSelector = function(el, o) {
+    o = Object.assign({value:0,onChange:null}, o);
+    const opts = Array.from(el.querySelectorAll('.grip-selector-option'));
+    function render(i) {
+        el.setAttribute('data-pos', i);
+        opts.forEach((opt,j) => opt.classList.toggle('active', j===i));
+    }
+    opts.forEach((opt,i) => opt.addEventListener('click', () => {
+        o.value = i;
+        render(i);
+        if (o.onChange) o.onChange(i, opt.dataset.value || opt.textContent.trim());
+    }));
+    render(o.value);
+    return { get value(){return o.value}, set value(v){o.value=v;render(v);} };
+};
+
 // Toggle button
 FR.Toggle = function(el, o) {
     o = Object.assign({value:false,onChange:null}, o);
@@ -138,6 +155,7 @@ FR.init = function(root) {
     root.querySelectorAll('[data-meter]').forEach(el=>{el._meter=FR.Meter(el,JSON.parse(el.dataset.meter||'{}'));});
     root.querySelectorAll('[data-readout]').forEach(el=>{el._readout=FR.Readout(el,JSON.parse(el.dataset.readout||'{}'));});
     root.querySelectorAll('[data-toggle]').forEach(el=>{el._toggle=FR.Toggle(el);});
+    root.querySelectorAll('[data-grip]').forEach(el=>{el._grip=FR.GripSelector(el,JSON.parse(el.dataset.grip||'{}'));});
     root.querySelectorAll('[data-thumbwheel]').forEach(el=>{el._thumbwheel=FR.ThumbWheel(el,JSON.parse(el.dataset.thumbwheel||'{}'));});
     root.querySelectorAll('[data-progress-ring]').forEach(el=>{el._ring=FR.ProgressRing(el,JSON.parse(el.dataset.progressRing||'{}'));});
 };

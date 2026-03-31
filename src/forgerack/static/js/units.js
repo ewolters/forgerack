@@ -1674,21 +1674,39 @@ FR.registerUnit('triage', {
             });
         });
 
-        // Clean button
-        var cleanBtn = document.getElementById(id + '-btn-clean');
-        if (cleanBtn) cleanBtn.addEventListener('click', function() {
-            if (self._data) self._runClean();
-        });
-
-        // Pass-through button
-        var passBtn = document.getElementById(id + '-btn-pass');
-        if (passBtn) passBtn.addEventListener('click', function() {
-            if (self._data) {
+        // Action grip selector + Go button
+        self._actionMode = 'clean';
+        var gripEl = document.getElementById(id + '-action-grip');
+        if (gripEl && ForgeRack.GripSelector) {
+            ForgeRack.GripSelector(gripEl, { onChange: function(i, val) { self._actionMode = val; } });
+        } else if (gripEl) {
+            // Fallback: manual click handling
+            gripEl.querySelectorAll('.grip-selector-option').forEach(function(opt, i) {
+                opt.addEventListener('click', function() {
+                    self._actionMode = opt.dataset.value || 'clean';
+                    gripEl.setAttribute('data-pos', i);
+                    gripEl.querySelectorAll('.grip-selector-option').forEach(function(o,j) { o.classList.toggle('active', j===i); });
+                });
+            });
+        }
+        var goBtn = document.getElementById(id + '-btn-go');
+        if (goBtn) goBtn.addEventListener('click', function() {
+            if (!self._data) return;
+            if (self._actionMode === 'pass') {
                 self._log('PASS THROUGH — no cleaning applied');
                 FR.emit(self.id, 'clean', self._data);
                 self._updateRowCounts(self._data);
                 FR.LED(document.getElementById(self.id + '-led')).set('green');
+            } else {
+                self._runClean();
             }
+        });
+        // Legacy compat: keep btn-clean/btn-pass working if present
+        var cleanBtn = document.getElementById(id + '-btn-clean');
+        if (cleanBtn) cleanBtn.addEventListener('click', function() { if (self._data) self._runClean(); });
+        var passBtn = document.getElementById(id + '-btn-pass');
+        if (passBtn) passBtn.addEventListener('click', function() {
+            if (self._data) { self._log('PASS THROUGH'); FR.emit(self.id, 'clean', self._data); }
         });
     },
 

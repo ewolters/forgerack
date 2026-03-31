@@ -261,6 +261,97 @@
 .fader-label { font: 400 9px/1 var(--sans); color: var(--text-dim); text-transform: uppercase; }
 
 
+/* ── Grip Selector — grooved plastic category slider ── */
+
+.grip-selector {
+    display: inline-flex; position: relative;
+    background: #0d120d;
+    border: 1px solid rgba(0,0,0,0.5);
+    border-radius: 2px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.02);
+    overflow: hidden;
+}
+.grip-selector-option {
+    padding: 5px 10px;
+    font: 700 8px/1 'Arial', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: rgba(220,220,210,0.2);
+    cursor: pointer; position: relative; z-index: 1;
+    transition: color 0.15s;
+    user-select: none; -webkit-user-select: none;
+}
+.grip-selector-option.active {
+    color: var(--device-accent, #4ade80);
+    text-shadow: 0 0 4px var(--device-accent-glow, rgba(74,222,128,0.15));
+}
+/* The knurled thumb grip — slides to active position */
+.grip-selector-thumb {
+    position: absolute; top: 1px; bottom: 1px;
+    width: 50%; /* spans one option */
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 1px,
+            transparent 1px, transparent 3px
+        ),
+        linear-gradient(180deg, #4a4f4a, #3a3f3a, #2e312e);
+    border: 1px solid rgba(0,0,0,0.3);
+    border-radius: 1px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+    transition: left 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 0;
+    pointer-events: none;
+}
+/* Position states */
+.grip-selector[data-pos="0"] .grip-selector-thumb { left: 1px; }
+.grip-selector[data-pos="1"] .grip-selector-thumb { left: 50%; }
+/* 3-position variant */
+.grip-selector[data-positions="3"] .grip-selector-thumb { width: 33.33%; }
+.grip-selector[data-positions="3"][data-pos="1"] .grip-selector-thumb { left: 33.33%; }
+.grip-selector[data-positions="3"][data-pos="2"] .grip-selector-thumb { left: 66.66%; }
+
+/* Manufacturer grip tints */
+.mfr-klinisch .grip-selector {
+    background: rgba(74,80,64,0.3); border-color: rgba(0,0,0,0.35);
+}
+.mfr-klinisch .grip-selector-thumb {
+    background:
+        repeating-linear-gradient(0deg, rgba(220,210,180,0.06) 0px, rgba(220,210,180,0.06) 1px, transparent 1px, transparent 3px),
+        linear-gradient(180deg, #5a6050, #4e5446, #444c3a);
+    border-color: rgba(0,0,0,0.25);
+}
+.mfr-klinisch .grip-selector-option.active { color: #b8a878; }
+
+.mfr-keysight .grip-selector-thumb {
+    background:
+        repeating-linear-gradient(0deg, rgba(34,211,238,0.04) 0px, rgba(34,211,238,0.04) 1px, transparent 1px, transparent 3px),
+        linear-gradient(180deg, #1a2025, #141a1e, #101518);
+}
+.mfr-keysight .grip-selector-option.active { color: #22d3ee; }
+
+.mfr-guardian .grip-selector-thumb {
+    background:
+        repeating-linear-gradient(0deg, rgba(217,119,6,0.04) 0px, rgba(217,119,6,0.04) 1px, transparent 1px, transparent 3px),
+        linear-gradient(180deg, #2a3040, #1e2230, #181c28);
+}
+.mfr-guardian .grip-selector-option.active { color: #d97706; }
+
+.mfr-vakuum .grip-selector-thumb {
+    background:
+        repeating-linear-gradient(0deg, rgba(212,136,74,0.05) 0px, rgba(212,136,74,0.05) 1px, transparent 1px, transparent 3px),
+        linear-gradient(180deg, #5a3828, #3a2018, #2a1810);
+    border-color: #6a4838;
+}
+.mfr-vakuum .grip-selector-option.active { color: #d4884a; }
+
+.mfr-tokamak .grip-selector-thumb {
+    background:
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 3px),
+        linear-gradient(180deg, #3c3c40, #28282c, #1e1e22);
+}
+.mfr-tokamak .grip-selector-option.active { color: #f43f5e; }
+
+
 /* ── Segment Switch ── */
 
 .segment { display: inline-flex; border: 1px solid rgba(0,0,0,0.4); border-radius: 2px; overflow: hidden; }

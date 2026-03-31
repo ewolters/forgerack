@@ -49,13 +49,26 @@
 
             <!-- Control strip -->
             <div style="display:flex;gap:6px;align-items:flex-end;flex-wrap:wrap;">
-                <!-- Column selector -->
+                <!-- Column A selector -->
                 <div class="panel-recessed" style="padding:4px 6px;display:flex;flex-direction:column;gap:2px;align-items:center;">
-                    <div style="font:700 8px/1 'Georgia',serif;color:rgba(212,136,74,0.25);text-transform:uppercase;letter-spacing:0.12em;">Column</div>
+                    <div style="font:700 8px/1 'Georgia',serif;color:rgba(212,136,74,0.25);text-transform:uppercase;letter-spacing:0.12em;">Col A</div>
                     <select id="${id}-col" style="
                         background:#120a0e;border:1px solid rgba(212,136,74,0.2);
                         color:#d4a878;padding:3px 5px;border-radius:1px;
-                        font:10px/1 'JetBrains Mono',monospace;min-width:70px;
+                        font:10px/1 'JetBrains Mono',monospace;min-width:70px;height:20px;
+                    ">
+                        <option value="">—</option>
+                        <option value="__ALL__">★ All numeric</option>
+                    </select>
+                </div>
+
+                <!-- Column B selector (for two-column ops) -->
+                <div class="panel-recessed" id="${id}-colb-panel" style="padding:4px 6px;display:flex;flex-direction:column;gap:2px;align-items:center;opacity:0.3;">
+                    <div style="font:700 8px/1 'Georgia',serif;color:rgba(212,136,74,0.25);text-transform:uppercase;letter-spacing:0.12em;">Col B</div>
+                    <select id="${id}-col-b" disabled style="
+                        background:#120a0e;border:1px solid rgba(212,136,74,0.2);
+                        color:#d4a878;padding:3px 5px;border-radius:1px;
+                        font:10px/1 'JetBrains Mono',monospace;min-width:60px;height:20px;
                     ">
                         <option value="">—</option>
                     </select>
@@ -67,20 +80,28 @@
                     <select id="${id}-transform" style="
                         background:#120a0e;border:1px solid rgba(212,136,74,0.2);
                         color:#d4a878;padding:3px 5px;border-radius:1px;
-                        font:10px/1 'JetBrains Mono',monospace;min-width:90px;
+                        font:10px/1 'JetBrains Mono',monospace;min-width:90px;height:20px;
                     ">
-                        <option value="mavg">Moving Avg</option>
-                        <option value="zscore">Z-Score</option>
-                        <option value="log">Log</option>
-                        <option value="diff">Difference</option>
-                        <option value="lag">Lag</option>
-                        <option value="cumsum">Cum Sum</option>
-                        <option value="std">Standardize</option>
-                        <option value="rank">Rank</option>
-                        <option value="pctile">Percentile</option>
-                        <option value="abs">Abs Value</option>
-                        <option value="sqrt">Sqrt</option>
-                        <option value="pct_change">% Change</option>
+                        <optgroup label="Single column">
+                            <option value="mavg">Moving Avg</option>
+                            <option value="zscore">Z-Score</option>
+                            <option value="log">Log</option>
+                            <option value="diff">Difference</option>
+                            <option value="lag">Lag</option>
+                            <option value="cumsum">Cum Sum</option>
+                            <option value="std">Standardize</option>
+                            <option value="rank">Rank</option>
+                            <option value="pctile">Percentile</option>
+                            <option value="abs">Abs Value</option>
+                            <option value="sqrt">Sqrt</option>
+                            <option value="pct_change">% Change</option>
+                        </optgroup>
+                        <optgroup label="Two columns (A, B)">
+                            <option value="ratio">Ratio A/B</option>
+                            <option value="col_diff">A − B</option>
+                            <option value="col_sum">A + B</option>
+                            <option value="col_prod">A × B</option>
+                        </optgroup>
                     </select>
                 </div>
 
@@ -89,8 +110,8 @@
                     <div style="font:700 8px/1 'Georgia',serif;color:rgba(212,136,74,0.25);text-transform:uppercase;letter-spacing:0.12em;">Window</div>
                     <input type="number" id="${id}-param" value="5" min="1" max="999" style="
                         width:44px;background:rgba(0,0,0,0.5);border:1px solid rgba(212,136,74,0.15);
-                        color:#d4884a;padding:2px 4px;border-radius:1px;text-align:center;
-                        font:700 11px/1 'JetBrains Mono',monospace;
+                        color:#d4884a;padding:3px 4px;border-radius:1px;text-align:center;
+                        font:700 11px/1 'JetBrains Mono',monospace;height:20px;box-sizing:border-box;
                         box-shadow:inset 0 1px 3px rgba(0,0,0,0.4);
                     ">
                 </div>

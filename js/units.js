@@ -1855,11 +1855,13 @@ FR.registerUnit('triage', {
 // ═══════════════════════════════════════════════════════════
 
 FR.registerUnit('calc', {
+    _TWO_COL_OPS: { ratio: 1, col_diff: 1, col_sum: 1, col_prod: 1 },
+
     init(el, id) {
         this.el = el;
         this.id = id;
         this._data = null;
-        this._chain = [];  // list of {transform, col, param, outputCol}
+        this._chain = [];
         this._chainMode = false;
 
         var self = this;
@@ -1880,20 +1882,41 @@ FR.registerUnit('calc', {
                 self._log(self._chainMode ? 'CHAIN mode ON — transforms stack' : 'CHAIN mode OFF — single transform', 'rgba(212,136,74,0.5)');
             });
         }
+
+        // Transform selector — toggle Col B visibility
+        var transformSelect = document.getElementById(id + '-transform');
+        if (transformSelect) {
+            transformSelect.addEventListener('change', function() {
+                self._updateColBState();
+            });
+        }
+    },
+
+    _updateColBState() {
+        var transformSelect = document.getElementById(this.id + '-transform');
+        var colBPanel = document.getElementById(this.id + '-colb-panel');
+        var colBSelect = document.getElementById(this.id + '-col-b');
+        if (!transformSelect || !colBPanel || !colBSelect) return;
+
+        var isTwoCol = this._TWO_COL_OPS[transformSelect.value];
+        colBPanel.style.opacity = isTwoCol ? '1' : '0.3';
+        colBSelect.disabled = !isTwoCol;
     },
 
     receive(inputName, data) {
         if (!data || !data.data || !data.columns) return;
-        this._data = JSON.parse(JSON.stringify(data)); // deep copy
+        this._data = JSON.parse(JSON.stringify(data));
         this._chain = [];
 
         FR.LED(document.getElementById(this.id + '-led')).set('amber');
 
-        // Populate column selector
+        // Populate both column selectors
         var colSelect = document.getElementById(this.id + '-col');
+        var colBSelect = document.getElementById(this.id + '-col-b');
+
         if (colSelect) {
             var prev = colSelect.value;
-            colSelect.innerHTML = '';
+            colSelect.innerHTML = '<option value="">—</option><option value="__ALL__">\u2605 All numeric</option>';
             data.columns.forEach(function(c) {
                 var opt = document.createElement('option');
                 opt.value = c; opt.textContent = c;
@@ -1902,7 +1925,17 @@ FR.registerUnit('calc', {
             if (prev && data.columns.indexOf(prev) !== -1) colSelect.value = prev;
         }
 
-        // Row count
+        if (colBSelect) {
+            var prevB = colBSelect.value;
+            colBSelect.innerHTML = '<option value="">—</option>';
+            data.columns.forEach(function(c) {
+                var opt = document.createElement('option');
+                opt.value = c; opt.textContent = c;
+                colBSelect.appendChild(opt);
+            });
+            if (prevB && data.columns.indexOf(prevB) !== -1) colBSelect.value = prevB;
+        }
+
         var firstCol = data.columns[0];
         var n = firstCol ? (data.data[firstCol] || []).length : 0;
         var rowEl = document.getElementById(this.id + '-row-count');
@@ -1910,62 +1943,174 @@ FR.registerUnit('calc', {
 
         this._log('Received ' + data.columns.length + ' columns, ' + n + ' rows', 'rgba(212,136,74,0.5)');
         this._updateChainCount();
+        this._updateColBState();
     },
 
     _apply() {
         if (!this._data) { this._log('No data — wire a source first', '#ef4444'); return; }
 
         var colSelect = document.getElementById(this.id + '-col');
+        var colBSelect = document.getElementById(this.id + '-col-b');
         var transformSelect = document.getElementById(this.id + '-transform');
         var paramInput = document.getElementById(this.id + '-param');
 
         var col = colSelect ? colSelect.value : '';
+        var colB = colBSelect ? colBSelect.value : '';
         var transform = transformSelect ? transformSelect.value : 'mavg';
         var param = paramInput ? parseInt(paramInput.value) || 5 : 5;
+        var isTwoCol = this._TWO_COL_OPS[transform];
 
         if (!col) { this._log('Select a column first', '#ef4444'); return; }
 
+        // Two-column operation
+        if (isTwoCol) {
+            if (!colB) { this._log('Two-column op — select Col B', '#ef4444'); return; }
+            this._applyTwoCol(col, colB, transform);
+            return;
+        }
+
+        // "All numeric" batch mode
+        if (col === '__ALL__') {
+            this._applyAll(transform, param);
+            return;
+        }
+
+        // Single column
+        this._applySingle(col, transform, param);
+    },
+
+    _applySingle(col, transform, param) {
         var vals = this._data.data[col];
         if (!vals) { this._log('Column not found: ' + col, '#ef4444'); return; }
 
         var nums = vals.map(function(v) { return typeof v === 'number' ? v : NaN; });
         var result = this._compute(transform, nums, param);
-        if (!result) { this._log('Transform failed', '#ef4444'); return; }
+        if (!result) { this._log('Transform failed on ' + col, '#ef4444'); return; }
 
         var outputName = col + '_' + transform + (this._needsParam(transform) ? param : '');
+        this._addResult(outputName, result, transform + '(' + col + (this._needsParam(transform) ? ', w=' + param : '') + ')');
+    },
 
-        // If not chain mode, remove previous non-original columns
+    _applyAll(transform, param) {
+        var self = this;
+        var applied = 0;
+
+        // If not chain mode, clear previous chain
         if (!this._chainMode && this._chain.length > 0) {
-            var prev = this._chain[this._chain.length - 1];
-            var idx = this._data.columns.indexOf(prev.outputCol);
-            if (idx !== -1) {
-                this._data.columns.splice(idx, 1);
-                delete this._data.data[prev.outputCol];
-            }
+            this._chain.forEach(function(prev) {
+                var idx = self._data.columns.indexOf(prev.outputCol);
+                if (idx !== -1) { self._data.columns.splice(idx, 1); delete self._data.data[prev.outputCol]; }
+            });
             this._chain = [];
         }
 
-        // Add new column
-        this._data.columns.push(outputName);
-        this._data.data[outputName] = result;
-        this._chain.push({ transform: transform, col: col, param: param, outputCol: outputName });
+        // Find all numeric columns (from original data, not computed)
+        var numericCols = this._data.columns.filter(function(c) {
+            var v = self._data.data[c] || [];
+            return v.some(function(x) { return typeof x === 'number'; });
+        });
 
-        this._log(transform.toUpperCase() + '(' + col + (this._needsParam(transform) ? ', w=' + param : '') + ') → ' + outputName, '#d4884a');
+        numericCols.forEach(function(col) {
+            // Skip columns that are themselves computed (contain _)
+            var vals = self._data.data[col];
+            if (!vals) return;
+            var nums = vals.map(function(v) { return typeof v === 'number' ? v : NaN; });
+            var result = self._compute(transform, nums, param);
+            if (!result) return;
 
-        // Update column selector to include the new column
-        if (colSelect) {
-            var opt = document.createElement('option');
-            opt.value = outputName; opt.textContent = outputName;
-            colSelect.appendChild(opt);
+            var outputName = col + '_' + transform + (self._needsParam(transform) ? param : '');
+            self._data.columns.push(outputName);
+            self._data.data[outputName] = result;
+            self._chain.push({ transform: transform, col: col, param: param, outputCol: outputName });
+            applied++;
+        });
+
+        if (applied === 0) { this._log('No numeric columns to transform', '#ef4444'); return; }
+
+        this._log(transform.toUpperCase() + ' applied to ' + applied + ' columns', '#d4884a');
+        this._refreshColSelectors();
+        this._showPreview(this._chain[this._chain.length - 1].outputCol, this._data.data[this._chain[this._chain.length - 1].outputCol]);
+        this._updateChainCount();
+
+        FR.emit(this.id, 'result', this._data);
+        FR.LED(document.getElementById(this.id + '-led-chain')).set('amber');
+    },
+
+    _applyTwoCol(colA, colB, transform) {
+        var a = this._data.data[colA];
+        var b = this._data.data[colB];
+        if (!a || !b) { this._log('Column not found', '#ef4444'); return; }
+
+        var n = Math.min(a.length, b.length);
+        var result = [];
+        var label = '';
+
+        for (var i = 0; i < n; i++) {
+            var va = typeof a[i] === 'number' ? a[i] : NaN;
+            var vb = typeof b[i] === 'number' ? b[i] : NaN;
+            if (isNaN(va) || isNaN(vb)) { result.push(null); continue; }
+
+            switch (transform) {
+                case 'ratio':    result.push(vb === 0 ? null : va / vb); label = colA + '/' + colB; break;
+                case 'col_diff': result.push(va - vb); label = colA + '-' + colB; break;
+                case 'col_sum':  result.push(va + vb); label = colA + '+' + colB; break;
+                case 'col_prod': result.push(va * vb); label = colA + '*' + colB; break;
+            }
         }
 
-        // Preview
+        var outputName = label;
+        this._addResult(outputName, result, transform.toUpperCase() + '(' + colA + ', ' + colB + ')');
+    },
+
+    _addResult(outputName, result, logMsg) {
+        // If not chain mode, remove previous
+        if (!this._chainMode && this._chain.length > 0) {
+            var prev = this._chain[this._chain.length - 1];
+            var idx = this._data.columns.indexOf(prev.outputCol);
+            if (idx !== -1) { this._data.columns.splice(idx, 1); delete this._data.data[prev.outputCol]; }
+            this._chain = [];
+        }
+
+        this._data.columns.push(outputName);
+        this._data.data[outputName] = result;
+        this._chain.push({ transform: logMsg, col: '', param: 0, outputCol: outputName });
+
+        this._log(logMsg + ' \u2192 ' + outputName, '#d4884a');
+        this._refreshColSelectors();
         this._showPreview(outputName, result);
         this._updateChainCount();
 
-        // Emit
         FR.emit(this.id, 'result', this._data);
         FR.LED(document.getElementById(this.id + '-led-chain')).set('amber');
+    },
+
+    _refreshColSelectors() {
+        var colSelect = document.getElementById(this.id + '-col');
+        var colBSelect = document.getElementById(this.id + '-col-b');
+        var cols = this._data.columns;
+
+        if (colSelect) {
+            var prev = colSelect.value;
+            colSelect.innerHTML = '<option value="">—</option><option value="__ALL__">\u2605 All numeric</option>';
+            cols.forEach(function(c) {
+                var opt = document.createElement('option');
+                opt.value = c; opt.textContent = c;
+                colSelect.appendChild(opt);
+            });
+            if (prev && cols.indexOf(prev) !== -1) colSelect.value = prev;
+            else if (prev === '__ALL__') colSelect.value = '__ALL__';
+        }
+
+        if (colBSelect) {
+            var prevB = colBSelect.value;
+            colBSelect.innerHTML = '<option value="">—</option>';
+            cols.forEach(function(c) {
+                var opt = document.createElement('option');
+                opt.value = c; opt.textContent = c;
+                colBSelect.appendChild(opt);
+            });
+            if (prevB && cols.indexOf(prevB) !== -1) colBSelect.value = prevB;
+        }
     },
 
     _compute(transform, vals, param) {
@@ -1986,6 +2131,7 @@ FR.registerUnit('calc', {
                 return result;
 
             case 'zscore':
+            case 'std':
                 var clean = vals.filter(function(v) { return !isNaN(v); });
                 if (clean.length < 2) return null;
                 var sum = 0; for (var i = 0; i < clean.length; i++) sum += clean[i];
@@ -2019,16 +2165,6 @@ FR.registerUnit('calc', {
                     result.push(isNaN(vals[i]) ? null : run);
                 }
                 return result;
-
-            case 'std':
-                var clean = vals.filter(function(v) { return !isNaN(v); });
-                if (clean.length < 2) return null;
-                var sum = 0; for (var i = 0; i < clean.length; i++) sum += clean[i];
-                var mean = sum / clean.length;
-                var ss = 0; for (var i = 0; i < clean.length; i++) ss += (clean[i] - mean) * (clean[i] - mean);
-                var std = Math.sqrt(ss / (clean.length - 1));
-                if (std === 0) return vals.map(function() { return 0; });
-                return vals.map(function(v) { return isNaN(v) ? null : (v - mean) / std; });
 
             case 'rank':
                 var indexed = vals.map(function(v, i) { return { v: v, i: i }; });

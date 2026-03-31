@@ -814,12 +814,19 @@ FR.registerUnit('filter', {
         var rowsEl = document.getElementById(this.id + '-rows-out');
         var passEl = document.getElementById(this.id + '-pass');
         var rejectEl = document.getElementById(this.id + '-reject');
+        var meterEl = document.getElementById(this.id + '-pass-meter');
 
-        if (rowsEl) {
-            rowsEl.textContent = rowsOut;
-        }
+        if (rowsEl) rowsEl.textContent = rowsOut;
         if (passEl) passEl.textContent = passCount;
         if (rejectEl) rejectEl.textContent = rejectCount;
+
+        if (meterEl) {
+            var total = passCount + rejectCount;
+            var pct = total > 0 ? Math.round(100 * passCount / total) : 100;
+            meterEl.style.width = pct + '%';
+            // Color: green > 80%, amber 50-80%, red < 50%
+            meterEl.style.background = pct >= 80 ? '#22c55e' : pct >= 50 ? '#f59e0b' : '#ef4444';
+        }
     }
 });
 
@@ -832,18 +839,45 @@ FR.registerUnit('readout', {
     init(el, id) {
         this.el = el;
         this.id = id;
+        this._data = null;
+        this._selectedCol = '';
+
+        var self = this;
+        var colSelect = document.getElementById(id + '-col');
+        if (colSelect) {
+            colSelect.addEventListener('change', function() {
+                self._selectedCol = colSelect.value;
+                if (self._data) self._computeStats();
+            });
+        }
     },
 
     receive(inputName, data) {
-        // data can be:
-        // - array of {value, label, status} objects
-        // - simple array of numbers (uses index as label)
-        // - object {label: value, ...}
         if (!data) return;
+        this._data = data;
 
-        let items = [];
+        // Columnar data — auto-compute descriptive stats
+        if (data.data && data.columns) {
+            // Populate column selector
+            var colSelect = document.getElementById(this.id + '-col');
+            if (colSelect) {
+                var prev = colSelect.value;
+                colSelect.innerHTML = '<option value="">auto</option>';
+                data.columns.forEach(function(c) {
+                    var opt = document.createElement('option');
+                    opt.value = c; opt.textContent = c;
+                    colSelect.appendChild(opt);
+                });
+                if (prev && data.columns.indexOf(prev) !== -1) colSelect.value = prev;
+            }
+            this._computeStats();
+            return;
+        }
+
+        // Legacy: array of {value, label} or plain numbers or object
+        var items = [];
         if (Array.isArray(data)) {
-            data.slice(0, 4).forEach((d, i) => {
+            data.slice(0, 4).forEach(function(d, i) {
                 if (typeof d === 'object' && d.value !== undefined) {
                     items.push(d);
                 } else {
@@ -851,25 +885,79 @@ FR.registerUnit('readout', {
                 }
             });
         } else if (typeof data === 'object') {
-            Object.entries(data).slice(0, 4).forEach(([k, v]) => {
-                items.push({ value: v, label: k });
+            var keys = Object.keys(data);
+            keys.slice(0, 4).forEach(function(k) {
+                items.push({ value: data[k], label: k });
             });
         }
+        this._showItems(items);
+    },
 
-        items.forEach((item, i) => {
-            const vEl = document.getElementById(this.id + '-v' + i);
-            const lEl = document.getElementById(this.id + '-l' + i);
+    _computeStats() {
+        if (!this._data || !this._data.data || !this._data.columns) return;
+
+        // Pick column: selected or first numeric
+        var col = this._selectedCol;
+        if (!col) {
+            for (var i = 0; i < this._data.columns.length; i++) {
+                var c = this._data.columns[i];
+                var vals = this._data.data[c] || [];
+                if (vals.some(function(v) { return typeof v === 'number'; })) { col = c; break; }
+            }
+        }
+        if (!col) return;
+
+        var vals = (this._data.data[col] || []).filter(function(v) { return typeof v === 'number' && !isNaN(v); });
+        if (vals.length === 0) {
+            this._showItems([
+                { value: '—', label: 'mean' },
+                { value: '—', label: 'std' },
+                { value: '—', label: 'min' },
+                { value: '—', label: 'max' }
+            ]);
+            return;
+        }
+
+        var n = vals.length;
+        var sum = 0; for (var i = 0; i < n; i++) sum += vals[i];
+        var mean = sum / n;
+
+        var ss = 0; for (var i = 0; i < n; i++) ss += (vals[i] - mean) * (vals[i] - mean);
+        var std = n > 1 ? Math.sqrt(ss / (n - 1)) : 0;
+
+        var sorted = vals.slice().sort(function(a, b) { return a - b; });
+        var min = sorted[0];
+        var max = sorted[n - 1];
+
+        this._showItems([
+            { value: mean, label: 'mean' },
+            { value: std, label: 'std' },
+            { value: min, label: 'min' },
+            { value: max, label: 'max' }
+        ]);
+    },
+
+    _showItems(items) {
+        items.forEach(function(item, i) {
+            var vEl = document.getElementById(this.id + '-v' + i);
+            var lEl = document.getElementById(this.id + '-l' + i);
             if (vEl) {
-                const v = item.value;
-                vEl.textContent = typeof v === 'number' ? v.toFixed(2) : String(v);
-                // Status coloring
+                var v = item.value;
+                if (typeof v === 'number') {
+                    // Smart formatting: small numbers get more decimals
+                    vEl.textContent = Math.abs(v) < 0.01 ? v.toExponential(1) :
+                        Math.abs(v) < 10 ? v.toFixed(3) :
+                        Math.abs(v) < 1000 ? v.toFixed(2) : v.toFixed(1);
+                } else {
+                    vEl.textContent = String(v);
+                }
                 vEl.style.color = '';
-                if (item.status === 'good' || item.good) vEl.style.color = '#22c55e';
-                else if (item.status === 'bad' || item.bad) vEl.style.color = '#ef4444';
+                if (item.status === 'good') vEl.style.color = '#22c55e';
+                else if (item.status === 'bad') vEl.style.color = '#ef4444';
                 else if (item.status === 'warn') vEl.style.color = '#f59e0b';
             }
             if (lEl) lEl.textContent = item.label || '';
-        });
+        }.bind(this));
     }
 });
 
@@ -1216,10 +1304,28 @@ FR.registerUnit('intake', {
         html += '<th style="padding:4px 6px;text-align:right;background:#0e1520;color:rgba(124,160,196,0.25);' +
             'border-bottom:1px solid rgba(124,160,196,0.15);font-weight:400;min-width:30px;">#</th>';
         cols.forEach(function(col) {
+            // Compute quick stats for tooltip
+            var vals = data[col] || [];
+            var nums = vals.filter(function(v) { return typeof v === 'number' && !isNaN(v); });
+            var nulls = vals.filter(function(v) { return v === null || v === undefined || v === ''; }).length;
+            var tip = col + '\n';
+            if (nums.length > 0) {
+                var sum = 0; for (var si = 0; si < nums.length; si++) sum += nums[si];
+                var mn = nums[0], mx = nums[0];
+                for (var si = 1; si < nums.length; si++) { if (nums[si] < mn) mn = nums[si]; if (nums[si] > mx) mx = nums[si]; }
+                tip += 'n=' + vals.length + '  nulls=' + nulls + '\n';
+                tip += 'mean=' + (sum / nums.length).toFixed(3) + '\n';
+                tip += 'min=' + mn + '  max=' + mx;
+            } else {
+                var unique = {};
+                vals.forEach(function(v) { if (v !== null && v !== undefined && v !== '') unique[v] = 1; });
+                tip += 'n=' + vals.length + '  nulls=' + nulls + '\n';
+                tip += 'unique=' + Object.keys(unique).length + ' (text)';
+            }
             html += '<th style="padding:4px 8px;text-align:left;background:#0e1520;' +
                 'color:rgba(124,160,196,0.6);border-bottom:1px solid rgba(124,160,196,0.15);' +
                 'font-weight:700;letter-spacing:0.04em;white-space:nowrap;cursor:pointer;' +
-                'border-right:1px solid rgba(124,160,196,0.04);" data-col="' + col + '">' + col + '</th>';
+                'border-right:1px solid rgba(124,160,196,0.04);" data-col="' + col + '" title="' + tip.replace(/"/g, '&quot;') + '">' + col + '</th>';
         });
         html += '</tr></thead><tbody>';
 

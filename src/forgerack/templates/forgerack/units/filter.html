@@ -122,6 +122,14 @@
 
         <!-- ── RIGHT: LCD displays (calculator/multimeter style) ── -->
         <div style="width:86px;display:flex;flex-direction:column;gap:3px;">
+            <!-- Pass rate meter -->
+            <div style="
+                background:rgba(0,0,0,0.3);border:1px solid rgba(0,0,0,0.5);border-radius:2px;
+                height:6px;overflow:hidden;
+            ">
+                <div id="${id}-pass-meter" style="height:100%;width:100%;background:#22c55e;border-radius:1px;transition:width 0.3s;"></div>
+            </div>
+
             <!-- Rows remaining -->
             <div style="text-align:center;">
                 <div style="

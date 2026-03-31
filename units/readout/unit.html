@@ -6,7 +6,7 @@
  ╚══════════════════════════════════════════════════════════════╝
 -->
 
-<div class="rack-unit-front u2" data-unit="readout" data-id="${id}" style="
+<div class="rack-unit-front u2 mfr-steelwerk" data-unit="readout" data-id="${id}" style="
     --device-accent:#e2e8f0;
     background:
         repeating-linear-gradient(180deg, rgba(255,255,255,0.002) 0px, transparent 1px, transparent 3px),
@@ -26,6 +26,15 @@
                 writing-mode:vertical-lr;transform:rotate(180deg);
             ">Register</span>
         </div>
+
+        <!-- Column selector -->
+        <select id="${id}-col" style="
+            background:rgba(0,0,0,0.35);border:1px solid rgba(226,232,240,0.08);
+            color:rgba(226,232,240,0.5);padding:3px 4px;border-radius:1px;
+            font:9px/1 'JetBrains Mono',monospace;max-width:70px;
+        ">
+            <option value="">auto</option>
+        </select>
 
         <!-- 4 gauge windows — each with chrome bezel -->
         <div style="display:flex;gap:8px;flex:1;justify-content:center;">

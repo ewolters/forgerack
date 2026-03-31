@@ -696,4 +696,425 @@ FR.registerUnit('splitter', {
     }
 });
 
+
+// ═══════════════════════════════════════════════════════════
+// TRIAGE TR-200 — Data Validation & Cleaning Station
+// ═══════════════════════════════════════════════════════════
+
+FR.registerUnit('triage', {
+    init(el, id) {
+        this.el = el;
+        this.id = id;
+        this._data = null;       // raw incoming {data, columns}
+        this._cleaned = null;    // cleaned output
+        this._issues = null;     // scan results
+        this._mode = 'auto';     // auto | review
+        this._missingAction = 'mean';
+        this._outlierAction = 'flag';
+        this._source = null;
+
+        var self = this;
+
+        // Mode selector
+        el.querySelectorAll('[data-mode]').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                el.querySelectorAll('[data-mode]').forEach(function(b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                self._mode = btn.dataset.mode;
+            });
+        });
+
+        // Missing strategy
+        el.querySelectorAll('[data-missing]').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                el.querySelectorAll('[data-missing]').forEach(function(b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                self._missingAction = btn.dataset.missing;
+            });
+        });
+
+        // Outlier strategy
+        el.querySelectorAll('[data-outlier]').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                el.querySelectorAll('[data-outlier]').forEach(function(b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                self._outlierAction = btn.dataset.outlier;
+            });
+        });
+
+        // Clean button
+        var cleanBtn = document.getElementById(id + '-btn-clean');
+        if (cleanBtn) cleanBtn.addEventListener('click', function() {
+            if (self._data) self._runClean();
+        });
+
+        // Pass-through button
+        var passBtn = document.getElementById(id + '-btn-pass');
+        if (passBtn) passBtn.addEventListener('click', function() {
+            if (self._data) {
+                self._log('PASS THROUGH — no cleaning applied');
+                FR.emit(self.id, 'clean', self._data);
+                self._updateRowCounts(self._data);
+                FR.LED(document.getElementById(self.id + '-led')).set('green');
+            }
+        });
+    },
+
+    receive(inputName, data, fromUnit) {
+        if (!data) return;
+        this._source = fromUnit || '?';
+        this._data = data;
+
+        var rowCount = this._countRows(data);
+        var el = document.getElementById(this.id + '-rows-in');
+        if (el) el.textContent = rowCount;
+
+        FR.LED(document.getElementById(this.id + '-led')).set('amber');
+        this._log('Received ' + rowCount + ' rows from ' + this._source);
+
+        // Scan for issues
+        this._runScan(data);
+
+        // Auto mode: clean immediately
+        if (this._mode === 'auto') {
+            this._runClean();
+        }
+    },
+
+    getOutput(name) {
+        if (name === 'clean') return this._cleaned;
+        if (name === 'report') return this._issues;
+        return null;
+    },
+
+    _countRows(data) {
+        if (!data) return 0;
+        if (data.data && data.columns && data.columns.length > 0) {
+            var firstCol = data.columns[0];
+            return (data.data[firstCol] || []).length;
+        }
+        if (Array.isArray(data)) return data.length;
+        return 0;
+    },
+
+    _runScan(data) {
+        var issues = { errors: 0, missing: 0, outliers: 0, types: 0, details: [] };
+
+        if (data && data.data && data.columns) {
+            var cols = data.columns;
+            for (var ci = 0; ci < cols.length; ci++) {
+                var col = cols[ci];
+                var vals = data.data[col] || [];
+
+                var missingCount = 0;
+                var numericVals = [];
+                var hasNonNumeric = false;
+                var errorCount = 0;
+
+                for (var i = 0; i < vals.length; i++) {
+                    var v = vals[i];
+
+                    // Check for Excel errors
+                    if (typeof v === 'string' && /^#(NUM|DIV\/0|VALUE|REF|NAME|N\/A|NULL|ERROR)!?$/i.test(v)) {
+                        errorCount++;
+                        continue;
+                    }
+
+                    // Check for missing
+                    if (v === null || v === undefined || v === '' || (typeof v === 'number' && isNaN(v))) {
+                        missingCount++;
+                        continue;
+                    }
+
+                    // Collect numerics
+                    var num = Number(v);
+                    if (!isNaN(num) && v !== '') {
+                        numericVals.push(num);
+                    } else if (typeof v === 'string' && v.trim() !== '') {
+                        hasNonNumeric = true;
+                    }
+                }
+
+                if (errorCount > 0) {
+                    issues.errors += errorCount;
+                    issues.details.push({ type: 'error', col: col, count: errorCount });
+                }
+
+                if (missingCount > 0) {
+                    issues.missing += missingCount;
+                    issues.details.push({ type: 'missing', col: col, count: missingCount,
+                        pct: Math.round(100 * missingCount / vals.length) });
+                }
+
+                // IQR outlier detection on numeric columns
+                if (numericVals.length >= 10) {
+                    numericVals.sort(function(a, b) { return a - b; });
+                    var q1 = numericVals[Math.floor(numericVals.length * 0.25)];
+                    var q3 = numericVals[Math.floor(numericVals.length * 0.75)];
+                    var iqr = q3 - q1;
+                    if (iqr > 0) {
+                        var lo = q1 - 1.5 * iqr, hi = q3 + 1.5 * iqr;
+                        var outlierCount = numericVals.filter(function(v) { return v < lo || v > hi; }).length;
+                        if (outlierCount > 0) {
+                            issues.outliers += outlierCount;
+                            issues.details.push({ type: 'outlier', col: col, count: outlierCount,
+                                range: '[' + lo.toFixed(1) + ', ' + hi.toFixed(1) + ']' });
+                        }
+                    }
+                }
+
+                // Type detection: text column that's mostly numeric
+                if (hasNonNumeric && numericVals.length > 0) {
+                    var numPct = numericVals.length / (numericVals.length + (vals.length - missingCount - errorCount - numericVals.length));
+                    if (numPct > 0.8) {
+                        issues.types++;
+                        issues.details.push({ type: 'type', col: col, pct: Math.round(numPct * 100) });
+                    }
+                }
+            }
+        }
+
+        this._issues = issues;
+        this._updateDisplay(issues);
+
+        // Emit report
+        FR.emit(this.id, 'report', issues);
+    },
+
+    _updateDisplay(issues) {
+        var id = this.id;
+
+        // Update counters
+        var errEl = document.getElementById(id + '-err-count');
+        var missEl = document.getElementById(id + '-miss-count');
+        var outEl = document.getElementById(id + '-out-count');
+        var typeEl = document.getElementById(id + '-type-count');
+
+        if (errEl) errEl.textContent = issues.errors || 0;
+        if (missEl) missEl.textContent = issues.missing || 0;
+        if (outEl) outEl.textContent = issues.outliers || 0;
+        if (typeEl) typeEl.textContent = issues.types || 0;
+
+        // Color the counts
+        if (errEl) errEl.style.color = issues.errors > 0 ? '#ef4444' : 'rgba(220,210,180,0.2)';
+        if (missEl) missEl.style.color = issues.missing > 0 ? '#f59e0b' : 'rgba(220,210,180,0.2)';
+        if (outEl) outEl.style.color = issues.outliers > 0 ? '#60a5fa' : 'rgba(220,210,180,0.2)';
+        if (typeEl) typeEl.style.color = issues.types > 0 ? '#a855f7' : 'rgba(220,210,180,0.2)';
+
+        // LEDs
+        FR.LED(document.getElementById(id + '-led-err')).set(issues.errors > 0 ? 'red' : false);
+        FR.LED(document.getElementById(id + '-led-miss')).set(issues.missing > 0 ? 'amber' : false);
+        FR.LED(document.getElementById(id + '-led-out')).set(issues.outliers > 0 ? 'blue' : false);
+        FR.LED(document.getElementById(id + '-led-type')).set(issues.types > 0 ? 'accent' : false);
+
+        // Log details
+        var details = issues.details;
+        for (var i = 0; i < details.length; i++) {
+            var d = details[i];
+            switch (d.type) {
+                case 'error':
+                    this._log('  ERR  ' + d.col + ': ' + d.count + ' Excel error(s)', '#ef4444');
+                    break;
+                case 'missing':
+                    this._log('  MISS ' + d.col + ': ' + d.count + ' (' + d.pct + '%)', '#f59e0b');
+                    break;
+                case 'outlier':
+                    this._log('  OUT  ' + d.col + ': ' + d.count + ' outside ' + d.range, '#60a5fa');
+                    break;
+                case 'type':
+                    this._log('  TYPE ' + d.col + ': ' + d.pct + '% numeric', '#a855f7');
+                    break;
+            }
+        }
+
+        if (details.length === 0) {
+            this._log('  CLEAN — no issues detected', '#22c55e');
+        }
+
+        this._log('Scan complete: ' + issues.errors + ' err, ' +
+            issues.missing + ' miss, ' + issues.outliers + ' out, ' + issues.types + ' type');
+    },
+
+    _runClean() {
+        if (!this._data || !this._data.data || !this._data.columns) {
+            // Simple array — pass through
+            this._cleaned = this._data;
+            FR.emit(this.id, 'clean', this._data);
+            this._updateRowCounts(this._data);
+            FR.LED(document.getElementById(this.id + '-led')).set('green');
+            return;
+        }
+
+        this._log('Cleaning: missing=' + this._missingAction + ', outliers=' + this._outlierAction);
+
+        var data = this._data;
+        var cols = data.columns.slice();
+        var cleaned = {};
+        var rowCount = 0;
+
+        // Deep copy
+        for (var ci = 0; ci < cols.length; ci++) {
+            cleaned[cols[ci]] = (data.data[cols[ci]] || []).slice();
+            rowCount = cleaned[cols[ci]].length;
+        }
+
+        // 1. Fix Excel errors → NaN
+        for (var ci = 0; ci < cols.length; ci++) {
+            var arr = cleaned[cols[ci]];
+            for (var i = 0; i < arr.length; i++) {
+                if (typeof arr[i] === 'string' && /^#(NUM|DIV\/0|VALUE|REF|NAME|N\/A|NULL|ERROR)!?$/i.test(arr[i])) {
+                    arr[i] = null;
+                }
+            }
+        }
+
+        // 2. Type coercion — text→numeric where >80% are numeric
+        for (var ci = 0; ci < cols.length; ci++) {
+            var arr = cleaned[cols[ci]];
+            var numCount = 0, total = 0;
+            for (var i = 0; i < arr.length; i++) {
+                if (arr[i] !== null && arr[i] !== undefined && arr[i] !== '') {
+                    total++;
+                    if (!isNaN(Number(arr[i]))) numCount++;
+                }
+            }
+            if (total > 0 && numCount / total > 0.8) {
+                for (var i = 0; i < arr.length; i++) {
+                    if (arr[i] !== null && arr[i] !== undefined && arr[i] !== '') {
+                        var n = Number(arr[i]);
+                        if (!isNaN(n)) arr[i] = n;
+                    }
+                }
+            }
+        }
+
+        // 3. Handle missing values
+        if (this._missingAction === 'mean' || this._missingAction === 'median') {
+            for (var ci = 0; ci < cols.length; ci++) {
+                var arr = cleaned[cols[ci]];
+                var nums = arr.filter(function(v) { return typeof v === 'number' && !isNaN(v); });
+                if (nums.length === 0) continue;
+
+                var fill;
+                if (this._missingAction === 'mean') {
+                    fill = nums.reduce(function(a, b) { return a + b; }, 0) / nums.length;
+                } else {
+                    nums.sort(function(a, b) { return a - b; });
+                    fill = nums[Math.floor(nums.length / 2)];
+                }
+
+                for (var i = 0; i < arr.length; i++) {
+                    if (arr[i] === null || arr[i] === undefined || arr[i] === '' || (typeof arr[i] === 'number' && isNaN(arr[i]))) {
+                        arr[i] = fill;
+                    }
+                }
+            }
+        } else if (this._missingAction === 'drop') {
+            // Find rows where >80% of values are missing
+            var keepRows = [];
+            for (var i = 0; i < rowCount; i++) {
+                var missing = 0;
+                for (var ci = 0; ci < cols.length; ci++) {
+                    var v = cleaned[cols[ci]][i];
+                    if (v === null || v === undefined || v === '' || (typeof v === 'number' && isNaN(v))) missing++;
+                }
+                if (missing / cols.length < 0.8) keepRows.push(i);
+            }
+            for (var ci = 0; ci < cols.length; ci++) {
+                var old = cleaned[cols[ci]];
+                cleaned[cols[ci]] = keepRows.map(function(ri) { return old[ri]; });
+            }
+            rowCount = keepRows.length;
+        }
+
+        // 4. Handle outliers (numeric columns only)
+        for (var ci = 0; ci < cols.length; ci++) {
+            var arr = cleaned[cols[ci]];
+            var nums = arr.filter(function(v) { return typeof v === 'number' && !isNaN(v); });
+            if (nums.length < 10) continue;
+
+            nums.sort(function(a, b) { return a - b; });
+            var q1 = nums[Math.floor(nums.length * 0.25)];
+            var q3 = nums[Math.floor(nums.length * 0.75)];
+            var iqr = q3 - q1;
+            if (iqr <= 0) continue;
+            var lo = q1 - 1.5 * iqr, hi = q3 + 1.5 * iqr;
+
+            if (this._outlierAction === 'flag') {
+                // Add _outlier flag column
+                var flagCol = cols[ci] + '_outlier';
+                if (cols.indexOf(flagCol) === -1) {
+                    cols.push(flagCol);
+                    cleaned[flagCol] = arr.map(function(v) {
+                        return (typeof v === 'number' && (v < lo || v > hi)) ? 1 : 0;
+                    });
+                }
+            } else if (this._outlierAction === 'clip') {
+                for (var i = 0; i < arr.length; i++) {
+                    if (typeof arr[i] === 'number') {
+                        if (arr[i] < lo) arr[i] = lo;
+                        if (arr[i] > hi) arr[i] = hi;
+                    }
+                }
+            }
+            // 'drop' handled below
+        }
+
+        // Outlier drop — remove rows with any outlier
+        if (this._outlierAction === 'drop') {
+            var keepRows = [];
+            for (var i = 0; i < rowCount; i++) {
+                var isOutlier = false;
+                for (var ci = 0; ci < cols.length; ci++) {
+                    var v = cleaned[cols[ci]][i];
+                    if (typeof v !== 'number') continue;
+                    var nums2 = (data.data[cols[ci]] || []).filter(function(x) { return typeof x === 'number'; });
+                    if (nums2.length < 10) continue;
+                    nums2.sort(function(a, b) { return a - b; });
+                    var q1 = nums2[Math.floor(nums2.length * 0.25)];
+                    var q3 = nums2[Math.floor(nums2.length * 0.75)];
+                    var iqr2 = q3 - q1;
+                    if (iqr2 > 0 && (v < q1 - 1.5 * iqr2 || v > q3 + 1.5 * iqr2)) { isOutlier = true; break; }
+                }
+                if (!isOutlier) keepRows.push(i);
+            }
+            for (var ci = 0; ci < cols.length; ci++) {
+                var old = cleaned[cols[ci]];
+                cleaned[cols[ci]] = keepRows.map(function(ri) { return old[ri]; });
+            }
+            rowCount = keepRows.length;
+        }
+
+        this._cleaned = { data: cleaned, columns: cols };
+
+        var outRows = rowCount;
+        this._updateRowCounts(this._cleaned);
+        this._log('Output: ' + outRows + ' rows, ' + cols.length + ' columns', '#22c55e');
+
+        FR.emit(this.id, 'clean', this._cleaned);
+        FR.LED(document.getElementById(this.id + '-led')).set('green');
+    },
+
+    _updateRowCounts(data) {
+        var count = this._countRows(data);
+        var el = document.getElementById(this.id + '-rows-out');
+        if (el) {
+            el.textContent = count;
+            el.style.color = 'rgba(34,197,94,0.6)';
+        }
+    },
+
+    _log(msg, color) {
+        var logEl = document.getElementById(this.id + '-log');
+        if (!logEl) return;
+        // Clear placeholder
+        if (logEl.querySelector('span')) logEl.innerHTML = '';
+        var line = document.createElement('div');
+        line.textContent = msg;
+        if (color) line.style.color = color;
+        logEl.appendChild(line);
+        logEl.scrollTop = logEl.scrollHeight;
+    }
+});
+
 })(ForgeRack);

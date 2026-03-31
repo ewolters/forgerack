@@ -577,6 +577,38 @@
 }
 
 
+/* ── MFR: VAKUUM (Vacuum tube warmth)
+ *    Used by: CALC, future DSP/transform units
+ *    Burgundy faceplate. Copper accents. Tube glow indicators.
+ *    Buchla meets vintage Mullard valve amps. Serif typography.
+ */
+.mfr-vakuum .dial-knob {
+    background:
+        radial-gradient(circle at 38% 35%, rgba(212,136,74,0.08), transparent 55%),
+        conic-gradient(from 200deg, #5a3828 0%, #6a4838 20%, #5a3828 40%, #3a2018 70%, #5a3828 100%);
+    border-color: #2a1810;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.mfr-vakuum .dial-knob::after { background: #d4884a; box-shadow: 0 0 4px rgba(212,136,74,0.3); }
+.mfr-vakuum .segment-btn {
+    background: rgba(212,136,74,0.04); color: rgba(212,136,74,0.3);
+    font-family: 'Georgia', 'Times New Roman', serif;
+}
+.mfr-vakuum .segment-btn.active {
+    background: rgba(212,136,74,0.12); color: #d4884a;
+    text-shadow: 0 0 4px rgba(212,136,74,0.2);
+}
+.mfr-vakuum .led { border-color: #3a2018; }
+.mfr-vakuum .led.on-amber {
+    background: radial-gradient(circle at 40% 35%, #fcd090, #a05820);
+    box-shadow: 0 0 8px rgba(212,136,74,0.6), 0 0 18px rgba(212,136,74,0.15);
+}
+.mfr-vakuum .panel-recessed {
+    background: rgba(212,136,74,0.02);
+    border-color: rgba(212,136,74,0.06);
+}
+
+
 /* ── Unit Color DNA ── */
 
 .unit-spc       { --device-accent: #4ade80; --device-accent-dim: rgba(74,222,128,0.15); --device-accent-glow: rgba(74,222,128,0.15); }

@@ -1849,4 +1849,269 @@ FR.registerUnit('triage', {
     }
 });
 
+
+// ═══════════════════════════════════════════════════════════
+// CALC TX-01 — transform processor
+// ═══════════════════════════════════════════════════════════
+
+FR.registerUnit('calc', {
+    init(el, id) {
+        this.el = el;
+        this.id = id;
+        this._data = null;
+        this._chain = [];  // list of {transform, col, param, outputCol}
+        this._chainMode = false;
+
+        var self = this;
+
+        // Apply button
+        var applyBtn = document.getElementById(id + '-btn-apply');
+        if (applyBtn) {
+            applyBtn.addEventListener('click', function() { self._apply(); });
+        }
+
+        // Chain toggle
+        var chainBtn = document.getElementById(id + '-btn-chain');
+        if (chainBtn) {
+            chainBtn.addEventListener('click', function() {
+                self._chainMode = !self._chainMode;
+                chainBtn.style.color = self._chainMode ? '#d4884a' : 'rgba(212,136,74,0.25)';
+                chainBtn.style.borderColor = self._chainMode ? 'rgba(212,136,74,0.3)' : 'rgba(212,136,74,0.1)';
+                self._log(self._chainMode ? 'CHAIN mode ON — transforms stack' : 'CHAIN mode OFF — single transform', 'rgba(212,136,74,0.5)');
+            });
+        }
+    },
+
+    receive(inputName, data) {
+        if (!data || !data.data || !data.columns) return;
+        this._data = JSON.parse(JSON.stringify(data)); // deep copy
+        this._chain = [];
+
+        FR.LED(document.getElementById(this.id + '-led')).set('amber');
+
+        // Populate column selector
+        var colSelect = document.getElementById(this.id + '-col');
+        if (colSelect) {
+            var prev = colSelect.value;
+            colSelect.innerHTML = '';
+            data.columns.forEach(function(c) {
+                var opt = document.createElement('option');
+                opt.value = c; opt.textContent = c;
+                colSelect.appendChild(opt);
+            });
+            if (prev && data.columns.indexOf(prev) !== -1) colSelect.value = prev;
+        }
+
+        // Row count
+        var firstCol = data.columns[0];
+        var n = firstCol ? (data.data[firstCol] || []).length : 0;
+        var rowEl = document.getElementById(this.id + '-row-count');
+        if (rowEl) rowEl.textContent = n;
+
+        this._log('Received ' + data.columns.length + ' columns, ' + n + ' rows', 'rgba(212,136,74,0.5)');
+        this._updateChainCount();
+    },
+
+    _apply() {
+        if (!this._data) { this._log('No data — wire a source first', '#ef4444'); return; }
+
+        var colSelect = document.getElementById(this.id + '-col');
+        var transformSelect = document.getElementById(this.id + '-transform');
+        var paramInput = document.getElementById(this.id + '-param');
+
+        var col = colSelect ? colSelect.value : '';
+        var transform = transformSelect ? transformSelect.value : 'mavg';
+        var param = paramInput ? parseInt(paramInput.value) || 5 : 5;
+
+        if (!col) { this._log('Select a column first', '#ef4444'); return; }
+
+        var vals = this._data.data[col];
+        if (!vals) { this._log('Column not found: ' + col, '#ef4444'); return; }
+
+        var nums = vals.map(function(v) { return typeof v === 'number' ? v : NaN; });
+        var result = this._compute(transform, nums, param);
+        if (!result) { this._log('Transform failed', '#ef4444'); return; }
+
+        var outputName = col + '_' + transform + (this._needsParam(transform) ? param : '');
+
+        // If not chain mode, remove previous non-original columns
+        if (!this._chainMode && this._chain.length > 0) {
+            var prev = this._chain[this._chain.length - 1];
+            var idx = this._data.columns.indexOf(prev.outputCol);
+            if (idx !== -1) {
+                this._data.columns.splice(idx, 1);
+                delete this._data.data[prev.outputCol];
+            }
+            this._chain = [];
+        }
+
+        // Add new column
+        this._data.columns.push(outputName);
+        this._data.data[outputName] = result;
+        this._chain.push({ transform: transform, col: col, param: param, outputCol: outputName });
+
+        this._log(transform.toUpperCase() + '(' + col + (this._needsParam(transform) ? ', w=' + param : '') + ') → ' + outputName, '#d4884a');
+
+        // Update column selector to include the new column
+        if (colSelect) {
+            var opt = document.createElement('option');
+            opt.value = outputName; opt.textContent = outputName;
+            colSelect.appendChild(opt);
+        }
+
+        // Preview
+        this._showPreview(outputName, result);
+        this._updateChainCount();
+
+        // Emit
+        FR.emit(this.id, 'result', this._data);
+        FR.LED(document.getElementById(this.id + '-led-chain')).set('amber');
+    },
+
+    _compute(transform, vals, param) {
+        var n = vals.length;
+        var result;
+
+        switch (transform) {
+            case 'mavg':
+                result = [];
+                for (var i = 0; i < n; i++) {
+                    if (i < param - 1 || isNaN(vals[i])) { result.push(null); continue; }
+                    var sum = 0, cnt = 0;
+                    for (var j = i - param + 1; j <= i; j++) {
+                        if (!isNaN(vals[j])) { sum += vals[j]; cnt++; }
+                    }
+                    result.push(cnt > 0 ? sum / cnt : null);
+                }
+                return result;
+
+            case 'zscore':
+                var clean = vals.filter(function(v) { return !isNaN(v); });
+                if (clean.length < 2) return null;
+                var sum = 0; for (var i = 0; i < clean.length; i++) sum += clean[i];
+                var mean = sum / clean.length;
+                var ss = 0; for (var i = 0; i < clean.length; i++) ss += (clean[i] - mean) * (clean[i] - mean);
+                var std = Math.sqrt(ss / (clean.length - 1));
+                if (std === 0) return vals.map(function() { return 0; });
+                return vals.map(function(v) { return isNaN(v) ? null : (v - mean) / std; });
+
+            case 'log':
+                return vals.map(function(v) { return isNaN(v) || v <= 0 ? null : Math.log(v); });
+
+            case 'diff':
+                result = [null];
+                for (var i = 1; i < n; i++) {
+                    result.push(isNaN(vals[i]) || isNaN(vals[i - 1]) ? null : vals[i] - vals[i - 1]);
+                }
+                return result;
+
+            case 'lag':
+                result = [];
+                for (var i = 0; i < n; i++) {
+                    result.push(i >= param ? vals[i - param] : null);
+                }
+                return result;
+
+            case 'cumsum':
+                result = []; var run = 0;
+                for (var i = 0; i < n; i++) {
+                    if (!isNaN(vals[i])) run += vals[i];
+                    result.push(isNaN(vals[i]) ? null : run);
+                }
+                return result;
+
+            case 'std':
+                var clean = vals.filter(function(v) { return !isNaN(v); });
+                if (clean.length < 2) return null;
+                var sum = 0; for (var i = 0; i < clean.length; i++) sum += clean[i];
+                var mean = sum / clean.length;
+                var ss = 0; for (var i = 0; i < clean.length; i++) ss += (clean[i] - mean) * (clean[i] - mean);
+                var std = Math.sqrt(ss / (clean.length - 1));
+                if (std === 0) return vals.map(function() { return 0; });
+                return vals.map(function(v) { return isNaN(v) ? null : (v - mean) / std; });
+
+            case 'rank':
+                var indexed = vals.map(function(v, i) { return { v: v, i: i }; });
+                indexed.sort(function(a, b) {
+                    if (isNaN(a.v)) return 1; if (isNaN(b.v)) return -1;
+                    return a.v - b.v;
+                });
+                result = new Array(n);
+                for (var i = 0; i < n; i++) result[indexed[i].i] = isNaN(indexed[i].v) ? null : i + 1;
+                return result;
+
+            case 'pctile':
+                var sorted = vals.filter(function(v) { return !isNaN(v); }).slice().sort(function(a, b) { return a - b; });
+                if (sorted.length === 0) return vals.map(function() { return null; });
+                return vals.map(function(v) {
+                    if (isNaN(v)) return null;
+                    var below = 0;
+                    for (var j = 0; j < sorted.length; j++) { if (sorted[j] < v) below++; }
+                    return Math.round(100 * below / sorted.length);
+                });
+
+            case 'abs':
+                return vals.map(function(v) { return isNaN(v) ? null : Math.abs(v); });
+
+            case 'sqrt':
+                return vals.map(function(v) { return isNaN(v) || v < 0 ? null : Math.sqrt(v); });
+
+            case 'pct_change':
+                result = [null];
+                for (var i = 1; i < n; i++) {
+                    if (isNaN(vals[i]) || isNaN(vals[i - 1]) || vals[i - 1] === 0) { result.push(null); }
+                    else { result.push(100 * (vals[i] - vals[i - 1]) / Math.abs(vals[i - 1])); }
+                }
+                return result;
+
+            default:
+                return null;
+        }
+    },
+
+    _needsParam(transform) {
+        return transform === 'mavg' || transform === 'lag';
+    },
+
+    _showPreview(colName, vals) {
+        var nameEl = document.getElementById(this.id + '-out-name');
+        if (nameEl) nameEl.textContent = colName;
+
+        var previewEl = document.getElementById(this.id + '-preview');
+        if (!previewEl) return;
+
+        var lines = [];
+        var show = Math.min(vals.length, 12);
+        for (var i = 0; i < show; i++) {
+            var v = vals[i];
+            var formatted = v === null ? '<span style="color:rgba(212,136,74,0.1);">null</span>' :
+                typeof v === 'number' ? '<span style="color:#d4884a;">' + v.toFixed(2) + '</span>' : v;
+            lines.push(formatted);
+        }
+        if (vals.length > 12) lines.push('<span style="color:rgba(212,136,74,0.12);">... ' + (vals.length - 12) + ' more</span>');
+        previewEl.innerHTML = lines.join('<br>');
+    },
+
+    _updateChainCount() {
+        var el = document.getElementById(this.id + '-chain-count');
+        if (el) el.textContent = this._chain.length;
+    },
+
+    _log(msg, color) {
+        var logEl = document.getElementById(this.id + '-log');
+        if (!logEl) return;
+        if (logEl.querySelector('span')) logEl.innerHTML = '';
+        var line = document.createElement('div');
+        line.textContent = msg;
+        if (color) line.style.color = color;
+        logEl.appendChild(line);
+        logEl.scrollTop = logEl.scrollHeight;
+    },
+
+    getOutput(channel) {
+        if (channel === 'result' && this._data) return this._data;
+        return null;
+    }
+});
+
 })(ForgeRack);

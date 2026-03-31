@@ -40,7 +40,7 @@
 
         <!-- Brand — deep engraved into metal -->
         <span style="
-            font:900 11px/1 'Arial Black','Impact',sans-serif;
+            font:900 15px/1 'Arial Black','Impact',sans-serif;
             color:transparent;
             text-shadow:
                 0 1px 0 rgba(156,163,175,0.3),
@@ -56,7 +56,7 @@
 
         <!-- Sub-brand — painted cream, aged -->
         <span style="
-            font:400 7px/1 'Courier New',monospace;
+            font:400 11px/1 'Courier New',monospace;
             color:rgba(220,200,160,0.2);
             letter-spacing:0.06em;
             text-shadow: 0 0 3px rgba(220,200,160,0.03);
@@ -67,7 +67,7 @@
             <!-- Painted warning stripe (tiny) -->
             <div style="width:16px;height:6px;background:repeating-linear-gradient(135deg,rgba(220,180,60,0.08) 0px,rgba(220,180,60,0.08) 2px,transparent 2px,transparent 4px);border-radius:1px;"></div>
             <span style="
-                font:700 8px/1 'Courier New',monospace;
+                font:700 10px/1 'Courier New',monospace;
                 color:rgba(200,180,140,0.2);
                 letter-spacing:0.08em;
                 text-shadow: 0 0 2px rgba(200,180,140,0.04);
@@ -94,7 +94,7 @@
             <!-- Reader window label — silk-screened -->
             <div style="
                 position:absolute;top:-1px;left:8px;
-                font:700 5px/1 'Arial',sans-serif;
+                font:700 7px/1 'Arial',sans-serif;
                 color:rgba(156,163,175,0.12);
                 text-transform:uppercase;letter-spacing:0.2em;
                 background: linear-gradient(180deg, #131613, #111411);
@@ -108,7 +108,7 @@
                     background:#040604;
                     border:none;
                     color:#5a6a5a;
-                    font:10px/1.4 'JetBrains Mono',monospace;
+                    font:12px/1.4 'JetBrains Mono',monospace;
                     padding:8px 6px 4px;
                     resize:none;outline:none;
                     /* Faint CRT scanlines on the input area */
@@ -132,7 +132,7 @@
             display:flex;flex-direction:column;gap:5px;align-items:center;
         ">
             <!-- Cluster label — silk-screen -->
-            <div style="font:700 5px/1 'Arial',sans-serif;color:rgba(156,163,175,0.1);
+            <div style="font:700 7px/1 'Arial',sans-serif;color:rgba(156,163,175,0.1);
                 text-transform:uppercase;letter-spacing:0.2em;width:100%;text-align:center;">Control</div>
 
             <!-- Row counter — recessed 7-segment window with bezel -->
@@ -148,14 +148,14 @@
             ">
                 <!-- Faint ghost segments (like unlit 7-segment) -->
                 <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-                    font:700 18px/1 'JetBrains Mono',monospace;color:rgba(156,163,175,0.02);">888</div>
+                    font:700 26px/1 'JetBrains Mono',monospace;color:rgba(156,163,175,0.02);">888</div>
                 <div id="${id}-n" style="
-                    font:700 18px/1 'JetBrains Mono',monospace;
+                    font:700 26px/1 'JetBrains Mono',monospace;
                     color:#9ca3af;
                     text-shadow:0 0 8px rgba(156,163,175,0.15);
                     position:relative;
                 ">&#x2014;</div>
-                <div style="font:700 5px/1 'Arial',sans-serif;color:rgba(156,163,175,0.15);
+                <div style="font:700 7px/1 'Arial',sans-serif;color:rgba(156,163,175,0.15);
                     text-transform:uppercase;letter-spacing:0.25em;margin-top:2px;">Rows</div>
             </div>
 
@@ -175,7 +175,7 @@
             <!-- Demo button — smaller, less prominent -->
             <button onclick="ForgeRack.units['${id}']&&ForgeRack.units['${id}'].demo()" style="
                 width:100%;padding:3px 0;
-                font:600 6px/1 'Arial',sans-serif;text-transform:uppercase;letter-spacing:0.1em;
+                font:600 8px/1 'Arial',sans-serif;text-transform:uppercase;letter-spacing:0.1em;
                 background:transparent;
                 border:1px solid rgba(156,163,175,0.06);
                 color:rgba(156,163,175,0.25);border-radius:1px;cursor:pointer;
@@ -209,14 +209,14 @@
         padding:4px 48px;
         border-bottom:1px solid rgba(255,255,255,0.05);
     ">
-        <span style="font:800 8px/1 'Arial Black',sans-serif;color:rgba(255,255,255,0.1);letter-spacing:0.15em;text-transform:uppercase;">Ingest</span>
-        <span style="font:400 7px/1 'Courier New',monospace;color:rgba(255,255,255,0.06);">DT-100</span>
+        <span style="font:800 10px/1 'Arial Black',sans-serif;color:rgba(255,255,255,0.1);letter-spacing:0.15em;text-transform:uppercase;">Ingest</span>
+        <span style="font:400 11px/1 'Courier New',monospace;color:rgba(255,255,255,0.06);">DT-100</span>
         <span style="font:400 6px/1 'Courier New',monospace;color:rgba(255,255,255,0.04);margin-left:auto;">S/N ${id}</span>
     </div>
 
     <!-- Output jacks — appear after parse -->
     <div style="padding:10px 48px;">
-        <div style="font:700 6px/1 'Arial',sans-serif;color:rgba(255,255,255,0.07);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:10px;">Output Channels</div>
+        <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(255,255,255,0.07);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:10px;">Output Channels</div>
         <div id="${id}-back-jacks" style="display:flex;gap:14px;flex-wrap:wrap;">
             <div style="font:300 9px/1 'Courier New',monospace;color:rgba(255,255,255,0.05);">Parse data to populate output jacks</div>
         </div>
@@ -224,7 +224,7 @@
 
     <!-- Manufacturing info — PCB silk-screen style -->
     <div style="padding:6px 48px;margin-top:auto;border-top:1px solid rgba(74,222,128,0.02);">
-        <div style="font:400 5px/1 'Courier New',monospace;color:rgba(74,222,128,0.05);letter-spacing:0.04em;line-height:1.8;">
+        <div style="font:400 7px/1 'Courier New',monospace;color:rgba(74,222,128,0.05);letter-spacing:0.04em;line-height:1.8;">
             FORGERACK INGEST &#x2022; MODEL DT-100 REV.B &#x2022; SVEND MANUFACTURING<br>
             MAX INPUT: 100K ROWS &#x2022; FORMATS: CSV TSV SSV &#x2022; AUTO-HEADER DETECT<br>
             &#x00A9; SVEND MFG &#x2022; MADE IN USA &#x2022; PAT. PENDING

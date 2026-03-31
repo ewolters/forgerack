@@ -27,22 +27,22 @@
             <span class="led on-amber" id="${id}-led" style="width:6px;height:6px;"></span>
         </div>
         <span style="
-            font:900 14px/1 'Impact','Arial Black',sans-serif;
+            font:900 17px/1 'Impact','Arial Black',sans-serif;
             color:transparent;
             text-shadow: 0 1px 0 rgba(120,113,108,0.35), 0 -1px 0 rgba(0,0,0,0.7);
             -webkit-text-stroke: 0.4px rgba(120,113,108,0.15);
             letter-spacing:0.12em;text-transform:uppercase;
         ">Crate</span>
-        <span id="${id}-name" style="font:400 9px/1 'Courier New',monospace;color:rgba(120,113,108,0.2);">untitled</span>
+        <span id="${id}-name" style="font:400 11px/1 'Courier New',monospace;color:rgba(120,113,108,0.2);">untitled</span>
         <button onclick="ForgeRack.units['${id}']&&ForgeRack.units['${id}'].toggle()" style="
             margin-left:auto;
             background:linear-gradient(180deg, rgba(120,113,108,0.1), rgba(120,113,108,0.04));
             border:1px solid rgba(120,113,108,0.12);color:rgba(120,113,108,0.35);
-            font:800 8px/1 'Arial',sans-serif;padding:4px 10px;border-radius:1px;cursor:pointer;
+            font:800 10px/1 'Arial',sans-serif;padding:4px 10px;border-radius:1px;cursor:pointer;
             text-transform:uppercase;letter-spacing:0.1em;
             box-shadow:0 2px 3px rgba(0,0,0,0.4);
         " id="${id}-toggleBtn">&#x25BC; Open</button>
-        <span style="font:500 9px/1 'Courier New',monospace;color:rgba(200,180,140,0.15);">CM-01</span>
+        <span style="font:500 10px/1 'Courier New',monospace;color:rgba(200,180,140,0.15);">CM-01</span>
     </div>
 
     <!-- Macro knobs in recessed cutout -->
@@ -73,7 +73,7 @@
     <!-- Contained units (hidden when collapsed) -->
     <div id="${id}-body" style="display:none;margin:0 48px 6px;border-top:1px dashed rgba(120,113,108,0.06);
         padding:6px;background:rgba(0,0,0,0.08);border-radius:0 0 2px 2px;">
-        <div style="font:300 10px/1 'Courier New',monospace;color:rgba(120,113,108,0.08);text-align:center;padding:16px;">
+        <div style="font:300 13px/1 'Courier New',monospace;color:rgba(120,113,108,0.08);text-align:center;padding:16px;">
             Drop units here to combine
         </div>
     </div>
@@ -85,8 +85,8 @@
     overflow:hidden;
 ">
     <div style="display:flex;align-items:center;gap:8px;padding:5px 48px;border-bottom:1px solid rgba(255,255,255,0.04);">
-        <span style="font:900 9px/1 'Impact',sans-serif;color:rgba(255,255,255,0.1);letter-spacing:0.1em;text-transform:uppercase;">Crate</span>
-        <span style="font:400 7px/1 'Courier New',monospace;color:rgba(255,255,255,0.05);">CM-01</span>
+        <span style="font:900 11px/1 'Impact',sans-serif;color:rgba(255,255,255,0.1);letter-spacing:0.1em;text-transform:uppercase;">Crate</span>
+        <span style="font:400 11px/1 'Courier New',monospace;color:rgba(255,255,255,0.05);">CM-01</span>
         <span style="font:400 6px/1 'Courier New',monospace;color:rgba(255,255,255,0.04);margin-left:auto;">S/N ${id}</span>
     </div>
     <div style="padding:10px 48px;display:flex;gap:18px;">
@@ -98,7 +98,7 @@
         <div class="patch-group"><div class="patch-jack" data-input="cv4" data-unit-id="${id}"></div><div class="patch-jack-label">cv 4</div></div>
     </div>
     <div style="padding:6px 48px;margin-top:auto;border-top:1px solid rgba(74,222,128,0.02);">
-        <div style="font:400 5px/1 'Courier New',monospace;color:rgba(74,222,128,0.04);letter-spacing:0.04em;line-height:1.8;">
+        <div style="font:400 7px/1 'Courier New',monospace;color:rgba(74,222,128,0.04);letter-spacing:0.04em;line-height:1.8;">
             FORGERACK CRATE &#x2022; CM-01 REV.A &#x2022; 4-MACRO CONTAINER<br>
             MAX DEPTH: 8U &#x2022; SVEND MFG
         </div>

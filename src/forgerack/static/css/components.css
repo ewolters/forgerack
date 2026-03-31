@@ -58,17 +58,17 @@
     padding: 3px 20px;
     background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.15));
     border-bottom: 1px solid var(--unit-border);
-    font: 700 10px/1 var(--sans);
+    font: 700 12px/1 var(--sans);
     color: var(--device-accent);
     letter-spacing: 0.12em; text-transform: uppercase;
 }
-.rack-unit-version { font-size: 8px; font-weight: 400; color: var(--text-dim); margin-left: auto; letter-spacing: 0; }
+.rack-unit-version { font-size: 10px; font-weight: 400; color: var(--text-dim); margin-left: auto; letter-spacing: 0; }
 .rack-unit-body { padding: 8px 12px; }
 
 .rack-section { padding: 6px 0; border-bottom: 1px solid var(--unit-groove); }
 .rack-section:last-child { border-bottom: none; }
 .rack-section-label {
-    font: 600 8px/1 var(--sans); text-transform: uppercase;
+    font: 600 10px/1 var(--sans); text-transform: uppercase;
     letter-spacing: 0.12em; color: var(--text-label); margin-bottom: 4px;
 }
 
@@ -110,8 +110,8 @@
 }
 .dial.sm .dial-knob { width: 24px; height: 24px; }
 .dial.sm .dial-knob::after { height: 5px; top: 2px; }
-.dial-label { font: 400 7px/1 var(--sans); color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; }
-.dial-value { font: 400 9px/1 var(--mono); color: var(--device-accent); }
+.dial-label { font: 400 9px/1 var(--sans); color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; }
+.dial-value { font: 400 11px/1 var(--mono); color: var(--device-accent); }
 
 
 /* ── Switches ── */
@@ -164,7 +164,7 @@
 .led.on-accent { background: var(--device-accent); box-shadow: 0 0 6px var(--device-accent); }
 
 .led-bank { display: flex; gap: 3px; align-items: center; }
-.led-bank-labels { display: flex; gap: 3px; font-size: 6px; color: var(--text-label); }
+.led-bank-labels { display: flex; gap: 3px; font-size: 8px; color: var(--text-label); }
 .led-bank-labels span { width: 8px; text-align: center; }
 
 
@@ -172,15 +172,15 @@
 
 .readout { display: inline-flex; flex-direction: column; align-items: center; gap: 1px; }
 .readout-value {
-    font: 700 18px/1 var(--mono); color: var(--device-accent);
+    font: 700 22px/1 var(--mono); color: var(--device-accent);
     text-shadow: 0 0 8px var(--device-accent-glow);
-    min-width: 50px; text-align: center;
-    padding: 3px 6px; background: rgba(0,0,0,0.3);
+    min-width: 56px; text-align: center;
+    padding: 4px 8px; background: rgba(0,0,0,0.3);
     border: 1px solid rgba(0,0,0,0.4); border-radius: 2px;
 }
-.readout-label { font: 600 7px/1 var(--sans); color: var(--text-label); text-transform: uppercase; letter-spacing: 0.1em; }
-.readout.sm .readout-value { font-size: 12px; min-width: 36px; }
-.readout.lg .readout-value { font-size: 28px; min-width: 80px; }
+.readout-label { font: 600 9px/1 var(--sans); color: var(--text-label); text-transform: uppercase; letter-spacing: 0.1em; }
+.readout.sm .readout-value { font-size: 15px; min-width: 44px; }
+.readout.lg .readout-value { font-size: 32px; min-width: 90px; }
 .readout.good .readout-value { color: var(--status-green); text-shadow: 0 0 8px rgba(34,197,94,0.25); }
 .readout.warn .readout-value { color: var(--status-amber); text-shadow: 0 0 8px rgba(245,158,11,0.25); }
 .readout.bad  .readout-value { color: var(--status-red);   text-shadow: 0 0 8px rgba(239,68,68,0.25); }
@@ -194,7 +194,7 @@
 }
 .meter-fill { height: 100%; background: var(--device-accent); border-radius: 3px; transition: width 0.3s; }
 .meter.zoned .meter-fill { background: linear-gradient(90deg, var(--status-red), var(--status-amber), var(--status-green)); }
-.meter-ticks { display: flex; justify-content: space-between; font-size: 6px; color: var(--text-label); margin-top: 1px; }
+.meter-ticks { display: flex; justify-content: space-between; font-size: 8px; color: var(--text-label); margin-top: 1px; }
 
 .vu-meter {
     width: 8px; background: rgba(0,0,0,0.3);
@@ -218,14 +218,14 @@
     position: absolute; left: -6px; cursor: grab;
     box-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
-.fader-label { font: 400 7px/1 var(--sans); color: var(--text-dim); text-transform: uppercase; }
+.fader-label { font: 400 9px/1 var(--sans); color: var(--text-dim); text-transform: uppercase; }
 
 
 /* ── Segment Switch ── */
 
 .segment { display: inline-flex; border: 1px solid rgba(0,0,0,0.4); border-radius: 2px; overflow: hidden; }
 .segment-btn {
-    padding: 3px 8px; font: 600 8px/1 var(--sans);
+    padding: 4px 8px; font: 600 10px/1 var(--sans);
     text-transform: uppercase; letter-spacing: 0.04em;
     background: rgba(0,0,0,0.2); color: var(--text-dim);
     border: none; border-right: 1px solid rgba(0,0,0,0.3); cursor: pointer; transition: all 0.1s;

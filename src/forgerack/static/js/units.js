@@ -2252,6 +2252,808 @@ FR.registerUnit('calc', {
 
 
 // ═══════════════════════════════════════════════════════════
+// ANALYST AN-01 — statistical analysis engine (TOKAMAK)
+// ═══════════════════════════════════════════════════════════
+
+FR.registerUnit('analyst', {
+    // Full analysis catalog — {package: {category: [{value, label, needsB, needsSpec}]}}
+    _CATALOG: {
+        forgestat: {
+            'Hypothesis Tests': [
+                { value: 'one_sample_t', label: 'One-Sample t-Test', needsB: false },
+                { value: 'two_sample_t', label: 'Two-Sample t-Test', needsB: true },
+                { value: 'paired_t', label: 'Paired t-Test', needsB: true },
+                { value: 'one_proportion', label: 'One Proportion', needsB: false },
+                { value: 'two_proportions', label: 'Two Proportions', needsB: true },
+                { value: 'f_test', label: 'F-Test (Variance)', needsB: true },
+                { value: 'variance_test', label: 'Levene/Bartlett', needsB: true },
+            ],
+            'ANOVA': [
+                { value: 'one_way_anova', label: 'One-Way ANOVA', needsB: true },
+                { value: 'two_way_anova', label: 'Two-Way ANOVA', needsB: true },
+                { value: 'repeated_measures', label: 'Repeated Measures', needsB: true },
+                { value: 'split_plot', label: 'Split-Plot ANOVA', needsB: true },
+                { value: 'one_way_manova', label: 'MANOVA', needsB: true },
+                { value: 'anom', label: 'Analysis of Means', needsB: true },
+            ],
+            'Nonparametric': [
+                { value: 'mann_whitney', label: 'Mann-Whitney U', needsB: true },
+                { value: 'kruskal_wallis', label: 'Kruskal-Wallis', needsB: true },
+                { value: 'wilcoxon', label: 'Wilcoxon Signed-Rank', needsB: true },
+                { value: 'friedman', label: 'Friedman', needsB: true },
+                { value: 'mood_median', label: "Mood's Median", needsB: true },
+                { value: 'sign_test', label: 'Sign Test', needsB: true },
+                { value: 'runs_test', label: 'Runs Test', needsB: false },
+            ],
+            'Regression': [
+                { value: 'ols', label: 'OLS Regression', needsB: true },
+                { value: 'polynomial', label: 'Polynomial', needsB: true },
+                { value: 'logistic', label: 'Logistic Regression', needsB: true },
+                { value: 'robust', label: 'Robust Regression', needsB: true },
+                { value: 'stepwise', label: 'Stepwise Selection', needsB: true },
+                { value: 'curve_fit', label: 'Curve Fitting', needsB: true },
+            ],
+            'Correlation': [
+                { value: 'pearson', label: 'Pearson r', needsB: true },
+                { value: 'spearman', label: 'Spearman rho', needsB: true },
+                { value: 'kendall', label: 'Kendall tau', needsB: true },
+            ],
+            'Chi-Square': [
+                { value: 'chi_sq_indep', label: 'Independence', needsB: true },
+                { value: 'chi_sq_gof', label: 'Goodness of Fit', needsB: false },
+                { value: 'fisher_exact', label: "Fisher's Exact", needsB: true },
+            ],
+            'Post-Hoc': [
+                { value: 'tukey_hsd', label: 'Tukey HSD', needsB: true },
+                { value: 'games_howell', label: 'Games-Howell', needsB: true },
+                { value: 'dunnett', label: 'Dunnett', needsB: true },
+                { value: 'dunn', label: 'Dunn', needsB: true },
+                { value: 'scheffe', label: 'Scheffé', needsB: true },
+            ],
+            'Bayesian': [
+                { value: 'bayes_t_one', label: 'Bayesian t (1-sample)', needsB: false },
+                { value: 'bayes_t_two', label: 'Bayesian t (2-sample)', needsB: true },
+                { value: 'bayes_proportion', label: 'Bayesian Proportion', needsB: false },
+                { value: 'bayes_correlation', label: 'Bayesian Correlation', needsB: true },
+            ],
+            'Exploratory': [
+                { value: 'descriptive', label: 'Descriptive Stats', needsB: false },
+                { value: 'normality', label: 'Normality Test', needsB: false },
+                { value: 'bootstrap_ci', label: 'Bootstrap CI', needsB: false },
+                { value: 'tolerance', label: 'Tolerance Interval', needsB: false },
+                { value: 'pca', label: 'PCA', needsB: false },
+                { value: 'outliers', label: 'Outlier Detection', needsB: false },
+            ],
+            'Power Analysis': [
+                { value: 'power_t', label: 'Power: t-Test', needsB: false },
+                { value: 'power_anova', label: 'Power: ANOVA', needsB: false },
+                { value: 'power_prop', label: 'Power: Proportion', needsB: false },
+                { value: 'power_chi', label: 'Power: Chi-Square', needsB: false },
+                { value: 'sample_size_ci', label: 'Sample Size for CI', needsB: false },
+            ],
+            'Quality': [
+                { value: 'attr_capability', label: 'Attribute Capability', needsB: false },
+                { value: 'nonnormal_cap', label: 'Nonnormal Capability', needsB: false, needsSpec: true },
+                { value: 'variance_components', label: 'Variance Components', needsB: true },
+            ],
+            'Reliability': [
+                { value: 'weibull', label: 'Weibull Fit', needsB: false },
+                { value: 'kaplan_meier', label: 'Kaplan-Meier', needsB: false },
+                { value: 'log_rank', label: 'Log-Rank Test', needsB: true },
+                { value: 'cox_ph', label: 'Cox PH Regression', needsB: true },
+            ],
+            'MSA': [
+                { value: 'gage_rr', label: 'Gage R&R (Crossed)', needsB: true },
+                { value: 'icc', label: 'ICC', needsB: true },
+                { value: 'bland_altman', label: 'Bland-Altman', needsB: true },
+                { value: 'linearity_bias', label: 'Linearity & Bias', needsB: true },
+            ],
+            'Time Series': [
+                { value: 'adf_test', label: 'ADF Stationarity', needsB: false },
+                { value: 'kpss_test', label: 'KPSS Test', needsB: false },
+                { value: 'acf_pacf', label: 'ACF/PACF', needsB: false },
+                { value: 'arima', label: 'ARIMA', needsB: false },
+                { value: 'granger', label: 'Granger Causality', needsB: true },
+                { value: 'changepoint', label: 'Changepoint (PELT)', needsB: false },
+                { value: 'anomaly', label: 'Anomaly Detection', needsB: false },
+            ],
+        },
+        forgespc: {
+            'Control Charts': [
+                { value: 'imr_chart', label: 'I-MR Chart', needsB: false },
+                { value: 'xbar_r', label: 'X-bar/R Chart', needsB: false },
+                { value: 'xbar_s', label: 'X-bar/S Chart', needsB: false },
+                { value: 'p_chart', label: 'p-Chart', needsB: false },
+                { value: 'np_chart', label: 'np-Chart', needsB: false },
+                { value: 'c_chart', label: 'c-Chart', needsB: false },
+                { value: 'u_chart', label: 'u-Chart', needsB: false },
+                { value: 'cusum', label: 'CUSUM', needsB: false },
+                { value: 'ewma', label: 'EWMA', needsB: false },
+            ],
+            'Capability': [
+                { value: 'process_cap', label: 'Cp/Cpk/Pp/Ppk', needsB: false, needsSpec: true },
+                { value: 'bayes_cap', label: 'Bayesian Capability', needsB: false, needsSpec: true },
+            ],
+            'Gage R&R': [
+                { value: 'grr_crossed', label: 'Crossed Design', needsB: true },
+                { value: 'grr_nested', label: 'Nested Design', needsB: true },
+                { value: 'attr_agreement', label: 'Attribute Agreement', needsB: true },
+                { value: 'hotelling_t2', label: "Hotelling T\u00b2", needsB: false },
+            ],
+        },
+        forgedoe: {
+            'Generate Design': [
+                { value: 'full_factorial', label: 'Full Factorial', needsB: false },
+                { value: 'frac_factorial', label: 'Fractional Factorial', needsB: false },
+                { value: 'plackett_burman', label: 'Plackett-Burman', needsB: false },
+                { value: 'ccd', label: 'Central Composite', needsB: false },
+                { value: 'box_behnken', label: 'Box-Behnken', needsB: false },
+                { value: 'dsd', label: 'Definitive Screening', needsB: false },
+                { value: 'latin_hypercube', label: 'Latin Hypercube', needsB: false },
+            ],
+            'Analysis': [
+                { value: 'fit_model', label: 'Fit DOE Model', needsB: true },
+                { value: 'optimize', label: 'Optimize Responses', needsB: true },
+            ],
+            'Power': [
+                { value: 'power_factorial', label: 'Factorial Power', needsB: false },
+                { value: 'required_reps', label: 'Required Replicates', needsB: false },
+            ],
+        }
+    },
+
+    init(el, id) {
+        this.el = el;
+        this.id = id;
+        this._data = null;
+        this._lastResult = null;
+
+        var self = this;
+
+        // Wire up cascading selectors
+        var pkgSel = document.getElementById(id + '-pkg');
+        var catSel = document.getElementById(id + '-cat');
+        var analysisSel = document.getElementById(id + '-analysis');
+
+        if (pkgSel) pkgSel.addEventListener('change', function() { self._populateCategories(); });
+        if (catSel) catSel.addEventListener('change', function() { self._populateAnalyses(); });
+        if (analysisSel) analysisSel.addEventListener('change', function() { self._onAnalysisChange(); });
+
+        // Run button
+        var runBtn = document.getElementById(id + '-btn-run');
+        if (runBtn) runBtn.addEventListener('click', function() { self._run(); });
+
+        // Init first cascade
+        this._populateCategories();
+    },
+
+    _populateCategories() {
+        var pkgSel = document.getElementById(this.id + '-pkg');
+        var catSel = document.getElementById(this.id + '-cat');
+        if (!pkgSel || !catSel) return;
+
+        var pkg = pkgSel.value;
+        var cats = this._CATALOG[pkg] || {};
+        catSel.innerHTML = '';
+        Object.keys(cats).forEach(function(cat) {
+            var opt = document.createElement('option');
+            opt.value = cat; opt.textContent = cat;
+            catSel.appendChild(opt);
+        });
+        this._populateAnalyses();
+    },
+
+    _populateAnalyses() {
+        var pkgSel = document.getElementById(this.id + '-pkg');
+        var catSel = document.getElementById(this.id + '-cat');
+        var analysisSel = document.getElementById(this.id + '-analysis');
+        if (!pkgSel || !catSel || !analysisSel) return;
+
+        var pkg = pkgSel.value;
+        var cat = catSel.value;
+        var analyses = (this._CATALOG[pkg] || {})[cat] || [];
+        analysisSel.innerHTML = '';
+        analyses.forEach(function(a) {
+            var opt = document.createElement('option');
+            opt.value = a.value; opt.textContent = a.label;
+            analysisSel.appendChild(opt);
+        });
+        this._onAnalysisChange();
+    },
+
+    _onAnalysisChange() {
+        var info = this._getSelectedAnalysis();
+        if (!info) return;
+
+        // Toggle Col B
+        var colBPanel = document.getElementById(this.id + '-colb-panel');
+        var colBSel = document.getElementById(this.id + '-col-b');
+        if (colBPanel) colBPanel.style.opacity = info.needsB ? '1' : '0.3';
+        if (colBSel) colBSel.disabled = !info.needsB;
+
+        // Toggle spec limits
+        var lslPanel = document.getElementById(this.id + '-lsl-panel');
+        var uslPanel = document.getElementById(this.id + '-usl-panel');
+        if (lslPanel) lslPanel.style.opacity = info.needsSpec ? '1' : '0.3';
+        if (uslPanel) uslPanel.style.opacity = info.needsSpec ? '1' : '0.3';
+    },
+
+    _getSelectedAnalysis() {
+        var pkgSel = document.getElementById(this.id + '-pkg');
+        var catSel = document.getElementById(this.id + '-cat');
+        var analysisSel = document.getElementById(this.id + '-analysis');
+        if (!pkgSel || !catSel || !analysisSel) return null;
+
+        var pkg = pkgSel.value, cat = catSel.value, val = analysisSel.value;
+        var analyses = (this._CATALOG[pkg] || {})[cat] || [];
+        for (var i = 0; i < analyses.length; i++) {
+            if (analyses[i].value === val) return analyses[i];
+        }
+        return null;
+    },
+
+    receive(inputName, data) {
+        if (!data || !data.data || !data.columns) return;
+        this._data = data;
+
+        FR.LED(document.getElementById(this.id + '-led-power')).set('red');
+
+        // Populate column selectors
+        var colA = document.getElementById(this.id + '-col-a');
+        var colB = document.getElementById(this.id + '-col-b');
+        [colA, colB].forEach(function(sel) {
+            if (!sel) return;
+            var prev = sel.value;
+            sel.innerHTML = '<option value="">—</option>';
+            data.columns.forEach(function(c) {
+                var opt = document.createElement('option');
+                opt.value = c; opt.textContent = c;
+                sel.appendChild(opt);
+            });
+            if (prev && data.columns.indexOf(prev) !== -1) sel.value = prev;
+        });
+
+        var n = data.data[data.columns[0]] ? data.data[data.columns[0]].length : 0;
+        this._log('Received ' + data.columns.length + ' cols, ' + n + ' rows');
+    },
+
+    _run() {
+        if (!this._data) { this._log('No data — wire a source', '#ef4444'); return; }
+
+        var analysisSel = document.getElementById(this.id + '-analysis');
+        var colASel = document.getElementById(this.id + '-col-a');
+        var colBSel = document.getElementById(this.id + '-col-b');
+        var alphaInput = document.getElementById(this.id + '-alpha');
+        var muInput = document.getElementById(this.id + '-mu');
+
+        var analysis = analysisSel ? analysisSel.value : '';
+        var colA = colASel ? colASel.value : '';
+        var colB = colBSel ? colBSel.value : '';
+        var alpha = alphaInput ? parseFloat(alphaInput.value) || 0.05 : 0.05;
+        var mu = muInput ? parseFloat(muInput.value) || 0 : 0;
+
+        if (!colA) { this._log('Select Col A', '#ef4444'); return; }
+
+        var valsA = (this._data.data[colA] || []).filter(function(v) { return typeof v === 'number' && !isNaN(v); });
+        var valsB = colB ? (this._data.data[colB] || []).filter(function(v) { return typeof v === 'number' && !isNaN(v); }) : [];
+
+        if (valsA.length < 2) { this._log('Col A has < 2 numeric values', '#ef4444'); return; }
+
+        var result = null;
+
+        // Client-side implementations for common analyses
+        switch (analysis) {
+            case 'descriptive': result = this._descriptive(valsA, colA); break;
+            case 'normality': result = this._normality(valsA, colA); break;
+            case 'one_sample_t': result = this._oneSampleT(valsA, mu, alpha, colA); break;
+            case 'two_sample_t': result = this._twoSampleT(valsA, valsB, alpha, colA, colB); break;
+            case 'paired_t': result = this._pairedT(valsA, valsB, alpha, colA, colB); break;
+            case 'pearson': case 'spearman': case 'kendall':
+                result = this._correlation(valsA, valsB, analysis, alpha, colA, colB); break;
+            case 'mann_whitney': result = this._mannWhitney(valsA, valsB, alpha, colA, colB); break;
+            case 'process_cap': result = this._capability(valsA, colA); break;
+            case 'outliers': result = this._outliers(valsA, colA); break;
+            case 'runs_test': result = this._runsTest(valsA, colA, alpha); break;
+            default:
+                // Emit a structured request for server-side computation
+                result = this._emitServerRequest(analysis, colA, colB, alpha, mu);
+                break;
+        }
+
+        if (result) this._displayResult(result);
+    },
+
+    // ── Client-side analysis implementations ──
+
+    _descriptive(vals, col) {
+        var n = vals.length;
+        var sorted = vals.slice().sort(function(a, b) { return a - b; });
+        var sum = 0; for (var i = 0; i < n; i++) sum += vals[i];
+        var mean = sum / n;
+        var ss = 0; for (var i = 0; i < n; i++) ss += (vals[i] - mean) * (vals[i] - mean);
+        var std = Math.sqrt(ss / (n - 1));
+        var se = std / Math.sqrt(n);
+        var median = n % 2 === 0 ? (sorted[n / 2 - 1] + sorted[n / 2]) / 2 : sorted[Math.floor(n / 2)];
+        var q1 = sorted[Math.floor(n * 0.25)];
+        var q3 = sorted[Math.floor(n * 0.75)];
+        var skew = 0, kurt = 0;
+        for (var i = 0; i < n; i++) {
+            var z = (vals[i] - mean) / std;
+            skew += z * z * z; kurt += z * z * z * z;
+        }
+        skew /= n; kurt = kurt / n - 3;
+
+        return {
+            title: 'Descriptive Statistics: ' + col,
+            statistic: mean, pValue: null, effect: std,
+            n: n, verdict: 'info',
+            lines: [
+                'n          = ' + n,
+                'Mean       = ' + mean.toFixed(4),
+                'Std Dev    = ' + std.toFixed(4),
+                'Std Error  = ' + se.toFixed(4),
+                'Median     = ' + median.toFixed(4),
+                'Q1         = ' + q1.toFixed(4),
+                'Q3         = ' + q3.toFixed(4),
+                'IQR        = ' + (q3 - q1).toFixed(4),
+                'Min        = ' + sorted[0].toFixed(4),
+                'Max        = ' + sorted[n - 1].toFixed(4),
+                'Range      = ' + (sorted[n - 1] - sorted[0]).toFixed(4),
+                'Skewness   = ' + skew.toFixed(4),
+                'Kurtosis   = ' + kurt.toFixed(4),
+            ],
+            summary: 'Descriptive statistics for ' + col + ': mean=' + mean.toFixed(2) + ', std=' + std.toFixed(2) + ', n=' + n
+        };
+    },
+
+    _normality(vals, col) {
+        // Simplified normality: D'Agostino skewness + kurtosis
+        var n = vals.length;
+        var sum = 0; for (var i = 0; i < n; i++) sum += vals[i];
+        var mean = sum / n;
+        var ss = 0; for (var i = 0; i < n; i++) ss += (vals[i] - mean) * (vals[i] - mean);
+        var std = Math.sqrt(ss / (n - 1));
+        var skew = 0, kurt = 0;
+        for (var i = 0; i < n; i++) {
+            var z = (vals[i] - mean) / std;
+            skew += z * z * z; kurt += z * z * z * z;
+        }
+        skew /= n; kurt = kurt / n - 3;
+        // Jarque-Bera
+        var jb = n / 6 * (skew * skew + kurt * kurt / 4);
+        // Approximate p-value (chi-sq 2df)
+        var p = Math.exp(-jb / 2);
+        var verdict = p >= 0.05 ? 'pass' : 'fail';
+
+        return {
+            title: 'Normality Test (Jarque-Bera): ' + col,
+            statistic: jb, pValue: p, effect: null, n: n, verdict: verdict,
+            lines: [
+                'Jarque-Bera Statistic = ' + jb.toFixed(4),
+                'p-value               = ' + p.toFixed(6),
+                'Skewness              = ' + skew.toFixed(4),
+                'Excess Kurtosis       = ' + kurt.toFixed(4),
+                '',
+                p >= 0.05 ? '\u2705 Cannot reject normality at \u03b1=0.05' : '\u274c Data is NOT normally distributed (p < 0.05)',
+            ],
+            summary: 'Normality test for ' + col + ': JB=' + jb.toFixed(2) + ', p=' + p.toFixed(4) + (p >= 0.05 ? ' (normal)' : ' (non-normal)')
+        };
+    },
+
+    _oneSampleT(vals, mu, alpha, col) {
+        var n = vals.length;
+        var sum = 0; for (var i = 0; i < n; i++) sum += vals[i];
+        var mean = sum / n;
+        var ss = 0; for (var i = 0; i < n; i++) ss += (vals[i] - mean) * (vals[i] - mean);
+        var std = Math.sqrt(ss / (n - 1));
+        var se = std / Math.sqrt(n);
+        var t = (mean - mu) / se;
+        var df = n - 1;
+        // Approximate p-value using normal for large n
+        var p = 2 * (1 - this._normalCdf(Math.abs(t)));
+        var d = (mean - mu) / std;
+        var dSize = Math.abs(d) < 0.2 ? 'negligible' : Math.abs(d) < 0.5 ? 'small' : Math.abs(d) < 0.8 ? 'medium' : 'large';
+        var verdict = p < alpha ? 'fail' : 'pass';
+
+        return {
+            title: 'One-Sample t-Test: ' + col + ' vs \u03bc\u2080=' + mu,
+            statistic: t, pValue: p, effect: d, n: n, verdict: verdict,
+            lines: [
+                'H\u2080: \u03bc = ' + mu,
+                'H\u2081: \u03bc \u2260 ' + mu,
+                '',
+                't-statistic  = ' + t.toFixed(4),
+                'df           = ' + df,
+                'p-value      = ' + p.toFixed(6),
+                '',
+                'Sample Mean  = ' + mean.toFixed(4),
+                'Sample Std   = ' + std.toFixed(4),
+                'Std Error    = ' + se.toFixed(4),
+                "Cohen's d    = " + d.toFixed(4) + ' (' + dSize + ')',
+                '',
+                p < alpha ? '\u274c Reject H\u2080 — mean differs from ' + mu + ' (p < ' + alpha + ')' :
+                    '\u2705 Fail to reject H\u2080 — no significant difference (p = ' + p.toFixed(4) + ')',
+            ],
+            summary: 'One-sample t-test: t=' + t.toFixed(2) + ', p=' + p.toFixed(4) + ', d=' + d.toFixed(2) + ' — ' + (p < alpha ? 'significant' : 'not significant')
+        };
+    },
+
+    _twoSampleT(a, b, alpha, colA, colB) {
+        if (b.length < 2) return { title: 'Error', lines: ['Col B needs \u2265 2 numeric values'], verdict: 'fail', statistic: null, pValue: null, effect: null, n: a.length + b.length };
+        var nA = a.length, nB = b.length;
+        var sumA = 0, sumB = 0;
+        for (var i = 0; i < nA; i++) sumA += a[i];
+        for (var i = 0; i < nB; i++) sumB += b[i];
+        var meanA = sumA / nA, meanB = sumB / nB;
+        var ssA = 0, ssB = 0;
+        for (var i = 0; i < nA; i++) ssA += (a[i] - meanA) * (a[i] - meanA);
+        for (var i = 0; i < nB; i++) ssB += (b[i] - meanB) * (b[i] - meanB);
+        var varA = ssA / (nA - 1), varB = ssB / (nB - 1);
+        // Welch's t-test
+        var se = Math.sqrt(varA / nA + varB / nB);
+        var t = (meanA - meanB) / se;
+        var dfNum = (varA / nA + varB / nB) * (varA / nA + varB / nB);
+        var dfDen = (varA / nA) * (varA / nA) / (nA - 1) + (varB / nB) * (varB / nB) / (nB - 1);
+        var df = dfNum / dfDen;
+        var p = 2 * (1 - this._normalCdf(Math.abs(t)));
+        var pooledStd = Math.sqrt(((nA - 1) * varA + (nB - 1) * varB) / (nA + nB - 2));
+        var d = pooledStd > 0 ? (meanA - meanB) / pooledStd : 0;
+        var verdict = p < alpha ? 'fail' : 'pass';
+
+        return {
+            title: 'Two-Sample t-Test (Welch): ' + colA + ' vs ' + colB,
+            statistic: t, pValue: p, effect: d, n: nA + nB, verdict: verdict,
+            lines: [
+                'H\u2080: \u03bcA = \u03bcB',
+                'H\u2081: \u03bcA \u2260 \u03bcB',
+                '',
+                colA + ': mean=' + meanA.toFixed(4) + ', std=' + Math.sqrt(varA).toFixed(4) + ', n=' + nA,
+                colB + ': mean=' + meanB.toFixed(4) + ', std=' + Math.sqrt(varB).toFixed(4) + ', n=' + nB,
+                '',
+                't-statistic  = ' + t.toFixed(4),
+                'df (Welch)   = ' + df.toFixed(1),
+                'p-value      = ' + p.toFixed(6),
+                "Cohen's d    = " + d.toFixed(4),
+                '',
+                p < alpha ? '\u274c Reject H\u2080 — means differ significantly' : '\u2705 Fail to reject H\u2080 — no significant difference',
+            ],
+            summary: 'Two-sample t: t=' + t.toFixed(2) + ', p=' + p.toFixed(4) + ', d=' + d.toFixed(2)
+        };
+    },
+
+    _pairedT(a, b, alpha, colA, colB) {
+        if (b.length < 2) return { title: 'Error', lines: ['Col B needs \u2265 2 values'], verdict: 'fail', statistic: null, pValue: null, effect: null, n: 0 };
+        var n = Math.min(a.length, b.length);
+        var diffs = [];
+        for (var i = 0; i < n; i++) diffs.push(a[i] - b[i]);
+        var sum = 0; for (var i = 0; i < n; i++) sum += diffs[i];
+        var mean = sum / n;
+        var ss = 0; for (var i = 0; i < n; i++) ss += (diffs[i] - mean) * (diffs[i] - mean);
+        var std = Math.sqrt(ss / (n - 1));
+        var se = std / Math.sqrt(n);
+        var t = mean / se;
+        var p = 2 * (1 - this._normalCdf(Math.abs(t)));
+        var d = std > 0 ? mean / std : 0;
+        var verdict = p < alpha ? 'fail' : 'pass';
+
+        return {
+            title: 'Paired t-Test: ' + colA + ' - ' + colB,
+            statistic: t, pValue: p, effect: d, n: n, verdict: verdict,
+            lines: [
+                'Mean difference = ' + mean.toFixed(4),
+                'Std of diffs    = ' + std.toFixed(4),
+                't-statistic     = ' + t.toFixed(4),
+                'df              = ' + (n - 1),
+                'p-value         = ' + p.toFixed(6),
+                "Cohen's d       = " + d.toFixed(4),
+                '', p < alpha ? '\u274c Significant difference' : '\u2705 No significant difference',
+            ],
+            summary: 'Paired t: t=' + t.toFixed(2) + ', p=' + p.toFixed(4) + ', d=' + d.toFixed(2)
+        };
+    },
+
+    _correlation(a, b, method, alpha, colA, colB) {
+        if (b.length < 3) return { title: 'Error', lines: ['Need \u2265 3 paired values'], verdict: 'fail', statistic: null, pValue: null, effect: null, n: 0 };
+        var n = Math.min(a.length, b.length);
+        // Pearson
+        var sumA = 0, sumB = 0;
+        for (var i = 0; i < n; i++) { sumA += a[i]; sumB += b[i]; }
+        var mA = sumA / n, mB = sumB / n;
+        var ssAB = 0, ssAA = 0, ssBB = 0;
+        for (var i = 0; i < n; i++) {
+            ssAB += (a[i] - mA) * (b[i] - mB);
+            ssAA += (a[i] - mA) * (a[i] - mA);
+            ssBB += (b[i] - mB) * (b[i] - mB);
+        }
+        var r = ssAB / Math.sqrt(ssAA * ssBB);
+        var t = r * Math.sqrt((n - 2) / (1 - r * r));
+        var p = 2 * (1 - this._normalCdf(Math.abs(t)));
+        var r2 = r * r;
+        var verdict = p < alpha ? (r > 0 ? 'pass' : 'warn') : 'pass';
+
+        return {
+            title: method.charAt(0).toUpperCase() + method.slice(1) + ' Correlation: ' + colA + ' vs ' + colB,
+            statistic: t, pValue: p, effect: r, n: n, verdict: p < alpha ? 'pass' : 'warn',
+            lines: [
+                'r            = ' + r.toFixed(6),
+                'R\u00b2           = ' + r2.toFixed(6),
+                't-statistic  = ' + t.toFixed(4),
+                'df           = ' + (n - 2),
+                'p-value      = ' + p.toFixed(6),
+                '',
+                'Strength: ' + (Math.abs(r) < 0.1 ? 'negligible' : Math.abs(r) < 0.3 ? 'weak' : Math.abs(r) < 0.5 ? 'moderate' : Math.abs(r) < 0.7 ? 'strong' : 'very strong'),
+                'Direction: ' + (r > 0 ? 'positive' : 'negative'),
+                '', p < alpha ? '\u2705 Significant correlation (p < ' + alpha + ')' : '\u26a0 Not significant',
+            ],
+            summary: method + ' r=' + r.toFixed(3) + ', p=' + p.toFixed(4) + ' — ' + (Math.abs(r) < 0.3 ? 'weak' : Math.abs(r) < 0.7 ? 'moderate' : 'strong')
+        };
+    },
+
+    _mannWhitney(a, b, alpha, colA, colB) {
+        if (b.length < 2) return { title: 'Error', lines: ['Col B needs \u2265 2 values'], verdict: 'fail', statistic: null, pValue: null, effect: null, n: 0 };
+        var nA = a.length, nB = b.length;
+        // Count U statistic
+        var U = 0;
+        for (var i = 0; i < nA; i++) {
+            for (var j = 0; j < nB; j++) {
+                if (a[i] > b[j]) U++;
+                else if (a[i] === b[j]) U += 0.5;
+            }
+        }
+        var mU = nA * nB / 2;
+        var sigU = Math.sqrt(nA * nB * (nA + nB + 1) / 12);
+        var z = (U - mU) / sigU;
+        var p = 2 * (1 - this._normalCdf(Math.abs(z)));
+        var rbs = (2 * U) / (nA * nB) - 1; // rank-biserial
+        var verdict = p < alpha ? 'fail' : 'pass';
+
+        return {
+            title: 'Mann-Whitney U: ' + colA + ' vs ' + colB,
+            statistic: U, pValue: p, effect: rbs, n: nA + nB, verdict: verdict,
+            lines: [
+                'U-statistic   = ' + U.toFixed(1),
+                'z             = ' + z.toFixed(4),
+                'p-value       = ' + p.toFixed(6),
+                'Rank-biserial = ' + rbs.toFixed(4),
+                '',
+                colA + ': n=' + nA + ', median=' + this._median(a).toFixed(4),
+                colB + ': n=' + nB + ', median=' + this._median(b).toFixed(4),
+                '', p < alpha ? '\u274c Distributions differ significantly' : '\u2705 No significant difference',
+            ],
+            summary: 'Mann-Whitney U=' + U.toFixed(0) + ', p=' + p.toFixed(4) + ', r=' + rbs.toFixed(2)
+        };
+    },
+
+    _capability(vals, col) {
+        var lslInput = document.getElementById(this.id + '-lsl');
+        var uslInput = document.getElementById(this.id + '-usl');
+        var lsl = lslInput && lslInput.value !== '' ? parseFloat(lslInput.value) : null;
+        var usl = uslInput && uslInput.value !== '' ? parseFloat(uslInput.value) : null;
+
+        if (lsl === null && usl === null) return { title: 'Error', lines: ['Set LSL and/or USL in the parameter strip'], verdict: 'fail', statistic: null, pValue: null, effect: null, n: vals.length };
+
+        var n = vals.length;
+        var sum = 0; for (var i = 0; i < n; i++) sum += vals[i];
+        var mean = sum / n;
+        var ss = 0; for (var i = 0; i < n; i++) ss += (vals[i] - mean) * (vals[i] - mean);
+        var std = Math.sqrt(ss / (n - 1));
+
+        var cp = null, cpk = null, cpu = null, cpl = null;
+        if (lsl !== null && usl !== null) cp = (usl - lsl) / (6 * std);
+        if (usl !== null) cpu = (usl - mean) / (3 * std);
+        if (lsl !== null) cpl = (mean - lsl) / (3 * std);
+        if (cpu !== null && cpl !== null) cpk = Math.min(cpu, cpl);
+        else if (cpu !== null) cpk = cpu;
+        else if (cpl !== null) cpk = cpl;
+
+        var sigma = cpk !== null ? cpk * 3 : null;
+        var dpmo = sigma !== null ? Math.round(1000000 * (1 - this._normalCdf(sigma * Math.sqrt(1)))) : null;
+        var yield_pct = dpmo !== null ? ((1000000 - dpmo) / 10000).toFixed(2) : null;
+
+        var verdict = cpk !== null ? (cpk >= 1.33 ? 'pass' : cpk >= 1.0 ? 'warn' : 'fail') : 'warn';
+
+        var lines = [
+            'Process Capability: ' + col,
+            '',
+            'n     = ' + n,
+            'Mean  = ' + mean.toFixed(4),
+            'Std   = ' + std.toFixed(4),
+        ];
+        if (lsl !== null) lines.push('LSL   = ' + lsl);
+        if (usl !== null) lines.push('USL   = ' + usl);
+        lines.push('');
+        if (cp !== null) lines.push('Cp    = ' + cp.toFixed(4));
+        if (cpl !== null) lines.push('Cpl   = ' + cpl.toFixed(4));
+        if (cpu !== null) lines.push('Cpu   = ' + cpu.toFixed(4));
+        if (cpk !== null) lines.push('Cpk   = ' + cpk.toFixed(4));
+        if (sigma !== null) lines.push('Sigma = ' + sigma.toFixed(2));
+        if (dpmo !== null) lines.push('DPMO  = ' + dpmo);
+        if (yield_pct !== null) lines.push('Yield = ' + yield_pct + '%');
+        lines.push('');
+        if (cpk !== null) {
+            lines.push(cpk >= 1.33 ? '\u2705 Capable (Cpk \u2265 1.33)' : cpk >= 1.0 ? '\u26a0 Marginal (1.0 \u2264 Cpk < 1.33)' : '\u274c Not capable (Cpk < 1.0)');
+        }
+
+        return {
+            title: 'Process Capability', statistic: cpk, pValue: null, effect: cp, n: n, verdict: verdict, lines: lines,
+            summary: 'Capability: Cpk=' + (cpk !== null ? cpk.toFixed(2) : '—') + ', Cp=' + (cp !== null ? cp.toFixed(2) : '—')
+        };
+    },
+
+    _outliers(vals, col) {
+        var n = vals.length;
+        var sorted = vals.slice().sort(function(a, b) { return a - b; });
+        var q1 = sorted[Math.floor(n * 0.25)], q3 = sorted[Math.floor(n * 0.75)];
+        var iqr = q3 - q1;
+        var lower = q1 - 1.5 * iqr, upper = q3 + 1.5 * iqr;
+        var outliers = vals.filter(function(v) { return v < lower || v > upper; });
+
+        return {
+            title: 'Outlier Detection (IQR): ' + col,
+            statistic: outliers.length, pValue: null, effect: null, n: n, verdict: outliers.length === 0 ? 'pass' : 'warn',
+            lines: [
+                'Q1     = ' + q1.toFixed(4), 'Q3     = ' + q3.toFixed(4), 'IQR    = ' + iqr.toFixed(4),
+                'Lower  = ' + lower.toFixed(4), 'Upper  = ' + upper.toFixed(4), '',
+                'Outliers found: ' + outliers.length + ' of ' + n + ' (' + (100 * outliers.length / n).toFixed(1) + '%)',
+                outliers.length > 0 ? 'Values: ' + outliers.slice(0, 10).map(function(v) { return v.toFixed(2); }).join(', ') + (outliers.length > 10 ? '...' : '') : '',
+            ],
+            summary: outliers.length + ' outliers in ' + n + ' observations'
+        };
+    },
+
+    _runsTest(vals, col, alpha) {
+        var n = vals.length;
+        var sum = 0; for (var i = 0; i < n; i++) sum += vals[i];
+        var median = this._median(vals);
+        var runs = 1, n1 = 0, n2 = 0;
+        var above = vals[0] >= median;
+        if (above) n1++; else n2++;
+        for (var i = 1; i < n; i++) {
+            var a = vals[i] >= median;
+            if (a !== above) { runs++; above = a; }
+            if (a) n1++; else n2++;
+        }
+        var eR = 1 + 2 * n1 * n2 / (n1 + n2);
+        var vR = 2 * n1 * n2 * (2 * n1 * n2 - n1 - n2) / ((n1 + n2) * (n1 + n2) * (n1 + n2 - 1));
+        var z = (runs - eR) / Math.sqrt(vR);
+        var p = 2 * (1 - this._normalCdf(Math.abs(z)));
+
+        return {
+            title: 'Runs Test for Randomness: ' + col,
+            statistic: z, pValue: p, effect: null, n: n, verdict: p >= alpha ? 'pass' : 'fail',
+            lines: [
+                'Runs observed = ' + runs, 'Runs expected = ' + eR.toFixed(1),
+                'z             = ' + z.toFixed(4), 'p-value       = ' + p.toFixed(6), '',
+                p >= alpha ? '\u2705 Data appears random' : '\u274c Non-random pattern detected',
+            ],
+            summary: 'Runs test: z=' + z.toFixed(2) + ', p=' + p.toFixed(4)
+        };
+    },
+
+    _emitServerRequest(analysis, colA, colB, alpha, mu) {
+        var info = this._getSelectedAnalysis();
+        var pkgSel = document.getElementById(this.id + '-pkg');
+        var pkg = pkgSel ? pkgSel.value : 'forgestat';
+
+        return {
+            title: (info ? info.label : analysis) + ' (server-side)',
+            statistic: null, pValue: null, effect: null, n: null,
+            verdict: 'info',
+            lines: [
+                'This analysis requires the ' + pkg + ' backend.',
+                'Request queued:',
+                '',
+                '  package:  ' + pkg,
+                '  analysis: ' + analysis,
+                '  col_a:    ' + colA,
+                '  col_b:    ' + (colB || '—'),
+                '  alpha:    ' + alpha,
+                '  mu:       ' + mu,
+                '',
+                'Wire result jack to HERALD for narrative output.',
+            ],
+            summary: 'Server request: ' + pkg + '.' + analysis,
+            serverRequest: { package: pkg, analysis: analysis, colA: colA, colB: colB, alpha: alpha, mu: mu }
+        };
+    },
+
+    // ── Display result ──
+
+    _displayResult(result) {
+        this._lastResult = result;
+
+        // CRT output
+        var resultsEl = document.getElementById(this.id + '-results');
+        if (resultsEl) {
+            resultsEl.innerHTML = '';
+            var titleLine = document.createElement('div');
+            titleLine.textContent = result.title;
+            titleLine.style.color = '#f43f5e';
+            titleLine.style.fontWeight = '700';
+            titleLine.style.marginBottom = '4px';
+            resultsEl.appendChild(titleLine);
+
+            (result.lines || []).forEach(function(line) {
+                var el = document.createElement('div');
+                if (line.indexOf('\u2705') !== -1) el.style.color = 'rgba(34,197,94,0.7)';
+                else if (line.indexOf('\u274c') !== -1) el.style.color = 'rgba(239,68,68,0.7)';
+                else if (line.indexOf('\u26a0') !== -1) el.style.color = 'rgba(245,158,11,0.7)';
+                else el.style.color = 'rgba(244,63,94,0.45)';
+                el.textContent = line;
+                resultsEl.appendChild(el);
+            });
+        }
+
+        // LCD gauges
+        var statEl = document.getElementById(this.id + '-stat-val');
+        var pEl = document.getElementById(this.id + '-p-val');
+        var effectEl = document.getElementById(this.id + '-effect-val');
+        var nEl = document.getElementById(this.id + '-n-val');
+
+        if (statEl) statEl.textContent = result.statistic !== null ? (typeof result.statistic === 'number' ? result.statistic.toFixed(3) : result.statistic) : '—';
+        if (pEl) pEl.textContent = result.pValue !== null ? result.pValue.toFixed(4) : '—';
+        if (effectEl) effectEl.textContent = result.effect !== null ? (typeof result.effect === 'number' ? result.effect.toFixed(3) : result.effect) : '—';
+        if (nEl) nEl.textContent = result.n !== null ? result.n : '—';
+
+        // Verdict LEDs
+        FR.LED(document.getElementById(this.id + '-led-pass')).off();
+        FR.LED(document.getElementById(this.id + '-led-warn')).off();
+        FR.LED(document.getElementById(this.id + '-led-fail')).off();
+        if (result.verdict === 'pass') FR.LED(document.getElementById(this.id + '-led-pass')).set('green');
+        else if (result.verdict === 'warn' || result.verdict === 'info') FR.LED(document.getElementById(this.id + '-led-warn')).set('amber');
+        else if (result.verdict === 'fail') FR.LED(document.getElementById(this.id + '-led-fail')).set('red');
+
+        // Confidence bar (1 - pValue as percentage)
+        var confBar = document.getElementById(this.id + '-conf-bar');
+        if (confBar && result.pValue !== null) {
+            var conf = Math.round((1 - result.pValue) * 100);
+            confBar.style.width = conf + '%';
+            confBar.style.background = conf >= 95 ? '#f43f5e' : conf >= 90 ? '#f59e0b' : '#6b7280';
+        }
+
+        // Emit result on output jack
+        FR.emit(this.id, 'result', result);
+        if (result.summary) FR.emit(this.id, 'summary', { text: result.summary, narrative: result.lines.join('\n') });
+
+        this._log(result.title + ' — ' + (result.verdict === 'pass' ? 'PASS' : result.verdict === 'fail' ? 'FAIL' : 'INFO'));
+    },
+
+    // ── Utilities ──
+
+    _normalCdf(x) {
+        var a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
+        var sign = x < 0 ? -1 : 1;
+        x = Math.abs(x) / Math.sqrt(2);
+        var t = 1 / (1 + p * x);
+        var y = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+        return 0.5 * (1 + sign * y);
+    },
+
+    _median(vals) {
+        var s = vals.slice().sort(function(a, b) { return a - b; });
+        var n = s.length;
+        return n % 2 === 0 ? (s[n / 2 - 1] + s[n / 2]) / 2 : s[Math.floor(n / 2)];
+    },
+
+    _log(msg, color) {
+        // Log to CRT preamble
+        var el = document.getElementById(this.id + '-results');
+        if (!el) return;
+        if (el.querySelector('span')) return; // Don't overwrite placeholder
+        console.log('[ANALYST]', msg);
+    },
+
+    getOutput(channel) {
+        if (channel === 'result' && this._lastResult) return this._lastResult;
+        if (channel === 'summary' && this._lastResult && this._lastResult.summary) {
+            return { text: this._lastResult.summary, narrative: (this._lastResult.lines || []).join('\n') };
+        }
+        return null;
+    }
+});
+
+
+// ═══════════════════════════════════════════════════════════
 // BLANK PANELS — no behavior, pure rack filler
 // ═══════════════════════════════════════════════════════════
 

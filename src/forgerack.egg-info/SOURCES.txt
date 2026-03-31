@@ -11,6 +11,8 @@ src/forgerack/static/js/components.js
 src/forgerack/static/js/unit-csv-input.js
 src/forgerack/static/js/units.js
 src/forgerack/static/js/wiring.js
+src/forgerack/templates/forgerack/units/blank-1u.html
+src/forgerack/templates/forgerack/units/blank-2u.html
 src/forgerack/templates/forgerack/units/calc.html
 src/forgerack/templates/forgerack/units/chart-panel.html
 src/forgerack/templates/forgerack/units/combinator.html
@@ -19,5 +21,6 @@ src/forgerack/templates/forgerack/units/filter.html
 src/forgerack/templates/forgerack/units/intake.html
 src/forgerack/templates/forgerack/units/narrative.html
 src/forgerack/templates/forgerack/units/readout.html
+src/forgerack/templates/forgerack/units/scribble.html
 src/forgerack/templates/forgerack/units/splitter.html
 src/forgerack/templates/forgerack/units/triage.html

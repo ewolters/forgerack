@@ -609,6 +609,38 @@
 }
 
 
+/* ── MFR: TOKAMAK (Fusion reactor)
+ *    Used by: ANALYST, future heavy computation units
+ *    Deep charcoal-black. Plasma rose accent. Chrome bezels.
+ *    Condensed sans typography. The heaviest thing in the rack.
+ */
+.mfr-tokamak .dial-knob {
+    background:
+        radial-gradient(circle at 38% 35%, rgba(244,63,94,0.06), transparent 50%),
+        conic-gradient(from 220deg, #28282c 0%, #38383c 20%, #28282c 40%, #18181c 70%, #28282c 100%);
+    border-color: #101014;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.mfr-tokamak .dial-knob::after { background: #f43f5e; box-shadow: 0 0 5px rgba(244,63,94,0.4); }
+.mfr-tokamak .segment-btn {
+    background: rgba(244,63,94,0.03); color: rgba(244,63,94,0.25);
+    font-family: 'Arial Narrow', 'Arial', sans-serif; font-weight: 700;
+}
+.mfr-tokamak .segment-btn.active {
+    background: rgba(244,63,94,0.12); color: #f43f5e;
+    text-shadow: 0 0 5px rgba(244,63,94,0.3);
+}
+.mfr-tokamak .led { border-color: #18181c; }
+.mfr-tokamak .led.on-red {
+    background: radial-gradient(circle at 40% 35%, #fca5a5, #9f1239);
+    box-shadow: 0 0 8px rgba(244,63,94,0.7), 0 0 20px rgba(244,63,94,0.2);
+}
+.mfr-tokamak .panel-recessed {
+    background: rgba(244,63,94,0.015);
+    border-color: rgba(244,63,94,0.05);
+}
+
+
 /* ── Unit Color DNA ── */
 
 .unit-spc       { --device-accent: #4ade80; --device-accent-dim: rgba(74,222,128,0.15); --device-accent-glow: rgba(74,222,128,0.15); }

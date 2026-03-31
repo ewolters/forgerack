@@ -4573,7 +4573,7 @@ FR.registerUnit('comparator', {
         if (valsA.length < 2 || valsB.length < 2) {
             this._setMain('—');
             this._setLabel(this._modeLabel());
-            this._setVerdict('');
+            this._setVerdict(null);
             return;
         }
 
@@ -4582,7 +4582,7 @@ FR.registerUnit('comparator', {
         if (this._mode === 'diff') {
             this._setMain((mA - mB).toFixed(4));
             this._setLabel(this._modeLabel());
-            this._setVerdict('');
+            this._setVerdict(null);
             FR.LED(document.getElementById(this.id + '-led')).set('green');
             FR.emit(this.id, 'result', { mode: 'diff', value: mA - mB, mean_a: mA, mean_b: mB });
             return;
@@ -4591,7 +4591,7 @@ FR.registerUnit('comparator', {
             var r = mB !== 0 ? mA / mB : NaN;
             this._setMain(isNaN(r) ? 'DIV/0' : r.toFixed(4));
             this._setLabel(this._modeLabel());
-            this._setVerdict('');
+            this._setVerdict(null);
             FR.LED(document.getElementById(this.id + '-led')).set('green');
             FR.emit(this.id, 'result', { mode: 'ratio', value: r, mean_a: mA, mean_b: mB });
             return;
@@ -4612,17 +4612,17 @@ FR.registerUnit('comparator', {
         .then(function(json) {
             if (json.error) {
                 self._setMain('ERR');
-                self._setVerdict(json.error);
+                self._setVerdict(null);
                 FR.LED(document.getElementById(self.id + '-led')).set('red');
                 return;
             }
             var r = json.result;
             if (self._mode === 'tstat') {
                 self._setMain(r.t.toFixed(3));
-                self._setVerdict('df=' + r.df.toFixed(1));
+                self._setVerdict(r.significant);
             } else {
                 self._setMain(r.p < 0.001 ? r.p.toExponential(2) : r.p.toFixed(4));
-                self._setVerdict(r.significant ? 'SIGNIFICANT' : 'NOT SIG');
+                self._setVerdict(r.significant);
             }
             self._setLabel(self._modeLabel());
             FR.LED(document.getElementById(self.id + '-led')).set('green');
@@ -4630,13 +4630,12 @@ FR.registerUnit('comparator', {
         })
         .catch(function(err) {
             self._setMain('ERR');
-            self._setVerdict(String(err));
+            self._setVerdict(null);
             FR.LED(document.getElementById(self.id + '-led')).set('red');
         });
 
-        // Emit result
         FR.emit(this.id, 'result', {
-            mode: this._mode, value: result,
+            mode: this._mode,
             mean_a: mA, mean_b: mB,
             n_a: valsA.length, n_b: valsB.length
         });
@@ -4655,9 +4654,13 @@ FR.registerUnit('comparator', {
         var el = document.getElementById(this.id + '-mode-label');
         if (el) el.textContent = text;
     },
-    _setVerdict(text) {
-        var el = document.getElementById(this.id + '-verdict');
-        if (el) el.textContent = text;
+    _setVerdict(sig) {
+        // sig: true = significant (red LED), false = not significant (green LED), null/string = off
+        var led = document.getElementById(this.id + '-led-sig');
+        if (!led) return;
+        if (sig === true) FR.LED(led).set('red');
+        else if (sig === false) FR.LED(led).set('green');
+        else FR.LED(led).off();
     },
 
     _populateSelect(selectId, data) {

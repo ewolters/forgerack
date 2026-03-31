@@ -15,6 +15,7 @@ src/forgerack/templates/forgerack/units/chart-panel.html
 src/forgerack/templates/forgerack/units/combinator.html
 src/forgerack/templates/forgerack/units/csv-input.html
 src/forgerack/templates/forgerack/units/filter.html
+src/forgerack/templates/forgerack/units/intake.html
 src/forgerack/templates/forgerack/units/narrative.html
 src/forgerack/templates/forgerack/units/readout.html
 src/forgerack/templates/forgerack/units/splitter.html

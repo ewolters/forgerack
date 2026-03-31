@@ -508,56 +508,174 @@ FR.registerUnit('filter', {
         this.id = id;
         this.mode = '>';  // >, <, =, ≠
         this.threshold = 0;
-        this._inputData = [];
+        this._inputData = null;   // raw incoming data (array or {data, columns})
+        this._filterCol = '';     // which column to filter on
+        this._isColumnar = false;
 
-        // Wire up segment buttons
-        const btns = el.querySelectorAll('.segment-btn');
-        const modes = ['>', '<', '=', '≠'];
-        btns.forEach((btn, i) => {
-            btn.addEventListener('click', () => {
-                btns.forEach(b => b.classList.remove('active'));
+        var self = this;
+
+        // Wire up mode segment buttons
+        var btns = el.querySelectorAll('.segment-btn');
+        var modes = ['>', '<', '=', '≠'];
+        btns.forEach(function(btn, i) {
+            btn.addEventListener('click', function() {
+                btns.forEach(function(b) { b.classList.remove('active'); });
                 btn.classList.add('active');
-                this.mode = modes[i];
-                this._apply();
+                self.mode = modes[i];
+                self._apply();
             });
         });
+
+        // Threshold input
+        var threshInput = document.getElementById(id + '-threshold');
+        if (threshInput) {
+            threshInput.addEventListener('change', function() {
+                self.threshold = parseFloat(threshInput.value) || 0;
+                self._apply();
+            });
+        }
+
+        // Column selector
+        var colSelect = document.getElementById(id + '-col-select');
+        if (colSelect) {
+            colSelect.addEventListener('change', function() {
+                self._filterCol = colSelect.value;
+                self._apply();
+            });
+        }
     },
 
     receive(inputName, data) {
-        if (Array.isArray(data)) {
-            this._inputData = data;
-            this._apply();
+        if (!data) return;
+        this._inputData = data;
+
+        // Detect format
+        if (data.data && data.columns) {
+            this._isColumnar = true;
+            // Populate column selector
+            var colSelect = document.getElementById(this.id + '-col-select');
+            if (colSelect) {
+                var current = colSelect.value;
+                colSelect.innerHTML = '<option value="">—</option>';
+                data.columns.forEach(function(c) {
+                    var opt = document.createElement('option');
+                    opt.value = c; opt.textContent = c;
+                    colSelect.appendChild(opt);
+                });
+                // Auto-select first numeric column
+                if (!current) {
+                    for (var i = 0; i < data.columns.length; i++) {
+                        var col = data.columns[i];
+                        var vals = data.data[col] || [];
+                        var hasNum = vals.some(function(v) { return typeof v === 'number'; });
+                        if (hasNum) { colSelect.value = col; this._filterCol = col; break; }
+                    }
+                } else {
+                    colSelect.value = current;
+                    this._filterCol = current;
+                }
+            }
+        } else if (Array.isArray(data)) {
+            this._isColumnar = false;
         }
+
+        this._apply();
     },
 
     setThreshold(v) {
         this.threshold = v;
+        var threshInput = document.getElementById(this.id + '-threshold');
+        if (threshInput) threshInput.value = v;
         this._apply();
     },
 
+    getOutput(name) {
+        if (name === 'pass') return this._lastPass;
+        if (name === 'reject') return this._lastReject;
+        return null;
+    },
+
+    _test(v) {
+        var t = this.threshold;
+        if (typeof v !== 'number') return true; // non-numeric pass through
+        if (this.mode === '>') return v > t;
+        if (this.mode === '<') return v < t;
+        if (this.mode === '=') return Math.abs(v - t) < 0.001;
+        return Math.abs(v - t) >= 0.001; // ≠
+    },
+
     _apply() {
-        if (!this._inputData.length) return;
-        const t = this.threshold;
-        let pass = [], reject = [];
+        if (!this._inputData) return;
+        var self = this;
 
-        this._inputData.forEach(v => {
-            let p;
-            if (this.mode === '>') p = v > t;
-            else if (this.mode === '<') p = v < t;
-            else if (this.mode === '=') p = Math.abs(v - t) < 0.001;
-            else p = Math.abs(v - t) >= 0.001;
+        if (this._isColumnar && this._inputData.data && this._inputData.columns) {
+            // Columnar data — filter rows based on selected column
+            var cols = this._inputData.columns;
+            var data = this._inputData.data;
+            var filterCol = this._filterCol;
 
-            if (p) pass.push(v); else reject.push(v);
-        });
+            if (!filterCol || !data[filterCol]) {
+                // No column selected — pass everything
+                this._lastPass = this._inputData;
+                this._lastReject = { data: {}, columns: cols };
+                this._updateCounts(this._countRows(this._inputData), 0);
+                FR.emit(this.id, 'pass', this._inputData);
+                return;
+            }
 
-        const passEl = document.getElementById(this.id + '-pass');
-        const rejectEl = document.getElementById(this.id + '-reject');
-        if (passEl) passEl.textContent = pass.length;
-        if (rejectEl) rejectEl.textContent = reject.length;
-        FR.LED(document.getElementById(this.id + '-led')).set(reject.length > 0 ? 'amber' : 'green');
+            var filterVals = data[filterCol];
+            var passIdx = [], rejectIdx = [];
 
-        FR.emit(this.id, 'pass', pass);
-        FR.emit(this.id, 'reject', reject);
+            for (var i = 0; i < filterVals.length; i++) {
+                if (self._test(filterVals[i])) {
+                    passIdx.push(i);
+                } else {
+                    rejectIdx.push(i);
+                }
+            }
+
+            // Build pass/reject datasets with ALL columns
+            var passData = {}, rejectData = {};
+            cols.forEach(function(c) {
+                var arr = data[c] || [];
+                passData[c] = passIdx.map(function(i) { return arr[i]; });
+                rejectData[c] = rejectIdx.map(function(i) { return arr[i]; });
+            });
+
+            this._lastPass = { data: passData, columns: cols };
+            this._lastReject = { data: rejectData, columns: cols };
+
+            this._updateCounts(passIdx.length, rejectIdx.length);
+            FR.emit(this.id, 'pass', this._lastPass);
+            FR.emit(this.id, 'reject', this._lastReject);
+
+        } else if (Array.isArray(this._inputData)) {
+            // Simple array — original behavior
+            var pass = [], reject = [];
+            this._inputData.forEach(function(v) {
+                if (self._test(v)) pass.push(v); else reject.push(v);
+            });
+
+            this._lastPass = pass;
+            this._lastReject = reject;
+
+            this._updateCounts(pass.length, reject.length);
+            FR.emit(this.id, 'pass', pass);
+            FR.emit(this.id, 'reject', reject);
+        }
+    },
+
+    _countRows(data) {
+        if (!data || !data.columns || !data.columns.length) return 0;
+        return (data.data[data.columns[0]] || []).length;
+    },
+
+    _updateCounts(passCount, rejectCount) {
+        var passEl = document.getElementById(this.id + '-pass');
+        var rejectEl = document.getElementById(this.id + '-reject');
+        if (passEl) passEl.textContent = passCount;
+        if (rejectEl) rejectEl.textContent = rejectCount;
+        FR.LED(document.getElementById(this.id + '-led')).set(rejectCount > 0 ? 'amber' : 'green');
     }
 });
 

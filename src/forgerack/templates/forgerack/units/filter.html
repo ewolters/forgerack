@@ -56,17 +56,35 @@
             </div>
         </div>
 
-        <!-- Threshold dial — recessed -->
+        <!-- Column selector — recessed -->
         <div style="
             background:rgba(0,0,0,0.28);border:1px solid rgba(0,0,0,0.45);border-radius:2px;
             box-shadow:inset 0 2px 5px rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.006);
-            padding:8px 14px;display:flex;flex-direction:column;align-items:center;gap:3px;
+            padding:8px 10px;display:flex;flex-direction:column;align-items:center;gap:4px;justify-content:center;
         ">
-            <div class="dial" data-dial='{"min":-100,"max":100,"value":0,"step":0.1}'>
-                <div class="dial-knob" style="width:34px;height:34px;"></div>
-                <div class="dial-value" style="color:#22d3ee;font-size:12px;">0.0</div>
-                <div class="dial-label" style="color:rgba(34,211,238,0.2);font-size:7px;">threshold</div>
-            </div>
+            <div style="font:700 10px/1 'Helvetica Neue',sans-serif;color:rgba(34,211,238,0.15);text-transform:uppercase;letter-spacing:0.2em;">Column</div>
+            <select id="${id}-col-select" style="
+                background:rgba(0,0,0,0.5);border:1px solid rgba(34,211,238,0.12);
+                color:rgba(34,211,238,0.5);padding:3px 5px;border-radius:1px;
+                font:10px/1 'JetBrains Mono',monospace;min-width:60px;
+            ">
+                <option value="">—</option>
+            </select>
+        </div>
+
+        <!-- Threshold input — recessed -->
+        <div style="
+            background:rgba(0,0,0,0.28);border:1px solid rgba(0,0,0,0.45);border-radius:2px;
+            box-shadow:inset 0 2px 5px rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.006);
+            padding:8px 10px;display:flex;flex-direction:column;align-items:center;gap:4px;justify-content:center;
+        ">
+            <div style="font:700 10px/1 'Helvetica Neue',sans-serif;color:rgba(34,211,238,0.15);text-transform:uppercase;letter-spacing:0.2em;">Threshold</div>
+            <input type="number" id="${id}-threshold" value="0" step="any" style="
+                width:70px;background:rgba(0,0,0,0.5);border:1px solid rgba(34,211,238,0.12);
+                color:#22d3ee;padding:3px 6px;border-radius:1px;text-align:center;
+                font:700 13px/1 'JetBrains Mono',monospace;
+                box-shadow:inset 0 1px 3px rgba(0,0,0,0.4);
+            ">
         </div>
 
         <!-- Counters — recessed instrument windows -->

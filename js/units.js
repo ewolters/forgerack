@@ -1167,6 +1167,22 @@ FR.registerUnit('splitter', {
         this._healthy = false;
     },
 
+    // Called by wiring system when cables connect/disconnect
+    onConnectionChange() {
+        var channels = ['a', 'b', 'c', 'd'];
+        var self = this;
+        channels.forEach(function(ch) {
+            var led = document.getElementById(self.id + '-led-' + ch);
+            var key = self.id + ':' + ch;
+            var hasListener = FR._listeners[key] && FR._listeners[key].length > 0;
+            if (hasListener) {
+                FR.LED(led).set(self._healthy ? 'green' : 'amber');
+            } else {
+                FR.LED(led).off();
+            }
+        });
+    },
+
     receive(inputName, data) {
         this._data = data;
 

@@ -135,6 +135,10 @@ FR.connect = function(sourceUnitId, sourceOutput, targetUnitId, targetInput) {
 
     _renderCables();
 
+    // Notify units about connection changes (for LED updates etc.)
+    _notifyConnectionChange(sourceUnitId);
+    _notifyConnectionChange(targetUnitId);
+
     // Immediately push existing data
     var source = FR.units[sourceUnitId];
     if (source && source.getOutput) {
@@ -150,6 +154,14 @@ FR.connect = function(sourceUnitId, sourceOutput, targetUnitId, targetInput) {
         }
     }
 };
+
+// Notify a unit that its connections changed (for LED updates)
+function _notifyConnectionChange(unitId) {
+    var unit = FR.units[unitId];
+    if (unit && unit.onConnectionChange) {
+        unit.onConnectionChange();
+    }
+}
 
 // ── SVG cable rendering ──
 
@@ -171,13 +183,29 @@ function _ensureSvgLayer() {
 }
 
 function _getJackCenter(jackEl) {
-    const rect = jackEl.getBoundingClientRect();
-    const parent = jackEl.closest('.rack-back, .mainframe-rear, .forge-rack-cables');
-    const pRect = parent ? parent.getBoundingClientRect() : { left: 0, top: 0 };
-    return {
-        x: rect.left - pRect.left + rect.width / 2,
-        y: rect.top - pRect.top + rect.height / 2
-    };
+    // Use offset traversal instead of getBoundingClientRect to be zoom-safe.
+    // Walk up the offset chain until we hit the cable overlay's parent.
+    var svgParent = jackEl.closest('.rack-back, .mainframe-rear');
+    if (!svgParent) {
+        // Fallback to forge-rack-cables parent
+        var overlay = document.querySelector('.forge-rack-cables');
+        svgParent = overlay ? overlay.parentElement : document.body;
+    }
+
+    var x = 0, y = 0;
+    var el = jackEl;
+    // Accumulate offsets up to the SVG parent container
+    while (el && el !== svgParent && el !== document.body) {
+        x += el.offsetLeft;
+        y += el.offsetTop;
+        el = el.offsetParent;
+    }
+
+    // Center of the jack element
+    x += jackEl.offsetWidth / 2;
+    y += jackEl.offsetHeight / 2;
+
+    return { x: x, y: y };
 }
 
 function _bezierPath(x1, y1, x2, y2) {
@@ -580,6 +608,8 @@ FR.disconnect = function(sourceUnitId, sourceOutput, targetUnitId, targetInput) 
         });
     }
     _renderCables();
+    _notifyConnectionChange(sourceUnitId);
+    _notifyConnectionChange(targetUnitId);
 };
 
 FR.disconnectJack = function(jack) {

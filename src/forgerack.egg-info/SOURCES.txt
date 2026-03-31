@@ -18,6 +18,7 @@ src/forgerack/templates/forgerack/units/calc.html
 src/forgerack/templates/forgerack/units/chart-panel.html
 src/forgerack/templates/forgerack/units/clock.html
 src/forgerack/templates/forgerack/units/combinator.html
+src/forgerack/templates/forgerack/units/comparator.html
 src/forgerack/templates/forgerack/units/csv-input.html
 src/forgerack/templates/forgerack/units/filter.html
 src/forgerack/templates/forgerack/units/formula.html

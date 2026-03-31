@@ -88,6 +88,9 @@ FR._cables = cables;
 FR.emit = function(unitId, outputName, data) {
     const key = unitId + ':' + outputName;
     var linkList = listeners[key] || [];
+    if (linkList.length > 0) {
+        console.log('[ForgeRack] emit', key, '→', linkList.length, 'listener(s)');
+    }
 
     // Trigger signal animation on cables from this output
     cables.forEach(function(cable, idx) {

@@ -1163,14 +1163,22 @@ FR.registerUnit('splitter', {
     init(el, id) {
         this.el = el;
         this.id = id;
+        this._data = null;
+        console.log('[MANIFOLD] init:', id);
     },
 
     receive(inputName, data) {
+        console.log('[MANIFOLD]', this.id, 'receive:', inputName, 'data:', data ? 'yes' : 'no');
+        this._data = data;
         // Fan out to all outputs
         FR.emit(this.id, 'a', data);
         FR.emit(this.id, 'b', data);
         FR.emit(this.id, 'c', data);
         FR.emit(this.id, 'd', data);
+    },
+
+    getOutput(channel) {
+        return this._data || null;
     }
 });
 

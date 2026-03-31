@@ -39,14 +39,20 @@
 
 .rack-screw {
     position: absolute; width: 10px; height: 10px;
-    background: radial-gradient(circle at 40% 40%, #3a3f3a, #1a1f1a);
+    background: radial-gradient(circle at 35% 35%, #5a5f5a, #2a2f2a 60%, #1a1f1a);
     border-radius: 50%;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.04);
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.1), inset 0 -1px 2px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.5);
     z-index: 2;
 }
-.rack-screw::after {
+/* Phillips cross — horizontal */
+.rack-screw::before {
     content: ''; position: absolute; top: 4px; left: 2px;
-    width: 6px; height: 1.5px; background: #1a1f1a; border-radius: 1px;
+    width: 6px; height: 1.5px; background: rgba(0,0,0,0.5); border-radius: 0.5px;
+}
+/* Phillips cross — vertical */
+.rack-screw::after {
+    content: ''; position: absolute; top: 2px; left: 4px;
+    width: 1.5px; height: 6px; background: rgba(0,0,0,0.5); border-radius: 0.5px;
 }
 .rack-screw.tl { top: 4px; left: 4px; }
 .rack-screw.tr { top: 4px; right: 4px; }
@@ -84,6 +90,33 @@
 }
 .jack.connected { border-color: var(--device-accent); box-shadow: inset 0 2px 3px rgba(0,0,0,0.6), 0 0 6px var(--device-accent-glow); }
 
+/* ── Patch Jacks (back panel connectors) ── */
+
+.patch-group { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.patch-jack {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: radial-gradient(circle at 40% 38%, #2a2a2a, #0a0a0a);
+    border: 2px solid #333;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.03);
+    cursor: crosshair; transition: all 0.15s;
+}
+.patch-jack:hover {
+    border-color: rgba(74,222,128,0.4);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.7), 0 0 8px rgba(74,222,128,0.15);
+}
+.patch-jack.connected {
+    border-color: #4ade80;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5), 0 0 8px rgba(74,222,128,0.3);
+}
+.patch-jack.pending {
+    border-color: #fbbf24;
+    box-shadow: 0 0 10px rgba(251,191,36,0.3);
+}
+.patch-jack-label {
+    font: 600 9px/1 'Arial', sans-serif; color: rgba(255,255,255,0.12);
+    text-transform: uppercase; letter-spacing: 0.1em;
+}
+
 .jack-bar {
     display: flex; align-items: center; gap: 8px;
     padding: 5px 20px;
@@ -98,15 +131,17 @@
 .dial { display: inline-flex; flex-direction: column; align-items: center; gap: 1px; }
 .dial-knob {
     width: 32px; height: 32px; border-radius: 50%;
-    background: conic-gradient(from 220deg, #2a2f2a 0%, #3a3f3a 20%, #2a2f2a 40%, #1a1f1a 70%, #2a2f2a 100%);
-    border: 2px solid #1a1f1a;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+    background:
+        radial-gradient(circle at 38% 35%, rgba(255,255,255,0.08), transparent 60%),
+        conic-gradient(from 220deg, #333833 0%, #444944 20%, #333833 40%, #1e231e 70%, #333833 100%);
+    border: 2px solid #141814;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.6), 0 1px 2px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
     position: relative; cursor: pointer;
 }
 .dial-knob::after {
-    content: ''; position: absolute; top: 3px; left: 50%; transform: translateX(-50%);
-    width: 2px; height: 7px; background: var(--device-accent); border-radius: 1px;
-    box-shadow: 0 0 4px var(--device-accent-glow);
+    content: ''; position: absolute; top: 2px; left: 50%; transform: translateX(-50%);
+    width: 2px; height: 9px; background: var(--device-accent); border-radius: 1px;
+    box-shadow: 0 0 6px var(--device-accent-glow), 0 0 2px var(--device-accent);
 }
 .dial.sm .dial-knob { width: 24px; height: 24px; }
 .dial.sm .dial-knob::after { height: 5px; top: 2px; }
@@ -153,15 +188,17 @@
 
 .led {
     display: inline-block; width: 8px; height: 8px; border-radius: 50%;
-    background: #1a1f1a; border: 1px solid #2a2f2a;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.5); transition: all 0.15s;
+    background: radial-gradient(circle at 40% 35%, #2a302a, #0e120e);
+    border: 1px solid #1a1f1a;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.02);
+    transition: all 0.15s;
 }
 .led.lg { width: 10px; height: 10px; }
-.led.on-green  { background: var(--status-green); box-shadow: 0 0 6px var(--status-green); }
-.led.on-amber  { background: var(--status-amber); box-shadow: 0 0 6px var(--status-amber); }
-.led.on-red    { background: var(--status-red);   box-shadow: 0 0 6px var(--status-red); }
-.led.on-blue   { background: var(--status-blue);  box-shadow: 0 0 6px var(--status-blue); }
-.led.on-accent { background: var(--device-accent); box-shadow: 0 0 6px var(--device-accent); }
+.led.on-green  { background: radial-gradient(circle at 40% 35%, #6ef59e, #18a34a); box-shadow: 0 0 6px rgba(34,197,94,0.6), 0 0 14px rgba(34,197,94,0.2); }
+.led.on-amber  { background: radial-gradient(circle at 40% 35%, #fcd34d, #b45309); box-shadow: 0 0 6px rgba(245,158,11,0.6), 0 0 14px rgba(245,158,11,0.2); }
+.led.on-red    { background: radial-gradient(circle at 40% 35%, #fca5a5, #b91c1c); box-shadow: 0 0 6px rgba(239,68,68,0.6), 0 0 14px rgba(239,68,68,0.2); }
+.led.on-blue   { background: radial-gradient(circle at 40% 35%, #93c5fd, #1d4ed8); box-shadow: 0 0 6px rgba(96,165,250,0.6), 0 0 14px rgba(96,165,250,0.2); }
+.led.on-accent { background: radial-gradient(circle at 40% 35%, color-mix(in srgb, var(--device-accent), white 40%), var(--device-accent)); box-shadow: 0 0 6px var(--device-accent), 0 0 14px color-mix(in srgb, var(--device-accent), transparent 70%); }
 
 .led-bank { display: flex; gap: 3px; align-items: center; }
 .led-bank-labels { display: flex; gap: 3px; font-size: 8px; color: var(--text-label); }
@@ -231,8 +268,12 @@
     border: none; border-right: 1px solid rgba(0,0,0,0.3); cursor: pointer; transition: all 0.1s;
 }
 .segment-btn:last-child { border-right: none; }
-.segment-btn:hover { background: rgba(0,0,0,0.3); }
-.segment-btn.active { background: var(--device-accent-dim); color: var(--device-accent); }
+.segment-btn:hover { background: rgba(255,255,255,0.04); }
+.segment-btn.active {
+    background: var(--device-accent-dim); color: var(--device-accent);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    text-shadow: 0 0 6px var(--device-accent-glow);
+}
 
 
 /* ── Chart Viewport ── */
@@ -286,6 +327,9 @@
     margin: 0;
     border: none;
     border-radius: 0;
+    /* Panel bevel — physical thickness */
+    border-top: 1px solid rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(0,0,0,0.4);
     /* backface-visibility intentionally NOT set here —
        the rack template controls this per-context */
 }
@@ -295,6 +339,8 @@
     margin: 0;
     border: none;
     border-radius: 0;
+    border-top: 1px solid rgba(255,255,255,0.03);
+    border-bottom: 1px solid rgba(0,0,0,0.3);
 }
 
 /* U-height classes — snap to 42px grid */

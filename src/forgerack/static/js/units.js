@@ -213,6 +213,10 @@ FR.registerUnit('chart-panel', {
         }
         _updateColorLEDs();
 
+        // Text color pickers
+        var colorTitleText = document.getElementById(id + '-color-title');
+        var colorAxisText = document.getElementById(id + '-color-axis-text');
+
         function _applyColors() {
             if (!self._spec) return;
             // Trace color → all traces
@@ -222,7 +226,7 @@ FR.registerUnit('chart-panel', {
                     if (typeof t === 'object') t.color = tc;
                 });
             }
-            // Background, grid, axis via style overrides
+            // Background, grid, axis, text colors via style overrides
             if (!self._spec._styleOverrides) self._spec._styleOverrides = {};
             if (colorBg) {
                 self._spec._styleOverrides.bg = colorBg.value;
@@ -230,12 +234,14 @@ FR.registerUnit('chart-panel', {
             }
             if (colorGrid) self._spec._styleOverrides.grid = colorGrid.value;
             if (colorAxis) self._spec._styleOverrides.axis = colorAxis.value;
+            if (colorTitleText) self._spec._styleOverrides.text = colorTitleText.value;
+            if (colorAxisText) self._spec._styleOverrides.textSecondary = colorAxisText.value;
 
             // Re-render
             if (viewport) self._renderSpec(viewport, self._spec);
         }
 
-        [colorTrace, colorBg, colorGrid, colorAxis].forEach(function(inp) {
+        [colorTrace, colorBg, colorGrid, colorAxis, colorTitleText, colorAxisText].forEach(function(inp) {
             if (inp) inp.addEventListener('input', _applyColors);
         });
 

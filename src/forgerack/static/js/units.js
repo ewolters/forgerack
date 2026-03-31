@@ -1523,11 +1523,12 @@ FR.registerUnit('triage', {
         if (outEl) outEl.textContent = issues.outliers || 0;
         if (typeEl) typeEl.textContent = issues.types || 0;
 
-        // Color the counts
-        if (errEl) errEl.style.color = issues.errors > 0 ? '#ef4444' : 'rgba(220,210,180,0.2)';
-        if (missEl) missEl.style.color = issues.missing > 0 ? '#f59e0b' : 'rgba(220,210,180,0.2)';
-        if (outEl) outEl.style.color = issues.outliers > 0 ? '#60a5fa' : 'rgba(220,210,180,0.2)';
-        if (typeEl) typeEl.style.color = issues.types > 0 ? '#a855f7' : 'rgba(220,210,180,0.2)';
+        // Color the counts — dark segments on LCD, slightly tinted when issues found
+        var dark = '#0a1208';
+        if (errEl) errEl.style.color = issues.errors > 0 ? '#3a0808' : dark;
+        if (missEl) missEl.style.color = issues.missing > 0 ? '#2a1a05' : dark;
+        if (outEl) outEl.style.color = issues.outliers > 0 ? '#0a1a30' : dark;
+        if (typeEl) typeEl.style.color = issues.types > 0 ? '#1a0a28' : dark;
 
         // LEDs
         FR.LED(document.getElementById(id + '-led-err')).set(issues.errors > 0 ? 'red' : false);

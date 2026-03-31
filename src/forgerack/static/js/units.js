@@ -506,86 +506,66 @@ FR.registerUnit('filter', {
     init(el, id) {
         this.el = el;
         this.id = id;
-        this.mode = '>';  // >, <, =, ≠
-        this.threshold = 0;
-        this._inputData = null;   // raw incoming data (array or {data, columns})
-        this._filterCol = '';     // which column to filter on
-        this._isColumnar = false;
+        this._inputData = null;
+        this._filters = [];       // [{col, mode, value}]
+        this._currentMode = '>';
 
         var self = this;
 
-        // Wire up mode segment buttons
-        var btns = el.querySelectorAll('.segment-btn');
-        var modes = ['>', '<', '=', '≠'];
-        btns.forEach(function(btn, i) {
+        // Mode selector
+        el.querySelectorAll('[data-sieve-mode]').forEach(function(btn) {
             btn.addEventListener('click', function() {
-                btns.forEach(function(b) { b.classList.remove('active'); });
+                el.querySelectorAll('[data-sieve-mode]').forEach(function(b) { b.classList.remove('active'); });
                 btn.classList.add('active');
-                self.mode = modes[i];
-                self._apply();
+                self._currentMode = btn.dataset.sieveMode;
             });
         });
 
-        // Threshold input
-        var threshInput = document.getElementById(id + '-threshold');
-        if (threshInput) {
-            threshInput.addEventListener('change', function() {
-                self.threshold = parseFloat(threshInput.value) || 0;
-                self._apply();
-            });
-        }
+        // Add filter button
+        var addBtn = document.getElementById(id + '-btn-add');
+        if (addBtn) addBtn.addEventListener('click', function() { self._addFilter(); });
 
-        // Column selector
-        var colSelect = document.getElementById(id + '-col-select');
-        if (colSelect) {
-            colSelect.addEventListener('change', function() {
-                self._filterCol = colSelect.value;
-                self._apply();
-            });
-        }
+        // Clear all button
+        var clearBtn = document.getElementById(id + '-btn-clear');
+        if (clearBtn) clearBtn.addEventListener('click', function() {
+            self._filters = [];
+            self._renderFilterList();
+            self._apply();
+        });
+
+        // Enter key on threshold adds filter
+        var threshInput = document.getElementById(id + '-threshold');
+        if (threshInput) threshInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') self._addFilter();
+        });
     },
 
     receive(inputName, data) {
         if (!data) return;
-        this._inputData = data;
 
-        // Detect format
+        // Accept both columnar {data, columns} and plain arrays
         if (data.data && data.columns) {
-            this._isColumnar = true;
-            // Populate column selector
-            var colSelect = document.getElementById(this.id + '-col-select');
-            if (colSelect) {
-                var current = colSelect.value;
-                colSelect.innerHTML = '<option value="">—</option>';
-                data.columns.forEach(function(c) {
-                    var opt = document.createElement('option');
-                    opt.value = c; opt.textContent = c;
-                    colSelect.appendChild(opt);
-                });
-                // Auto-select first numeric column
-                if (!current) {
-                    for (var i = 0; i < data.columns.length; i++) {
-                        var col = data.columns[i];
-                        var vals = data.data[col] || [];
-                        var hasNum = vals.some(function(v) { return typeof v === 'number'; });
-                        if (hasNum) { colSelect.value = col; this._filterCol = col; break; }
-                    }
-                } else {
-                    colSelect.value = current;
-                    this._filterCol = current;
-                }
-            }
+            this._inputData = data;
         } else if (Array.isArray(data)) {
-            this._isColumnar = false;
+            // Wrap plain array into columnar format
+            this._inputData = { data: { value: data }, columns: ['value'] };
+        } else {
+            return;
         }
 
-        this._apply();
-    },
+        // Populate column selector
+        var colSelect = document.getElementById(this.id + '-col-select');
+        if (colSelect) {
+            var prev = colSelect.value;
+            colSelect.innerHTML = '';
+            this._inputData.columns.forEach(function(c) {
+                var opt = document.createElement('option');
+                opt.value = c; opt.textContent = c;
+                colSelect.appendChild(opt);
+            });
+            if (prev && this._inputData.columns.indexOf(prev) !== -1) colSelect.value = prev;
+        }
 
-    setThreshold(v) {
-        this.threshold = v;
-        var threshInput = document.getElementById(this.id + '-threshold');
-        if (threshInput) threshInput.value = v;
         this._apply();
     },
 
@@ -595,87 +575,154 @@ FR.registerUnit('filter', {
         return null;
     },
 
-    _test(v) {
-        var t = this.threshold;
-        if (typeof v !== 'number') return true; // non-numeric pass through
-        if (this.mode === '>') return v > t;
-        if (this.mode === '<') return v < t;
-        if (this.mode === '=') return Math.abs(v - t) < 0.001;
-        return Math.abs(v - t) >= 0.001; // ≠
+    _addFilter() {
+        var colSelect = document.getElementById(this.id + '-col-select');
+        var threshInput = document.getElementById(this.id + '-threshold');
+        if (!colSelect || !threshInput) return;
+
+        var col = colSelect.value;
+        if (!col) return;
+
+        var rawValue = threshInput.value.trim();
+        // Store as number if possible, string otherwise (for factor columns)
+        var numVal = Number(rawValue);
+        var value = (rawValue !== '' && !isNaN(numVal)) ? numVal : rawValue;
+
+        this._filters.push({ col: col, mode: this._currentMode, value: value });
+        this._renderFilterList();
+        this._apply();
+    },
+
+    _removeFilter(index) {
+        this._filters.splice(index, 1);
+        this._renderFilterList();
+        this._apply();
+    },
+
+    _renderFilterList() {
+        var listEl = document.getElementById(this.id + '-filter-list');
+        var countEl = document.getElementById(this.id + '-filter-count');
+        if (!listEl) return;
+
+        if (this._filters.length === 0) {
+            listEl.innerHTML = '<span style="color:rgba(34,211,238,0.1);">no filters \u2014 all rows pass</span>';
+            if (countEl) countEl.textContent = '0';
+            return;
+        }
+
+        if (countEl) countEl.textContent = this._filters.length;
+
+        var self = this;
+        listEl.innerHTML = '';
+        this._filters.forEach(function(f, i) {
+            var line = document.createElement('div');
+            line.style.cssText = 'display:flex;align-items:center;gap:6px;cursor:pointer;padding:1px 0;';
+            line.title = 'Click to remove';
+
+            var modeSymbol = f.mode;
+            var valueDisplay = typeof f.value === 'string' ? '"' + f.value + '"' : f.value;
+
+            line.innerHTML =
+                '<span style="color:rgba(34,211,238,0.5);font-weight:700;">' + f.col + '</span>' +
+                '<span style="color:rgba(255,255,255,0.2);">' + modeSymbol + '</span>' +
+                '<span style="color:rgba(34,211,238,0.4);">' + valueDisplay + '</span>' +
+                '<span style="color:rgba(239,68,68,0.2);font-size:9px;margin-left:auto;">\u00d7</span>';
+
+            line.addEventListener('click', function() { self._removeFilter(i); });
+            listEl.appendChild(line);
+        });
+    },
+
+    _testRow(rowIndex) {
+        // All filters must pass (AND logic)
+        var data = this._inputData.data;
+        for (var fi = 0; fi < this._filters.length; fi++) {
+            var f = this._filters[fi];
+            var v = data[f.col] ? data[f.col][rowIndex] : null;
+            var t = f.value;
+
+            // Handle null/undefined
+            if (v === null || v === undefined || v === '') {
+                if (f.mode === '=' && (t === '' || t === null)) continue; // null = null
+                if (f.mode === '\u2260') continue; // null ≠ anything passes
+                return false; // null fails >, <, = non-null
+            }
+
+            var isNumeric = typeof v === 'number' && typeof t === 'number';
+
+            if (f.mode === '>') {
+                if (!isNumeric || !(v > t)) return false;
+            } else if (f.mode === '<') {
+                if (!isNumeric || !(v < t)) return false;
+            } else if (f.mode === '=') {
+                if (isNumeric) {
+                    if (Math.abs(v - t) >= 0.001) return false;
+                } else {
+                    // String equality — case-insensitive
+                    if (String(v).toLowerCase() !== String(t).toLowerCase()) return false;
+                }
+            } else { // ≠
+                if (isNumeric) {
+                    if (Math.abs(v - t) < 0.001) return false;
+                } else {
+                    if (String(v).toLowerCase() === String(t).toLowerCase()) return false;
+                }
+            }
+        }
+        return true;
     },
 
     _apply() {
-        if (!this._inputData) return;
-        var self = this;
+        if (!this._inputData || !this._inputData.columns) return;
 
-        if (this._isColumnar && this._inputData.data && this._inputData.columns) {
-            // Columnar data — filter rows based on selected column
-            var cols = this._inputData.columns;
-            var data = this._inputData.data;
-            var filterCol = this._filterCol;
+        var cols = this._inputData.columns;
+        var data = this._inputData.data;
+        var rowCount = cols.length > 0 ? (data[cols[0]] || []).length : 0;
 
-            if (!filterCol || !data[filterCol]) {
-                // No column selected — pass everything
-                this._lastPass = this._inputData;
-                this._lastReject = { data: {}, columns: cols };
-                this._updateCounts(this._countRows(this._inputData), 0);
-                FR.emit(this.id, 'pass', this._inputData);
-                return;
-            }
-
-            var filterVals = data[filterCol];
-            var passIdx = [], rejectIdx = [];
-
-            for (var i = 0; i < filterVals.length; i++) {
-                if (self._test(filterVals[i])) {
-                    passIdx.push(i);
-                } else {
-                    rejectIdx.push(i);
-                }
-            }
-
-            // Build pass/reject datasets with ALL columns
-            var passData = {}, rejectData = {};
-            cols.forEach(function(c) {
-                var arr = data[c] || [];
-                passData[c] = passIdx.map(function(i) { return arr[i]; });
-                rejectData[c] = rejectIdx.map(function(i) { return arr[i]; });
-            });
-
-            this._lastPass = { data: passData, columns: cols };
-            this._lastReject = { data: rejectData, columns: cols };
-
-            this._updateCounts(passIdx.length, rejectIdx.length);
-            FR.emit(this.id, 'pass', this._lastPass);
-            FR.emit(this.id, 'reject', this._lastReject);
-
-        } else if (Array.isArray(this._inputData)) {
-            // Simple array — original behavior
-            var pass = [], reject = [];
-            this._inputData.forEach(function(v) {
-                if (self._test(v)) pass.push(v); else reject.push(v);
-            });
-
-            this._lastPass = pass;
-            this._lastReject = reject;
-
-            this._updateCounts(pass.length, reject.length);
-            FR.emit(this.id, 'pass', pass);
-            FR.emit(this.id, 'reject', reject);
+        if (this._filters.length === 0) {
+            // No filters — pass everything
+            this._lastPass = this._inputData;
+            this._lastReject = { data: {}, columns: cols };
+            this._updateDisplay(rowCount, rowCount, 0);
+            FR.emit(this.id, 'pass', this._inputData);
+            FR.LED(document.getElementById(this.id + '-led')).set('green');
+            return;
         }
+
+        var passIdx = [], rejectIdx = [];
+        for (var i = 0; i < rowCount; i++) {
+            if (this._testRow(i)) passIdx.push(i);
+            else rejectIdx.push(i);
+        }
+
+        var passData = {}, rejectData = {};
+        cols.forEach(function(c) {
+            var arr = data[c] || [];
+            passData[c] = passIdx.map(function(i) { return arr[i]; });
+            rejectData[c] = rejectIdx.map(function(i) { return arr[i]; });
+        });
+
+        this._lastPass = { data: passData, columns: cols };
+        this._lastReject = { data: rejectData, columns: cols };
+
+        this._updateDisplay(passIdx.length, passIdx.length, rejectIdx.length);
+        FR.emit(this.id, 'pass', this._lastPass);
+        FR.emit(this.id, 'reject', this._lastReject);
+        FR.LED(document.getElementById(this.id + '-led')).set(rejectIdx.length > 0 ? 'amber' : 'green');
     },
 
-    _countRows(data) {
-        if (!data || !data.columns || !data.columns.length) return 0;
-        return (data.data[data.columns[0]] || []).length;
-    },
-
-    _updateCounts(passCount, rejectCount) {
+    _updateDisplay(rowsOut, passCount, rejectCount) {
+        var rowsEl = document.getElementById(this.id + '-rows-out');
         var passEl = document.getElementById(this.id + '-pass');
         var rejectEl = document.getElementById(this.id + '-reject');
+
+        if (rowsEl) {
+            rowsEl.textContent = rowsOut;
+            rowsEl.style.color = 'rgba(34,211,238,0.6)';
+            rowsEl.style.textShadow = '0 0 10px rgba(34,211,238,0.2)';
+        }
         if (passEl) passEl.textContent = passCount;
         if (rejectEl) rejectEl.textContent = rejectCount;
-        FR.LED(document.getElementById(this.id + '-led')).set(rejectCount > 0 ? 'amber' : 'green');
     }
 });
 

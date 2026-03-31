@@ -944,10 +944,7 @@ FR.registerUnit('readout', {
             if (vEl) {
                 var v = item.value;
                 if (typeof v === 'number') {
-                    // Smart formatting: small numbers get more decimals
-                    vEl.textContent = Math.abs(v) < 0.01 ? v.toExponential(1) :
-                        Math.abs(v) < 10 ? v.toFixed(3) :
-                        Math.abs(v) < 1000 ? v.toFixed(2) : v.toFixed(1);
+                    vEl.textContent = v.toFixed(2);
                 } else {
                     vEl.textContent = String(v);
                 }

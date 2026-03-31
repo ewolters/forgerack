@@ -120,67 +120,69 @@
             </div>
         </div>
 
-        <!-- ── RIGHT: Digital clock readouts ── -->
+        <!-- ── RIGHT: LCD counter displays ── -->
         <div style="width:90px;display:flex;flex-direction:column;gap:5px;">
-            <!-- Rows remaining — big LCD -->
+            <!-- Rows remaining -->
             <div style="
-                background:#020404;border:1px solid rgba(0,0,0,0.7);border-radius:2px;
-                box-shadow:inset 0 2px 6px rgba(0,0,0,0.7);
-                padding:6px 4px 4px;text-align:center;
+                background:linear-gradient(180deg, #081210, #041008);
+                border:1px solid rgba(0,0,0,0.8);border-radius:2px;
+                box-shadow:inset 0 2px 6px rgba(0,0,0,0.8), inset 0 0 12px rgba(0,0,0,0.3);
+                padding:8px 6px 5px;text-align:center;
             ">
-                <div style="position:relative;">
-                    <div style="font:italic 700 36px/1 'Courier New',monospace;color:rgba(34,211,238,0.04);letter-spacing:0.05em;">8888</div>
-                    <div id="${id}-rows-out" style="font:italic 700 36px/1 'Courier New',monospace;color:rgba(34,211,238,0.2);
-                        letter-spacing:0.05em;position:absolute;inset:0;">—</div>
-                </div>
-                <div style="font:600 9px/1 'Arial',sans-serif;color:rgba(34,211,238,0.3);
-                    text-transform:uppercase;letter-spacing:0.15em;margin-top:3px;">Rows</div>
+                <div id="${id}-rows-out" style="
+                    font:700 34px/1 'JetBrains Mono',monospace;
+                    color:#22d3ee;letter-spacing:0.08em;
+                    text-shadow:0 0 12px rgba(34,211,238,0.5), 0 0 4px rgba(34,211,238,0.3);
+                ">—</div>
+                <div style="font:600 9px/1 'Arial',sans-serif;color:rgba(34,211,238,0.4);
+                    text-transform:uppercase;letter-spacing:0.15em;margin-top:4px;">Rows</div>
             </div>
 
-            <!-- Pass — LCD -->
+            <!-- Pass -->
             <div style="
-                background:#020404;border:1px solid rgba(0,0,0,0.7);border-radius:2px;
-                box-shadow:inset 0 2px 6px rgba(0,0,0,0.7);
-                padding:4px 4px 3px;text-align:center;
+                background:linear-gradient(180deg, #061208, #030e04);
+                border:1px solid rgba(0,0,0,0.8);border-radius:2px;
+                box-shadow:inset 0 2px 6px rgba(0,0,0,0.8), inset 0 0 12px rgba(0,0,0,0.3);
+                padding:5px 6px 4px;text-align:center;
             ">
-                <div style="position:relative;">
-                    <div style="font:italic 700 26px/1 'Courier New',monospace;color:rgba(74,222,128,0.04);letter-spacing:0.05em;">8888</div>
-                    <div id="${id}-pass" style="font:italic 700 26px/1 'Courier New',monospace;color:#4ade80;
-                        text-shadow:0 0 10px rgba(74,222,128,0.4);letter-spacing:0.05em;
-                        position:absolute;inset:0;">—</div>
-                </div>
+                <div id="${id}-pass" style="
+                    font:700 26px/1 'JetBrains Mono',monospace;
+                    color:#4ade80;letter-spacing:0.08em;
+                    text-shadow:0 0 12px rgba(74,222,128,0.5), 0 0 4px rgba(74,222,128,0.3);
+                ">—</div>
                 <div style="font:600 9px/1 'Arial',sans-serif;color:rgba(74,222,128,0.5);
-                    text-transform:uppercase;letter-spacing:0.15em;margin-top:2px;">Pass</div>
+                    text-transform:uppercase;letter-spacing:0.15em;margin-top:3px;">Pass</div>
             </div>
 
-            <!-- Reject — LCD -->
+            <!-- Reject -->
             <div style="
-                background:#020404;border:1px solid rgba(0,0,0,0.7);border-radius:2px;
-                box-shadow:inset 0 2px 6px rgba(0,0,0,0.7);
-                padding:4px 4px 3px;text-align:center;
+                background:linear-gradient(180deg, #120606, #0e0303);
+                border:1px solid rgba(0,0,0,0.8);border-radius:2px;
+                box-shadow:inset 0 2px 6px rgba(0,0,0,0.8), inset 0 0 12px rgba(0,0,0,0.3);
+                padding:5px 6px 4px;text-align:center;
             ">
-                <div style="position:relative;">
-                    <div style="font:italic 700 26px/1 'Courier New',monospace;color:rgba(248,113,113,0.04);letter-spacing:0.05em;">8888</div>
-                    <div id="${id}-reject" style="font:italic 700 26px/1 'Courier New',monospace;color:#f87171;
-                        text-shadow:0 0 10px rgba(248,113,113,0.4);letter-spacing:0.05em;
-                        position:absolute;inset:0;">—</div>
-                </div>
+                <div id="${id}-reject" style="
+                    font:700 26px/1 'JetBrains Mono',monospace;
+                    color:#f87171;letter-spacing:0.08em;
+                    text-shadow:0 0 12px rgba(248,113,113,0.5), 0 0 4px rgba(248,113,113,0.3);
+                ">—</div>
                 <div style="font:600 9px/1 'Arial',sans-serif;color:rgba(248,113,113,0.5);
-                    text-transform:uppercase;letter-spacing:0.15em;margin-top:2px;">Reject</div>
+                    text-transform:uppercase;letter-spacing:0.15em;margin-top:3px;">Reject</div>
             </div>
 
-            <!-- Filter count — small LCD -->
+            <!-- Filter count -->
             <div style="
-                background:#020404;border:1px solid rgba(0,0,0,0.7);border-radius:2px;
-                box-shadow:inset 0 1px 4px rgba(0,0,0,0.6);
-                padding:3px 4px 2px;text-align:center;margin-top:auto;
+                background:linear-gradient(180deg, #081210, #041008);
+                border:1px solid rgba(0,0,0,0.8);border-radius:2px;
+                box-shadow:inset 0 1px 4px rgba(0,0,0,0.7);
+                padding:4px 6px 3px;text-align:center;margin-top:auto;
             ">
-                <div style="position:relative;">
-                    <div style="font:italic 700 20px/1 'Courier New',monospace;color:rgba(34,211,238,0.04);letter-spacing:0.05em;">88</div>
-                    <div id="${id}-filter-count" style="font:italic 700 20px/1 'Courier New',monospace;color:rgba(34,211,238,0.3);
-                        letter-spacing:0.05em;position:absolute;inset:0;">0</div>
-                </div>
-                <div style="font:600 8px/1 'Arial',sans-serif;color:rgba(34,211,238,0.2);
+                <div id="${id}-filter-count" style="
+                    font:700 20px/1 'JetBrains Mono',monospace;
+                    color:rgba(34,211,238,0.5);letter-spacing:0.08em;
+                    text-shadow:0 0 8px rgba(34,211,238,0.3);
+                ">0</div>
+                <div style="font:600 8px/1 'Arial',sans-serif;color:rgba(34,211,238,0.25);
                     text-transform:uppercase;letter-spacing:0.12em;margin-top:2px;">Filters</div>
             </div>
         </div>

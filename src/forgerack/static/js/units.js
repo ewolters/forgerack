@@ -783,8 +783,6 @@ FR.registerUnit('filter', {
 
         if (rowsEl) {
             rowsEl.textContent = rowsOut;
-            rowsEl.style.color = 'rgba(34,211,238,0.6)';
-            rowsEl.style.textShadow = '0 0 10px rgba(34,211,238,0.2)';
         }
         if (passEl) passEl.textContent = passCount;
         if (rejectEl) rejectEl.textContent = rejectCount;

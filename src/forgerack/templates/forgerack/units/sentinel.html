@@ -11,27 +11,20 @@
 <!-- ════════ FRONT PANEL ════════ -->
 <div class="rack-unit-front u8 mfr-guardian chamfer-heavy" data-unit="sentinel" data-id="${id}" style="
     --device-accent:#d97706;
-    background:
-        /* Hammertone wrinkle-paint — irregular bumpy dots */
-        radial-gradient(circle 3px at 8% 15%, rgba(255,255,255,0.07), transparent),
-        radial-gradient(circle 4px at 25% 55%, rgba(0,0,0,0.1), transparent),
-        radial-gradient(circle 3px at 48% 12%, rgba(255,255,255,0.05), transparent),
-        radial-gradient(circle 3px at 65% 65%, rgba(0,0,0,0.08), transparent),
-        radial-gradient(circle 4px at 82% 30%, rgba(255,255,255,0.06), transparent),
-        radial-gradient(circle 3px at 15% 80%, rgba(0,0,0,0.07), transparent),
-        radial-gradient(circle 3px at 40% 40%, rgba(255,255,255,0.04), transparent),
-        radial-gradient(circle 4px at 92% 85%, rgba(0,0,0,0.09), transparent),
-        radial-gradient(circle 3px at 55% 90%, rgba(255,255,255,0.05), transparent),
-        radial-gradient(circle 3px at 75% 8%, rgba(0,0,0,0.06), transparent),
-        linear-gradient(160deg, #0e1118 0%, #0c0f16 30%, #0d1017 50%, #0a0d14 80%);
+    background: linear-gradient(160deg, #0e1118 0%, #0c0f16 30%, #0d1017 50%, #0a0d14 80%);
     overflow:hidden;
 ">
-    <!-- Nameplate -->
+    <!-- Nameplate — hammertone wrinkle-paint -->
     <div style="
         display:flex;align-items:center;gap:8px;
         padding:4px 48px;
         border-bottom:2px solid rgba(0,0,0,0.4);
-        background: linear-gradient(180deg, rgba(217,119,6,0.008), rgba(0,0,0,0.12));
+        background:
+            radial-gradient(circle 3px at 10% 30%, rgba(255,255,255,0.05), transparent),
+            radial-gradient(circle 4px at 35% 70%, rgba(0,0,0,0.06), transparent),
+            radial-gradient(circle 3px at 60% 20%, rgba(255,255,255,0.04), transparent),
+            radial-gradient(circle 3px at 85% 60%, rgba(0,0,0,0.05), transparent),
+            linear-gradient(180deg, rgba(217,119,6,0.008), rgba(0,0,0,0.12));
     ">
         <div class="led-housing">
             <span class="led lg" id="${id}-led-power"></span>

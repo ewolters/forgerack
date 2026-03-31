@@ -10,23 +10,19 @@
 
 <div class="rack-unit-front u5 mfr-keysight" data-unit="filter" data-id="${id}" style="
     --device-accent:#22d3ee;
-    background:
-        /* Anodized micro-sparkle */
-        radial-gradient(circle 1.5px at 12% 20%, rgba(34,211,238,0.06), transparent),
-        radial-gradient(circle 1.5px at 38% 60%, rgba(34,211,238,0.04), transparent),
-        radial-gradient(circle 1.5px at 65% 15%, rgba(34,211,238,0.05), transparent),
-        radial-gradient(circle 1.5px at 85% 50%, rgba(34,211,238,0.06), transparent),
-        radial-gradient(circle 1.5px at 50% 85%, rgba(34,211,238,0.04), transparent),
-        radial-gradient(circle 1.5px at 22% 75%, rgba(34,211,238,0.05), transparent),
-        linear-gradient(160deg, #0d1314 0%, #0b1011 30%, #0c1112 50%, #0a0f10 80%);
+    background: linear-gradient(160deg, #0d1314 0%, #0b1011 30%, #0c1112 50%, #0a0f10 80%);
     overflow:hidden;
 ">
-    <!-- Nameplate -->
+    <!-- Nameplate — anodized micro-sparkle -->
     <div style="
         display:flex;align-items:center;gap:8px;
         padding:4px 48px;
         border-bottom:2px solid rgba(0,0,0,0.3);
-        background: linear-gradient(180deg, rgba(34,211,238,0.008), rgba(0,0,0,0.1));
+        background:
+            radial-gradient(circle 1.5px at 15% 35%, rgba(34,211,238,0.05), transparent),
+            radial-gradient(circle 1.5px at 55% 65%, rgba(34,211,238,0.04), transparent),
+            radial-gradient(circle 1.5px at 85% 25%, rgba(34,211,238,0.05), transparent),
+            linear-gradient(180deg, rgba(34,211,238,0.008), rgba(0,0,0,0.1));
     ">
         <div class="led-housing">
             <span class="led" id="${id}-led" style="width:6px;height:6px;"></span>

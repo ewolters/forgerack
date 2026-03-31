@@ -7,7 +7,7 @@
  ╚══════════════════════════════════════════════════════════════╝
 -->
 
-<div class="rack-unit-front u3 mfr-milspec" data-unit="combinator" data-id="${id}" style="
+<div class="rack-unit-front u3 mfr-milspec wear-scratched" data-unit="combinator" data-id="${id}" style="
     --device-accent:#78716c;
     background:
         repeating-linear-gradient(45deg, rgba(255,255,255,0.003) 0px, transparent 1px, transparent 3px),
@@ -34,14 +34,9 @@
             letter-spacing:0.12em;text-transform:uppercase;
         ">Crate</span>
         <span id="${id}-name" style="font:400 11px/1 'Courier New',monospace;color:rgba(120,113,108,0.2);">untitled</span>
-        <button onclick="ForgeRack.units['${id}']&&ForgeRack.units['${id}'].toggle()" style="
-            margin-left:auto;
-            background:linear-gradient(180deg, rgba(120,113,108,0.1), rgba(120,113,108,0.04));
-            border:1px solid rgba(120,113,108,0.12);color:rgba(120,113,108,0.35);
-            font:800 10px/1 'Arial',sans-serif;padding:4px 10px;border-radius:1px;cursor:pointer;
-            text-transform:uppercase;letter-spacing:0.1em;
-            box-shadow:0 2px 3px rgba(0,0,0,0.4);
-        " id="${id}-toggleBtn">&#x25BC; Open</button>
+        <button onclick="ForgeRack.units['${id}']&&ForgeRack.units['${id}'].toggle()"
+            class="btn-tactical" style="margin-left:auto;"
+            id="${id}-toggleBtn">&#x25BC; Open</button>
         <span style="font:500 10px/1 'Courier New',monospace;color:rgba(200,180,140,0.15);">CM-01</span>
     </div>
 

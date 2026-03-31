@@ -203,23 +203,8 @@
 
             <!-- Action buttons -->
             <div style="margin-top:auto;display:flex;flex-direction:column;gap:4px;">
-                <button id="${id}-btn-clean" style="
-                    width:100%;padding:6px 0;
-                    font:800 9px/1 'Arial',sans-serif;text-transform:uppercase;letter-spacing:0.12em;
-                    background:linear-gradient(180deg, rgba(34,197,94,0.2), rgba(34,197,94,0.08));
-                    border:1px solid rgba(34,197,94,0.25);color:rgba(34,197,94,0.7);
-                    border-radius:1px;cursor:pointer;
-                    box-shadow:0 2px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.03);
-                    transition:transform 0.05s;
-                " onmousedown="this.style.transform='translateY(1px)'" onmouseup="this.style.transform=''">&#x25B6; Clean</button>
-
-                <button id="${id}-btn-pass" style="
-                    width:100%;padding:4px 0;
-                    font:600 8px/1 'Arial',sans-serif;text-transform:uppercase;letter-spacing:0.1em;
-                    background:transparent;
-                    border:1px solid rgba(220,210,180,0.1);color:rgba(220,210,180,0.3);
-                    border-radius:1px;cursor:pointer;
-                ">Pass Through</button>
+                <button id="${id}-btn-clean" class="btn-action" style="width:100%;padding:6px 0;">&#x25B6; Clean</button>
+                <button id="${id}-btn-pass" class="btn-flush" style="width:100%;padding:4px 0;">Pass Through</button>
             </div>
 
             <!-- Row counters -->
@@ -246,9 +231,8 @@
     overflow:hidden;
 ">
     <div style="display:flex;align-items:center;gap:8px;padding:5px 48px;border-bottom:1px solid rgba(255,255,255,0.05);">
-        <span style="font:700 11px/1 'Helvetica Neue',sans-serif;color:rgba(255,255,255,0.1);letter-spacing:0.12em;text-transform:uppercase;">Triage</span>
-        <span style="font:400 11px/1 'Courier New',monospace;color:rgba(255,255,255,0.06);">TR-200</span>
-        <span style="font:400 6px/1 'Courier New',monospace;color:rgba(255,255,255,0.04);margin-left:auto;">S/N ${id}</span>
+        <div class="nameplate">Triage TR-200</div>
+        <span class="serial-tag" style="margin-left:auto;">S/N ${id}</span>
     </div>
     <div style="padding:10px 48px;">
         <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(255,255,255,0.07);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:10px;">Signal</div>

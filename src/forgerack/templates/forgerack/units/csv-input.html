@@ -9,7 +9,7 @@
 -->
 
 <!-- ════════ FRONT PANEL ════════ -->
-<div class="rack-unit-front u4 mfr-steelwerk" data-unit="csv-input" data-id="${id}" style="
+<div class="rack-unit-front u4 mfr-steelwerk wear-scratched" data-unit="csv-input" data-id="${id}" style="
     --device-accent:#9ca3af;
     background:
         /* Brushed steel grain — vertical */
@@ -159,27 +159,13 @@
                     text-transform:uppercase;letter-spacing:0.25em;margin-top:2px;">Rows</div>
             </div>
 
-            <!-- Parse button — industrial momentary -->
-            <button onclick="ForgeRack.units['${id}']&&ForgeRack.units['${id}'].parse()" style="
-                width:100%;padding:5px 0;
-                font:800 7px/1 'Arial',sans-serif;text-transform:uppercase;letter-spacing:0.15em;
-                background:linear-gradient(180deg, rgba(156,163,175,0.12), rgba(156,163,175,0.04));
-                border:1px solid rgba(156,163,175,0.15);
-                color:#9ca3af;border-radius:1px;cursor:pointer;
-                box-shadow: 0 2px 3px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03);
-                transition: transform 0.05s, box-shadow 0.05s;
-            " onmousedown="this.style.transform='translateY(1px)';this.style.boxShadow='0 1px 1px rgba(0,0,0,0.4)'"
-               onmouseup="this.style.transform='';this.style.boxShadow='0 2px 3px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.03)'"
-            >&#x25B6; Parse</button>
+            <!-- Parse button — stamped industrial -->
+            <button onclick="ForgeRack.units['${id}']&&ForgeRack.units['${id}'].parse()"
+                class="btn-stamp" style="width:100%;padding:5px 0;font-size:8px;">&#x25B6; Parse</button>
 
-            <!-- Demo button — smaller, less prominent -->
-            <button onclick="ForgeRack.units['${id}']&&ForgeRack.units['${id}'].demo()" style="
-                width:100%;padding:3px 0;
-                font:600 8px/1 'Arial',sans-serif;text-transform:uppercase;letter-spacing:0.1em;
-                background:transparent;
-                border:1px solid rgba(156,163,175,0.06);
-                color:rgba(156,163,175,0.25);border-radius:1px;cursor:pointer;
-            ">Load Demo</button>
+            <!-- Demo button -->
+            <button onclick="ForgeRack.units['${id}']&&ForgeRack.units['${id}'].demo()"
+                class="btn-ghost" style="width:100%;padding:3px 0;">Load Demo</button>
 
             <!-- Column count indicator -->
             <div style="display:flex;gap:3px;margin-top:auto;">
@@ -209,9 +195,8 @@
         padding:4px 48px;
         border-bottom:1px solid rgba(255,255,255,0.05);
     ">
-        <span style="font:800 10px/1 'Arial Black',sans-serif;color:rgba(255,255,255,0.1);letter-spacing:0.15em;text-transform:uppercase;">Ingest</span>
-        <span style="font:400 11px/1 'Courier New',monospace;color:rgba(255,255,255,0.06);">DT-100</span>
-        <span style="font:400 6px/1 'Courier New',monospace;color:rgba(255,255,255,0.04);margin-left:auto;">S/N ${id}</span>
+        <div class="nameplate">Ingest DT-100</div>
+        <span class="serial-tag" style="margin-left:auto;">S/N ${id}</span>
     </div>
 
     <!-- Output jacks — appear after parse -->

@@ -3473,6 +3473,12 @@ FR.registerUnit('sentinel', {
         var n = data.data[data.columns[0]] ? data.data[data.columns[0]].length : 0;
         var nEl = document.getElementById(this.id + '-n-val');
         if (nEl) nEl.textContent = n;
+
+        // Auto-run chart if a measurement column is selected
+        var colSel = document.getElementById(this.id + '-col');
+        if (colSel && colSel.value) {
+            this._run();
+        }
     },
 
     _run() {

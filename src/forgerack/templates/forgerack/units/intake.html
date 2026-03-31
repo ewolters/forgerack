@@ -11,18 +11,18 @@
 <!-- ════════ FRONT PANEL ════════ -->
 <div class="rack-unit-front u10 mfr-cobalt" data-unit="intake" data-id="${id}" style="
     --device-accent:#7ca0c4;
-    background: linear-gradient(160deg, #2a3040 0%, #263040 30%, #2c3444 50%, #242e3c 80%, #202a36 100%);
+    background:
+        repeating-linear-gradient(0deg,
+            rgba(255,255,255,0.04) 0px, transparent 1px, transparent 4px,
+            rgba(0,0,0,0.03) 5px, transparent 6px, transparent 9px),
+        linear-gradient(160deg, #2a3040 0%, #263040 30%, #2c3444 50%, #242e3c 80%, #202a36 100%);
     overflow:hidden;
 ">
-    <!-- ── Nameplate — vertical brushed aluminum ── -->
+    <!-- ── Nameplate ── -->
     <div style="
         display:flex;align-items:center;gap:8px;
         padding:4px 48px;
-        background:
-            repeating-linear-gradient(0deg,
-                rgba(255,255,255,0.04) 0px, transparent 1px, transparent 4px,
-                rgba(0,0,0,0.03) 5px, transparent 6px, transparent 9px),
-            linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.08));
+        background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.08));
         border-bottom:1px solid rgba(0,0,0,0.25);
     ">
         <div class="led-housing">

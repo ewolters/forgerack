@@ -11,20 +11,20 @@
 <!-- ════════ FRONT PANEL ════════ -->
 <div class="rack-unit-front u4 mfr-vakuum" data-unit="calc" data-id="${id}" style="
     --device-accent:#d4884a;
-    background: linear-gradient(160deg, #1e1216 0%, #1a0f14 30%, #1c1015 50%, #160c10 80%);
+    background:
+        repeating-linear-gradient(0deg,
+            rgba(0,0,0,0.06) 0px, transparent 1px, transparent 3px),
+        repeating-linear-gradient(90deg,
+            rgba(0,0,0,0.04) 0px, transparent 1px, transparent 4px),
+        linear-gradient(160deg, #1e1216 0%, #1a0f14 30%, #1c1015 50%, #160c10 80%);
     overflow:hidden;
 ">
-    <!-- Nameplate — tolex leatherette grain -->
+    <!-- Nameplate -->
     <div style="
         display:flex;align-items:center;gap:8px;
         padding:4px 48px;
         border-bottom:2px solid rgba(0,0,0,0.3);
-        background:
-            repeating-linear-gradient(0deg,
-                rgba(0,0,0,0.06) 0px, transparent 1px, transparent 3px),
-            repeating-linear-gradient(90deg,
-                rgba(0,0,0,0.04) 0px, transparent 1px, transparent 4px),
-            linear-gradient(180deg, rgba(212,136,74,0.012), rgba(0,0,0,0.1));
+        background: linear-gradient(180deg, rgba(212,136,74,0.012), rgba(0,0,0,0.1));
     ">
         <div class="led-housing">
             <span class="led" id="${id}-led" style="width:6px;height:6px;"></span>

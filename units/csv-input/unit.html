@@ -11,20 +11,20 @@
 <!-- ════════ FRONT PANEL ════════ -->
 <div class="rack-unit-front u4 mfr-steelwerk" data-unit="csv-input" data-id="${id}" style="
     --device-accent:#9ca3af;
-    background: linear-gradient(160deg, #141714 0%, #111411 30%, #131613 50%, #101310 80%, #0e110e 100%);
+    background:
+        repeating-linear-gradient(90deg,
+            rgba(255,255,255,0.04) 0px, transparent 1px, transparent 4px,
+            rgba(0,0,0,0.03) 5px, transparent 6px, transparent 9px),
+        repeating-linear-gradient(89deg,
+            rgba(255,255,255,0.025) 0px, transparent 1px, transparent 7px),
+        linear-gradient(160deg, #141714 0%, #111411 30%, #131613 50%, #101310 80%, #0e110e 100%);
     overflow:hidden;
 ">
-    <!-- ── Top nameplate — stamped aluminum strip with brushed grain ── -->
+    <!-- ── Top nameplate — stamped aluminum strip ── -->
     <div style="
         display:flex;align-items:center;gap:8px;
         padding:5px 48px;
-        background:
-            repeating-linear-gradient(90deg,
-                rgba(255,255,255,0.04) 0px, transparent 1px, transparent 4px,
-                rgba(0,0,0,0.03) 5px, transparent 6px, transparent 9px),
-            repeating-linear-gradient(89deg,
-                rgba(255,255,255,0.025) 0px, transparent 1px, transparent 7px),
-            linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.12));
+        background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.12));
         border-bottom:2px solid rgba(0,0,0,0.35);
         box-shadow: inset 0 -1px 0 rgba(255,255,255,0.008);
     ">

@@ -566,7 +566,39 @@ FR.registerUnit('filter', {
         var factorSelect = document.getElementById(this.id + '-factor-select');
         if (!threshInput || !factorSelect) return;
 
-        if (!col || this._isNumericCol(col)) {
+        var isNumeric = !col || this._isNumericCol(col);
+
+        // Enable/disable > and < buttons for factor columns
+        this.el.querySelectorAll('[data-sieve-mode]').forEach(function(btn) {
+            var mode = btn.dataset.sieveMode;
+            if (mode === '>' || mode === '<') {
+                if (isNumeric) {
+                    btn.disabled = false;
+                    btn.style.opacity = '';
+                    btn.style.color = '';
+                    btn.style.cursor = 'pointer';
+                } else {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.3';
+                    btn.style.color = '#f87171';
+                    btn.style.cursor = 'not-allowed';
+                    // If this mode was active, switch to =
+                    if (btn.classList.contains('active')) {
+                        btn.classList.remove('active');
+                        var eqBtn = btn.parentNode.querySelector('[data-sieve-mode="="]');
+                        if (eqBtn) { eqBtn.classList.add('active'); }
+                        // Update current mode
+                    }
+                }
+            }
+        });
+
+        // If switching to factor and current mode is > or <, force to =
+        if (!isNumeric && (this._currentMode === '>' || this._currentMode === '<')) {
+            this._currentMode = '=';
+        }
+
+        if (isNumeric) {
             // Show numeric input
             threshInput.style.display = '';
             factorSelect.style.display = 'none';
@@ -681,17 +713,19 @@ FR.registerUnit('filter', {
         listEl.innerHTML = '';
         this._filters.forEach(function(f, i) {
             var line = document.createElement('div');
-            line.style.cssText = 'display:flex;align-items:center;gap:6px;cursor:pointer;padding:1px 0;';
+            line.style.cssText = 'display:flex;align-items:center;gap:6px;cursor:pointer;padding:2px 4px;border-radius:2px;transition:background 0.1s;';
             line.title = 'Click to remove';
+            line.addEventListener('mouseenter', function() { this.style.background = 'rgba(239,68,68,0.08)'; });
+            line.addEventListener('mouseleave', function() { this.style.background = ''; });
 
             var modeSymbol = f.mode;
             var valueDisplay = typeof f.value === 'string' ? '"' + f.value + '"' : f.value;
 
             line.innerHTML =
-                '<span style="color:rgba(34,211,238,0.5);font-weight:700;">' + f.col + '</span>' +
-                '<span style="color:rgba(255,255,255,0.2);">' + modeSymbol + '</span>' +
-                '<span style="color:rgba(34,211,238,0.4);">' + valueDisplay + '</span>' +
-                '<span style="color:rgba(239,68,68,0.2);font-size:9px;margin-left:auto;">\u00d7</span>';
+                '<span style="color:rgba(34,211,238,0.6);font-weight:700;">' + f.col + '</span>' +
+                '<span style="color:rgba(255,255,255,0.3);">' + modeSymbol + '</span>' +
+                '<span style="color:rgba(34,211,238,0.5);">' + valueDisplay + '</span>' +
+                '<span style="color:rgba(239,68,68,0.5);font-size:11px;margin-left:auto;font-weight:700;">\u00d7</span>';
 
             line.addEventListener('click', function() { self._removeFilter(i); });
             listEl.appendChild(line);

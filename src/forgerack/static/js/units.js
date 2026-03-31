@@ -4745,7 +4745,7 @@ FR.registerUnit('correlator', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf ? csrf.value : document.cookie.replace(/.*csrftoken=([^;]*).*/, '$1') },
             body: JSON.stringify({ op: op, data: data })
-        }).then(function(r) { return r.json(); }).then(function(j) { if (j.result) callback(j.result); }).catch(function() {});
+        }).then(function(r) { return r.json(); }).then(function(j) { if (j.result) callback(j.result); else console.warn('rack compute error:', op, j.error); }).catch(function(e) { console.warn('rack compute fetch error:', op, e); });
     },
 
     _render() {
@@ -4782,7 +4782,13 @@ FR.registerUnit('correlator', {
 
         // Fetch stats from server (forgestat)
         this._fetchCompute('pearson', { x: x, y: y }, function(r) {
-            self._setReadouts(r.r.toFixed(3), null, r.r_squared.toFixed(3), r.n);
+            var pEl = document.getElementById(self.id + '-pearson');
+            var rEl = document.getElementById(self.id + '-rsq');
+            var nEl = document.getElementById(self.id + '-n');
+            if (pEl) pEl.textContent = r.r.toFixed(3);
+            if (rEl) rEl.textContent = r.r_squared.toFixed(3);
+            if (nEl) nEl.textContent = r.n;
+            FR.emit(self.id, 'result', r);
         });
         this._fetchCompute('spearman', { x: x, y: y }, function(r) {
             var el = document.getElementById(self.id + '-spearman');

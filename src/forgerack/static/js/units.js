@@ -2250,4 +2250,31 @@ FR.registerUnit('calc', {
     }
 });
 
+
+// ═══════════════════════════════════════════════════════════
+// BLANK PANELS — no behavior, pure rack filler
+// ═══════════════════════════════════════════════════════════
+
+FR.registerUnit('blank-1u', {
+    init() {},
+    receive() {}
+});
+
+FR.registerUnit('blank-2u', {
+    init() {},
+    receive() {}
+});
+
+// ═══════════════════════════════════════════════════════════
+// SCRIBBLE STRIP SC-01 — editable label module
+// ═══════════════════════════════════════════════════════════
+
+FR.registerUnit('scribble', {
+    init(el, id) {
+        this.el = el;
+        this.id = id;
+    },
+    receive() {}
+});
+
 })(ForgeRack);

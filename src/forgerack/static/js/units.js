@@ -239,6 +239,25 @@ FR.registerUnit('chart-panel', {
             if (inp) inp.addEventListener('input', _applyColors);
         });
 
+        // Wire label inputs — re-render on change
+        var labelTitle = document.getElementById(id + '-label-title');
+        var labelX = document.getElementById(id + '-label-x');
+        var labelY = document.getElementById(id + '-label-y');
+
+        function _applyLabels() {
+            if (!self._spec) return;
+            self._spec.title = (labelTitle && labelTitle.value) || '';
+            if (!self._spec.x_axis) self._spec.x_axis = {};
+            if (!self._spec.y_axis) self._spec.y_axis = {};
+            self._spec.x_axis.label = (labelX && labelX.value) || '';
+            self._spec.y_axis.label = (labelY && labelY.value) || '';
+            if (viewport) self._renderSpec(viewport, self._spec);
+        }
+
+        [labelTitle, labelX, labelY].forEach(function(inp) {
+            if (inp) inp.addEventListener('change', _applyLabels);
+        });
+
         // Update LEDs when chart type changes
         var _origChartTypeClick = el.querySelectorAll('[data-chart-type]');
         _origChartTypeClick.forEach(function(btn) {
@@ -404,8 +423,13 @@ FR.registerUnit('chart-panel', {
                 spec = { traces: [{ x, y: vals, trace_type: 'line', color: c, width: 1.5, marker_size: 3 }] };
         }
 
-        spec.x_axis = { label: '' };
-        spec.y_axis = { label: '' };
+        // Read labels from faceplate inputs
+        var titleInput = document.getElementById(this.id + '-label-title');
+        var xInput = document.getElementById(this.id + '-label-x');
+        var yInput = document.getElementById(this.id + '-label-y');
+        spec.title = (titleInput && titleInput.value) || '';
+        spec.x_axis = { label: (xInput && xInput.value) || '' };
+        spec.y_axis = { label: (yInput && yInput.value) || '' };
         spec.theme = 'svend_dark';
 
         this._renderSpec(viewport, spec);

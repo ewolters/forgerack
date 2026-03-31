@@ -158,6 +158,38 @@
             </div>
         </div>
 
+        <!-- ── Labels — title and axis text inputs ── -->
+        <div style="
+            background:rgba(0,0,0,0.2);border:1px solid rgba(0,0,0,0.35);border-radius:2px;
+            box-shadow:inset 0 1px 3px rgba(0,0,0,0.3);
+            padding:6px 10px;display:flex;flex-direction:column;gap:4px;justify-content:center;
+        ">
+            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(74,222,128,0.1);
+                text-transform:uppercase;letter-spacing:0.2em;text-align:center;">Labels</div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+                <input type="text" id="${id}-label-title" placeholder="Title" style="
+                    width:80px;background:rgba(0,0,0,0.4);border:1px solid rgba(74,222,128,0.08);
+                    color:rgba(74,222,128,0.5);padding:2px 5px;border-radius:1px;
+                    font:10px/1 'JetBrains Mono',monospace;
+                    box-shadow:inset 0 1px 2px rgba(0,0,0,0.3);
+                ">
+                <div style="display:flex;gap:3px;">
+                    <input type="text" id="${id}-label-x" placeholder="X" style="
+                        width:38px;background:rgba(0,0,0,0.4);border:1px solid rgba(74,222,128,0.08);
+                        color:rgba(74,222,128,0.5);padding:2px 5px;border-radius:1px;
+                        font:10px/1 'JetBrains Mono',monospace;
+                        box-shadow:inset 0 1px 2px rgba(0,0,0,0.3);
+                    ">
+                    <input type="text" id="${id}-label-y" placeholder="Y" style="
+                        width:38px;background:rgba(0,0,0,0.4);border:1px solid rgba(74,222,128,0.08);
+                        color:rgba(74,222,128,0.5);padding:2px 5px;border-radius:1px;
+                        font:10px/1 'JetBrains Mono',monospace;
+                        box-shadow:inset 0 1px 2px rgba(0,0,0,0.3);
+                    ">
+                </div>
+            </div>
+        </div>
+
         <!-- ── Color controls — native color pickers on the faceplate ── -->
         <div style="
             background:rgba(0,0,0,0.2);border:1px solid rgba(0,0,0,0.35);border-radius:2px;

@@ -187,13 +187,13 @@
 /* ── LED ── */
 
 .led {
-    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    display: inline-block; width: 10px; height: 10px; border-radius: 50%;
     background: radial-gradient(circle at 40% 35%, #2a302a, #0e120e);
     border: 1px solid #1a1f1a;
     box-shadow: inset 0 1px 2px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.02);
     transition: all 0.15s;
 }
-.led.lg { width: 10px; height: 10px; }
+.led.lg { width: 14px; height: 14px; }
 .led.on-green  { background: radial-gradient(circle at 40% 35%, #6ef59e, #18a34a); box-shadow: 0 0 6px rgba(34,197,94,0.6), 0 0 14px rgba(34,197,94,0.2); }
 .led.on-amber  { background: radial-gradient(circle at 40% 35%, #fcd34d, #b45309); box-shadow: 0 0 6px rgba(245,158,11,0.6), 0 0 14px rgba(245,158,11,0.2); }
 .led.on-red    { background: radial-gradient(circle at 40% 35%, #fca5a5, #b91c1c); box-shadow: 0 0 6px rgba(239,68,68,0.6), 0 0 14px rgba(239,68,68,0.2); }
@@ -441,6 +441,140 @@
     box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
 }
 .input-mono::placeholder { color: rgba(255,255,255,0.15); }
+
+
+/* ══════════════════════════════════════════════════════════════
+ * COMPONENT MANUFACTURERS
+ *
+ * Different visual "brands" for rack components.
+ * Units pick a manufacturer to get a cohesive sub-aesthetic.
+ * ══════════════════════════════════════════════════════════════ */
+
+/* ── MFR: NORDKRAFT (Scandinavian precision)
+ *    Used by: MANIFOLD, future routing/utility units
+ *    Warm, minimal, B&O inspired. Light faceplates, rounded forms.
+ */
+.mfr-nordkraft .dial-knob {
+    background:
+        radial-gradient(circle at 38% 35%, rgba(255,255,255,0.12), transparent 55%),
+        conic-gradient(from 200deg, #c0b8a8 0%, #d8d0c0 25%, #c0b8a8 50%, #a8a090 75%, #c0b8a8 100%);
+    border-color: #908878;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.mfr-nordkraft .dial-knob::after { background: #4a4a40; box-shadow: none; }
+.mfr-nordkraft .segment-btn { background: rgba(180,170,155,0.08); color: rgba(180,170,155,0.4); }
+.mfr-nordkraft .segment-btn.active { background: rgba(180,170,155,0.2); color: #b4aa9b; }
+.mfr-nordkraft .led { border-color: #908878; }
+
+
+/* ── MFR: STEELWERK (East German industrial)
+ *    Used by: INGEST, future heavy-duty I/O units
+ *    Utilitarian. Stamped metal. Bakelite bezels. Cold war surplus.
+ */
+.mfr-steelwerk .dial-knob {
+    background:
+        radial-gradient(circle at 40% 38%, rgba(255,255,255,0.06), transparent 55%),
+        conic-gradient(from 220deg, #4a4a48 0%, #5a5a58 20%, #4a4a48 40%, #3a3a38 70%, #4a4a48 100%);
+    border-color: #2a2a28;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.mfr-steelwerk .dial-knob::after { background: #9ca3af; width: 3px; }
+.mfr-steelwerk .segment-btn {
+    background: rgba(156,163,175,0.06); color: rgba(156,163,175,0.35);
+    border-color: rgba(156,163,175,0.08);
+}
+.mfr-steelwerk .segment-btn.active {
+    background: rgba(156,163,175,0.12); color: #9ca3af;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.4);
+}
+.mfr-steelwerk .switch-rocker { background: linear-gradient(180deg, #4a4a48, #3a3a38); border-color: #2a2a28; }
+
+
+/* ── MFR: KEYSIGHT (Test & measurement)
+ *    Used by: SIEVE, future analysis/measurement units
+ *    Clinical precision. Cyan accent. Clean lines. LCD readouts.
+ */
+.mfr-keysight .dial-knob {
+    background:
+        radial-gradient(circle at 38% 35%, rgba(34,211,238,0.06), transparent 50%),
+        conic-gradient(from 220deg, #1a2025 0%, #252d35 20%, #1a2025 40%, #10181e 70%, #1a2025 100%);
+    border-color: #0a1015;
+}
+.mfr-keysight .dial-knob::after { background: #22d3ee; box-shadow: 0 0 6px rgba(34,211,238,0.3); }
+.mfr-keysight .segment-btn { background: rgba(0,0,0,0.3); color: rgba(34,211,238,0.35); }
+.mfr-keysight .segment-btn.active {
+    background: rgba(34,211,238,0.1); color: #22d3ee;
+    text-shadow: 0 0 6px rgba(34,211,238,0.3);
+}
+
+
+/* ── MFR: MILSPEC (Military/tactical)
+ *    Used by: CRATE, future container/routing units
+ *    Olive drab. Impact font. Ruggedized. Crosshatch texture.
+ */
+.mfr-milspec .dial-knob {
+    background:
+        radial-gradient(circle at 40% 38%, rgba(255,255,255,0.04), transparent 55%),
+        conic-gradient(from 220deg, #3a3830 0%, #4a4840 20%, #3a3830 40%, #2a2820 70%, #3a3830 100%);
+    border-color: #1a1810;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03);
+}
+.mfr-milspec .dial-knob::after { background: #d4a020; width: 3px; box-shadow: none; }
+.mfr-milspec .segment-btn {
+    background: rgba(120,113,108,0.06); color: rgba(120,113,108,0.35);
+    font-family: 'Impact', 'Arial Black', sans-serif;
+}
+.mfr-milspec .segment-btn.active { background: rgba(120,113,108,0.15); color: #78716c; }
+
+
+/* ── MFR: PHOSPHOR (Vintage terminal)
+ *    Used by: HERALD, SCOPE, future display units
+ *    Green CRT phosphor. Teletype aesthetic. Warm glow.
+ */
+.mfr-phosphor .dial-knob {
+    background:
+        radial-gradient(circle at 38% 35%, rgba(34,197,94,0.04), transparent 50%),
+        conic-gradient(from 220deg, #1a1f1a 0%, #252a25 20%, #1a1f1a 40%, #101510 70%, #1a1f1a 100%);
+    border-color: #0a0f0a;
+}
+.mfr-phosphor .dial-knob::after { background: #22c55e; box-shadow: 0 0 4px rgba(34,197,94,0.3); }
+.mfr-phosphor .led.on-green {
+    background: radial-gradient(circle at 40% 35%, #a0ffc0, #0a6030);
+    box-shadow: 0 0 8px rgba(34,197,94,0.7), 0 0 20px rgba(34,197,94,0.2);
+}
+
+
+/* ── MFR: KLINISCH (Clinical/lab)
+ *    Used by: TRIAGE, future validation/QC units
+ *    Olive-sage panel. Cream text. Medical instrument feel.
+ */
+.mfr-klinisch .dial-knob {
+    background:
+        radial-gradient(circle at 38% 35%, rgba(255,255,255,0.08), transparent 55%),
+        conic-gradient(from 220deg, #5a6050 0%, #6a7060 20%, #5a6050 40%, #4a5040 70%, #5a6050 100%);
+    border-color: #3a4030;
+}
+.mfr-klinisch .dial-knob::after { background: #b8a878; box-shadow: none; }
+.mfr-klinisch .segment-btn { background: rgba(184,168,120,0.06); color: rgba(220,210,180,0.35); }
+.mfr-klinisch .segment-btn.active { background: rgba(184,168,120,0.15); color: rgba(220,210,180,0.6); }
+
+
+/* ── MFR: COBALT (Data workstation)
+ *    Used by: INTAKE, future data processing units
+ *    Blue-gray. Technical. Precision instrument feel.
+ */
+.mfr-cobalt .dial-knob {
+    background:
+        radial-gradient(circle at 38% 35%, rgba(124,160,196,0.06), transparent 50%),
+        conic-gradient(from 220deg, #2a3040 0%, #3a4050 20%, #2a3040 40%, #1a2030 70%, #2a3040 100%);
+    border-color: #141a24;
+}
+.mfr-cobalt .dial-knob::after { background: #7ca0c4; box-shadow: 0 0 4px rgba(124,160,196,0.25); }
+.mfr-cobalt .segment-btn { background: rgba(124,160,196,0.06); color: rgba(124,160,196,0.3); }
+.mfr-cobalt .segment-btn.active {
+    background: rgba(124,160,196,0.12); color: rgba(160,200,230,0.7);
+    text-shadow: 0 0 4px rgba(124,160,196,0.2);
+}
 
 
 /* ── Unit Color DNA ── */

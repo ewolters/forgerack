@@ -128,7 +128,12 @@ FR.registerUnit('chart-panel', {
                 btn.classList.add('active');
                 this.chartType = btn.dataset.chartType;
                 this._updateSettingsCRT();
-                if (this._rawData) this._buildAndRender(this._rawData);
+                // Rebuild from columnar data if available (multi-trace), else single
+                if (this._columnarData) {
+                    this._buildFromColumnar();
+                } else if (this._rawData) {
+                    this._buildAndRender([{ vals: this._rawData, label: 'data', color: this._TRACE_COLORS[0] }]);
+                }
             });
         });
 
@@ -317,6 +322,9 @@ FR.registerUnit('chart-panel', {
         });
     },
 
+    // Phosphor palette for multi-trace
+    _TRACE_COLORS: ['#4ade80','#22d3ee','#f59e0b','#a78bfa','#f87171','#fb923c','#e879f9','#38bdf8','#84cc16','#fbbf24'],
+
     receive(inputName, data, fromUnit) {
         if (!data) return;
         this._source = fromUnit || '?';
@@ -325,7 +333,7 @@ FR.registerUnit('chart-panel', {
         const empty = document.getElementById(this.id + '-empty');
         if (!viewport) return;
 
-        // Already a ChartSpec — render directly regardless of mode
+        // Already a ChartSpec — render directly
         if (data.traces || data.chart_type) {
             this._renderSpec(viewport, data);
             if (empty) empty.style.display = 'none';
@@ -333,100 +341,218 @@ FR.registerUnit('chart-panel', {
             return;
         }
 
-        // Extract numeric array from various input shapes
-        let vals = null;
-        if (Array.isArray(data)) {
-            vals = data.filter(v => typeof v === 'number');
-        } else if (data.data && data.columns) {
-            const col = data.columns[0];
-            vals = (data.data[col] || []).filter(v => typeof v === 'number');
+        // ANALYST result — display as text in the CRT
+        if (data.title && data.lines) {
+            if (empty) empty.style.display = 'none';
+            viewport.innerHTML = '';
+            var pre = document.createElement('div');
+            pre.style.cssText = 'padding:10px 14px;font:11px/1.6 "JetBrains Mono",monospace;color:rgba(74,222,128,0.4);overflow-y:auto;height:100%;';
+            var title = document.createElement('div');
+            title.textContent = data.title;
+            title.style.cssText = 'color:#4ade80;font-weight:700;margin-bottom:4px;';
+            pre.appendChild(title);
+            (data.lines || []).forEach(function(line) {
+                var el = document.createElement('div');
+                el.textContent = line;
+                if (line.indexOf('\u2705') !== -1) el.style.color = 'rgba(34,197,94,0.7)';
+                else if (line.indexOf('\u274c') !== -1) el.style.color = 'rgba(239,68,68,0.7)';
+                pre.appendChild(el);
+            });
+            viewport.appendChild(pre);
+            FR.LED(document.getElementById(this.id + '-led')).set('green');
+            return;
         }
 
-        if (vals && vals.length > 0) {
-            this._rawData = vals;
-            this._buildAndRender(vals);
+        // Columnar data — populate column selector and build multi-trace
+        if (data.data && data.columns) {
+            this._columnarData = data;
+            this._populateColSelector(data);
+            this._buildFromColumnar();
             if (empty) empty.style.display = 'none';
+            return;
+        }
+
+        // Simple array
+        if (Array.isArray(data)) {
+            var vals = data.filter(function(v) { return typeof v === 'number'; });
+            if (vals.length > 0) {
+                this._rawData = vals;
+                this._columnarData = null;
+                this._buildAndRender([{ vals: vals, label: 'data', color: this._TRACE_COLORS[0] }]);
+                if (empty) empty.style.display = 'none';
+            }
         }
     },
 
-    _buildAndRender(vals) {
+    _populateColSelector(data) {
+        var sel = document.getElementById(this.id + '-col-select');
+        if (!sel) return;
+        var prev = Array.from(sel.selectedOptions).map(function(o) { return o.value; });
+        sel.innerHTML = '<option value="__ALL__">All numeric</option>';
+        var self = this;
+        data.columns.forEach(function(c) {
+            var vals = data.data[c] || [];
+            var isNum = vals.some(function(v) { return typeof v === 'number'; });
+            if (!isNum) return;
+            var opt = document.createElement('option');
+            opt.value = c; opt.textContent = c;
+            if (prev.indexOf(c) !== -1 || prev.indexOf('__ALL__') !== -1 || prev.length === 0) opt.selected = true;
+            sel.appendChild(opt);
+        });
+        // Wire change handler (once)
+        if (!sel._wired) {
+            sel._wired = true;
+            sel.addEventListener('change', function() { self._buildFromColumnar(); });
+        }
+    },
+
+    _buildFromColumnar() {
+        if (!this._columnarData) return;
+        var sel = document.getElementById(this.id + '-col-select');
+        var selected = sel ? Array.from(sel.selectedOptions).map(function(o) { return o.value; }) : ['__ALL__'];
+        var data = this._columnarData;
+        var self = this;
+
+        var traces = [];
+        var cols;
+
+        if (selected.indexOf('__ALL__') !== -1) {
+            // All numeric columns
+            cols = data.columns.filter(function(c) {
+                return (data.data[c] || []).some(function(v) { return typeof v === 'number'; });
+            });
+        } else {
+            cols = selected;
+        }
+
+        cols.forEach(function(col, i) {
+            var vals = (data.data[col] || []).map(function(v) { return typeof v === 'number' ? v : null; });
+            var nums = vals.filter(function(v) { return v !== null; });
+            if (nums.length === 0) return;
+            traces.push({
+                vals: vals,
+                label: col,
+                color: self._TRACE_COLORS[i % self._TRACE_COLORS.length]
+            });
+        });
+
+        if (traces.length === 0) return;
+
+        // Store for raw rebuild on chart type change
+        this._rawData = traces[0].vals.filter(function(v) { return v !== null; });
+        this._multiTraces = traces;
+
+        this._buildAndRender(traces);
+    },
+
+    _buildAndRender(traces) {
         const viewport = document.getElementById(this.id + '-viewport');
         if (!viewport) return;
 
-        const n = vals.length;
-        const x = vals.map((_, i) => i + 1);
-        // Read trace color from faceplate picker, fall back to default
+        // traces is [{vals, label, color}]
+        var firstVals = traces[0].vals;
+        const n = firstVals.length;
+        const x = firstVals.map(function(_, i) { return i + 1; });
         var traceInput = document.getElementById(this.id + '-color-trace');
-        const c = (traceInput && traceInput.value) || '#4ade80';
+        var singleColor = (traceInput && traceInput.value) || '#4ade80';
+        // Use single color only if 1 trace, otherwise use per-trace colors
+        var usePerColor = traces.length > 1;
         let spec;
+
+        // Build multi-trace or single-trace spec
+        var allTraces = [];
 
         switch (this.chartType) {
             case 'line':
-                spec = { traces: [{ x, y: vals, trace_type: 'line', color: c, width: 1.5, marker_size: 3 }] };
+                traces.forEach(function(t, i) {
+                    allTraces.push({ x: x, y: t.vals, trace_type: 'line', color: usePerColor ? t.color : singleColor, width: 1.5, marker_size: traces.length > 3 ? 0 : 3, name: t.label });
+                });
+                spec = { traces: allTraces };
                 break;
 
             case 'scatter':
-                spec = { traces: [{ x, y: vals, trace_type: 'scatter', color: c, marker_size: 5, opacity: 0.7 }] };
+                traces.forEach(function(t, i) {
+                    allTraces.push({ x: x, y: t.vals, trace_type: 'scatter', color: usePerColor ? t.color : singleColor, marker_size: 5, opacity: 0.7, name: t.label });
+                });
+                spec = { traces: allTraces };
                 break;
 
             case 'bar':
-                spec = { traces: [{ x, y: vals, trace_type: 'bar', color: c, opacity: 0.8 }] };
+                traces.forEach(function(t, i) {
+                    allTraces.push({ x: x, y: t.vals, trace_type: 'bar', color: usePerColor ? t.color : singleColor, opacity: 0.8, name: t.label });
+                });
+                spec = { traces: allTraces };
                 break;
 
             case 'hist': {
-                // Build histogram bins
-                const bins = Math.max(5, Math.min(30, Math.ceil(Math.sqrt(n))));
-                const mn = Math.min(...vals), mx = Math.max(...vals);
-                const bw = (mx - mn) / bins || 1;
-                const counts = new Array(bins).fill(0);
-                const edges = [];
-                for (let i = 0; i <= bins; i++) edges.push(mn + i * bw);
-                vals.forEach(v => { const b = Math.min(bins - 1, Math.floor((v - mn) / bw)); counts[b]++; });
-                const centers = edges.slice(0, bins).map((e, i) => (e + edges[i + 1]) / 2);
-                spec = { traces: [{ x: centers, y: counts, trace_type: 'bar', color: c, opacity: 0.8 }] };
+                traces.forEach(function(t, ti) {
+                    var vals = t.vals.filter(function(v) { return v !== null; });
+                    var bins = Math.max(5, Math.min(30, Math.ceil(Math.sqrt(vals.length))));
+                    var mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals);
+                    var bw = (mx - mn) / bins || 1;
+                    var counts = new Array(bins).fill(0);
+                    var edges = [];
+                    for (var i = 0; i <= bins; i++) edges.push(mn + i * bw);
+                    vals.forEach(function(v) { var b = Math.min(bins - 1, Math.floor((v - mn) / bw)); counts[b]++; });
+                    var centers = edges.slice(0, bins).map(function(e, i) { return (e + edges[i + 1]) / 2; });
+                    allTraces.push({ x: centers, y: counts, trace_type: 'bar', color: usePerColor ? t.color : singleColor, opacity: 0.7, name: t.label });
+                });
+                spec = { traces: allTraces };
                 break;
             }
 
             case 'box':
-                spec = { traces: [{
-                    type: 'box', name: 'data',
-                    q1: _quantile(vals, 0.25), median: _quantile(vals, 0.5), q3: _quantile(vals, 0.75),
-                    whisker_low: Math.min(...vals), whisker_high: Math.max(...vals),
-                    outliers: [], color: c, x_position: 0
-                }] };
+                traces.forEach(function(t, i) {
+                    var clean = t.vals.filter(function(v) { return v !== null; });
+                    allTraces.push({
+                        type: 'box', name: t.label,
+                        q1: _quantile(clean, 0.25), median: _quantile(clean, 0.5), q3: _quantile(clean, 0.75),
+                        whisker_low: Math.min.apply(null, clean), whisker_high: Math.max.apply(null, clean),
+                        outliers: [], color: usePerColor ? t.color : singleColor, x_position: i
+                    });
+                });
+                spec = { traces: allTraces };
                 break;
 
             case 'control': {
-                // I-chart with ±3σ limits
-                const mean = vals.reduce((a, b) => a + b, 0) / n;
-                const mr = [];
-                for (let i = 1; i < n; i++) mr.push(Math.abs(vals[i] - vals[i - 1]));
-                const mrBar = mr.length > 0 ? mr.reduce((a, b) => a + b, 0) / mr.length : 0;
-                const sigma = mrBar / 1.128;
-                const ucl = mean + 3 * sigma, lcl = mean - 3 * sigma;
+                // I-chart: first trace only (SPC is single-column)
+                var vals = traces[0].vals.filter(function(v) { return v !== null; });
+                var cN = vals.length;
+                var cX = vals.map(function(_, i) { return i + 1; });
+                var cColor = usePerColor ? traces[0].color : singleColor;
+                var mean = vals.reduce(function(a, b) { return a + b; }, 0) / cN;
+                var mr = [];
+                for (var i = 1; i < cN; i++) mr.push(Math.abs(vals[i] - vals[i - 1]));
+                var mrBar = mr.length > 0 ? mr.reduce(function(a, b) { return a + b; }, 0) / mr.length : 0;
+                var sigma = mrBar / 1.128;
+                var ucl = mean + 3 * sigma, lcl = mean - 3 * sigma;
                 spec = {
-                    traces: [{ x, y: vals, trace_type: 'line', color: c, width: 1.5, marker_size: 3 }],
+                    traces: [{ x: cX, y: vals, trace_type: 'line', color: cColor, width: 1.5, marker_size: 3, name: traces[0].label }],
                     reference_lines: [
-                        { axis: 'y', value: ucl, color: '#f87171', width: 1, dash: 'dashed', label: 'UCL' },
-                        { axis: 'y', value: mean, color: '#4ade80', width: 1, label: 'CL' },
-                        { axis: 'y', value: lcl, color: '#f87171', width: 1, dash: 'dashed', label: 'LCL' },
+                        { axis: 'y', value: ucl, color: '#f87171', width: 1, dash: 'dashed', label: 'UCL ' + ucl.toFixed(2) },
+                        { axis: 'y', value: mean, color: '#4ade80', width: 1, label: 'CL ' + mean.toFixed(2) },
+                        { axis: 'y', value: lcl, color: '#f87171', width: 1, dash: 'dashed', label: 'LCL ' + lcl.toFixed(2) },
                     ],
                     markers: []
                 };
-                // Mark OOC points
-                const ooc = [];
-                vals.forEach((v, i) => { if (v > ucl || v < lcl) ooc.push(i); });
+                var ooc = [];
+                vals.forEach(function(v, i) { if (v > ucl || v < lcl) ooc.push(i); });
                 if (ooc.length) spec.markers.push({ indices: ooc, color: '#f87171', size: 6 });
                 break;
             }
 
             case 'heatmap':
-                // Auto-correlogram if enough data
-                spec = { traces: [{ x, y: vals, trace_type: 'line', color: c, width: 1.5 }] };
+                traces.forEach(function(t) {
+                    allTraces.push({ x: x, y: t.vals, trace_type: 'line', color: usePerColor ? t.color : singleColor, width: 1.5, name: t.label });
+                });
+                spec = { traces: allTraces };
                 break;
 
             default:
-                spec = { traces: [{ x, y: vals, trace_type: 'line', color: c, width: 1.5, marker_size: 3 }] };
+                traces.forEach(function(t) {
+                    allTraces.push({ x: x, y: t.vals, trace_type: 'line', color: usePerColor ? t.color : singleColor, width: 1.5, marker_size: 3, name: t.label });
+                });
+                spec = { traces: allTraces };
         }
 
         // Read labels from faceplate inputs
@@ -471,11 +597,13 @@ FR.registerUnit('chart-panel', {
     },
 
     _updateSettingsCRT(spec) {
-        const modeEl = document.getElementById(this.id + '-mode-label');
-        const ptsEl = document.getElementById(this.id + '-pts');
-        const srcEl = document.getElementById(this.id + '-src');
+        var modeEl = document.getElementById(this.id + '-mode-label');
+        var ptsEl = document.getElementById(this.id + '-pts');
+        var srcEl = document.getElementById(this.id + '-src');
+        var traceCountEl = document.getElementById(this.id + '-trace-count');
         if (modeEl) modeEl.textContent = this.chartType.toUpperCase();
-        if (ptsEl) ptsEl.textContent = this._rawData ? this._rawData.length : (spec && spec.traces ? spec.traces[0]?.y?.length || 0 : 0);
+        if (ptsEl) ptsEl.textContent = this._rawData ? this._rawData.length : (spec && spec.traces && spec.traces[0] && spec.traces[0].y ? spec.traces[0].y.length : 0);
+        if (traceCountEl) traceCountEl.textContent = this._multiTraces ? this._multiTraces.length : (spec && spec.traces ? spec.traces.length : 0);
         if (srcEl) srcEl.textContent = this._source || '\u2014';
     },
 

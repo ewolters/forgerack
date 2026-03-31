@@ -43,36 +43,53 @@
         <!-- Yellow armor housing -->
         <div class="fluke-armor" style="flex:1;padding:8px 12px;display:flex;gap:10px;overflow:hidden;">
 
-            <!-- Left: column selectors + mode -->
-            <div style="display:flex;flex-direction:column;gap:6px;justify-content:center;width:90px;">
-                <!-- Column A -->
+            <!-- Left: column selectors + mean LCDs — paired rows -->
+            <div style="display:flex;flex-direction:column;gap:6px;justify-content:center;width:110px;">
+                <!-- A row: dropdown + mean LCD -->
                 <div style="display:flex;flex-direction:column;gap:2px;">
                     <span style="font:700 8px/1 'Arial',sans-serif;color:rgba(180,40,40,0.6);text-transform:uppercase;letter-spacing:0.08em;">Input A</span>
-                    <select id="${id}-col-a" style="
-                        background:#1a0800;border:1px solid rgba(239,68,68,0.25);
-                        color:#ef4444;padding:3px 5px;border-radius:1px;
-                        font:10px/1 'JetBrains Mono',monospace;
-                    "><option value="">column</option></select>
+                    <div style="display:flex;gap:4px;align-items:center;">
+                        <select id="${id}-col-a" style="
+                            flex:1;background:#1a0800;border:1px solid rgba(239,68,68,0.25);
+                            color:#ef4444;padding:3px 5px;border-radius:1px;
+                            font:10px/1 'JetBrains Mono',monospace;
+                        "><option value="">column</option></select>
+                        <div class="fluke-lcd" style="padding:2px 4px;min-width:48px;">
+                            <div class="fluke-lcd-ghost" style="font-size:10px;">888.8</div>
+                            <div class="fluke-lcd-value" id="${id}-mean-a" style="font-size:10px;color:#8b2020;">—</div>
+                        </div>
+                    </div>
                 </div>
-                <!-- Column B -->
+                <!-- B row: dropdown + mean LCD -->
                 <div style="display:flex;flex-direction:column;gap:2px;">
                     <span style="font:700 8px/1 'Arial',sans-serif;color:rgba(40,80,180,0.6);text-transform:uppercase;letter-spacing:0.08em;">Input B</span>
-                    <select id="${id}-col-b" style="
-                        background:#000814;border:1px solid rgba(96,165,250,0.25);
-                        color:#60a5fa;padding:3px 5px;border-radius:1px;
-                        font:10px/1 'JetBrains Mono',monospace;
-                    "><option value="">column</option></select>
+                    <div style="display:flex;gap:4px;align-items:center;">
+                        <select id="${id}-col-b" style="
+                            flex:1;background:#000814;border:1px solid rgba(96,165,250,0.25);
+                            color:#60a5fa;padding:3px 5px;border-radius:1px;
+                            font:10px/1 'JetBrains Mono',monospace;
+                        "><option value="">column</option></select>
+                        <div class="fluke-lcd" style="padding:2px 4px;min-width:48px;">
+                            <div class="fluke-lcd-ghost" style="font-size:10px;">888.8</div>
+                            <div class="fluke-lcd-value" id="${id}-mean-b" style="font-size:10px;color:#1e40af;">—</div>
+                        </div>
+                    </div>
                 </div>
-                <!-- Mode selector -->
-                <div class="segment" id="${id}-mode-seg" style="margin-top:auto;border-color:rgba(100,70,0,0.3);">
-                    <button class="segment-btn active" data-mode="diff" style="font-size:9px;padding:3px 6px;color:rgba(80,50,0,0.6);background:rgba(80,50,0,0.08);border-color:rgba(100,70,0,0.15);">&#x0394;</button>
-                    <button class="segment-btn" data-mode="ratio" style="font-size:9px;padding:3px 6px;color:rgba(80,50,0,0.6);background:rgba(80,50,0,0.08);border-color:rgba(100,70,0,0.15);">A/B</button>
-                    <button class="segment-btn" data-mode="tstat" style="font-size:9px;padding:3px 6px;color:rgba(80,50,0,0.6);background:rgba(80,50,0,0.08);border-color:rgba(100,70,0,0.15);">t</button>
-                    <button class="segment-btn" data-mode="pval" style="font-size:9px;padding:3px 6px;color:rgba(80,50,0,0.6);background:rgba(80,50,0,0.08);border-color:rgba(100,70,0,0.15);">p</button>
+                <!-- Mode selector + n counts -->
+                <div style="display:flex;gap:6px;align-items:center;">
+                    <div class="segment" id="${id}-mode-seg" style="border-color:rgba(100,70,0,0.3);">
+                        <button class="segment-btn active" data-mode="diff" style="font-size:9px;padding:3px 6px;color:rgba(80,50,0,0.6);background:rgba(80,50,0,0.08);border-color:rgba(100,70,0,0.15);">&#x0394;</button>
+                        <button class="segment-btn" data-mode="ratio" style="font-size:9px;padding:3px 6px;color:rgba(80,50,0,0.6);background:rgba(80,50,0,0.08);border-color:rgba(100,70,0,0.15);">A/B</button>
+                        <button class="segment-btn" data-mode="tstat" style="font-size:9px;padding:3px 6px;color:rgba(80,50,0,0.6);background:rgba(80,50,0,0.08);border-color:rgba(100,70,0,0.15);">t</button>
+                        <button class="segment-btn" data-mode="pval" style="font-size:9px;padding:3px 6px;color:rgba(80,50,0,0.6);background:rgba(80,50,0,0.08);border-color:rgba(100,70,0,0.15);">p</button>
+                    </div>
+                    <span style="font:600 8px/1 'Arial',sans-serif;color:rgba(20,10,0,0.3);">n</span>
+                    <span id="${id}-n-a" style="font:700 9px/1 'JetBrains Mono',monospace;color:rgba(180,40,40,0.35);">—</span>
+                    <span id="${id}-n-b" style="font:700 9px/1 'JetBrains Mono',monospace;color:rgba(40,80,180,0.35);">—</span>
                 </div>
             </div>
 
-            <!-- Center: main LCD — the big reading -->
+            <!-- Right: main LCD — the big reading -->
             <div style="flex:1;display:flex;flex-direction:column;gap:4px;justify-content:center;">
                 <div class="fluke-lcd" style="padding:10px 12px;">
                     <div class="fluke-lcd-ghost" style="font-size:32px;">88.8888</div>
@@ -81,23 +98,6 @@
                 <div style="display:flex;justify-content:space-between;align-items:center;">
                     <span id="${id}-mode-label" style="font:700 9px/1 'Arial',sans-serif;color:rgba(20,10,0,0.55);text-transform:uppercase;letter-spacing:0.1em;">DIFFERENCE</span>
                     <span id="${id}-verdict" style="font:700 9px/1 'Arial',sans-serif;color:rgba(20,10,0,0.35);text-transform:uppercase;"></span>
-                </div>
-            </div>
-
-            <!-- Right: simple text readouts matching dropdown height -->
-            <div style="width:62px;flex-shrink:0;display:flex;flex-direction:column;gap:6px;justify-content:center;">
-                <div>
-                    <span style="font:700 8px/1 'Arial',sans-serif;color:rgba(180,40,40,0.5);letter-spacing:0.06em;">x&#x0304; A</span>
-                    <div id="${id}-mean-a" style="font:700 12px/1 'JetBrains Mono',monospace;color:rgba(180,40,40,0.6);margin-top:2px;">—</div>
-                </div>
-                <div>
-                    <span style="font:700 8px/1 'Arial',sans-serif;color:rgba(40,80,180,0.5);letter-spacing:0.06em;">x&#x0304; B</span>
-                    <div id="${id}-mean-b" style="font:700 12px/1 'JetBrains Mono',monospace;color:rgba(40,80,180,0.6);margin-top:2px;">—</div>
-                </div>
-                <div style="display:flex;gap:6px;">
-                    <span style="font:600 8px/1 'Arial',sans-serif;color:rgba(20,10,0,0.35);">n</span>
-                    <span id="${id}-n-a" style="font:700 9px/1 'JetBrains Mono',monospace;color:rgba(180,40,40,0.4);">—</span>
-                    <span id="${id}-n-b" style="font:700 9px/1 'JetBrains Mono',monospace;color:rgba(40,80,180,0.4);">—</span>
                 </div>
             </div>
         </div>

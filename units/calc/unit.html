@@ -52,7 +52,7 @@
                 <!-- Column A selector -->
                 <div class="panel-recessed" style="padding:4px 6px;display:flex;flex-direction:column;gap:2px;align-items:center;">
                     <div style="font:700 8px/1 'Georgia',serif;color:rgba(212,136,74,0.25);text-transform:uppercase;letter-spacing:0.12em;">Col A</div>
-                    <select id="${id}-col" style="
+                    <select id="${id}-col" title="Input column to transform" style="
                         background:#120a0e;border:1px solid rgba(212,136,74,0.2);
                         color:#d4a878;padding:3px 5px;border-radius:1px;
                         font:10px/1 'JetBrains Mono',monospace;min-width:70px;height:20px;
@@ -65,7 +65,7 @@
                 <!-- Column B selector (for two-column ops) -->
                 <div class="panel-recessed" id="${id}-colb-panel" style="padding:4px 6px;display:flex;flex-direction:column;gap:2px;align-items:center;opacity:0.3;">
                     <div style="font:700 8px/1 'Georgia',serif;color:rgba(212,136,74,0.25);text-transform:uppercase;letter-spacing:0.12em;">Col B</div>
-                    <select id="${id}-col-b" disabled style="
+                    <select id="${id}-col-b" title="Second column for two-column operations" disabled style="
                         background:#120a0e;border:1px solid rgba(212,136,74,0.2);
                         color:#d4a878;padding:3px 5px;border-radius:1px;
                         font:10px/1 'JetBrains Mono',monospace;min-width:60px;height:20px;
@@ -77,7 +77,7 @@
                 <!-- Transform picker -->
                 <div class="panel-recessed" style="padding:4px 6px;display:flex;flex-direction:column;gap:2px;align-items:center;">
                     <div style="font:700 8px/1 'Georgia',serif;color:rgba(212,136,74,0.25);text-transform:uppercase;letter-spacing:0.12em;">Transform</div>
-                    <select id="${id}-transform" style="
+                    <select id="${id}-transform" title="Transform function to apply" style="
                         background:#120a0e;border:1px solid rgba(212,136,74,0.2);
                         color:#d4a878;padding:3px 5px;border-radius:1px;
                         font:10px/1 'JetBrains Mono',monospace;min-width:90px;height:20px;
@@ -108,7 +108,7 @@
                 <!-- Parameter -->
                 <div class="panel-recessed" style="padding:4px 6px;display:flex;flex-direction:column;gap:2px;align-items:center;">
                     <div style="font:700 8px/1 'Georgia',serif;color:rgba(212,136,74,0.25);text-transform:uppercase;letter-spacing:0.12em;">Window</div>
-                    <input type="number" id="${id}-param" value="5" min="1" max="999" style="
+                    <input type="number" id="${id}-param" title="Window size for moving average / lag periods" value="5" min="1" max="999" style="
                         width:44px;background:rgba(0,0,0,0.5);border:1px solid rgba(212,136,74,0.15);
                         color:#d4884a;padding:3px 4px;border-radius:1px;text-align:center;
                         font:700 11px/1 'JetBrains Mono',monospace;height:20px;box-sizing:border-box;
@@ -117,14 +117,14 @@
                 </div>
 
                 <!-- Apply button -->
-                <button id="${id}-btn-apply" class="btn-run" style="color:#d4884a;border-color:rgba(212,136,74,0.25);
+                <button id="${id}-btn-apply" title="Apply transform and emit result" class="btn-run" style="color:#d4884a;border-color:rgba(212,136,74,0.25);
                     background:linear-gradient(180deg,rgba(212,136,74,0.2),rgba(212,136,74,0.08));
                     font-family:'Georgia',serif;">Apply</button>
 
                 <!-- Chain toggle -->
                 <button id="${id}-btn-chain" class="btn-ghost" style="
                     font-size:8px;padding:4px 8px;color:rgba(212,136,74,0.25);border-color:rgba(212,136,74,0.1);
-                " title="Chain mode: append transform, don't replace">Chain +</button>
+                " title="Chain mode: stack transforms instead of replacing">Chain +</button>
             </div>
 
             <!-- Transform log CRT -->

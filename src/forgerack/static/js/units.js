@@ -3611,11 +3611,11 @@ FR.registerUnit('sentinel', {
             }
 
             // UCL/CL/LCL reference lines
-            svg += '<line x1="' + pad.left + '" y1="' + sy(ucl) + '" x2="' + (w - pad.right) + '" y2="' + sy(ucl) + '" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"/>';
+            svg += '<line x1="' + pad.left + '" y1="' + sy(ucl) + '" x2="' + (w - pad.right) + '" y2="' + sy(ucl) + '" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"><title>UCL = ' + ucl.toFixed(3) + '</title></line>';
             svg += '<text x="' + (w - pad.right + 3) + '" y="' + (sy(ucl) + 3) + '" fill="#ef4444" font-size="7" opacity="0.6">UCL</text>';
-            svg += '<line x1="' + pad.left + '" y1="' + sy(mean) + '" x2="' + (w - pad.right) + '" y2="' + sy(mean) + '" stroke="#4ade80" stroke-width="1" opacity="0.5"/>';
+            svg += '<line x1="' + pad.left + '" y1="' + sy(mean) + '" x2="' + (w - pad.right) + '" y2="' + sy(mean) + '" stroke="#4ade80" stroke-width="1" opacity="0.5"><title>CL (mean) = ' + mean.toFixed(3) + '</title></line>';
             svg += '<text x="' + (w - pad.right + 3) + '" y="' + (sy(mean) + 3) + '" fill="#4ade80" font-size="7" opacity="0.5">CL</text>';
-            svg += '<line x1="' + pad.left + '" y1="' + sy(lcl) + '" x2="' + (w - pad.right) + '" y2="' + sy(lcl) + '" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"/>';
+            svg += '<line x1="' + pad.left + '" y1="' + sy(lcl) + '" x2="' + (w - pad.right) + '" y2="' + sy(lcl) + '" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"><title>LCL = ' + lcl.toFixed(3) + '</title></line>';
             svg += '<text x="' + (w - pad.right + 3) + '" y="' + (sy(lcl) + 3) + '" fill="#ef4444" font-size="7" opacity="0.6">LCL</text>';
 
             // Spec limits
@@ -3640,7 +3640,8 @@ FR.registerUnit('sentinel', {
                 var isOOC = seen[i];
                 var color = isOOC ? '#ef4444' : '#d97706';
                 var r = isOOC ? 4 : 2.5;
-                svg += '<circle cx="' + sx(i).toFixed(1) + '" cy="' + sy(vals[i]).toFixed(1) + '" r="' + r + '" fill="' + color + '" opacity="0.9"/>';
+                var tip = '#' + (i + 1) + ': ' + vals[i].toFixed(3) + (isOOC ? ' ⚠ OOC' : '');
+                svg += '<circle cx="' + sx(i).toFixed(1) + '" cy="' + sy(vals[i]).toFixed(1) + '" r="' + r + '" fill="' + color + '" opacity="0.9" style="cursor:pointer;"><title>' + tip + '</title></circle>';
                 if (isOOC) {
                     svg += '<circle cx="' + sx(i).toFixed(1) + '" cy="' + sy(vals[i]).toFixed(1) + '" r="7" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.3"/>';
                 }

@@ -330,7 +330,9 @@ FR.registerUnit('chart-panel', {
 
         const n = vals.length;
         const x = vals.map((_, i) => i + 1);
-        const c = '#4ade80';
+        // Read trace color from faceplate picker, fall back to default
+        var traceInput = document.getElementById(this.id + '-color-trace');
+        const c = (traceInput && traceInput.value) || '#4ade80';
         let spec;
 
         switch (this.chartType) {

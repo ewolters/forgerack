@@ -4372,15 +4372,15 @@ FR.registerUnit('formula', {
 // ═══════════════════════════════════════════════════════════
 
 FR.registerUnit('probe', {
-    _STATS: [
-        { name: 'mean',   label: 'MEAN',   angle: -90,  fn: function(v) { return v.reduce(function(a,b){return a+b},0)/v.length; } },
-        { name: 'median', label: 'MED',    angle: -60,  fn: function(v) { var s=v.slice().sort(function(a,b){return a-b}); var m=Math.floor(s.length/2); return s.length%2?s[m]:(s[m-1]+s[m])/2; } },
-        { name: 'std',    label: 'STD',    angle: -30,  fn: function(v) { var m=v.reduce(function(a,b){return a+b},0)/v.length; var ss=v.reduce(function(a,b){return a+(b-m)*(b-m)},0); return Math.sqrt(ss/(v.length-1)); } },
-        { name: 'min',    label: 'MIN',    angle: 0,    fn: function(v) { return Math.min.apply(null,v); } },
-        { name: 'max',    label: 'MAX',    angle: 30,   fn: function(v) { return Math.max.apply(null,v); } },
-        { name: 'range',  label: 'RNG',    angle: 60,   fn: function(v) { return Math.max.apply(null,v)-Math.min.apply(null,v); } },
-        { name: 'count',  label: 'n',      angle: 90,   fn: function(v) { return v.length; } },
-        { name: 'sum',    label: 'SUM',    angle: 120,  fn: function(v) { return v.reduce(function(a,b){return a+b},0); } }
+    _MODES: [
+        { name: 'mean',   label: 'MEAN',   angle: -90  },
+        { name: 'median', label: 'MED',    angle: -60  },
+        { name: 'stdev',  label: 'STD',    angle: -30  },
+        { name: 'min',    label: 'MIN',    angle: 0    },
+        { name: 'max',    label: 'MAX',    angle: 30   },
+        { name: 'range',  label: 'RNG',    angle: 60   },
+        { name: 'n',      label: 'n',      angle: 90   },
+        { name: 'sum',    label: 'SUM',    angle: 120  }
     ],
 
     init(el, id) {
@@ -4388,21 +4388,20 @@ FR.registerUnit('probe', {
         this.id = id;
         this._data = null;
         this._statIdx = 0;
+        this._lastResult = null;
 
         var self = this;
         var selector = document.getElementById(id + '-selector');
         var colSelect = document.getElementById(id + '-col');
 
-        // Click selector to cycle through stats
         if (selector) {
             selector.addEventListener('click', function() {
-                self._statIdx = (self._statIdx + 1) % self._STATS.length;
+                self._statIdx = (self._statIdx + 1) % self._MODES.length;
                 self._updateSelector();
-                self._compute();
+                self._showFromCache();
             });
         }
 
-        // Column change
         if (colSelect) {
             colSelect.addEventListener('change', function() { self._compute(); });
         }
@@ -4411,21 +4410,29 @@ FR.registerUnit('probe', {
     },
 
     _updateSelector() {
-        var stat = this._STATS[this._statIdx];
+        var mode = this._MODES[this._statIdx];
         var selector = document.getElementById(this.id + '-selector');
-        if (selector) selector.style.transform = 'rotate(' + stat.angle + 'deg)';
+        if (selector) selector.style.transform = 'rotate(' + mode.angle + 'deg)';
         var label = document.getElementById(this.id + '-stat-label');
-        if (label) label.textContent = stat.label;
+        if (label) label.textContent = mode.label;
+    },
+
+    _showFromCache() {
+        if (!this._lastResult) { this._setDisplay('—'); return; }
+        var r = this._lastResult;
+        var mode = this._MODES[this._statIdx];
+        var val = r[mode.name];
+        if (val === undefined || val === null) { this._setDisplay('—'); return; }
+        this._setDisplay(mode.name === 'n' ? String(Math.round(val)) :
+            Math.abs(val) >= 1000 ? val.toFixed(1) :
+            Math.abs(val) >= 1 ? val.toFixed(3) : val.toFixed(4));
     },
 
     _compute() {
         if (!this._data) return;
         var colSelect = document.getElementById(this.id + '-col');
         var col = colSelect ? colSelect.value : '';
-        if (!col || !this._data.data[col]) {
-            this._setDisplay('—');
-            return;
-        }
+        if (!col || !this._data.data[col]) { this._setDisplay('—'); return; }
 
         var raw = this._data.data[col];
         var vals = [];
@@ -4433,27 +4440,27 @@ FR.registerUnit('probe', {
             var v = parseFloat(raw[i]);
             if (!isNaN(v)) vals.push(v);
         }
-
         if (vals.length === 0) {
             this._setDisplay('NaN');
             FR.LED(document.getElementById(this.id + '-led')).set('red');
             return;
         }
 
-        var stat = this._STATS[this._statIdx];
-        var result = stat.fn(vals);
-        var display;
-        if (stat.name === 'count') {
-            display = String(Math.round(result));
-        } else if (Math.abs(result) >= 1000) {
-            display = result.toFixed(1);
-        } else if (Math.abs(result) >= 1) {
-            display = result.toFixed(3);
-        } else {
-            display = result.toFixed(4);
-        }
-        this._setDisplay(display);
-        FR.LED(document.getElementById(this.id + '-led')).set('green');
+        var self = this;
+        var csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+        fetch('/api/rack/compute/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf ? csrf.value : document.cookie.replace(/.*csrftoken=([^;]*).*/, '$1') },
+            body: JSON.stringify({ op: 'descriptive', data: { values: vals } })
+        })
+        .then(function(resp) { return resp.json(); })
+        .then(function(json) {
+            if (json.error) { self._setDisplay('ERR'); FR.LED(document.getElementById(self.id + '-led')).set('red'); return; }
+            self._lastResult = json.result;
+            self._showFromCache();
+            FR.LED(document.getElementById(self.id + '-led')).set('green');
+        })
+        .catch(function() { self._setDisplay('ERR'); FR.LED(document.getElementById(self.id + '-led')).set('red'); });
     },
 
     _setDisplay(text) {

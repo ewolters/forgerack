@@ -12,10 +12,10 @@
 <div class="rack-unit-front u4 mfr-vakuum" data-unit="calc" data-id="${id}" style="
     --device-accent:#d4884a;
     background:
-        repeating-linear-gradient(0deg, hsla(0,0%,0%,0) 0%, hsla(0,0%,0%,0) 3.5%, hsla(0,0%,0%,.015) 3.7%),
-        repeating-linear-gradient(0deg, hsla(0,0%,0%,0) 0%, hsla(0,0%,0%,0) 1.8%, hsla(0,0%,0%,.01) 2%),
-        repeating-linear-gradient(90deg, hsla(0,0%,0%,0) 0%, hsla(0,0%,0%,0) 4.5%, hsla(0,0%,0%,.012) 4.7%),
-        repeating-linear-gradient(90deg, hsla(0,0%,0%,0) 0%, hsla(0,0%,0%,0) 1.5%, hsla(0,0%,0%,.008) 1.7%),
+        /* Warm specular — tube amp warmth */
+        radial-gradient(ellipse at 40% 30%, hsla(25,40%,50%,.03), transparent 55%),
+        /* Color variation — cooler at edges */
+        radial-gradient(ellipse at 85% 75%, hsla(340,15%,35%,.015), transparent 45%),
         linear-gradient(160deg, #1e1216 0%, #1a0f14 30%, #1c1015 50%, #160c10 80%);
     overflow:hidden;
 ">

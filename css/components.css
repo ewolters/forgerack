@@ -2484,7 +2484,7 @@
     mix-blend-mode: multiply;
     background: #808080;
     filter: url(#wear-dust);
-    opacity: 0.06;
+    opacity: 0.025;
 }
 
 /* Coffee ring stain — someone set their mug on it (CSS, one-off is fine) */

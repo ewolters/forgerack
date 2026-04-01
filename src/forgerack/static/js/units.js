@@ -5272,6 +5272,19 @@ FR.registerUnit('precision', {
 // ═══════════════════════════════════════════════════════════
 
 FR.registerUnit('designer', {
+    // ── Design catalog: category → [{value, label}] ──
+    _catalog: {
+        factorial:        [{v:'full',           l:'Full Factorial'}, {v:'fractional', l:'Fractional Factorial'}, {v:'plackett_burman', l:'Plackett-Burman'}],
+        response_surface: [{v:'ccd',            l:'CCD (Central Composite)'}, {v:'bbd', l:'Box-Behnken'}],
+        screening:        [{v:'dsd',            l:'Definitive Screening'}],
+        classical:        [{v:'latin_square',   l:'Latin Square'}, {v:'rcbd', l:'Randomized Block'}, {v:'taguchi', l:'Taguchi'}],
+        optimal:          [{v:'d_optimal',      l:'D-Optimal'}, {v:'i_optimal', l:'I-Optimal'}],
+        space_filling:    [{v:'lhs',            l:'Latin Hypercube'}, {v:'maximin_lhs', l:'Maximin LHS'}],
+        mixture:          [{v:'simplex_lattice',l:'Simplex Lattice'}, {v:'simplex_centroid', l:'Simplex Centroid'}, {v:'extreme_vertices', l:'Extreme Vertices'}],
+        split_plot:       [{v:'split_plot',     l:'Split-Plot'}, {v:'split_plot_ccd', l:'Split-Plot CCD'}],
+        evop:             [{v:'evop',           l:'EVOP Phase'}]
+    },
+
     init(el, id) {
         this.el = el; this.id = id;
         this._factors = [];
@@ -5284,12 +5297,32 @@ FR.registerUnit('designer', {
         var genBtn = document.getElementById(id + '-btn-gen');
         if (genBtn) genBtn.addEventListener('click', function() { self._generate(); });
 
+        // Category → design cascade
+        var catSel = document.getElementById(id + '-category');
+        if (catSel) catSel.addEventListener('change', function() { self._updateDesignDropdown(); });
+        this._updateDesignDropdown();
+
         // Enter key on factor inputs
         ['-f-name', '-f-low', '-f-high'].forEach(function(suffix) {
             var inp = document.getElementById(id + suffix);
             if (inp) inp.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') { e.preventDefault(); self._addFactor(); }
             });
+        });
+    },
+
+    _updateDesignDropdown() {
+        var catSel = document.getElementById(this.id + '-category');
+        var desSel = document.getElementById(this.id + '-design');
+        if (!catSel || !desSel) return;
+
+        var cat = catSel.value;
+        var items = this._catalog[cat] || [];
+        desSel.innerHTML = '';
+        items.forEach(function(item) {
+            var opt = document.createElement('option');
+            opt.value = item.v; opt.textContent = item.l;
+            desSel.appendChild(opt);
         });
     },
 
@@ -5308,7 +5341,6 @@ FR.registerUnit('designer', {
         this._factors.push({ name: name, low: low, high: high });
         this._renderFactors();
 
-        // Clear inputs
         if (nameEl) { nameEl.value = ''; nameEl.focus(); }
         if (lowEl) lowEl.value = '';
         if (highEl) highEl.value = '';
@@ -5321,13 +5353,13 @@ FR.registerUnit('designer', {
         container.innerHTML = '';
         this._factors.forEach(function(f, i) {
             var row = document.createElement('div');
-            row.style.cssText = 'display:flex;gap:3px;align-items:center;padding:2px 3px;background:rgba(244,63,94,0.03);border:1px solid rgba(244,63,94,0.06);border-radius:1px;';
+            row.style.cssText = 'display:flex;gap:3px;align-items:center;padding:2px 3px;background:rgba(194,149,106,0.03);border:1px solid rgba(194,149,106,0.06);border-radius:1px;';
             row.innerHTML =
-                '<span style="flex:1;font:700 9px/1 JetBrains Mono,monospace;color:rgba(244,63,94,0.5);">' + f.name + '</span>' +
-                '<span style="font:9px/1 JetBrains Mono,monospace;color:rgba(244,63,94,0.3);">' + f.low + '</span>' +
-                '<span style="font:8px/1 sans-serif;color:rgba(244,63,94,0.15);">\u2013</span>' +
-                '<span style="font:9px/1 JetBrains Mono,monospace;color:rgba(244,63,94,0.3);">' + f.high + '</span>' +
-                '<span style="cursor:pointer;color:rgba(244,63,94,0.2);font-size:10px;" data-idx="' + i + '">\u00D7</span>';
+                '<span style="flex:1;font:700 9px/1 JetBrains Mono,monospace;color:rgba(194,149,106,0.5);">' + f.name + '</span>' +
+                '<span style="font:9px/1 JetBrains Mono,monospace;color:rgba(194,149,106,0.3);">' + f.low + '</span>' +
+                '<span style="font:8px/1 sans-serif;color:rgba(194,149,106,0.15);">\u2013</span>' +
+                '<span style="font:9px/1 JetBrains Mono,monospace;color:rgba(194,149,106,0.3);">' + f.high + '</span>' +
+                '<span style="cursor:pointer;color:rgba(194,149,106,0.2);font-size:10px;" data-idx="' + i + '">\u00D7</span>';
             row.querySelector('[data-idx]').addEventListener('click', function() {
                 self._factors.splice(i, 1);
                 self._renderFactors();
@@ -5345,6 +5377,19 @@ FR.registerUnit('designer', {
         var designSel = document.getElementById(this.id + '-design');
         var designType = designSel ? designSel.value : 'full';
 
+        // Gather extra parameters
+        var nRunsEl = document.getElementById(this.id + '-n-runs-input');
+        var resEl = document.getElementById(this.id + '-resolution');
+        var nRuns = nRunsEl ? parseInt(nRunsEl.value) || 20 : 20;
+        var resolution = resEl ? parseInt(resEl.value) || 3 : 3;
+
+        var payload = {
+            factors: this._factors,
+            design: designType,
+            n_runs: nRuns,
+            resolution: resolution
+        };
+
         var self = this;
         var csrf = document.querySelector('[name=csrfmiddlewaretoken]');
         this._showSheet('Generating...');
@@ -5352,7 +5397,7 @@ FR.registerUnit('designer', {
         fetch('/api/rack/compute/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf ? csrf.value : document.cookie.replace(/.*csrftoken=([^;]*).*/, '$1') },
-            body: JSON.stringify({ op: 'doe_design', data: { factors: self._factors, design: designType } })
+            body: JSON.stringify({ op: 'doe_design', data: payload })
         })
         .then(function(resp) { return resp.json(); })
         .then(function(json) {
@@ -5375,7 +5420,7 @@ FR.registerUnit('designer', {
 
     _showSheet(msg) {
         var el = document.getElementById(this.id + '-runsheet');
-        if (el) el.innerHTML = '<span style="color:rgba(244,63,94,0.2);">' + msg + '</span>';
+        if (el) el.innerHTML = '<span style="color:rgba(194,149,106,0.15);">' + msg + '</span>';
     },
 
     _displayRunSheet(r) {
@@ -5385,21 +5430,21 @@ FR.registerUnit('designer', {
         var badge = document.getElementById(this.id + '-design-badge');
         if (badge) { badge.textContent = r.design_type; badge.style.display = 'inline-flex'; }
 
-        // Build table
+        // Build table — warm copper tones
         var html = '<table style="width:100%;border-collapse:collapse;">';
-        html += '<tr><th style="padding:2px 4px;color:rgba(244,63,94,0.4);font-size:8px;text-align:right;border-bottom:1px solid rgba(244,63,94,0.1);">Run</th>';
+        html += '<tr><th style="padding:2px 4px;color:rgba(194,149,106,0.4);font-size:8px;text-align:right;border-bottom:1px solid rgba(194,149,106,0.1);">Run</th>';
         r.factor_names.forEach(function(n) {
-            html += '<th style="padding:2px 4px;color:rgba(244,63,94,0.4);font-size:8px;text-align:right;border-bottom:1px solid rgba(244,63,94,0.1);">' + n + '</th>';
+            html += '<th style="padding:2px 4px;color:rgba(194,149,106,0.4);font-size:8px;text-align:right;border-bottom:1px solid rgba(194,149,106,0.1);">' + n + '</th>';
         });
-        html += '<th style="padding:2px 4px;color:rgba(244,63,94,0.15);font-size:8px;text-align:right;border-bottom:1px solid rgba(244,63,94,0.1);">Response</th></tr>';
+        html += '<th style="padding:2px 4px;color:rgba(194,149,106,0.12);font-size:8px;text-align:right;border-bottom:1px solid rgba(194,149,106,0.1);">Response</th></tr>';
 
         r.runs.forEach(function(run) {
             html += '<tr>';
-            html += '<td style="padding:1px 4px;color:rgba(244,63,94,0.2);font-size:9px;text-align:right;border-bottom:1px solid rgba(244,63,94,0.02);">' + run.run + '</td>';
+            html += '<td style="padding:1px 4px;color:rgba(194,149,106,0.2);font-size:9px;text-align:right;border-bottom:1px solid rgba(194,149,106,0.02);">' + run.run + '</td>';
             r.factor_names.forEach(function(n) {
-                html += '<td style="padding:1px 4px;color:rgba(244,63,94,0.35);font-size:9px;text-align:right;border-bottom:1px solid rgba(244,63,94,0.02);">' + (typeof run[n] === 'number' ? run[n].toFixed(1) : run[n]) + '</td>';
+                html += '<td style="padding:1px 4px;color:rgba(194,149,106,0.35);font-size:9px;text-align:right;border-bottom:1px solid rgba(194,149,106,0.02);">' + (typeof run[n] === 'number' ? run[n].toFixed(1) : run[n]) + '</td>';
             });
-            html += '<td style="padding:1px 4px;color:rgba(244,63,94,0.1);font-size:9px;text-align:right;border-bottom:1px solid rgba(244,63,94,0.02);">___</td>';
+            html += '<td style="padding:1px 4px;color:rgba(194,149,106,0.08);font-size:9px;text-align:right;border-bottom:1px solid rgba(194,149,106,0.02);">___</td>';
             html += '</tr>';
         });
         html += '</table>';

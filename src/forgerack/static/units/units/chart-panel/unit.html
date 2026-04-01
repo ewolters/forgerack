@@ -1,0 +1,314 @@
+<!--
+ ╔══════════════════════════════════════════════════════════════╗
+ ║  SCOPE LS-800 — Universal Oscilloscope Display              ║
+ ║  Manufacturer: FORGERACK / SVEND MFG                        ║
+ ║                                                              ║
+ ║  10U instrument. Top 70% is CRT screen. Bottom 30% is the   ║
+ ║  control panel: mode selector, export controls, annotation   ║
+ ║  toggle, settings CRT. All physical instrument controls.     ║
+ ╚══════════════════════════════════════════════════════════════╝
+-->
+
+<!-- ════════ FRONT PANEL ════════ -->
+<div class="rack-unit-front u10 mfr-phosphor" data-unit="chart-panel" data-id="${id}" style="
+    --device-accent:#4ade80;
+    background:
+        repeating-linear-gradient(180deg, rgba(255,255,255,0.002) 0px, transparent 1px, transparent 4px),
+        linear-gradient(160deg, #0b0e0b 0%, #090c09 30%, #0a0d0a 50%, #080b08 80%, #070a07 100%);
+    overflow:hidden;
+">
+    <!-- ── Nameplate ── -->
+    <div style="
+        display:flex;align-items:center;gap:8px;
+        padding:3px 48px;
+        background: rgba(0,0,0,0.12);
+        border-bottom:1px solid rgba(255,255,255,0.015);
+    ">
+        <div style="width:10px;height:10px;border-radius:50%;background:rgba(0,0,0,0.3);
+            box-shadow:inset 0 1px 2px rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;">
+            <span class="led on-green" id="${id}-led" style="width:5px;height:5px;"></span>
+        </div>
+        <span style="font:300 13px/1 'Helvetica Neue','Arial',sans-serif;
+            color:rgba(255,255,255,0.1);letter-spacing:0.14em;text-transform:uppercase;">Scope</span>
+        <div style="width:1px;height:8px;background:rgba(255,255,255,0.03);"></div>
+        <span style="font:300 9px/1 'Helvetica Neue',sans-serif;color:rgba(255,255,255,0.05);letter-spacing:0.06em;">Universal Display</span>
+        <span style="font:500 10px/1 'Courier New',monospace;color:rgba(200,180,140,0.1);margin-left:auto;">LS-800</span>
+    </div>
+
+    <!-- ── Main CRT screen — heavy beveled bezel ── -->
+    <div style="
+        margin:6px 48px 4px;padding:4px;
+        background: linear-gradient(145deg, rgba(255,255,255,0.04), rgba(0,0,0,0.2));
+        border-radius:3px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03), inset 0 -1px 0 rgba(0,0,0,0.3);
+    ">
+        <div class="scope-grid" style="overflow:hidden;">
+            <!-- Oscilloscope divisions -->
+            <div class="scope-grid-major"></div>
+            <div class="scope-grid-center"></div>
+            <div class="scope-grid-ticks"></div>
+            <!-- CRT edge shadow -->
+            <div style="position:absolute;inset:0;
+                box-shadow: inset 0 0 30px rgba(0,0,0,0.4);pointer-events:none;z-index:3;"></div>
+
+            <!-- ForgeViz render target -->
+            <div id="${id}-viewport" style="height:260px;position:relative;z-index:4;">
+                <div id="${id}-empty" style="
+                    display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:4px;">
+                    <span style="font:300 12px/1 'Courier New',monospace;color:rgba(74,222,128,0.05);">NO SIGNAL</span>
+                    <span style="font:300 9px/1 'Courier New',monospace;color:rgba(74,222,128,0.03);">connect data source to input jack</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════ CONTROL PANEL — below the screen ══════ -->
+    <div style="
+        margin:4px 48px 6px;
+        padding:8px 12px;
+        background: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.08));
+        border-top:2px solid rgba(0,0,0,0.3);
+        display:flex;gap:12px;align-items:stretch;
+    ">
+        <!-- ── Settings CRT ── -->
+        <div style="width:148px;padding:3px;
+            background:linear-gradient(145deg, rgba(255,255,255,0.025), rgba(0,0,0,0.12));
+            border-radius:2px;box-shadow:inset 0 1px 0 rgba(0,0,0,0.15);flex-shrink:0;">
+            <div style="
+                background:#020402;border:1px solid rgba(0,0,0,0.8);border-radius:1px;
+                box-shadow:inset 0 1px 4px rgba(0,0,0,0.6);padding:5px 8px;
+                position:relative;overflow:hidden;height:100%;
+            ">
+                <div style="position:absolute;inset:0;
+                    background:repeating-linear-gradient(0deg, transparent 0px, rgba(0,0,0,0.07) 1px, transparent 2px);
+                    pointer-events:none;"></div>
+                <div style="position:absolute;inset:0;
+                    background:radial-gradient(ellipse at center, rgba(74,222,128,0.02), transparent 80%);
+                    pointer-events:none;"></div>
+                <div id="${id}-settings" style="position:relative;font:11px/1.5 'JetBrains Mono',monospace;color:rgba(74,222,128,0.3);">
+                    <div>MODE: <span id="${id}-mode-label" style="color:rgba(74,222,128,0.5);">LINE</span></div>
+                    <div>PTS:  <span id="${id}-pts" style="color:rgba(74,222,128,0.45);">0</span></div>
+                    <div>COLS: <span id="${id}-trace-count" style="color:rgba(74,222,128,0.45);">0</span></div>
+                    <div>SRC:  <span id="${id}-src" style="color:rgba(74,222,128,0.25);">&#x2014;</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Column/Trace selector ── -->
+        <div style="
+            background:linear-gradient(180deg, #3a3d3a, #2e312e);
+            border:1px solid rgba(0,0,0,0.5);border-radius:2px;
+            box-shadow:inset 0 2px 4px rgba(0,0,0,0.3), inset 0 -1px 0 rgba(255,255,255,0.04);
+            padding:6px 8px;display:flex;flex-direction:column;gap:3px;justify-content:center;min-width:80px;
+        ">
+            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(220,220,210,0.7);
+                text-transform:uppercase;letter-spacing:0.2em;text-align:center;">Traces</div>
+            <select id="${id}-col-select" multiple size="3" style="
+                background:#0a0e0a;border:1px solid rgba(74,222,128,0.12);
+                color:rgba(74,222,128,0.5);padding:2px 3px;border-radius:1px;
+                font:9px/1.3 'JetBrains Mono',monospace;min-width:72px;
+                box-shadow:inset 0 1px 2px rgba(0,0,0,0.3);
+            ">
+                <option value="__ALL__" selected>All numeric</option>
+            </select>
+        </div>
+
+        <!-- ── Display mode selector — recessed bare metal ── -->
+        <div style="
+            background:linear-gradient(180deg, #3a3d3a, #2e312e);
+            border:1px solid rgba(0,0,0,0.5);border-radius:2px;
+            box-shadow:inset 0 2px 4px rgba(0,0,0,0.3), inset 0 -1px 0 rgba(255,255,255,0.04);
+            padding:6px 10px;display:flex;flex-direction:column;gap:4px;justify-content:center;
+        ">
+            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(220,220,210,0.7);
+                text-transform:uppercase;letter-spacing:0.2em;text-align:center;">Display</div>
+            <div class="segment" id="${id}-type-seg" style="border-color:rgba(0,0,0,0.3);">
+                <button class="segment-btn active" data-chart-type="line" style="font:700 8px/1 'Arial',sans-serif;padding:4px 6px;color:rgba(220,220,210,0.6);">Line</button>
+                <button class="segment-btn" data-chart-type="scatter" style="font:700 8px/1 'Arial',sans-serif;padding:4px 6px;color:rgba(220,220,210,0.6);">Scat</button>
+                <button class="segment-btn" data-chart-type="bar" style="font:700 8px/1 'Arial',sans-serif;padding:4px 6px;color:rgba(220,220,210,0.6);">Bar</button>
+                <button class="segment-btn" data-chart-type="hist" style="font:700 8px/1 'Arial',sans-serif;padding:4px 6px;color:rgba(220,220,210,0.6);">Hist</button>
+            </div>
+            <div class="segment" id="${id}-type-seg2" style="border-color:rgba(0,0,0,0.3);">
+                <button class="segment-btn" data-chart-type="box" style="font:700 8px/1 'Arial',sans-serif;padding:4px 6px;color:rgba(220,220,210,0.6);">Box</button>
+                <button class="segment-btn" data-chart-type="control" style="font:700 8px/1 'Arial',sans-serif;padding:4px 6px;color:rgba(220,220,210,0.6);">SPC</button>
+                <button class="segment-btn" data-chart-type="heatmap" style="font:700 8px/1 'Arial',sans-serif;padding:4px 6px;color:rgba(220,220,210,0.6);">Heat</button>
+            </div>
+        </div>
+
+        <!-- ── Export controls — recessed bare metal ── -->
+        <div style="
+            background:linear-gradient(180deg, #3a3d3a, #2e312e);
+            border:1px solid rgba(0,0,0,0.5);border-radius:2px;
+            box-shadow:inset 0 2px 4px rgba(0,0,0,0.3), inset 0 -1px 0 rgba(255,255,255,0.04);
+            padding:6px 10px;display:flex;flex-direction:column;gap:4px;justify-content:center;
+        ">
+            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(220,220,210,0.7);
+                text-transform:uppercase;letter-spacing:0.2em;text-align:center;">Export</div>
+            <div style="display:flex;gap:4px;">
+                <button id="${id}-btn-copy" class="btn-export">Copy</button>
+                <button id="${id}-btn-svg" class="btn-export">SVG</button>
+                <button id="${id}-btn-png" class="btn-export">PNG</button>
+            </div>
+        </div>
+
+        <!-- ── Labels — recessed bare metal ── -->
+        <div style="
+            background:linear-gradient(180deg, #3a3d3a, #2e312e);
+            border:1px solid rgba(0,0,0,0.5);border-radius:2px;
+            box-shadow:inset 0 2px 4px rgba(0,0,0,0.3), inset 0 -1px 0 rgba(255,255,255,0.04);
+            padding:6px 10px;display:flex;flex-direction:column;gap:4px;justify-content:center;
+        ">
+            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(220,220,210,0.7);
+                text-transform:uppercase;letter-spacing:0.2em;text-align:center;">Labels</div>
+            <div style="display:flex;gap:3px;align-items:center;">
+                <input type="text" id="${id}-label-title" placeholder="Title" style="
+                    width:70px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);
+                    color:rgba(220,220,210,0.7);padding:3px 5px;border-radius:1px;
+                    font:10px/1 'JetBrains Mono',monospace;
+                    box-shadow:inset 0 1px 2px rgba(0,0,0,0.3);
+                ">
+                <input type="color" id="${id}-color-title" value="#e8efe8" style="
+                    width:18px;height:18px;border:1px solid rgba(255,255,255,0.1);border-radius:1px;
+                    background:rgba(0,0,0,0.3);cursor:pointer;padding:0;
+                ">
+            </div>
+            <div style="display:flex;gap:3px;align-items:center;">
+                <input type="text" id="${id}-label-x" placeholder="X" style="
+                    width:33px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);
+                    color:rgba(220,220,210,0.7);padding:3px 5px;border-radius:1px;
+                    font:10px/1 'JetBrains Mono',monospace;
+                    box-shadow:inset 0 1px 2px rgba(0,0,0,0.3);
+                ">
+                <input type="text" id="${id}-label-y" placeholder="Y" style="
+                    width:33px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);
+                    color:rgba(220,220,210,0.7);padding:3px 5px;border-radius:1px;
+                    font:10px/1 'JetBrains Mono',monospace;
+                    box-shadow:inset 0 1px 2px rgba(0,0,0,0.3);
+                ">
+                <input type="color" id="${id}-color-axis-text" value="#94a3b8" style="
+                    width:18px;height:18px;border:1px solid rgba(255,255,255,0.1);border-radius:1px;
+                    background:rgba(0,0,0,0.3);cursor:pointer;padding:0;
+                ">
+            </div>
+        </div>
+
+        <!-- ── Color controls — recessed bare metal ── -->
+        <div style="
+            background:linear-gradient(180deg, #3a3d3a, #2e312e);
+            border:1px solid rgba(0,0,0,0.5);border-radius:2px;
+            box-shadow:inset 0 2px 4px rgba(0,0,0,0.3), inset 0 -1px 0 rgba(255,255,255,0.04);
+            padding:6px 10px;display:flex;flex-direction:column;gap:4px;justify-content:center;align-items:center;
+        ">
+            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(220,220,210,0.7);
+                text-transform:uppercase;letter-spacing:0.2em;text-align:center;">Color</div>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <!-- Trace color -->
+                <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                    <div style="position:relative;">
+                        <span class="led" id="${id}-led-trace" style="width:4px;height:4px;position:absolute;top:-3px;right:-2px;z-index:1;"></span>
+                        <input type="color" id="${id}-color-trace" value="#4a9f6e" style="
+                            width:24px;height:18px;border:1px solid rgba(74,222,128,0.12);border-radius:1px;
+                            background:rgba(0,0,0,0.3);cursor:pointer;padding:0;
+                            box-shadow:0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.02);
+                        ">
+                    </div>
+                    <span style="font:600 10px/1 'Arial',sans-serif;color:rgba(220,220,210,0.5);text-transform:uppercase;letter-spacing:0.06em;">Trace</span>
+                </div>
+                <!-- Background color -->
+                <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                    <div style="position:relative;">
+                        <span class="led" id="${id}-led-bg" style="width:4px;height:4px;position:absolute;top:-3px;right:-2px;z-index:1;"></span>
+                        <input type="color" id="${id}-color-bg" value="#0d120d" style="
+                            width:24px;height:18px;border:1px solid rgba(74,222,128,0.12);border-radius:1px;
+                            background:rgba(0,0,0,0.3);cursor:pointer;padding:0;
+                            box-shadow:0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.02);
+                        ">
+                    </div>
+                    <span style="font:600 10px/1 'Arial',sans-serif;color:rgba(220,220,210,0.5);text-transform:uppercase;letter-spacing:0.06em;">BG</span>
+                </div>
+                <!-- Grid color -->
+                <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                    <div style="position:relative;">
+                        <span class="led" id="${id}-led-grid" style="width:4px;height:4px;position:absolute;top:-3px;right:-2px;z-index:1;"></span>
+                        <input type="color" id="${id}-color-grid" value="#1a1a1a" style="
+                            width:24px;height:18px;border:1px solid rgba(74,222,128,0.12);border-radius:1px;
+                            background:rgba(0,0,0,0.3);cursor:pointer;padding:0;
+                            box-shadow:0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.02);
+                        ">
+                    </div>
+                    <span style="font:600 10px/1 'Arial',sans-serif;color:rgba(220,220,210,0.5);text-transform:uppercase;letter-spacing:0.06em;">Grid</span>
+                </div>
+                <!-- Axis/border color -->
+                <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                    <div style="position:relative;">
+                        <span class="led" id="${id}-led-axis" style="width:4px;height:4px;position:absolute;top:-3px;right:-2px;z-index:1;"></span>
+                        <input type="color" id="${id}-color-axis" value="#333333" style="
+                            width:24px;height:18px;border:1px solid rgba(74,222,128,0.12);border-radius:1px;
+                            background:rgba(0,0,0,0.3);cursor:pointer;padding:0;
+                            box-shadow:0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.02);
+                        ">
+                    </div>
+                    <span style="font:600 10px/1 'Arial',sans-serif;color:rgba(220,220,210,0.5);text-transform:uppercase;letter-spacing:0.06em;">Axis</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Annotation + Data Table toggles — recessed bare metal ── -->
+        <div style="
+            background:linear-gradient(180deg, #3a3d3a, #2e312e);
+            border:1px solid rgba(0,0,0,0.5);border-radius:2px;
+            box-shadow:inset 0 2px 4px rgba(0,0,0,0.3), inset 0 -1px 0 rgba(255,255,255,0.04);
+            padding:6px 10px;display:flex;flex-direction:column;gap:6px;justify-content:center;align-items:center;
+        ">
+            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(220,220,210,0.7);
+                text-transform:uppercase;letter-spacing:0.2em;text-align:center;">Tools</div>
+            <div style="display:flex;gap:10px;align-items:center;">
+                <!-- Annotate toggle -->
+                <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                    <div class="switch-rocker" id="${id}-sw-annotate" style="width:14px;height:20px;"></div>
+                    <span style="font:600 8px/1 'Arial',sans-serif;color:rgba(220,220,210,0.5);text-transform:uppercase;letter-spacing:0.08em;">Note</span>
+                </div>
+                <!-- Data table toggle -->
+                <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                    <div class="switch-rocker" id="${id}-sw-table" style="width:14px;height:20px;"></div>
+                    <span style="font:600 8px/1 'Arial',sans-serif;color:rgba(220,220,210,0.5);text-transform:uppercase;letter-spacing:0.08em;">Table</span>
+                </div>
+                <!-- Expand -->
+                <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                    <div class="switch-momentary" id="${id}-btn-expand" style="width:16px;height:16px;"></div>
+                    <span style="font:600 8px/1 'Arial',sans-serif;color:rgba(220,220,210,0.5);text-transform:uppercase;letter-spacing:0.08em;">Full</span>
+                </div>
+            </div>
+        </div>
+    </div><!-- /control panel -->
+</div>
+
+<!-- ════════ BACK PANEL ════════ -->
+<div class="rack-unit-back u10" data-unit-back="chart-panel" data-id="${id}" style="
+    background:
+        repeating-linear-gradient(180deg, rgba(255,255,255,0.005) 0px, transparent 1px, transparent 2px),
+        linear-gradient(160deg, #1c1c1c 0%, #1f1f1f 40%, #1d1d1d 70%, #1a1a1a 100%);
+    overflow:hidden;
+">
+    <div style="display:flex;align-items:center;gap:8px;padding:4px 48px;border-bottom:1px solid rgba(255,255,255,0.05);">
+        <span style="font:300 9px/1 'Helvetica Neue',sans-serif;color:rgba(255,255,255,0.1);letter-spacing:0.12em;text-transform:uppercase;">Scope</span>
+        <span style="font:400 11px/1 'Courier New',monospace;color:rgba(255,255,255,0.06);">LS-800</span>
+        <span style="font:400 8px/1 'Courier New',monospace;color:rgba(255,255,255,0.04);margin-left:auto;">S/N ${id}</span>
+    </div>
+    <div style="padding:12px 48px;">
+        <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(255,255,255,0.07);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:10px;">Signal Input</div>
+        <div style="display:flex;gap:18px;">
+            <div class="patch-group"><div class="patch-jack" data-input="chart" data-unit-id="${id}"></div><div class="patch-jack-label">chart</div></div>
+            <div class="patch-group"><div class="patch-jack" data-input="data" data-unit-id="${id}"></div><div class="patch-jack-label">data</div></div>
+            <div class="patch-group"><div class="patch-jack" data-input="aux" data-unit-id="${id}"></div><div class="patch-jack-label">aux</div></div>
+        </div>
+    </div>
+    <div style="padding:6px 48px;margin-top:auto;border-top:1px solid rgba(74,222,128,0.02);">
+        <div style="font:400 9px/1 'Courier New',monospace;color:rgba(74,222,128,0.04);letter-spacing:0.04em;line-height:1.8;">
+            FORGERACK SCOPE &#x2022; MODEL LS-800 REV.D &#x2022; SVEND MANUFACTURING<br>
+            FORGEVIZ COMPATIBLE &#x2022; CHARTSPEC INPUT &#x2022; 7 DISPLAY MODES<br>
+            EXPORT: CLIPBOARD SVG PNG &#x2022; ANNOTATION &#x2022; DATA TABLE<br>
+            &#x00A9; SVEND MFG &#x2022; MADE IN USA
+        </div>
+    </div>
+</div>

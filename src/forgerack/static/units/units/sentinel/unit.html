@@ -1,0 +1,245 @@
+<!--
+ ╔══════════════════════════════════════════════════════════════╗
+ ║  SENTINEL SpX-481 — Process Monitor & SPC Engine            ║
+ ║  Manufacturer: GUARDIAN                                      ║
+ ║  Identity: Deep navy steel, amber/gold watchful accent.     ║
+ ║  Radar station aesthetic. Always-on vigilance.               ║
+ ║  Control charts, capability, violation detection.            ║
+ ╚══════════════════════════════════════════════════════════════╝
+-->
+
+<!-- ════════ FRONT PANEL ════════ -->
+<div class="rack-unit-front u8 mfr-guardian chamfer-heavy" data-unit="sentinel" data-id="${id}" style="
+    --device-accent:#d97706;
+    background:
+        /* Specular — off-center highlight on navy steel */
+        radial-gradient(ellipse at 35% 25%, hsla(220,15%,60%,.035), transparent 55%),
+        /* Color variation */
+        radial-gradient(ellipse at 75% 70%, hsla(30,10%,40%,.015), transparent 45%),
+        linear-gradient(160deg, #0e1118 0%, #0c0f16 30%, #0d1017 50%, #0a0d14 80%);
+    overflow:hidden;
+">
+    <!-- Nameplate -->
+    <div style="
+        display:flex;align-items:center;gap:8px;
+        padding:4px 48px;
+        border-bottom:2px solid rgba(0,0,0,0.4);
+        background: linear-gradient(180deg, rgba(217,119,6,0.008), rgba(0,0,0,0.12));
+    ">
+        <div class="led-housing">
+            <span class="led lg" id="${id}-led-power"></span>
+        </div>
+        <span style="
+            font:800 16px/1 'Arial Narrow','Arial',sans-serif;
+            color:transparent;
+            text-shadow: 0 1px 0 rgba(217,119,6,0.4), 0 -1px 0 rgba(0,0,0,0.6);
+            -webkit-text-stroke: 0.3px rgba(217,119,6,0.2);
+            letter-spacing:0.2em;text-transform:uppercase;
+        ">Sentinel</span>
+        <span style="font:300 9px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.15);letter-spacing:0.06em;font-style:italic;">Process Monitor</span>
+
+        <!-- Status LEDs -->
+        <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
+            <div style="display:flex;align-items:center;gap:3px;">
+                <span class="led" id="${id}-led-ic"></span>
+                <span style="font:700 7px/1 'Arial Narrow',sans-serif;color:rgba(34,197,94,0.25);letter-spacing:0.08em;">IN CTRL</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:3px;">
+                <span class="led" id="${id}-led-ooc"></span>
+                <span style="font:700 7px/1 'Arial Narrow',sans-serif;color:rgba(239,68,68,0.25);letter-spacing:0.08em;">OOC</span>
+            </div>
+            <div style="width:1px;height:14px;background:rgba(217,119,6,0.06);"></div>
+            <span style="font:600 9px/1 'Courier New',monospace;color:rgba(217,119,6,0.15);letter-spacing:0.06em;">SpX-481</span>
+        </div>
+    </div>
+
+    <!-- Chart viewport — large CRT -->
+    <div style="
+        margin:4px 48px 3px;padding:3px;
+        background: linear-gradient(145deg, rgba(255,255,255,0.03), rgba(0,0,0,0.15));
+        border-radius:2px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.02);
+    ">
+        <div style="
+            background:#020304;border:2px solid #000;border-radius:2px;
+            box-shadow: inset 0 3px 10px rgba(0,0,0,0.7);
+            position:relative;overflow:hidden;
+        ">
+            <!-- Amber scanlines -->
+            <div style="position:absolute;inset:0;
+                background:repeating-linear-gradient(0deg, transparent 0px, rgba(217,119,6,0.004) 1px, transparent 2px);
+                pointer-events:none;z-index:2;"></div>
+            <div style="position:absolute;inset:0;
+                background:radial-gradient(ellipse at 50% 50%, rgba(217,119,6,0.01), transparent 70%);
+                pointer-events:none;z-index:2;"></div>
+            <div style="position:absolute;inset:0;box-shadow:inset 0 0 25px rgba(0,0,0,0.4);pointer-events:none;z-index:3;"></div>
+
+            <div id="${id}-viewport" class="radar-sweep" style="height:200px;position:relative;z-index:1;">
+                <div id="${id}-empty" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:4px;">
+                    <span style="font:300 12px/1 'Courier New',monospace;color:rgba(217,119,6,0.06);text-shadow:0 0 4px currentColor, 1.5px 0 0 rgba(255,0,255,0.08), -1.5px 0 0 rgba(0,255,255,0.08);">NO SIGNAL</span>
+                    <span style="font:300 9px/1 'Courier New',monospace;color:rgba(217,119,6,0.03);">wire measurement data to input jack</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Control panel -->
+    <div style="margin:3px 48px 5px;padding:6px 10px;display:flex;gap:8px;align-items:stretch;
+        background:linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.06));
+        border-top:2px solid rgba(0,0,0,0.3);">
+
+        <!-- Chart type -->
+        <div style="background:linear-gradient(180deg, #2a2d35, #22252d);border:1px solid rgba(0,0,0,0.4);border-radius:2px;
+            box-shadow:inset 0 2px 4px rgba(0,0,0,0.3);padding:5px 8px;display:flex;flex-direction:column;gap:3px;justify-content:center;">
+            <div style="font:700 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.3);text-transform:uppercase;letter-spacing:0.15em;text-align:center;">Chart</div>
+            <select id="${id}-chart-type" title="Control chart type" style="
+                background:#0a0d14;border:1px solid rgba(217,119,6,0.15);
+                color:#d4a050;padding:2px 4px;border-radius:1px;
+                font:9px/1 'JetBrains Mono',monospace;height:20px;min-width:70px;">
+                <option value="imr">I-MR</option>
+                <option value="xbar_r">X̄-R</option>
+                <option value="xbar_s">X̄-S</option>
+                <option value="p">p-Chart</option>
+                <option value="np">np-Chart</option>
+                <option value="c">c-Chart</option>
+                <option value="u">u-Chart</option>
+                <option value="cusum">CUSUM</option>
+                <option value="ewma">EWMA</option>
+            </select>
+        </div>
+
+        <!-- Column selector -->
+        <div style="background:linear-gradient(180deg, #2a2d35, #22252d);border:1px solid rgba(0,0,0,0.4);border-radius:2px;
+            box-shadow:inset 0 2px 4px rgba(0,0,0,0.3);padding:5px 8px;display:flex;flex-direction:column;gap:3px;justify-content:center;">
+            <div style="font:700 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.3);text-transform:uppercase;letter-spacing:0.15em;text-align:center;">Measure</div>
+            <select id="${id}-col" title="Measurement column to monitor" style="
+                background:#0a0d14;border:1px solid rgba(217,119,6,0.15);
+                color:#d4a050;padding:2px 4px;border-radius:1px;
+                font:9px/1 'JetBrains Mono',monospace;height:20px;min-width:68px;">
+                <option value="">—</option>
+            </select>
+        </div>
+
+        <!-- Subgroup column -->
+        <div style="background:linear-gradient(180deg, #2a2d35, #22252d);border:1px solid rgba(0,0,0,0.4);border-radius:2px;
+            box-shadow:inset 0 2px 4px rgba(0,0,0,0.3);padding:5px 8px;display:flex;flex-direction:column;gap:3px;justify-content:center;">
+            <div style="font:700 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.3);text-transform:uppercase;letter-spacing:0.15em;text-align:center;">Subgrp</div>
+            <select id="${id}-subgroup" title="Subgroup/batch column for rational subgrouping" style="
+                background:#0a0d14;border:1px solid rgba(217,119,6,0.15);
+                color:#d4a050;padding:2px 4px;border-radius:1px;
+                font:9px/1 'JetBrains Mono',monospace;height:20px;min-width:58px;">
+                <option value="">none</option>
+            </select>
+        </div>
+
+        <!-- Spec limits -->
+        <div style="background:linear-gradient(180deg, #2a2d35, #22252d);border:1px solid rgba(0,0,0,0.4);border-radius:2px;
+            box-shadow:inset 0 2px 4px rgba(0,0,0,0.3);padding:5px 8px;display:flex;flex-direction:column;gap:3px;justify-content:center;">
+            <div style="font:700 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.3);text-transform:uppercase;letter-spacing:0.15em;text-align:center;">Specs</div>
+            <div style="display:flex;gap:3px;">
+                <input type="text" id="${id}-lsl" title="Lower Specification Limit" placeholder="LSL" style="
+                    width:36px;background:rgba(0,0,0,0.5);border:1px solid rgba(217,119,6,0.1);
+                    color:#d97706;padding:2px 3px;border-radius:1px;text-align:center;
+                    font:700 9px/1 'JetBrains Mono',monospace;height:20px;box-sizing:border-box;">
+                <input type="text" id="${id}-usl" title="Upper Specification Limit" placeholder="USL" style="
+                    width:36px;background:rgba(0,0,0,0.5);border:1px solid rgba(217,119,6,0.1);
+                    color:#d97706;padding:2px 3px;border-radius:1px;text-align:center;
+                    font:700 9px/1 'JetBrains Mono',monospace;height:20px;box-sizing:border-box;">
+            </div>
+        </div>
+
+        <!-- Rules -->
+        <div style="background:linear-gradient(180deg, #2a2d35, #22252d);border:1px solid rgba(0,0,0,0.4);border-radius:2px;
+            box-shadow:inset 0 2px 4px rgba(0,0,0,0.3);padding:5px 8px;display:flex;flex-direction:column;gap:3px;justify-content:center;">
+            <div style="font:700 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.3);text-transform:uppercase;letter-spacing:0.15em;text-align:center;">Rules</div>
+            <select id="${id}-rules" title="Special cause detection rules" style="
+                background:#0a0d14;border:1px solid rgba(217,119,6,0.15);
+                color:#d4a050;padding:2px 4px;border-radius:1px;
+                font:9px/1 'JetBrains Mono',monospace;height:20px;">
+                <option value="nelson">Nelson</option>
+                <option value="weco">WECO</option>
+                <option value="none">None</option>
+            </select>
+        </div>
+
+        <!-- RUN + Export -->
+        <div style="display:flex;flex-direction:column;gap:4px;align-self:center;">
+            <button id="${id}-btn-run" title="Generate control chart" class="btn-run" style="color:#d97706;border-color:rgba(217,119,6,0.3);
+                background:linear-gradient(180deg,rgba(217,119,6,0.25),rgba(217,119,6,0.08));">&#x25B6; Run</button>
+            <div style="display:flex;gap:3px;">
+                <button id="${id}-btn-copy" title="Copy chart SVG to clipboard" class="btn-export">Copy</button>
+                <button id="${id}-btn-svg" title="Download chart as SVG" class="btn-export">SVG</button>
+                <button id="${id}-btn-png" title="Download chart as PNG (2x resolution)" class="btn-export">PNG</button>
+            </div>
+        </div>
+
+        <!-- Capability gauges -->
+        <div style="display:flex;gap:4px;margin-left:auto;">
+            <div style="text-align:center;">
+                <div style="background:linear-gradient(180deg, #9aaa8a, #8a9a7a);border:2px solid #2a2a2a;border-radius:2px;
+                    box-shadow:inset 0 1px 3px rgba(0,0,0,0.25);padding:3px 4px;text-align:right;position:relative;overflow:hidden;">
+                    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.06),transparent 40%,rgba(0,0,0,0.04));pointer-events:none;"></div>
+                    <div style="position:relative;">
+                        <div style="font:700 16px/1 'JetBrains Mono',monospace;color:rgba(40,50,35,0.08);letter-spacing:0.04em;">8.88</div>
+                        <div id="${id}-cpk" style="font:700 16px/1 'JetBrains Mono',monospace;color:#0a1208;letter-spacing:0.04em;
+                            position:absolute;inset:0;text-align:right;">—</div>
+                    </div>
+                </div>
+                <div style="font:700 7px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;">Cpk</div>
+            </div>
+            <div style="text-align:center;">
+                <div style="background:linear-gradient(180deg, #9aaa8a, #8a9a7a);border:2px solid #2a2a2a;border-radius:2px;
+                    box-shadow:inset 0 1px 3px rgba(0,0,0,0.25);padding:3px 4px;text-align:right;position:relative;overflow:hidden;">
+                    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.06),transparent 40%,rgba(0,0,0,0.04));pointer-events:none;"></div>
+                    <div style="position:relative;">
+                        <div style="font:700 16px/1 'JetBrains Mono',monospace;color:rgba(40,50,35,0.08);letter-spacing:0.04em;">8888</div>
+                        <div id="${id}-ppm" style="font:700 16px/1 'JetBrains Mono',monospace;color:#0a1208;letter-spacing:0.04em;
+                            position:absolute;inset:0;text-align:right;">—</div>
+                    </div>
+                </div>
+                <div style="font:700 7px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;">PPM</div>
+            </div>
+            <div style="text-align:center;">
+                <div style="background:linear-gradient(180deg, #9aaa8a, #8a9a7a);border:2px solid #2a2a2a;border-radius:2px;
+                    box-shadow:inset 0 1px 3px rgba(0,0,0,0.25);padding:3px 4px;text-align:right;position:relative;overflow:hidden;">
+                    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.06),transparent 40%,rgba(0,0,0,0.04));pointer-events:none;"></div>
+                    <div style="position:relative;">
+                        <div style="font:700 16px/1 'JetBrains Mono',monospace;color:rgba(40,50,35,0.08);letter-spacing:0.04em;">8888</div>
+                        <div id="${id}-n-val" style="font:700 16px/1 'JetBrains Mono',monospace;color:#0a1208;letter-spacing:0.04em;
+                            position:absolute;inset:0;text-align:right;">—</div>
+                    </div>
+                </div>
+                <div style="font:700 7px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;">n</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ════════ BACK PANEL ════════ -->
+<div class="rack-unit-back u8" data-unit-back="sentinel" data-id="${id}" style="
+    background:repeating-linear-gradient(180deg, rgba(255,255,255,0.005) 0px, transparent 1px, transparent 2px),
+        linear-gradient(160deg, #1c1c1c, #1f1f1f 40%, #1d1d1d);overflow:hidden;">
+    <div style="display:flex;align-items:center;gap:8px;padding:5px 48px;border-bottom:1px solid rgba(255,255,255,0.05);">
+        <span style="font:800 11px/1 'Arial Narrow',sans-serif;color:rgba(255,255,255,0.1);letter-spacing:0.15em;text-transform:uppercase;">Sentinel</span>
+        <span style="font:400 11px/1 'Courier New',monospace;color:rgba(255,255,255,0.06);">SpX-481</span>
+        <span class="serial-tag" style="margin-left:auto;">S/N ${id}</span>
+    </div>
+    <div style="padding:10px 48px;">
+        <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(255,255,255,0.07);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:10px;">Signal</div>
+        <div style="display:flex;gap:18px;">
+            <div class="patch-group"><div class="patch-jack" data-input="data" data-unit-id="${id}"></div><div class="patch-jack-label">data in</div></div>
+            <div class="patch-group"><div class="patch-jack" data-output="result" data-unit-id="${id}"></div><div class="patch-jack-label">result</div></div>
+            <div class="patch-group"><div class="patch-jack" data-output="violations" data-unit-id="${id}"></div><div class="patch-jack-label">violations</div></div>
+            <div class="patch-group"><div class="patch-jack" data-output="thru" data-unit-id="${id}"></div><div class="patch-jack-label">thru</div></div>
+        </div>
+    </div>
+    <div style="padding:6px 48px;display:flex;align-items:center;gap:12px;margin-top:auto;border-top:1px solid rgba(217,119,6,0.02);">
+        <div class="warning-label">Process Monitor</div>
+        <span class="cert-mark">CE</span>
+        <span class="cert-mark">UL</span>
+        <div style="font:300 8px/1.6 'Courier New',monospace;color:rgba(217,119,6,0.04);letter-spacing:0.04em;margin-left:auto;">
+            FORGERACK SENTINEL &#x2022; SpX-481 REV.A &#x2022; PROCESS MONITOR<br>
+            FORGESPC ENGINE &#x2022; 9 CHART TYPES &#x2022; NELSON/WECO RULES &#x2022; GUARDIAN MFG
+        </div>
+    </div>
+</div>

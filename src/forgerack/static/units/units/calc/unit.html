@@ -1,0 +1,239 @@
+<!--
+ ╔══════════════════════════════════════════════════════════════╗
+ ║  CALC TX-01 — Transform Processor                           ║
+ ║  Manufacturer: VAKUUM                                       ║
+ ║  Identity: Warm burgundy faceplate, copper accents, tube    ║
+ ║  glow indicators. Buchla meets vintage tube amp.            ║
+ ║  Select a column, pick a transform, chain computations.     ║
+ ╚══════════════════════════════════════════════════════════════╝
+-->
+
+<!-- ════════ FRONT PANEL ════════ -->
+<div class="rack-unit-front u4 mfr-vakuum" data-unit="calc" data-id="${id}" style="
+    --device-accent:#d4884a;
+    background:
+        /* Warm specular — tube amp warmth */
+        radial-gradient(ellipse at 40% 30%, hsla(25,40%,50%,.03), transparent 55%),
+        /* Color variation — cooler at edges */
+        radial-gradient(ellipse at 85% 75%, hsla(340,15%,35%,.015), transparent 45%),
+        linear-gradient(160deg, #1e1216 0%, #1a0f14 30%, #1c1015 50%, #160c10 80%);
+    overflow:hidden;
+">
+    <!-- Nameplate -->
+    <div style="
+        display:flex;align-items:center;gap:8px;
+        padding:4px 48px;
+        border-bottom:2px solid rgba(0,0,0,0.3);
+        background: linear-gradient(180deg, rgba(212,136,74,0.012), rgba(0,0,0,0.1));
+    ">
+        <div class="led-housing">
+            <span class="led" id="${id}-led" style="width:6px;height:6px;"></span>
+        </div>
+        <span style="
+            font:700 20px/1 'Georgia','Times New Roman',serif;
+            color:transparent;
+            text-shadow: 0 1px 0 rgba(212,136,74,0.4), 0 -1px 0 rgba(0,0,0,0.6);
+            -webkit-text-stroke: 0.3px rgba(212,136,74,0.2);
+            letter-spacing:0.12em;text-transform:uppercase;
+        ">Calc</span>
+        <span style="font:300 10px/1 'Georgia',serif;color:rgba(212,136,74,0.18);letter-spacing:0.06em;font-style:italic;">Transform Processor</span>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:6px;">
+            <!-- Tube glow indicator -->
+            <div class="patina-heat" style="width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 40% 35%, #e8a060, #804020);
+                box-shadow:0 0 6px rgba(212,136,74,0.3);border:1px solid #402010;"></div>
+            <span style="font:500 10px/1 'Courier New',monospace;color:rgba(200,160,120,0.2);letter-spacing:0.06em;">TX-01</span>
+        </div>
+    </div>
+
+    <div style="padding:6px 48px;display:flex;gap:10px;height:calc(100% - 36px);">
+
+        <!-- ── LEFT: Transform controls ── -->
+        <div style="flex:1;display:flex;flex-direction:column;gap:5px;">
+
+            <!-- Control strip -->
+            <div style="display:flex;gap:6px;align-items:flex-end;flex-wrap:wrap;">
+                <!-- Column A selector -->
+                <div class="panel-recessed" style="padding:4px 6px;display:flex;flex-direction:column;gap:2px;align-items:center;">
+                    <div style="font:700 8px/1 'Georgia',serif;color:rgba(212,136,74,0.25);text-transform:uppercase;letter-spacing:0.12em;">Col A</div>
+                    <select id="${id}-col" title="Input column to transform" style="
+                        background:#120a0e;border:1px solid rgba(212,136,74,0.2);
+                        color:#d4a878;padding:3px 5px;border-radius:1px;
+                        font:10px/1 'JetBrains Mono',monospace;min-width:70px;height:20px;
+                    ">
+                        <option value="">—</option>
+                        <option value="__ALL__">★ All numeric</option>
+                    </select>
+                </div>
+
+                <!-- Column B selector (for two-column ops) -->
+                <div class="panel-recessed" id="${id}-colb-panel" style="padding:4px 6px;display:flex;flex-direction:column;gap:2px;align-items:center;opacity:0.3;">
+                    <div style="font:700 8px/1 'Georgia',serif;color:rgba(212,136,74,0.25);text-transform:uppercase;letter-spacing:0.12em;">Col B</div>
+                    <select id="${id}-col-b" title="Second column for two-column operations" disabled style="
+                        background:#120a0e;border:1px solid rgba(212,136,74,0.2);
+                        color:#d4a878;padding:3px 5px;border-radius:1px;
+                        font:10px/1 'JetBrains Mono',monospace;min-width:60px;height:20px;
+                    ">
+                        <option value="">—</option>
+                    </select>
+                </div>
+
+                <!-- Transform picker -->
+                <div class="panel-recessed" style="padding:4px 6px;display:flex;flex-direction:column;gap:2px;align-items:center;">
+                    <div style="font:700 8px/1 'Georgia',serif;color:rgba(212,136,74,0.25);text-transform:uppercase;letter-spacing:0.12em;">Transform</div>
+                    <select id="${id}-transform" title="Transform function to apply" style="
+                        background:#120a0e;border:1px solid rgba(212,136,74,0.2);
+                        color:#d4a878;padding:3px 5px;border-radius:1px;
+                        font:10px/1 'JetBrains Mono',monospace;min-width:90px;height:20px;
+                    ">
+                        <optgroup label="Single column">
+                            <option value="mavg">Moving Avg</option>
+                            <option value="zscore">Z-Score</option>
+                            <option value="log">Log</option>
+                            <option value="diff">Difference</option>
+                            <option value="lag">Lag</option>
+                            <option value="cumsum">Cum Sum</option>
+                            <option value="std">Standardize</option>
+                            <option value="rank">Rank</option>
+                            <option value="pctile">Percentile</option>
+                            <option value="abs">Abs Value</option>
+                            <option value="sqrt">Sqrt</option>
+                            <option value="pct_change">% Change</option>
+                        </optgroup>
+                        <optgroup label="Two columns (A, B)">
+                            <option value="ratio">Ratio A/B</option>
+                            <option value="col_diff">A − B</option>
+                            <option value="col_sum">A + B</option>
+                            <option value="col_prod">A × B</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <!-- Parameter -->
+                <div class="panel-recessed" style="padding:4px 6px;display:flex;flex-direction:column;gap:2px;align-items:center;">
+                    <div style="font:700 8px/1 'Georgia',serif;color:rgba(212,136,74,0.25);text-transform:uppercase;letter-spacing:0.12em;">Window</div>
+                    <input type="number" id="${id}-param" title="Window size for moving average / lag periods" value="5" min="1" max="999" style="
+                        width:44px;background:rgba(0,0,0,0.5);border:1px solid rgba(212,136,74,0.15);
+                        color:#d4884a;padding:3px 4px;border-radius:1px;text-align:center;
+                        font:700 11px/1 'JetBrains Mono',monospace;height:20px;box-sizing:border-box;
+                        box-shadow:inset 0 1px 3px rgba(0,0,0,0.4);
+                    ">
+                </div>
+
+                <!-- Apply button -->
+                <button id="${id}-btn-apply" title="Apply transform and emit result" class="btn-run" style="color:#d4884a;border-color:rgba(212,136,74,0.25);
+                    background:linear-gradient(180deg,rgba(212,136,74,0.2),rgba(212,136,74,0.08));
+                    font-family:'Georgia',serif;">Apply</button>
+
+                <!-- Chain toggle -->
+                <button id="${id}-btn-chain" class="btn-ghost" style="
+                    font-size:8px;padding:4px 8px;color:rgba(212,136,74,0.25);border-color:rgba(212,136,74,0.1);
+                " title="Chain mode: stack transforms instead of replacing">Chain +</button>
+            </div>
+
+            <!-- Transform log CRT -->
+            <div class="heater-glow" style="flex:1;min-height:0;
+                background:rgba(0,0,0,0.35);border:1px solid rgba(0,0,0,0.5);border-radius:2px;
+                box-shadow:inset 0 2px 6px rgba(0,0,0,0.4);
+                position:relative;overflow:hidden;
+            ">
+                <!-- Warm amber CRT glow instead of green phosphor -->
+                <div style="position:absolute;inset:0;
+                    background:repeating-linear-gradient(180deg, transparent, transparent 2px, rgba(212,136,74,0.008) 2px, rgba(212,136,74,0.008) 4px);
+                    pointer-events:none;z-index:2;"></div>
+                <div style="position:absolute;inset:0;
+                    background:radial-gradient(ellipse at center, rgba(212,136,74,0.015), transparent 80%);
+                    pointer-events:none;z-index:2;"></div>
+                <div style="position:absolute;inset:0;box-shadow:inset 0 0 15px rgba(0,0,0,0.3);pointer-events:none;z-index:3;"></div>
+
+                <div id="${id}-log" style="
+                    height:100%;overflow-y:auto;padding:5px 8px;
+                    font:11px/1.6 'JetBrains Mono',monospace;
+                    color:rgba(212,136,74,0.35);
+                    text-shadow: 0 0 4px currentColor, 1.5px 0 0 rgba(255,0,255,0.1), -1.5px 0 0 rgba(0,255,255,0.1);
+                    position:relative;z-index:1;
+                "><span style="color:rgba(212,136,74,0.12);">&#x25A0; awaiting data_</span></div>
+            </div>
+        </div>
+
+        <!-- ── RIGHT: Preview column ── -->
+        <div style="width:90px;display:flex;flex-direction:column;gap:3px;">
+
+            <!-- Output column name -->
+            <div style="text-align:center;">
+                <div style="
+                    background:linear-gradient(180deg, #9aaa8a, #8a9a7a);
+                    border:2px solid #2a2a2a;border-radius:2px;
+                    box-shadow:inset 0 1px 3px rgba(0,0,0,0.25);
+                    padding:3px 3px;text-align:center;
+                    position:relative;overflow:hidden;
+                ">
+                    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.06),transparent 40%,rgba(0,0,0,0.04));pointer-events:none;"></div>
+                    <div id="${id}-out-name" style="font:700 9px/1 'JetBrains Mono',monospace;color:#0a1208;letter-spacing:0.04em;
+                        position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
+                </div>
+                <div style="font:600 7px/1 'Georgia',serif;color:rgba(212,136,74,0.4);
+                    text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;">Output Col</div>
+            </div>
+
+            <!-- Preview values -->
+            <div style="
+                flex:1;min-height:0;
+                background:rgba(0,0,0,0.3);border:1px solid rgba(0,0,0,0.4);border-radius:2px;
+                box-shadow:inset 0 1px 3px rgba(0,0,0,0.3);
+                overflow-y:auto;padding:3px 4px;
+            ">
+                <div id="${id}-preview" style="
+                    font:10px/1.5 'JetBrains Mono',monospace;color:rgba(212,136,74,0.3);
+                ">
+                    <span style="color:rgba(212,136,74,0.1);">—</span>
+                </div>
+            </div>
+
+            <!-- Row count — nixie tube display -->
+            <div style="text-align:center;">
+                <div class="nixie-tube" id="${id}-nixie-rows" style="position:relative;">
+                    <div class="nixie-digit"><span class="nixie-digit-active" id="${id}-nix-0">—</span></div>
+                    <div class="nixie-digit"><span class="nixie-digit-active" id="${id}-nix-1"></span></div>
+                    <div class="nixie-digit"><span class="nixie-digit-active" id="${id}-nix-2"></span></div>
+                    <div class="nixie-digit"><span class="nixie-digit-active" id="${id}-nix-3"></span></div>
+                </div>
+                <div class="nixie-label" style="color:rgba(212,136,74,0.3);">Rows</div>
+            </div>
+
+            <!-- Transforms applied count -->
+            <div style="display:flex;align-items:center;gap:4px;justify-content:center;margin-top:auto;">
+                <span class="led lg" id="${id}-led-chain"></span>
+                <span style="font:600 7px/1 'Georgia',serif;color:rgba(212,136,74,0.3);text-transform:uppercase;letter-spacing:0.1em;">
+                    <span id="${id}-chain-count">0</span> transforms
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ════════ BACK PANEL ════════ -->
+<div class="rack-unit-back u4" data-unit-back="calc" data-id="${id}" style="
+    background:
+        repeating-linear-gradient(180deg, rgba(255,255,255,0.005) 0px, transparent 1px, transparent 2px),
+        linear-gradient(160deg, #1c1c1c, #1f1f1f 40%, #1d1d1d);
+    overflow:hidden;
+">
+    <div style="display:flex;align-items:center;gap:8px;padding:5px 48px;border-bottom:1px solid rgba(255,255,255,0.05);">
+        <div class="nameplate-brass patina-oxidized">Calc TX-01</div>
+        <span class="serial-tag" style="margin-left:auto;">S/N ${id}</span>
+    </div>
+    <div style="padding:10px 48px;">
+        <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(255,255,255,0.07);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:10px;">Signal</div>
+        <div style="display:flex;gap:18px;">
+            <div class="patch-group"><div class="patch-jack" data-input="data" data-unit-id="${id}"></div><div class="patch-jack-label">data in</div></div>
+            <div class="patch-group"><div class="patch-jack" data-output="result" data-unit-id="${id}"></div><div class="patch-jack-label">result</div></div>
+            <div class="patch-group"><div class="patch-jack" data-output="thru" data-unit-id="${id}"></div><div class="patch-jack-label">thru</div></div>
+            <div class="patch-group"><div class="patch-jack" data-output="column" data-unit-id="${id}"></div><div class="patch-jack-label">column</div></div>
+        </div>
+    </div>
+    <div style="padding:6px 48px;margin-top:auto;border-top:1px solid rgba(212,136,74,0.02);">
+        <div style="font:300 8px/1.6 'Courier New',monospace;color:rgba(212,136,74,0.04);letter-spacing:0.04em;">
+            FORGERACK CALC &#x2022; TX-01 REV.A<br>TRANSFORM PROCESSOR &#x2022; VAKUUM MFG
+        </div>
+    </div>
+</div>

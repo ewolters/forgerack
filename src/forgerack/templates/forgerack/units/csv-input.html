@@ -14,7 +14,10 @@
     background:
         /* Specular sweep */
         linear-gradient(90deg, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,.03) 35%, hsla(0,0%,100%,.05) 50%, hsla(0,0%,100%,.02) 70%, hsla(0,0%,100%,0) 100%),
-        /* Color variation — slight warm shift top-left, cool bottom-right */
+        /* Brushed grain — two offset layers per guide technique */
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.012) 0px, transparent 1px, transparent 3px),
+        repeating-linear-gradient(88deg, rgba(0,0,0,0.008) 0px, transparent 1px, transparent 4px),
+        /* Color variation */
         radial-gradient(ellipse at 20% 20%, hsla(40,10%,50%,.02), transparent 50%),
         radial-gradient(ellipse at 80% 80%, hsla(210,10%,40%,.02), transparent 50%),
         /* Base metal */
@@ -213,7 +216,7 @@
 
     <!-- Manufacturing info — PCB silk-screen style -->
     <div style="padding:6px 48px;margin-top:auto;border-top:1px solid rgba(74,222,128,0.02);">
-        <div style="font:400 7px/1 'Courier New',monospace;color:rgba(74,222,128,0.05);letter-spacing:0.04em;line-height:1.8;">
+        <div style="font:400 9px/1 'Courier New',monospace;color:rgba(74,222,128,0.05);letter-spacing:0.04em;line-height:1.8;">
             FORGERACK INGEST &#x2022; MODEL DT-100 REV.B &#x2022; SVEND MANUFACTURING<br>
             MAX INPUT: 100K ROWS &#x2022; FORMATS: CSV TSV SSV &#x2022; AUTO-HEADER DETECT<br>
             &#x00A9; SVEND MFG &#x2022; MADE IN USA &#x2022; PAT. PENDING

@@ -1,126 +1,174 @@
 <!--
  ╔══════════════════════════════════════════════════════════════╗
- ║  DESIGNER DX-01 — Experiment Design Generator                ║
- ║  Manufacturer: TOKAMAK                                       ║
- ║  Identity: Charcoal-black, plasma rose, chrome bezels.       ║
- ║  The front half of DOE. Define factors, pick design type,    ║
- ║  generate randomized run sheet. Output wires to RESOLVER.    ║
+ ║  DESIGNER DX-02 — Experiment Design Generator                ║
+ ║  Manufacturer: MERIDIAN                                      ║
+ ║  Identity: Warm bronze-brown chassis, copper foil labels,    ║
+ ║  compass-rose motif. Drafting-table precision. 17 design     ║
+ ║  types from forgedoe. Factor entry + run sheet on CRT.       ║
  ╚══════════════════════════════════════════════════════════════╝
 -->
 
 <!-- ════════ FRONT PANEL ════════ -->
-<div class="rack-unit-front u8 mfr-tokamak chamfer-heavy" data-unit="designer" data-id="${id}" style="
-    --device-accent:#f43f5e;
+<div class="rack-unit-front u8 mfr-meridian chamfer-heavy" data-unit="designer" data-id="${id}" style="
+    --device-accent:#c2956a;
     background:
-        radial-gradient(ellipse at 50% 60%, rgba(244,63,94,0.006), transparent 60%),
-        linear-gradient(160deg, #141416 0%, #111113 30%, #131315 50%, #0e0e10 80%);
+        radial-gradient(circle at 8% 50%, rgba(194,149,106,0.012), transparent 35%),
+        radial-gradient(circle at 92% 50%, rgba(194,149,106,0.008), transparent 30%),
+        linear-gradient(168deg, #1e1a16 0%, #1a1714 30%, #1c1915 50%, #171411 80%);
     overflow:hidden;
 ">
-    <!-- Nameplate -->
+    <!-- Nameplate — engraved brass strip -->
     <div style="
-        display:flex;align-items:center;gap:8px;
+        display:flex;align-items:center;gap:10px;
         padding:4px 48px;
-        border-bottom:2px solid rgba(0,0,0,0.4);
-        background: linear-gradient(180deg, rgba(244,63,94,0.01), rgba(0,0,0,0.15));
+        border-bottom:1px solid rgba(194,149,106,0.08);
+        background: linear-gradient(180deg, rgba(194,149,106,0.015), rgba(0,0,0,0.12));
     ">
         <div class="led-housing"><span class="led lg" id="${id}-led" style=""></span></div>
         <span style="
-            font:800 16px/1 'Arial Narrow','Arial',sans-serif;
-            color:transparent;
-            text-shadow: 0 1px 0 rgba(244,63,94,0.4), 0 -1px 0 rgba(0,0,0,0.6);
-            -webkit-text-stroke: 0.3px rgba(244,63,94,0.2);
-            letter-spacing:0.18em;text-transform:uppercase;
+            font:700 14px/1 'Georgia','Times New Roman',serif;
+            color:rgba(194,149,106,0.35);
+            letter-spacing:0.22em;text-transform:uppercase;
+            text-shadow: 0 1px 0 rgba(0,0,0,0.6);
         ">Designer</span>
-        <span style="font:300 9px/1 'Arial Narrow',sans-serif;color:rgba(244,63,94,0.12);font-style:italic;">Experiment Generator</span>
-        <span style="font:600 9px/1 'Courier New',monospace;color:rgba(244,63,94,0.1);margin-left:auto;">DX-01</span>
+        <span style="font:italic 300 9px/1 'Georgia',serif;color:rgba(194,149,106,0.15);">Experiment Architect</span>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+            <span style="font:600 8px/1 'Courier New',monospace;color:rgba(194,149,106,0.12);">DX-02</span>
+            <!-- Compass rose sigil -->
+            <svg width="14" height="14" viewBox="0 0 14 14" style="opacity:0.08;">
+                <circle cx="7" cy="7" r="6" fill="none" stroke="#c2956a" stroke-width="0.5"/>
+                <line x1="7" y1="1" x2="7" y2="13" stroke="#c2956a" stroke-width="0.4"/>
+                <line x1="1" y1="7" x2="13" y2="7" stroke="#c2956a" stroke-width="0.4"/>
+                <circle cx="7" cy="7" r="1.5" fill="#c2956a" opacity="0.3"/>
+            </svg>
+        </div>
     </div>
 
-    <div style="padding:5px 48px;display:flex;gap:8px;height:calc(100% - 32px);">
+    <div style="padding:4px 48px;display:flex;gap:10px;height:calc(100% - 30px);">
 
-        <!-- Left: Factor entry + design selector -->
-        <div style="width:180px;display:flex;flex-direction:column;gap:4px;">
-            <!-- Factor list -->
-            <div style="font:700 8px/1 'Arial Narrow',sans-serif;color:rgba(244,63,94,0.3);text-transform:uppercase;letter-spacing:0.12em;">Factors</div>
+        <!-- ▌ LEFT COLUMN — Factor entry + controls ▌ -->
+        <div style="width:170px;display:flex;flex-direction:column;gap:3px;">
+
+            <!-- Factor list in recessed well -->
+            <div style="
+                font:700 7px/1 'Georgia',serif;color:rgba(194,149,106,0.25);
+                text-transform:uppercase;letter-spacing:0.18em;
+                padding-left:2px;
+            ">Factors</div>
             <div id="${id}-factors" style="
                 flex:1;overflow-y:auto;
-                background:rgba(0,0,0,0.2);border:1px solid rgba(244,63,94,0.06);border-radius:2px;
-                padding:4px;display:flex;flex-direction:column;gap:3px;
-                box-shadow:inset 0 1px 3px rgba(0,0,0,0.3);
-            ">
-                <!-- Factor rows get added here -->
-            </div>
+                background:rgba(0,0,0,0.25);
+                border:1px solid rgba(194,149,106,0.05);border-radius:2px;
+                padding:3px;display:flex;flex-direction:column;gap:2px;
+                box-shadow:inset 0 2px 6px rgba(0,0,0,0.4), inset 0 -1px 0 rgba(194,149,106,0.02);
+            "></div>
 
-            <!-- Add factor row -->
+            <!-- Add factor — horizontal strip -->
             <div style="display:flex;gap:2px;">
-                <input type="text" id="${id}-f-name" placeholder="name" style="
-                    flex:1;background:rgba(0,0,0,0.4);border:1px solid rgba(244,63,94,0.12);
-                    color:#e8a0b0;padding:3px 4px;border-radius:1px;
+                <input type="text" id="${id}-f-name" placeholder="factor" style="
+                    flex:1;background:rgba(0,0,0,0.35);border:1px solid rgba(194,149,106,0.1);
+                    color:#c2956a;padding:3px 4px;border-radius:1px;
                     font:9px/1 'JetBrains Mono',monospace;
                 ">
-                <input type="number" id="${id}-f-low" placeholder="low" style="
-                    width:40px;background:rgba(0,0,0,0.4);border:1px solid rgba(244,63,94,0.12);
-                    color:#f43f5e;padding:3px 3px;border-radius:1px;text-align:center;
+                <input type="number" id="${id}-f-low" placeholder="lo" style="
+                    width:36px;background:rgba(0,0,0,0.35);border:1px solid rgba(194,149,106,0.1);
+                    color:#d4a574;padding:3px 2px;border-radius:1px;text-align:center;
                     font:9px/1 'JetBrains Mono',monospace;
                 ">
-                <input type="number" id="${id}-f-high" placeholder="high" style="
-                    width:40px;background:rgba(0,0,0,0.4);border:1px solid rgba(244,63,94,0.12);
-                    color:#f43f5e;padding:3px 3px;border-radius:1px;text-align:center;
+                <input type="number" id="${id}-f-high" placeholder="hi" style="
+                    width:36px;background:rgba(0,0,0,0.35);border:1px solid rgba(194,149,106,0.1);
+                    color:#d4a574;padding:3px 2px;border-radius:1px;text-align:center;
                     font:9px/1 'JetBrains Mono',monospace;
                 ">
-                <button class="btn-chrome" id="${id}-btn-add" style="padding:3px 6px;font-size:8px;">+</button>
+                <button class="btn-chrome" id="${id}-btn-add" style="padding:3px 5px;font-size:8px;color:#c2956a;">+</button>
             </div>
 
-            <!-- Design type -->
+            <!-- Design category + type — stacked selectors -->
             <div style="display:flex;flex-direction:column;gap:2px;">
-                <div style="font:700 8px/1 'Arial Narrow',sans-serif;color:rgba(244,63,94,0.3);text-transform:uppercase;letter-spacing:0.12em;">Design</div>
+                <div style="font:700 7px/1 'Georgia',serif;color:rgba(194,149,106,0.25);text-transform:uppercase;letter-spacing:0.18em;padding-left:2px;">Design</div>
+                <select id="${id}-category" style="
+                    background:#0f0d0b;border:1px solid rgba(194,149,106,0.12);
+                    color:#c2956a;padding:3px 4px;border-radius:1px;
+                    font:9px/1 'JetBrains Mono',monospace;
+                ">
+                    <option value="factorial">Factorial</option>
+                    <option value="response_surface">Response Surface</option>
+                    <option value="screening">Screening</option>
+                    <option value="classical">Classical</option>
+                    <option value="optimal">Optimal</option>
+                    <option value="space_filling">Space-Filling</option>
+                    <option value="mixture">Mixture</option>
+                    <option value="split_plot">Split-Plot</option>
+                    <option value="evop">EVOP</option>
+                </select>
                 <select id="${id}-design" style="
-                    background:#0a0a0c;border:1px solid rgba(244,63,94,0.15);
-                    color:#e8a0b0;padding:3px 5px;border-radius:1px;
+                    background:#0f0d0b;border:1px solid rgba(194,149,106,0.12);
+                    color:#d4a574;padding:3px 4px;border-radius:1px;
                     font:10px/1 'JetBrains Mono',monospace;
                 ">
-                    <option value="full">Full Factorial</option>
-                    <option value="fractional">Fractional Factorial</option>
-                    <option value="ccd">CCD (Response Surface)</option>
-                    <option value="bbd">Box-Behnken</option>
-                    <option value="dsd">Definitive Screening</option>
+                    <!-- Populated dynamically by JS based on category -->
                 </select>
             </div>
 
-            <!-- Generate button -->
-            <button id="${id}-btn-gen" class="btn-run" style="color:#f43f5e;border-color:rgba(244,63,94,0.3);
-                background:linear-gradient(180deg,rgba(244,63,94,0.2),rgba(244,63,94,0.08));
-                width:100%;">&#x25B6; Generate</button>
+            <!-- Parameters strip (n_runs, resolution, etc.) -->
+            <div style="display:flex;gap:3px;align-items:center;">
+                <div style="font:700 7px/1 'Georgia',serif;color:rgba(194,149,106,0.2);text-transform:uppercase;letter-spacing:0.1em;white-space:nowrap;">n runs</div>
+                <input type="number" id="${id}-n-runs-input" value="20" style="
+                    width:40px;background:rgba(0,0,0,0.35);border:1px solid rgba(194,149,106,0.1);
+                    color:#c2956a;padding:2px 3px;border-radius:1px;text-align:center;
+                    font:9px/1 'JetBrains Mono',monospace;
+                ">
+                <div style="font:700 7px/1 'Georgia',serif;color:rgba(194,149,106,0.2);text-transform:uppercase;letter-spacing:0.1em;white-space:nowrap;">res</div>
+                <input type="number" id="${id}-resolution" value="3" min="3" max="5" style="
+                    width:28px;background:rgba(0,0,0,0.35);border:1px solid rgba(194,149,106,0.1);
+                    color:#c2956a;padding:2px 3px;border-radius:1px;text-align:center;
+                    font:9px/1 'JetBrains Mono',monospace;
+                ">
+            </div>
+
+            <!-- Generate — copper button -->
+            <button id="${id}-btn-gen" style="
+                width:100%;padding:5px 0;
+                background:linear-gradient(180deg,rgba(194,149,106,0.15),rgba(194,149,106,0.06));
+                border:1px solid rgba(194,149,106,0.2);border-radius:2px;
+                color:#c2956a;font:700 10px/1 'Georgia',serif;letter-spacing:0.15em;text-transform:uppercase;
+                cursor:pointer;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(194,149,106,0.05);
+            ">&#x25B6; Generate</button>
         </div>
 
-        <!-- Right: Run sheet CRT -->
+        <!-- ▌ RIGHT — Run sheet viewport ▌ -->
         <div style="flex:1;display:flex;flex-direction:column;gap:3px;">
+            <!-- Header strip with run count + badge -->
             <div style="display:flex;justify-content:space-between;align-items:center;">
-                <div style="font:700 8px/1 'Arial Narrow',sans-serif;color:rgba(244,63,94,0.3);text-transform:uppercase;letter-spacing:0.12em;">Run Sheet</div>
+                <div style="font:700 7px/1 'Georgia',serif;color:rgba(194,149,106,0.25);text-transform:uppercase;letter-spacing:0.18em;">Run Sheet</div>
                 <div style="display:flex;gap:6px;align-items:center;">
-                    <div style="font:700 10px/1 'JetBrains Mono',monospace;color:rgba(244,63,94,0.2);">
+                    <div style="font:700 10px/1 'JetBrains Mono',monospace;color:rgba(194,149,106,0.2);">
                         <span id="${id}-n-runs">—</span> runs
                     </div>
-                    <span class="badge badge-accent" id="${id}-design-badge" style="display:none;font-size:7px;"></span>
+                    <span class="badge" id="${id}-design-badge" style="display:none;font-size:7px;background:rgba(194,149,106,0.08);color:rgba(194,149,106,0.4);border:1px solid rgba(194,149,106,0.1);"></span>
                 </div>
             </div>
-            <div class="reactor-pulse" style="flex:1;
-                background:rgba(0,0,0,0.4);border:2px solid rgba(30,30,34,0.8);border-radius:2px;
-                box-shadow:inset 0 2px 8px rgba(0,0,0,0.5);
-                position:relative;overflow:hidden;
+
+            <!-- CRT viewport — warm amber phosphor -->
+            <div style="flex:1;position:relative;overflow:hidden;
+                background:rgba(0,0,0,0.35);
+                border:2px solid rgba(26,23,20,0.9);border-radius:3px;
+                box-shadow:inset 0 2px 10px rgba(0,0,0,0.5), 0 1px 0 rgba(194,149,106,0.02);
             ">
-                <!-- Rose scanlines -->
+                <!-- Amber scanlines -->
                 <div style="position:absolute;inset:0;
-                    background:repeating-linear-gradient(180deg, transparent, transparent 2px, rgba(244,63,94,0.005) 2px, rgba(244,63,94,0.005) 4px);
+                    background:repeating-linear-gradient(180deg, transparent, transparent 2px, rgba(194,149,106,0.004) 2px, rgba(194,149,106,0.004) 4px);
                     pointer-events:none;z-index:2;"></div>
-                <div style="position:absolute;inset:0;box-shadow:inset 0 0 20px rgba(0,0,0,0.4);pointer-events:none;z-index:3;"></div>
+                <div style="position:absolute;inset:0;box-shadow:inset 0 0 25px rgba(0,0,0,0.4);pointer-events:none;z-index:3;"></div>
 
                 <div id="${id}-runsheet" style="
                     height:100%;overflow-y:auto;padding:6px 8px;
                     font:10px/1.5 'JetBrains Mono',monospace;
-                    color:rgba(244,63,94,0.25);
-                    text-shadow: 0 0 4px currentColor, 1.5px 0 0 rgba(255,0,255,0.08), -1.5px 0 0 rgba(0,255,255,0.08);
+                    color:rgba(194,149,106,0.22);
+                    text-shadow: 0 0 3px currentColor;
                     position:relative;z-index:1;
-                "><span style="color:rgba(244,63,94,0.08);">Add factors and generate design_</span></div>
+                "><span style="color:rgba(194,149,106,0.08);">Define factors &amp; select design type_</span></div>
             </div>
         </div>
     </div>
@@ -131,21 +179,22 @@
     background: linear-gradient(160deg, #1c1c1c, #1f1f1f 40%, #1d1d1d);overflow:hidden;
 ">
     <div style="display:flex;align-items:center;gap:8px;padding:5px 48px;border-bottom:1px solid rgba(255,255,255,0.05);">
-        <span style="font:800 11px/1 'Arial Narrow',sans-serif;color:rgba(255,255,255,0.1);letter-spacing:0.15em;text-transform:uppercase;">Designer</span>
-        <span style="font:400 11px/1 'Courier New',monospace;color:rgba(255,255,255,0.06);">DX-01</span>
+        <span style="font:700 11px/1 'Georgia',serif;color:rgba(194,149,106,0.12);letter-spacing:0.15em;text-transform:uppercase;">Designer</span>
+        <span style="font:400 11px/1 'Courier New',monospace;color:rgba(194,149,106,0.06);">DX-02</span>
         <span class="serial-tag" style="margin-left:auto;">S/N ${id}</span>
     </div>
     <div style="padding:10px 48px;">
-        <div style="font:700 9px/1 'Arial',sans-serif;color:rgba(255,255,255,0.07);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:10px;">Signal</div>
+        <div style="font:700 9px/1 'Georgia',serif;color:rgba(255,255,255,0.07);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:10px;">Signal</div>
         <div style="display:flex;gap:18px;">
             <div class="patch-group"><div class="patch-jack" data-output="design" data-unit-id="${id}"></div><div class="patch-jack-label">design</div></div>
             <div class="patch-group"><div class="patch-jack" data-output="runsheet" data-unit-id="${id}"></div><div class="patch-jack-label">run sheet</div></div>
         </div>
     </div>
-    <div style="padding:6px 48px;margin-top:auto;border-top:1px solid rgba(244,63,94,0.02);">
-        <div style="font:300 7px/1.6 'Courier New',monospace;color:rgba(244,63,94,0.04);letter-spacing:0.04em;">
-            FORGERACK DESIGNER &#x2022; DX-01 REV.A &#x2022; FORGEDOE ENGINE<br>
-            FACTORIAL &#x2022; CCD &#x2022; BOX-BEHNKEN &#x2022; DSD &#x2022; TOKAMAK MFG
+    <div style="padding:6px 48px;margin-top:auto;border-top:1px solid rgba(194,149,106,0.02);">
+        <div style="font:300 9px/1.4 'Courier New',monospace;color:rgba(194,149,106,0.05);letter-spacing:0.04em;">
+            FORGERACK DESIGNER &#x2022; DX-02 REV.B &#x2022; FORGEDOE ENGINE<br>
+            17 DESIGNS &#x2022; FACTORIAL &#x2022; RSM &#x2022; OPTIMAL &#x2022; MIXTURE &#x2022; EVOP<br>
+            MERIDIAN INSTRUMENTS &#x2022; PRECISION EXPERIMENT ARCHITECTURE
         </div>
     </div>
 </div>

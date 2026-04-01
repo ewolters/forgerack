@@ -5161,7 +5161,8 @@ FR.registerUnit('precision', {
         .then(function(resp) { return resp.json(); })
         .then(function(json) {
             if (json.error) {
-                self._showResult('ERROR: ' + json.error, 'rgba(180,40,40,0.6)');
+                var errMsg = typeof json.error === 'string' ? json.error : JSON.stringify(json.error);
+                self._showResult('ERROR: ' + errMsg, 'rgba(180,40,40,0.6)');
                 FR.LED(document.getElementById(self.id + '-led')).set('red');
                 return;
             }

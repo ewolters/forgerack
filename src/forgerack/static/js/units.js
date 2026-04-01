@@ -5259,7 +5259,7 @@ FR.registerUnit('precision', {
         var html = lines.join('\n');
 
         var resultsEl = document.getElementById(this.id + '-results');
-        if (resultsEl) resultsEl.innerHTML = '<pre style="margin:0;font:11px/1.5 Courier New,monospace;color:#3a4a3a;white-space:pre;">' + html + '</pre>';
+        if (resultsEl) resultsEl.innerHTML = '<pre style="margin:0;font:11px/1.5 Courier New,monospace;color:#6a7a6a;white-space:pre;">' + html + '</pre>';
 
         FR.emit(this.id, 'result', r);
     },

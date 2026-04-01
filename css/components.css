@@ -2039,20 +2039,21 @@
  * ::after is directional highlight.  Both use z-index:-1 so
  * they stay behind ALL child content automatically.
  */
+/*
+ * Brushed metal — SVG feTurbulence noise stretched horizontally.
+ * The filter lives as an inline <svg> in the rack template (id="brush-filter").
+ * ::before applies it as a full-coverage layer with soft-light blending.
+ */
 .tex-brushed {
     position: relative;
 }
 .tex-brushed::before {
     content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1;
     mix-blend-mode: soft-light;
-    background:
-        repeating-linear-gradient(88deg,
-            rgba(255,255,255,0.07) 0px, transparent 0.2px, transparent 0.8px),
-        repeating-linear-gradient(91deg,
-            rgba(0,0,0,0.08) 0px, transparent 0.2px, transparent 1.1px);
+    background: #808080;
+    filter: url(#brush-grain);
+    opacity: 0.4;
 }
-/* Light source (130deg top-left) — disabled for now, tuning grain first */
-.tex-brushed::after { display: none; }
 /* Children of tex-brushed must sit above the grain layer */
 .tex-brushed > * { position: relative; z-index: 2; }
 

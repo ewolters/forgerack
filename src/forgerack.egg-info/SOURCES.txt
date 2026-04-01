@@ -10,6 +10,7 @@ src/forgerack/static/css/rack.css
 src/forgerack/static/js/components.js
 src/forgerack/static/js/unit-csv-input.js
 src/forgerack/static/js/units.js
+src/forgerack/static/js/units_mfd.js
 src/forgerack/static/js/wiring.js
 src/forgerack/templates/forgerack/units/analyst.html
 src/forgerack/templates/forgerack/units/blank-1u.html
@@ -24,6 +25,7 @@ src/forgerack/templates/forgerack/units/csv-input.html
 src/forgerack/templates/forgerack/units/filter.html
 src/forgerack/templates/forgerack/units/formula.html
 src/forgerack/templates/forgerack/units/intake.html
+src/forgerack/templates/forgerack/units/mfd.html
 src/forgerack/templates/forgerack/units/mixer.html
 src/forgerack/templates/forgerack/units/narrative.html
 src/forgerack/templates/forgerack/units/probe.html

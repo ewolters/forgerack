@@ -5028,4 +5028,80 @@ FR.registerUnit('spectrum', {
     getOutput(channel) { return null; }
 });
 
+// ═══════════════════════════════════════════════════════════
+// COUNTER CT-01 — Event Accumulator (Kosmos)
+// Mechanical digit wheels. Counts rows, triggers, events.
+// ═══════════════════════════════════════════════════════════
+
+FR.registerUnit('counter', {
+    init(el, id) {
+        this.el = el; this.id = id;
+        this._count = 0;
+
+        var self = this;
+        var resetBtn = document.getElementById(id + '-btn-reset');
+        if (resetBtn) resetBtn.addEventListener('click', function() {
+            self._count = 0;
+            self._updateWheel();
+            FR.LED(document.getElementById(self.id + '-led')).off();
+            FR.emit(self.id, 'count', { count: 0 });
+        });
+
+        this._updateWheel();
+    },
+
+    _updateWheel() {
+        var s = String(this._count).padStart(6, '0');
+        for (var i = 0; i < 6; i++) {
+            var el = document.getElementById(this.id + '-d' + (5 - i));
+            if (el) {
+                var newDigit = s[i];
+                if (el.textContent !== newDigit) {
+                    el.textContent = newDigit;
+                    // Quick flash animation — digit just rolled
+                    el.style.transition = 'none';
+                    el.style.transform = 'translateY(-3px)';
+                    setTimeout(function(e) {
+                        e.style.transition = 'transform 0.15s cubic-bezier(0.4,0,0.2,1)';
+                        e.style.transform = 'translateY(0)';
+                    }, 10, el);
+                }
+            }
+        }
+    },
+
+    receive(inputName, data, fromUnit) {
+        if (inputName === 'trigger') {
+            // Trigger input — increment by 1 per event
+            this._count++;
+            this._updateWheel();
+            FR.LED(document.getElementById(this.id + '-led')).set('green');
+            // Brief flash
+            var self = this;
+            setTimeout(function() { FR.LED(document.getElementById(self.id + '-led')).set('amber'); }, 200);
+            FR.emit(this.id, 'count', { count: this._count });
+        } else if (inputName === 'data') {
+            // Data input — count rows
+            if (data && data.columns && data.data) {
+                var col = data.columns[0];
+                var n = col ? (data.data[col] || []).length : 0;
+                this._count += n;
+            } else if (Array.isArray(data)) {
+                this._count += data.length;
+            } else {
+                this._count++;
+            }
+            this._updateWheel();
+            FR.LED(document.getElementById(this.id + '-led')).set('green');
+            FR.emit(this.id, 'count', { count: this._count });
+            FR.emit(this.id, 'thru', data);
+        }
+    },
+
+    getOutput(channel) {
+        if (channel === 'count') return { count: this._count };
+        return null;
+    }
+});
+
 })(ForgeRack);

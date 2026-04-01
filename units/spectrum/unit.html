@@ -24,15 +24,15 @@
     <!-- Carry handle -->
     <div class="carry-handle" style="position:absolute;top:1px;left:50%;transform:translateX(-50%);"></div>
 
-    <!-- Nameplate — machined aluminum plate with engraved text -->
+    <!-- Nameplate — machined aluminum plate, no brush grain -->
     <div class="nameplate" style="
         display:flex;align-items:center;gap:10px;
         padding:5px 48px;margin:0;
         border-bottom:2px solid rgba(0,0,0,0.4);
         background: linear-gradient(180deg,
-            rgba(255,255,255,0.04),
-            rgba(56,189,248,0.006) 40%,
-            rgba(0,0,0,0.15));
+            #2e3546 0%,
+            #282e3c 40%,
+            #222836 100%);
     ">
         <div class="led-housing"><span class="led lg" id="${id}-led"></span></div>
         <span class="text-engraved" style="
@@ -63,9 +63,9 @@
                 flex:1;
                 padding:4px;
                 background: linear-gradient(145deg,
-                    rgba(255,255,255,0.06) 0%,
-                    rgba(0,0,0,0.02) 30%,
-                    rgba(0,0,0,0.15) 100%);
+                    #303848 0%,
+                    #282e3a 30%,
+                    #1e2430 100%);
                 border-radius:3px;
                 box-shadow:
                     0 3px 6px rgba(0,0,0,0.5),

@@ -2,115 +2,106 @@
  ╔══════════════════════════════════════════════════════════════╗
  ║  SPECTRUM SP-01 — Distribution Analyzer                      ║
  ║  Manufacturer: TEKTRONIX                                     ║
- ║  Identity: Blue-gray brushed aluminum chassis, CRT scope     ║
- ║  with phosphor bloom, beveled bezel. Physical rocker         ║
- ║  switches, recessed pushbuttons, VFD-style readouts.         ║
- ║  Full skeuomorphic treatment.                                ║
+ ║  Identity: Blue-gray anodized aluminum, CRT scope with       ║
+ ║  phosphor bloom. UAD-level physicality: controls embedded     ║
+ ║  in panel, routed traces between sections, matte noise,      ║
+ ║  lit screws, countersunk labels.                             ║
  ╚══════════════════════════════════════════════════════════════╝
 -->
 
 <!-- ════════ FRONT PANEL ════════ -->
-<div class="rack-unit-front u8 mfr-tektronix tex-brushed chamfer-heavy" data-unit="spectrum" data-id="${id}" style="
+<div class="rack-unit-front u8 mfr-tektronix tex-brushed tex-matte chamfer-heavy" data-unit="spectrum" data-id="${id}" style="
     --device-accent:#38bdf8;
     background:
         radial-gradient(ellipse at 45% 25%, hsla(210,30%,55%,.02), transparent 55%),
         linear-gradient(160deg, #2a3040 0%, #242a36 30%, #282e3a 50%, #202630 80%);
     overflow:hidden;position:relative;
 ">
-    <!-- Mounting screws — top corners -->
-    <div class="rack-screw" style="position:absolute;top:4px;left:4px;"></div>
-    <div class="rack-screw" style="position:absolute;top:4px;right:4px;"></div>
+    <!-- ── Lit screws — specular highlight from 130deg source ── -->
+    <div style="position:absolute;top:5px;left:5px;width:10px;height:10px;border-radius:50%;z-index:10;
+        background:radial-gradient(circle at 30% 30%, #6a7080, #3a4050 40%, #2a3040 70%, #1a2030);
+        box-shadow: inset 0 1px 1px rgba(255,255,255,0.12), inset 0 -1px 2px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.3);
+    "><div style="position:absolute;top:4px;left:2px;width:6px;height:1.5px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div>
+      <div style="position:absolute;top:2px;left:4px;width:1.5px;height:6px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div></div>
+    <div style="position:absolute;top:5px;right:5px;width:10px;height:10px;border-radius:50%;z-index:10;
+        background:radial-gradient(circle at 30% 30%, #6a7080, #3a4050 40%, #2a3040 70%, #1a2030);
+        box-shadow: inset 0 1px 1px rgba(255,255,255,0.12), inset 0 -1px 2px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.3);
+    "><div style="position:absolute;top:4px;left:2px;width:6px;height:1.5px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div>
+      <div style="position:absolute;top:2px;left:4px;width:1.5px;height:6px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div></div>
 
-    <!-- Carry handle -->
-    <div class="carry-handle" style="position:absolute;top:1px;left:50%;transform:translateX(-50%);"></div>
-
-    <!-- Nameplate — machined aluminum plate, no brush grain -->
-    <div class="nameplate" style="
+    <!-- ── Nameplate — screenprinted INTO the surface ── -->
+    <div style="
         display:flex;align-items:center;gap:10px;
-        padding:5px 48px;margin:0;
-        border-bottom:2px solid rgba(0,0,0,0.4);
-        background: linear-gradient(180deg,
-            #2e3546 0%,
-            #282e3c 40%,
-            #222836 100%);
+        padding:5px 48px;
+        border-bottom:1px solid rgba(0,0,0,0.3);
+        background: linear-gradient(180deg, #2e3444 0%, #282e3c 50%, #242a38 100%);
     ">
-        <div class="led-housing"><span class="led lg" id="${id}-led"></span></div>
-        <span class="text-engraved" style="
-            font:800 16px/1 'Helvetica Neue','Arial',sans-serif;
-            color:rgba(56,189,248,0.4);
+        <div style="width:12px;height:12px;border-radius:50%;
+            background:radial-gradient(circle at 40% 35%, #1a2030, #0a1020);
+            box-shadow:inset 0 1px 2px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.03);
+            display:flex;align-items:center;justify-content:center;">
+            <span class="led" id="${id}-led" style="width:6px;height:6px;"></span>
+        </div>
+        <!-- Screenprinted text — looks stamped/etched, not floating -->
+        <span style="
+            font:800 15px/1 'Helvetica Neue','Arial',sans-serif;
+            color:rgba(56,189,248,0.3);
             letter-spacing:0.18em;text-transform:uppercase;
-            text-shadow:
-                0 1px 0 rgba(255,255,255,0.05),
-                0 -1px 0 rgba(0,0,0,0.5);
+            text-shadow: 0 -1px 0 rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.03);
         ">Spectrum</span>
         <span style="
             font:italic 300 9px/1 'Helvetica',sans-serif;
-            color:rgba(56,189,248,0.15);
-            text-shadow: 0 -1px 0 rgba(0,0,0,0.3);
+            color:rgba(56,189,248,0.12);
         ">Distribution Analyzer</span>
         <div style="margin-left:auto;display:flex;align-items:center;gap:6px;">
-            <span class="cert-mark" style="font-size:6px;opacity:0.15;">CE</span>
-            <span style="font:600 9px/1 'Courier New',monospace;color:rgba(56,189,248,0.12);">SP-01</span>
+            <span style="font:600 8px/1 'Courier New',monospace;color:rgba(56,189,248,0.1);">SP-01</span>
         </div>
     </div>
 
-    <div style="padding:5px 48px;display:flex;gap:10px;height:calc(100% - 38px);">
+    <div style="padding:5px 48px 4px;display:flex;gap:10px;height:calc(100% - 36px);">
 
-        <!-- ▌ SCOPE DISPLAY — CRT with bezel ▌ -->
+        <!-- ▌ SCOPE — CRT with cast bezel ▌ -->
         <div style="flex:1;display:flex;flex-direction:column;">
-            <!-- Bezel frame — thick beveled border simulating cast housing -->
             <div class="frame-bezel" style="
-                flex:1;
-                padding:4px;
+                flex:1;padding:4px;
                 background: linear-gradient(145deg,
-                    #303848 0%,
-                    #282e3a 30%,
-                    #1e2430 100%);
+                    #343a48 0%, #282e3c 20%, #1e2430 80%, #181e2a 100%);
                 border-radius:3px;
                 box-shadow:
-                    0 3px 6px rgba(0,0,0,0.5),
+                    0 3px 8px rgba(0,0,0,0.6),
                     0 1px 0 rgba(255,255,255,0.04),
                     inset 0 1px 0 rgba(255,255,255,0.06),
-                    inset 0 -1px 2px rgba(0,0,0,0.3);
+                    inset 0 -1px 2px rgba(0,0,0,0.4);
             ">
-                <!-- CRT tube -->
                 <div class="crt-screen" style="
                     height:100%;border-radius:2px;position:relative;overflow:hidden;
                     background: #020408;
                     border: 2px solid #000;
                     box-shadow:
                         inset 0 3px 12px rgba(0,0,0,0.8),
-                        inset 0 0 30px rgba(0,0,0,0.4),
-                        0 0 8px rgba(56,189,248,0.01);
+                        inset 0 0 30px rgba(0,0,0,0.4);
                 ">
-                    <!-- Phosphor scanlines -->
                     <div class="crt-scanlines" style="position:absolute;inset:0;
                         background:repeating-linear-gradient(180deg,
                             transparent, transparent 1px,
                             rgba(56,189,248,0.008) 1px, rgba(56,189,248,0.008) 2px);
                         pointer-events:none;z-index:6;"></div>
-
-                    <!-- Phosphor bloom — faint center glow -->
                     <div class="crt-bloom" style="position:absolute;inset:0;
                         background:radial-gradient(ellipse at 50% 50%,
                             rgba(56,189,248,0.01), transparent 65%);
                         pointer-events:none;z-index:5;"></div>
-
-                    <!-- Vignette — CRT edge darkening -->
                     <div class="crt-edge" style="position:absolute;inset:0;
                         box-shadow:inset 0 0 35px rgba(0,0,0,0.5);
                         pointer-events:none;z-index:7;"></div>
-
-                    <!-- Glass reflection -->
+                    <!-- Glass lens -->
                     <div style="position:absolute;inset:0;
                         background:linear-gradient(135deg,
-                            rgba(255,255,255,0.015) 0%,
-                            transparent 40%,
-                            transparent 60%,
-                            rgba(255,255,255,0.005) 100%);
+                            rgba(255,255,255,0.02) 0%,
+                            transparent 35%,
+                            transparent 70%,
+                            rgba(255,255,255,0.006) 100%);
                         pointer-events:none;z-index:8;"></div>
 
-                    <!-- Grid — graticule etched on glass -->
                     <div class="scope-grid" style="height:100%;overflow:hidden;position:relative;">
                         <div class="scope-grid-major"></div>
                         <div class="scope-grid-center"></div>
@@ -124,211 +115,231 @@
             </div>
         </div>
 
-        <!-- ▌ RIGHT CONTROL PANEL ▌ -->
-        <div style="width:115px;display:flex;flex-direction:column;gap:3px;">
+        <!-- ▌ RIGHT PANEL — routed control sections ▌ -->
+        <div style="width:115px;display:flex;flex-direction:column;gap:0;">
 
-            <!-- Column selector -->
-            <div style="display:flex;flex-direction:column;gap:1px;">
-                <span style="font:700 8px/1 'Helvetica',sans-serif;color:rgba(56,189,248,0.35);text-transform:uppercase;letter-spacing:0.1em;">Column</span>
+            <!-- Column selector — countersunk into panel -->
+            <div style="padding:3px 0 6px;">
+                <span style="font:800 8px/1 'Helvetica',sans-serif;color:rgba(56,189,248,0.3);text-transform:uppercase;letter-spacing:0.1em;
+                    text-shadow: 0 -1px 0 rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.02);
+                ">Column</span>
                 <select id="${id}-col" style="
-                    width:100%;
-                    background:#080c14;
-                    border:1px solid rgba(56,189,248,0.2);
+                    width:100%;margin-top:2px;
+                    background:#0a0e18;
+                    border:1px solid rgba(56,189,248,0.12);
+                    border-top-color:rgba(0,0,0,0.4);
+                    border-left-color:rgba(0,0,0,0.3);
+                    border-bottom-color:rgba(56,189,248,0.08);
+                    border-right-color:rgba(56,189,248,0.06);
                     color:#38bdf8;padding:3px 5px;border-radius:1px;
                     font:10px/1 'JetBrains Mono',monospace;
-                    box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
                 "><option value="">—</option></select>
             </div>
 
-            <!-- Bins — yellow-bordered faceplate section -->
-            <div style="
-                border:1px solid rgba(251,191,36,0.3);
-                border-radius:3px;
-                padding:7px 5px 5px;
-                position:relative;
-                margin-top:6px;
-            ">
-                <div style="
-                    position:absolute;top:-6px;left:8px;
-                    background:rgba(251,191,36,0.75);
-                    padding:1px 7px;
-                    border-radius:2px;
-                    font:700 8px/1 'Helvetica Neue','Arial',sans-serif;
-                    color:#1a1a1a;
-                    text-transform:uppercase;letter-spacing:0.1em;
-                ">Bins</div>
-                <div class="tek-btn-row" style="gap:2px;margin-top:1px;">
-                    <button class="tek-btn" id="${id}-bin-8" style="font-size:8px;padding:4px 6px;border-color:rgba(251,191,36,0.15);">8</button>
-                    <button class="tek-btn active" id="${id}-bin-15" style="font-size:8px;padding:4px 6px;border-color:rgba(251,191,36,0.15);">15</button>
-                    <button class="tek-btn" id="${id}-bin-25" style="font-size:8px;padding:4px 6px;border-color:rgba(251,191,36,0.15);">25</button>
-                    <button class="tek-btn" id="${id}-bin-auto" style="font-size:8px;padding:4px 5px;border-color:rgba(251,191,36,0.15);">A</button>
+            <!-- Routed trace — engraved line between sections -->
+            <div style="height:1px;background:linear-gradient(90deg,
+                transparent 0%, rgba(56,189,248,0.06) 20%, rgba(56,189,248,0.06) 80%, transparent 100%);
+                box-shadow: 0 1px 0 rgba(255,255,255,0.02);
+                margin:0 4px;"></div>
+
+            <!-- Bins — screenprinted panel section -->
+            <div style="padding:6px 0;">
+                <span style="font:800 8px/1 'Helvetica',sans-serif;color:rgba(56,189,248,0.3);text-transform:uppercase;letter-spacing:0.1em;
+                    text-shadow: 0 -1px 0 rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.02);
+                ">Bins</span>
+                <div class="tek-btn-row" style="gap:3px;margin-top:3px;">
+                    <button class="tek-btn" id="${id}-bin-8" style="font-size:8px;padding:4px 7px;
+                        background:linear-gradient(180deg, #2a3040, #222a38);
+                        border:1px solid rgba(0,0,0,0.4);border-bottom-color:rgba(56,189,248,0.06);
+                        color:rgba(56,189,248,0.35);
+                        box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+                    ">8</button>
+                    <button class="tek-btn active" id="${id}-bin-15" style="font-size:8px;padding:4px 7px;
+                        background:linear-gradient(180deg, #2a3040, #222a38);
+                        border:1px solid rgba(0,0,0,0.4);border-bottom-color:rgba(56,189,248,0.06);
+                        color:rgba(56,189,248,0.35);
+                        box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+                    ">15</button>
+                    <button class="tek-btn" id="${id}-bin-25" style="font-size:8px;padding:4px 7px;
+                        background:linear-gradient(180deg, #2a3040, #222a38);
+                        border:1px solid rgba(0,0,0,0.4);border-bottom-color:rgba(56,189,248,0.06);
+                        color:rgba(56,189,248,0.35);
+                        box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+                    ">25</button>
+                    <button class="tek-btn" id="${id}-bin-auto" style="font-size:8px;padding:4px 6px;
+                        background:linear-gradient(180deg, #2a3040, #222a38);
+                        border:1px solid rgba(0,0,0,0.4);border-bottom-color:rgba(56,189,248,0.06);
+                        color:rgba(56,189,248,0.35);
+                        box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+                    ">A</button>
                 </div>
             </div>
 
-            <!-- Overlay — yellow-bordered faceplate section -->
-            <div style="
-                border:1px solid rgba(251,191,36,0.3);
-                border-radius:3px;
-                padding:7px 5px 5px;
-                position:relative;
-                margin-top:6px;
-            ">
-                <div style="
-                    position:absolute;top:-6px;left:8px;
-                    background:rgba(251,191,36,0.75);
-                    padding:1px 7px;
-                    border-radius:2px;
-                    font:700 8px/1 'Helvetica Neue','Arial',sans-serif;
-                    color:#1a1a1a;
-                    text-transform:uppercase;letter-spacing:0.1em;
-                ">Overlay</div>
-                <div style="display:flex;align-items:center;gap:8px;margin-top:1px;">
-                    <div style="display:flex;align-items:center;gap:3px;">
-                        <div class="switch-rocker on tek-btn active" id="${id}-btn-normal" style="cursor:pointer;width:14px;height:20px;">
-                            <div style="width:3px;height:3px;border-radius:50%;background:rgba(56,189,248,0.5);margin:auto;"></div>
-                        </div>
-                        <span style="font:700 7px/1 'Helvetica',sans-serif;color:rgba(251,191,36,0.45);text-transform:uppercase;">Norm</span>
+            <!-- Routed trace -->
+            <div style="height:1px;background:linear-gradient(90deg,
+                transparent 0%, rgba(56,189,248,0.06) 20%, rgba(56,189,248,0.06) 80%, transparent 100%);
+                box-shadow: 0 1px 0 rgba(255,255,255,0.02);
+                margin:0 4px;"></div>
+
+            <!-- Overlay toggles — embedded rockers -->
+            <div style="padding:6px 0;">
+                <span style="font:800 8px/1 'Helvetica',sans-serif;color:rgba(56,189,248,0.3);text-transform:uppercase;letter-spacing:0.1em;
+                    text-shadow: 0 -1px 0 rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.02);
+                ">Overlay</span>
+                <div style="display:flex;gap:10px;margin-top:4px;">
+                    <div style="display:flex;align-items:center;gap:4px;">
+                        <div class="switch-rocker on tek-btn active" id="${id}-btn-normal" style="cursor:pointer;width:14px;height:20px;
+                            box-shadow: 0 2px 3px rgba(0,0,0,0.4), inset 0 -1px 0 rgba(255,255,255,0.03);
+                        "><div style="width:3px;height:3px;border-radius:50%;background:rgba(56,189,248,0.5);margin:auto;"></div></div>
+                        <span style="font:700 8px/1 'Helvetica',sans-serif;color:rgba(56,189,248,0.25);text-transform:uppercase;
+                            text-shadow: 0 -1px 0 rgba(0,0,0,0.3);
+                        ">Norm</span>
                     </div>
-                    <div style="display:flex;align-items:center;gap:3px;">
-                        <div class="switch-rocker tek-btn" id="${id}-btn-rug" style="cursor:pointer;width:14px;height:20px;">
-                            <div style="width:3px;height:3px;border-radius:50%;background:rgba(56,189,248,0.2);margin:auto;"></div>
-                        </div>
-                        <span style="font:700 7px/1 'Helvetica',sans-serif;color:rgba(251,191,36,0.45);text-transform:uppercase;">Rug</span>
+                    <div style="display:flex;align-items:center;gap:4px;">
+                        <div class="switch-rocker tek-btn" id="${id}-btn-rug" style="cursor:pointer;width:14px;height:20px;
+                            box-shadow: 0 2px 3px rgba(0,0,0,0.4), inset 0 -1px 0 rgba(255,255,255,0.03);
+                        "><div style="width:3px;height:3px;border-radius:50%;background:rgba(56,189,248,0.2);margin:auto;"></div></div>
+                        <span style="font:700 8px/1 'Helvetica',sans-serif;color:rgba(56,189,248,0.25);text-transform:uppercase;
+                            text-shadow: 0 -1px 0 rgba(0,0,0,0.3);
+                        ">Rug</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Stat readouts — VFD-style recessed displays -->
-            <div style="display:flex;flex-direction:column;gap:3px;flex:1;min-height:0;">
+            <!-- Routed trace -->
+            <div style="height:1px;background:linear-gradient(90deg,
+                transparent 0%, rgba(56,189,248,0.06) 20%, rgba(56,189,248,0.06) 80%, transparent 100%);
+                box-shadow: 0 1px 0 rgba(255,255,255,0.02);
+                margin:0 4px;"></div>
 
-                <!-- Mean — large primary readout -->
-                <div class="readout" style="align-items:center;">
-                    <div class="readout-window" style="
-                        width:100%;padding:3px 6px;text-align:right;
-                        background: #020408;
-                        border: 2px solid #0a0e16;
-                        border-radius:2px;
+            <!-- Stat readouts — countersunk VFD wells -->
+            <div style="display:flex;flex-direction:column;gap:3px;flex:1;padding:4px 0 0;min-height:0;">
+
+                <!-- Mean — primary -->
+                <div style="text-align:center;">
+                    <div style="
+                        background:#020408;
+                        border:2px solid #0a0e18;border-radius:2px;
+                        border-top-color:#060a14;border-left-color:#080c16;
                         box-shadow:
                             inset 0 2px 6px rgba(0,0,0,0.6),
                             inset 0 0 12px rgba(0,0,0,0.3),
-                            0 1px 0 rgba(255,255,255,0.03);
+                            0 1px 0 rgba(255,255,255,0.03),
+                            1px 1px 0 rgba(255,255,255,0.01);
+                        padding:3px 6px;text-align:right;
                         position:relative;overflow:hidden;
                     ">
-                        <!-- Glass reflection -->
-                        <div style="position:absolute;top:0;left:0;right:0;height:40%;
-                            background:linear-gradient(180deg,rgba(255,255,255,0.03),transparent);
+                        <div style="position:absolute;top:0;left:0;right:0;height:35%;
+                            background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);
                             pointer-events:none;"></div>
                         <div style="position:relative;">
-                            <div class="readout-ghost" style="font:700 16px/1 'JetBrains Mono',monospace;color:rgba(56,189,248,0.04);">888.88</div>
-                            <div id="${id}-mean" class="readout-active" style="
-                                font:700 16px/1 'JetBrains Mono',monospace;
+                            <div style="font:700 16px/1 'JetBrains Mono',monospace;color:rgba(56,189,248,0.04);">888.88</div>
+                            <div id="${id}-mean" style="font:700 16px/1 'JetBrains Mono',monospace;
                                 color:#38bdf8;
                                 text-shadow: 0 0 6px rgba(56,189,248,0.4), 0 0 12px rgba(56,189,248,0.1);
-                                position:absolute;inset:0;text-align:right;
-                            ">—</div>
+                                position:absolute;inset:0;text-align:right;">—</div>
                         </div>
                     </div>
-                    <span class="readout-tag" style="color:rgba(56,189,248,0.5);font:800 8px/1 'Helvetica',sans-serif;text-transform:uppercase;letter-spacing:0.1em;">Mean</span>
+                    <span class="readout-tag" style="color:rgba(56,189,248,0.4);font:800 8px/1 'Helvetica',sans-serif;text-transform:uppercase;letter-spacing:0.1em;
+                        text-shadow: 0 -1px 0 rgba(0,0,0,0.3);display:block;margin-top:1px;">Mean</span>
                 </div>
 
                 <!-- Std Dev -->
-                <div class="readout" style="align-items:center;">
-                    <div class="readout-window" style="
-                        width:100%;padding:3px 6px;text-align:right;
-                        background: #020408;
-                        border: 2px solid #0a0e16;border-radius:2px;
+                <div style="text-align:center;">
+                    <div style="
+                        background:#020408;
+                        border:2px solid #0a0e18;border-radius:2px;
+                        border-top-color:#060a14;border-left-color:#080c16;
                         box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.03);
+                        padding:2px 6px;text-align:right;
                         position:relative;overflow:hidden;
                     ">
-                        <div style="position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,0.03),transparent);pointer-events:none;"></div>
+                        <div style="position:absolute;top:0;left:0;right:0;height:35%;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);pointer-events:none;"></div>
                         <div style="position:relative;">
-                            <div class="readout-ghost" style="font:700 14px/1 'JetBrains Mono',monospace;color:rgba(56,189,248,0.04);">88.888</div>
-                            <div id="${id}-std" class="readout-active" style="
-                                font:700 14px/1 'JetBrains Mono',monospace;
-                                color:#38bdf8;
-                                text-shadow: 0 0 5px rgba(56,189,248,0.35);
-                                position:absolute;inset:0;text-align:right;
-                            ">—</div>
+                            <div style="font:700 13px/1 'JetBrains Mono',monospace;color:rgba(56,189,248,0.04);">88.888</div>
+                            <div id="${id}-std" style="font:700 13px/1 'JetBrains Mono',monospace;
+                                color:#38bdf8;text-shadow: 0 0 5px rgba(56,189,248,0.35);
+                                position:absolute;inset:0;text-align:right;">—</div>
                         </div>
                     </div>
-                    <span class="readout-tag" style="color:rgba(56,189,248,0.5);font:800 8px/1 'Helvetica',sans-serif;text-transform:uppercase;letter-spacing:0.1em;">Std Dev</span>
+                    <span class="readout-tag" style="color:rgba(56,189,248,0.4);font:800 8px/1 'Helvetica',sans-serif;text-transform:uppercase;letter-spacing:0.1em;
+                        text-shadow: 0 -1px 0 rgba(0,0,0,0.3);display:block;margin-top:1px;">Std Dev</span>
                 </div>
 
                 <!-- Skew + Kurt side by side -->
                 <div style="display:flex;gap:4px;">
-                    <div class="readout" style="flex:1;align-items:center;">
-                        <div class="readout-window" style="
-                            width:100%;padding:2px 4px;text-align:right;
-                            background: #020408;
-                            border: 2px solid #0a0e16;border-radius:2px;
+                    <div style="flex:1;text-align:center;">
+                        <div style="
+                            background:#020408;border:2px solid #0a0e18;border-radius:2px;
+                            border-top-color:#060a14;border-left-color:#080c16;
                             box-shadow: inset 0 1px 4px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.03);
-                            position:relative;overflow:hidden;
+                            padding:2px 4px;text-align:right;position:relative;overflow:hidden;
                         ">
-                            <div style="position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,0.03),transparent);pointer-events:none;"></div>
+                            <div style="position:absolute;top:0;left:0;right:0;height:35%;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);pointer-events:none;"></div>
                             <div style="position:relative;">
-                                <div class="readout-ghost" style="font:700 11px/1 'JetBrains Mono',monospace;color:rgba(56,189,248,0.04);">8.88</div>
-                                <div id="${id}-skew" class="readout-active" style="
-                                    font:700 11px/1 'JetBrains Mono',monospace;color:#38bdf8;
+                                <div style="font:700 11px/1 'JetBrains Mono',monospace;color:rgba(56,189,248,0.04);">8.88</div>
+                                <div id="${id}-skew" style="font:700 11px/1 'JetBrains Mono',monospace;color:#38bdf8;
                                     text-shadow: 0 0 4px rgba(56,189,248,0.3);
-                                    position:absolute;inset:0;text-align:right;
-                                ">—</div>
+                                    position:absolute;inset:0;text-align:right;">—</div>
                             </div>
                         </div>
-                        <span class="readout-tag" style="color:rgba(56,189,248,0.5);font:800 8px/1 'Helvetica',sans-serif;text-transform:uppercase;letter-spacing:0.1em;">Skew</span>
+                        <span class="readout-tag" style="color:rgba(56,189,248,0.4);font:800 7px/1 'Helvetica',sans-serif;text-transform:uppercase;letter-spacing:0.08em;
+                            text-shadow: 0 -1px 0 rgba(0,0,0,0.3);display:block;margin-top:1px;">Skew</span>
                     </div>
-                    <div class="readout" style="flex:1;align-items:center;">
-                        <div class="readout-window" style="
-                            width:100%;padding:2px 4px;text-align:right;
-                            background: #020408;
-                            border: 2px solid #0a0e16;border-radius:2px;
+                    <div style="flex:1;text-align:center;">
+                        <div style="
+                            background:#020408;border:2px solid #0a0e18;border-radius:2px;
+                            border-top-color:#060a14;border-left-color:#080c16;
                             box-shadow: inset 0 1px 4px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.03);
-                            position:relative;overflow:hidden;
+                            padding:2px 4px;text-align:right;position:relative;overflow:hidden;
                         ">
-                            <div style="position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,0.03),transparent);pointer-events:none;"></div>
+                            <div style="position:absolute;top:0;left:0;right:0;height:35%;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);pointer-events:none;"></div>
                             <div style="position:relative;">
-                                <div class="readout-ghost" style="font:700 11px/1 'JetBrains Mono',monospace;color:rgba(56,189,248,0.04);">8.88</div>
-                                <div id="${id}-kurt" class="readout-active" style="
-                                    font:700 11px/1 'JetBrains Mono',monospace;color:#38bdf8;
+                                <div style="font:700 11px/1 'JetBrains Mono',monospace;color:rgba(56,189,248,0.04);">8.88</div>
+                                <div id="${id}-kurt" style="font:700 11px/1 'JetBrains Mono',monospace;color:#38bdf8;
                                     text-shadow: 0 0 4px rgba(56,189,248,0.3);
-                                    position:absolute;inset:0;text-align:right;
-                                ">—</div>
+                                    position:absolute;inset:0;text-align:right;">—</div>
                             </div>
                         </div>
-                        <span class="readout-tag" style="color:rgba(56,189,248,0.5);font:800 8px/1 'Helvetica',sans-serif;text-transform:uppercase;letter-spacing:0.1em;">Kurt</span>
+                        <span class="readout-tag" style="color:rgba(56,189,248,0.4);font:800 7px/1 'Helvetica',sans-serif;text-transform:uppercase;letter-spacing:0.08em;
+                            text-shadow: 0 -1px 0 rgba(0,0,0,0.3);display:block;margin-top:1px;">Kurt</span>
                     </div>
                 </div>
 
-                <!-- N — small readout -->
-                <div class="readout" style="align-items:center;">
-                    <div class="readout-window" style="
-                        width:100%;padding:2px 4px;text-align:right;
-                        background: #020408;
-                        border: 2px solid #0a0e16;border-radius:2px;
+                <!-- n -->
+                <div style="text-align:center;">
+                    <div style="
+                        background:#020408;border:2px solid #0a0e18;border-radius:2px;
+                        border-top-color:#060a14;border-left-color:#080c16;
                         box-shadow: inset 0 1px 3px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.03);
-                        position:relative;overflow:hidden;
+                        padding:2px 4px;text-align:right;position:relative;overflow:hidden;
                     ">
-                        <div style="position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,0.03),transparent);pointer-events:none;"></div>
+                        <div style="position:absolute;top:0;left:0;right:0;height:35%;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);pointer-events:none;"></div>
                         <div style="position:relative;">
-                            <div class="readout-ghost" style="font:700 11px/1 'JetBrains Mono',monospace;color:rgba(56,189,248,0.04);">8888</div>
-                            <div id="${id}-n" class="readout-active" style="
-                                font:700 11px/1 'JetBrains Mono',monospace;color:#38bdf8;
+                            <div style="font:700 11px/1 'JetBrains Mono',monospace;color:rgba(56,189,248,0.04);">8888</div>
+                            <div id="${id}-n" style="font:700 11px/1 'JetBrains Mono',monospace;color:#38bdf8;
                                 text-shadow: 0 0 4px rgba(56,189,248,0.3);
-                                position:absolute;inset:0;text-align:right;
-                            ">—</div>
+                                position:absolute;inset:0;text-align:right;">—</div>
                         </div>
                     </div>
-                    <span class="readout-tag" style="color:rgba(56,189,248,0.5);font:800 8px/1 'Helvetica',sans-serif;text-transform:uppercase;letter-spacing:0.1em;">n</span>
+                    <span class="readout-tag" style="color:rgba(56,189,248,0.4);font:800 7px/1 'Helvetica',sans-serif;text-transform:uppercase;letter-spacing:0.08em;
+                        text-shadow: 0 -1px 0 rgba(0,0,0,0.3);display:block;margin-top:1px;">n</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Bottom screws -->
-    <div class="rack-screw" style="position:absolute;bottom:4px;left:4px;"></div>
-    <div class="rack-screw" style="position:absolute;bottom:4px;right:4px;"></div>
-
-    <!-- Wear overlay — subtle polish mark from use -->
-    <div class="wear-polished" style="position:absolute;inset:0;pointer-events:none;"></div>
+    <!-- Bottom screws with lighting -->
+    <div style="position:absolute;bottom:5px;left:5px;width:10px;height:10px;border-radius:50%;z-index:10;
+        background:radial-gradient(circle at 30% 30%, #6a7080, #3a4050 40%, #2a3040 70%, #1a2030);
+        box-shadow: inset 0 1px 1px rgba(255,255,255,0.12), inset 0 -1px 2px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.3);
+    "><div style="position:absolute;top:4px;left:2px;width:6px;height:1.5px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div>
+      <div style="position:absolute;top:2px;left:4px;width:1.5px;height:6px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div></div>
+    <div style="position:absolute;bottom:5px;right:5px;width:10px;height:10px;border-radius:50%;z-index:10;
+        background:radial-gradient(circle at 30% 30%, #6a7080, #3a4050 40%, #2a3040 70%, #1a2030);
+        box-shadow: inset 0 1px 1px rgba(255,255,255,0.12), inset 0 -1px 2px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.3);
+    "><div style="position:absolute;top:4px;left:2px;width:6px;height:1.5px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div>
+      <div style="position:absolute;top:2px;left:4px;width:1.5px;height:6px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div></div>
 </div>
 
 <!-- ════════ BACK PANEL ════════ -->
@@ -337,7 +348,6 @@
         linear-gradient(160deg, #1c1c1c, #1f1f1f 40%, #1d1d1d);
     overflow:hidden;position:relative;
 ">
-    <!-- Back panel screws -->
     <div class="rack-screw" style="position:absolute;top:4px;left:4px;"></div>
     <div class="rack-screw" style="position:absolute;top:4px;right:4px;"></div>
 
@@ -354,15 +364,9 @@
             <div class="patch-group"><div class="patch-jack" data-output="thru" data-unit-id="${id}"></div><div class="patch-jack-label">thru</div></div>
         </div>
     </div>
-
-    <!-- Ventilation slots -->
-    <div style="padding:6px 48px;display:flex;gap:3px;">
-        <div style="flex:1;height:2px;background:repeating-linear-gradient(90deg,rgba(255,255,255,0.02) 0px,rgba(255,255,255,0.02) 8px,transparent 8px,transparent 12px);border-radius:1px;"></div>
-    </div>
-
     <div style="padding:6px 48px;margin-top:auto;border-top:1px solid rgba(56,189,248,0.02);">
         <div style="font:300 9px/1.6 'Courier New',monospace;color:rgba(56,189,248,0.05);letter-spacing:0.04em;">
-            FORGERACK SPECTRUM &#x2022; SP-01 REV.B &#x2022; DISTRIBUTION ANALYZER<br>
+            FORGERACK SPECTRUM &#x2022; SP-01 REV.C &#x2022; DISTRIBUTION ANALYZER<br>
             HISTOGRAM &#x2022; NORMAL OVERLAY &#x2022; SKEW/KURTOSIS &#x2022; TEKTRONIX MFG
         </div>
     </div>

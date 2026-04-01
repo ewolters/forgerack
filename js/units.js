@@ -5104,4 +5104,164 @@ FR.registerUnit('counter', {
     }
 });
 
+// ═══════════════════════════════════════════════════════════
+// PRECISION GA-01 — Gage R&R / MSA (Apothecary)
+// All computation via forgespc.gage.gage_rr_crossed on server.
+// ═══════════════════════════════════════════════════════════
+
+FR.registerUnit('precision', {
+    init(el, id) {
+        this.el = el; this.id = id;
+        this._data = null;
+
+        var self = this;
+        var runBtn = document.getElementById(id + '-btn-run');
+        if (runBtn) runBtn.addEventListener('click', function() { self._run(); });
+    },
+
+    _run() {
+        if (!this._data) return;
+        var partSel = document.getElementById(this.id + '-col-part');
+        var opSel = document.getElementById(this.id + '-col-op');
+        var measSel = document.getElementById(this.id + '-col-meas');
+        var tolInput = document.getElementById(this.id + '-tolerance');
+
+        var partCol = partSel ? partSel.value : '';
+        var opCol = opSel ? opSel.value : '';
+        var measCol = measSel ? measSel.value : '';
+        var tol = tolInput && tolInput.value.trim() ? parseFloat(tolInput.value) : null;
+
+        if (!partCol || !opCol || !measCol) {
+            this._showResult('Select Part, Operator, and Measurement columns.', 'rgba(180,40,40,0.5)');
+            return;
+        }
+
+        var d = this._data.data;
+        var parts = d[partCol] || [];
+        var operators = d[opCol] || [];
+        var measurements = d[measCol] || [];
+
+        if (parts.length < 4) {
+            this._showResult('Need at least 4 data rows for Gage R&R.', 'rgba(180,40,40,0.5)');
+            return;
+        }
+
+        var self = this;
+        var csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+        var payload = { op: 'gage_rr', data: { parts: parts, operators: operators, measurements: measurements } };
+        if (tol !== null && !isNaN(tol)) payload.data.tolerance = tol;
+
+        this._showResult('Analyzing...', 'rgba(74,90,74,0.4)');
+
+        fetch('/api/rack/compute/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf ? csrf.value : document.cookie.replace(/.*csrftoken=([^;]*).*/, '$1') },
+            body: JSON.stringify(payload)
+        })
+        .then(function(resp) { return resp.json(); })
+        .then(function(json) {
+            if (json.error) {
+                self._showResult('ERROR: ' + json.error, 'rgba(180,40,40,0.6)');
+                FR.LED(document.getElementById(self.id + '-led')).set('red');
+                return;
+            }
+            self._displayResults(json.result);
+        })
+        .catch(function(e) {
+            self._showResult('Fetch error: ' + e, 'rgba(180,40,40,0.6)');
+            FR.LED(document.getElementById(self.id + '-led')).set('red');
+        });
+    },
+
+    _showResult(msg, color) {
+        var el = document.getElementById(this.id + '-results');
+        if (el) { el.innerHTML = '<span style="color:' + (color || 'rgba(74,90,74,0.4)') + ';">' + msg + '</span>'; }
+    },
+
+    _displayResults(r) {
+        // GRR% gauge
+        var grrEl = document.getElementById(this.id + '-grr-pct');
+        if (grrEl) grrEl.textContent = r.grr_percent.toFixed(1);
+
+        // NDC
+        var ndcEl = document.getElementById(this.id + '-ndc');
+        if (ndcEl) ndcEl.textContent = r.ndc;
+
+        // Assessment verdict
+        var verdictEl = document.getElementById(this.id + '-verdict');
+        var verdictLed = document.getElementById(this.id + '-led-verdict');
+        if (verdictEl) verdictEl.textContent = r.assessment;
+        if (verdictLed) {
+            if (r.assessment === 'Acceptable') FR.LED(verdictLed).set('green');
+            else if (r.assessment === 'Marginal') FR.LED(verdictLed).set('amber');
+            else FR.LED(verdictLed).set('red');
+        }
+
+        // Design info
+        var npEl = document.getElementById(this.id + '-n-parts');
+        var noEl = document.getElementById(this.id + '-n-ops');
+        var nrEl = document.getElementById(this.id + '-n-reps');
+        if (npEl) npEl.textContent = r.n_parts;
+        if (noEl) noEl.textContent = r.n_operators;
+        if (nrEl) nrEl.textContent = r.n_replicates;
+
+        // Bubble level — centered if good, off-center if bad
+        var bubble = document.getElementById(this.id + '-bubble');
+        if (bubble) {
+            var offset = r.assessment === 'Acceptable' ? 0 : r.assessment === 'Marginal' ? 4 : 8;
+            bubble.style.left = 'calc(50% - 3px + ' + offset + 'px)';
+        }
+
+        FR.LED(document.getElementById(this.id + '-led')).set('green');
+
+        // Detailed results in glass panel
+        var html = '<div style="font:11px/1.6 Georgia,serif;color:rgba(74,90,74,0.6);">';
+        html += '<div style="font:700 12px/1 Georgia,serif;color:rgba(74,90,74,0.7);margin-bottom:6px;">Gage R&R Results</div>';
+        html += '<div style="border-bottom:1px solid rgba(74,90,74,0.08);padding:2px 0;"><span style="display:inline-block;width:110px;color:rgba(74,90,74,0.4);">Repeatability</span> <span style="font-family:JetBrains Mono,monospace;font-size:10px;">' + (r.repeatability * 1e6).toFixed(1) + ' \u00D710\u207B\u2076</span></div>';
+        html += '<div style="border-bottom:1px solid rgba(74,90,74,0.08);padding:2px 0;"><span style="display:inline-block;width:110px;color:rgba(74,90,74,0.4);">Reproducibility</span> <span style="font-family:JetBrains Mono,monospace;font-size:10px;">' + (r.reproducibility * 1e6).toFixed(1) + ' \u00D710\u207B\u2076</span></div>';
+        html += '<div style="border-bottom:1px solid rgba(74,90,74,0.08);padding:2px 0;"><span style="display:inline-block;width:110px;color:rgba(74,90,74,0.4);">GRR</span> <span style="font-family:JetBrains Mono,monospace;font-size:10px;">' + (r.grr * 1e6).toFixed(1) + ' \u00D710\u207B\u2076</span></div>';
+        html += '<div style="border-bottom:1px solid rgba(74,90,74,0.08);padding:2px 0;"><span style="display:inline-block;width:110px;color:rgba(74,90,74,0.4);">Part Variation</span> <span style="font-family:JetBrains Mono,monospace;font-size:10px;">' + (r.part_variation * 1e6).toFixed(1) + ' \u00D710\u207B\u2076</span></div>';
+        html += '<div style="border-bottom:1px solid rgba(74,90,74,0.08);padding:2px 0;"><span style="display:inline-block;width:110px;color:rgba(74,90,74,0.4);">Total Variation</span> <span style="font-family:JetBrains Mono,monospace;font-size:10px;">' + (r.total_variation * 1e6).toFixed(1) + ' \u00D710\u207B\u2076</span></div>';
+        html += '<div style="margin-top:6px;padding:4px 6px;background:rgba(74,90,74,0.04);border-radius:2px;">';
+        html += '<span style="font:700 9px/1 Georgia,serif;color:rgba(74,90,74,0.5);">GRR% = ' + r.grr_percent.toFixed(1) + '% &nbsp; NDC = ' + r.ndc + '</span>';
+        html += '<div style="font:10px/1.4 Georgia,serif;color:rgba(74,90,74,0.35);margin-top:2px;">';
+        if (r.grr_percent < 10) html += 'Measurement system is adequate.';
+        else if (r.grr_percent < 30) html += 'Measurement system may be acceptable depending on application.';
+        else html += 'Measurement system needs improvement. NDC \u2265 5 required.';
+        html += '</div></div>';
+        html += '</div>';
+
+        var resultsEl = document.getElementById(this.id + '-results');
+        if (resultsEl) resultsEl.innerHTML = html;
+
+        FR.emit(this.id, 'result', r);
+    },
+
+    receive(inputName, data, fromUnit) {
+        if (!data) return;
+        if (data.columns && data.data) { this._data = data; }
+        else return;
+
+        // Populate all three selectors
+        var self = this;
+        ['col-part', 'col-op', 'col-meas'].forEach(function(selId) {
+            var sel = document.getElementById(self.id + '-' + selId);
+            if (!sel) return;
+            var prev = sel.value;
+            sel.innerHTML = '<option value="">column</option>';
+            self._data.columns.forEach(function(c) {
+                var opt = document.createElement('option');
+                opt.value = c; opt.textContent = c;
+                sel.appendChild(opt);
+            });
+            if (prev && self._data.columns.indexOf(prev) !== -1) sel.value = prev;
+        });
+
+        FR.LED(document.getElementById(this.id + '-led')).set('green');
+        FR.emit(this.id, 'thru', data);
+    },
+
+    getOutput(channel) { return null; }
+});
+
 })(ForgeRack);

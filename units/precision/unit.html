@@ -1,0 +1,179 @@
+<!--
+ ╔══════════════════════════════════════════════════════════════╗
+ ║  PRECISION GA-01 — Gage R&R / MSA Instrument                ║
+ ║  Manufacturer: APOTHECARY                                    ║
+ ║  Identity: White enamel, analytical balance. Glass draft     ║
+ ║  shields, bubble level. Serif typography. Precise, delicate. ║
+ ║  Is your measurement system adequate?                        ║
+ ╚══════════════════════════════════════════════════════════════╝
+-->
+
+<!-- ════════ FRONT PANEL ════════ -->
+<div class="rack-unit-front u6 mfr-apothecary" data-unit="precision" data-id="${id}" style="
+    --device-accent:#6b8e6b;
+    background: linear-gradient(160deg, #e8e4dc 0%, #e0dcd4 30%, #e4e0d8 50%, #d8d4cc 80%) !important;
+    overflow:hidden;
+">
+    <!-- Nameplate — serif on white enamel -->
+    <div style="
+        display:flex;align-items:center;gap:8px;
+        padding:4px 48px;
+        border-bottom:1px solid rgba(0,0,0,0.08);
+        background: linear-gradient(180deg, rgba(255,255,255,0.3), rgba(0,0,0,0.02));
+    ">
+        <div class="led-housing" style="background:rgba(0,0,0,0.06);"><span class="led" id="${id}-led" style="width:6px;height:6px;"></span></div>
+        <span style="
+            font:600 16px/1 'Georgia','Times New Roman',serif;
+            color:rgba(74,90,74,0.7);
+            letter-spacing:0.08em;
+        ">Precision</span>
+        <span style="font:300 10px/1 'Georgia',serif;color:rgba(74,90,74,0.35);font-style:italic;">Gage R&amp;R / MSA</span>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+            <!-- Bubble level -->
+            <div class="apothecary-level">
+                <div class="apothecary-bubble" id="${id}-bubble"></div>
+            </div>
+            <span style="font:500 9px/1 'Courier New',monospace;color:rgba(74,90,74,0.2);">GA-01</span>
+        </div>
+    </div>
+
+    <div style="padding:6px 48px;display:flex;gap:10px;height:calc(100% - 32px);">
+
+        <!-- Left: Column selectors + controls -->
+        <div style="width:130px;display:flex;flex-direction:column;gap:5px;">
+            <!-- Part column -->
+            <div style="display:flex;flex-direction:column;gap:2px;">
+                <span style="font:600 8px/1 'Georgia',serif;color:rgba(74,90,74,0.5);text-transform:uppercase;letter-spacing:0.1em;">Part / Sample</span>
+                <select id="${id}-col-part" style="
+                    background:rgba(255,255,255,0.5);border:1px solid rgba(74,90,74,0.15);
+                    color:#4a5a4a;padding:3px 5px;border-radius:1px;
+                    font:10px/1 'JetBrains Mono',monospace;width:100%;
+                "><option value="">column</option></select>
+            </div>
+            <!-- Operator column -->
+            <div style="display:flex;flex-direction:column;gap:2px;">
+                <span style="font:600 8px/1 'Georgia',serif;color:rgba(74,90,74,0.5);text-transform:uppercase;letter-spacing:0.1em;">Operator / Appraiser</span>
+                <select id="${id}-col-op" style="
+                    background:rgba(255,255,255,0.5);border:1px solid rgba(74,90,74,0.15);
+                    color:#4a5a4a;padding:3px 5px;border-radius:1px;
+                    font:10px/1 'JetBrains Mono',monospace;width:100%;
+                "><option value="">column</option></select>
+            </div>
+            <!-- Measurement column -->
+            <div style="display:flex;flex-direction:column;gap:2px;">
+                <span style="font:600 8px/1 'Georgia',serif;color:rgba(74,90,74,0.5);text-transform:uppercase;letter-spacing:0.1em;">Measurement</span>
+                <select id="${id}-col-meas" style="
+                    background:rgba(255,255,255,0.5);border:1px solid rgba(74,90,74,0.15);
+                    color:#4a5a4a;padding:3px 5px;border-radius:1px;
+                    font:10px/1 'JetBrains Mono',monospace;width:100%;
+                "><option value="">column</option></select>
+            </div>
+            <!-- Tolerance -->
+            <div style="display:flex;flex-direction:column;gap:2px;">
+                <span style="font:600 8px/1 'Georgia',serif;color:rgba(74,90,74,0.5);text-transform:uppercase;letter-spacing:0.1em;">Tolerance (optional)</span>
+                <input type="text" id="${id}-tolerance" placeholder="USL - LSL" style="
+                    background:rgba(255,255,255,0.5);border:1px solid rgba(74,90,74,0.15);
+                    color:#4a5a4a;padding:3px 5px;border-radius:1px;text-align:center;
+                    font:10px/1 'JetBrains Mono',monospace;width:100%;box-sizing:border-box;
+                ">
+            </div>
+            <!-- Run button -->
+            <button id="${id}-btn-run" style="
+                width:100%;padding:6px 0;margin-top:auto;
+                font:600 9px/1 'Georgia',serif;text-transform:uppercase;letter-spacing:0.12em;
+                background:linear-gradient(180deg, rgba(107,142,107,0.15), rgba(107,142,107,0.06));
+                border:1px solid rgba(107,142,107,0.2);color:rgba(74,90,74,0.6);
+                border-radius:1px;cursor:pointer;
+                box-shadow:0 1px 2px rgba(0,0,0,0.08);
+            ">&#x25B6; Analyze</button>
+        </div>
+
+        <!-- Right: Results behind glass draft shield -->
+        <div class="apothecary-glass" style="flex:1;padding:8px 12px;overflow-y:auto;">
+            <div id="${id}-results" style="
+                font:11px/1.6 'Georgia',serif;color:rgba(74,90,74,0.4);
+            ">
+                <span style="color:rgba(74,90,74,0.2);">Load data with Part, Operator, and Measurement columns. Click Analyze.</span>
+            </div>
+        </div>
+
+        <!-- Far right: key readouts -->
+        <div style="width:80px;display:flex;flex-direction:column;gap:4px;">
+            <!-- GRR% gauge -->
+            <div style="text-align:center;">
+                <div style="
+                    background:linear-gradient(180deg, #f0ece0, #e0dcd0);
+                    border:2px solid #c0bca8;border-radius:2px;
+                    box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);
+                    padding:4px 4px;text-align:center;position:relative;overflow:hidden;
+                ">
+                    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.3),transparent 40%);pointer-events:none;"></div>
+                    <div style="position:relative;">
+                        <div style="font:700 20px/1 'Georgia',serif;color:rgba(74,90,74,0.08);">88.8</div>
+                        <div id="${id}-grr-pct" style="font:700 20px/1 'Georgia',serif;color:#4a5a4a;
+                            position:absolute;inset:0;text-align:center;">—</div>
+                    </div>
+                </div>
+                <div style="font:600 8px/1 'Georgia',serif;color:rgba(74,90,74,0.5);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px;">GRR %</div>
+            </div>
+
+            <!-- NDC -->
+            <div style="text-align:center;">
+                <div style="
+                    background:linear-gradient(180deg, #f0ece0, #e0dcd0);
+                    border:2px solid #c0bca8;border-radius:2px;
+                    box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);
+                    padding:3px 4px;text-align:center;position:relative;overflow:hidden;
+                ">
+                    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.3),transparent 40%);pointer-events:none;"></div>
+                    <div style="position:relative;">
+                        <div style="font:700 16px/1 'Georgia',serif;color:rgba(74,90,74,0.08);">88</div>
+                        <div id="${id}-ndc" style="font:700 16px/1 'Georgia',serif;color:#4a5a4a;
+                            position:absolute;inset:0;text-align:center;">—</div>
+                    </div>
+                </div>
+                <div style="font:600 8px/1 'Georgia',serif;color:rgba(74,90,74,0.5);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px;">NDC</div>
+            </div>
+
+            <!-- Assessment LED -->
+            <div style="text-align:center;margin-top:auto;">
+                <span class="led lg" id="${id}-led-verdict"></span>
+                <div id="${id}-verdict" style="font:600 8px/1 'Georgia',serif;color:rgba(74,90,74,0.4);text-transform:uppercase;letter-spacing:0.06em;margin-top:3px;">—</div>
+            </div>
+
+            <!-- Design info -->
+            <div style="text-align:center;">
+                <div style="font:10px/1.3 'JetBrains Mono',monospace;color:rgba(74,90,74,0.25);">
+                    <span id="${id}-n-parts">—</span>p
+                    <span id="${id}-n-ops">—</span>o
+                    <span id="${id}-n-reps">—</span>r
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ════════ BACK PANEL ════════ -->
+<div class="rack-unit-back u6" data-unit-back="precision" data-id="${id}" style="
+    background: linear-gradient(160deg, #1c1c1c, #1f1f1f 40%, #1d1d1d);overflow:hidden;
+">
+    <div style="display:flex;align-items:center;gap:8px;padding:5px 48px;border-bottom:1px solid rgba(255,255,255,0.05);">
+        <span style="font:600 11px/1 'Georgia',serif;color:rgba(255,255,255,0.1);letter-spacing:0.1em;text-transform:uppercase;">Precision</span>
+        <span style="font:400 11px/1 'Courier New',monospace;color:rgba(255,255,255,0.06);">GA-01</span>
+        <span class="serial-tag" style="margin-left:auto;">S/N ${id}</span>
+    </div>
+    <div style="padding:10px 48px;">
+        <div style="font:700 9px/1 'Arial',sans-serif;color:rgba(255,255,255,0.07);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:10px;">Signal</div>
+        <div style="display:flex;gap:18px;">
+            <div class="patch-group"><div class="patch-jack" data-input="data" data-unit-id="${id}"></div><div class="patch-jack-label">data in</div></div>
+            <div class="patch-group"><div class="patch-jack" data-output="result" data-unit-id="${id}"></div><div class="patch-jack-label">result</div></div>
+            <div class="patch-group"><div class="patch-jack" data-output="thru" data-unit-id="${id}"></div><div class="patch-jack-label">thru</div></div>
+        </div>
+    </div>
+    <div style="padding:6px 48px;margin-top:auto;border-top:1px solid rgba(107,142,107,0.02);">
+        <div style="font:300 7px/1.6 'Courier New',monospace;color:rgba(107,142,107,0.05);letter-spacing:0.04em;">
+            FORGERACK PRECISION &#x2022; GA-01 REV.A &#x2022; GAGE R&amp;R / MSA<br>
+            FORGESPC ENGINE &#x2022; CROSSED DESIGN &#x2022; APOTHECARY MFG
+        </div>
+    </div>
+</div>

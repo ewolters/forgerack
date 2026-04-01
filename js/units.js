@@ -4825,17 +4825,17 @@ FR.registerUnit('correlator', {
             if (!sel) return;
             var prev = sel.value;
             sel.innerHTML = '<option value="">column</option>';
-            self._data.columns.forEach(function(c) {
+            var numCols = self._data.columns.filter(function(c) {
+                var v = self._data.data[c];
+                return v && v.length > 0 && !isNaN(parseFloat(v[0]));
+            });
+            numCols.forEach(function(c) {
                 var opt = document.createElement('option');
                 opt.value = c; opt.textContent = c;
                 sel.appendChild(opt);
             });
             // Auto-select first two numeric columns
-            if (!prev || self._data.columns.indexOf(prev) === -1) {
-                var numCols = self._data.columns.filter(function(c) {
-                    var v = self._data.data[c];
-                    return v && v.length > 0 && !isNaN(parseFloat(v[0]));
-                });
+            if (!prev || numCols.indexOf(prev) === -1) {
                 if (numCols[idx]) sel.value = numCols[idx];
             } else {
                 sel.value = prev;
@@ -4973,7 +4973,7 @@ FR.registerUnit('spectrum', {
                 var xVal = r.min + (px / pw) * (r.max - r.min);
                 var z = (xVal - mean) / std;
                 var density = Math.exp(-0.5 * z * z) / (std * Math.sqrt(2 * Math.PI));
-                var yPx = pad.top + ph * (1 - (density * totalArea) / maxCount);
+                var yPx = Math.max(pad.top, pad.top + ph * (1 - (density * totalArea) / maxCount));
                 pathD += (px === 0 ? 'M' : 'L') + (pad.left + px) + ',' + yPx.toFixed(1);
             }
             svg += '<path d="'+pathD+'" fill="none" stroke="#fde68a" stroke-width="1.5" opacity="0.7"/>';
@@ -5011,17 +5011,15 @@ FR.registerUnit('spectrum', {
         if (colSel) {
             var prev = colSel.value;
             colSel.innerHTML = '<option value="">column</option>';
+            var self2 = this;
             this._data.columns.forEach(function(c) {
+                var v = self2._data.data[c];
+                if (!v || v.length === 0 || isNaN(parseFloat(v[0]))) return; // skip non-numeric
                 var opt = document.createElement('option'); opt.value = c; opt.textContent = c;
                 colSel.appendChild(opt);
             });
-            if (prev && this._data.columns.indexOf(prev) !== -1) colSel.value = prev;
-            else {
-                for (var i = 0; i < this._data.columns.length; i++) {
-                    var v = this._data.data[this._data.columns[i]];
-                    if (v && v.length > 0 && !isNaN(parseFloat(v[0]))) { colSel.value = this._data.columns[i]; break; }
-                }
-            }
+            if (prev && colSel.querySelector('option[value="'+prev+'"]')) colSel.value = prev;
+            else if (colSel.options.length > 1) colSel.selectedIndex = 1;
         }
         this._render();
         FR.emit(this.id, 'thru', data);

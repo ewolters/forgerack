@@ -125,7 +125,7 @@
         </div>
 
         <!-- ▌ RIGHT CONTROL PANEL ▌ -->
-        <div style="width:115px;display:flex;flex-direction:column;gap:5px;">
+        <div style="width:115px;display:flex;flex-direction:column;gap:3px;overflow:visible;">
 
             <!-- Column selector — recessed panel -->
             <div class="panel-recessed" style="padding:4px;border-radius:2px;">
@@ -152,18 +152,18 @@
             </div>
 
             <!-- Overlay toggles — rocker switches -->
-            <div style="display:flex;gap:6px;justify-content:center;padding:2px 0;">
-                <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+            <div style="display:flex;gap:12px;justify-content:center;padding:3px 0;">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
                     <div class="switch-rocker on tek-btn active" id="${id}-btn-normal" style="cursor:pointer;">
                         <div style="width:3px;height:3px;border-radius:50%;background:rgba(56,189,248,0.5);margin:auto;"></div>
                     </div>
-                    <span class="control-label control-label-sm control-label-dim" style="font-size:7px;color:rgba(56,189,248,0.3);">Norm</span>
+                    <span style="font:700 8px/1 'Helvetica',sans-serif;color:rgba(56,189,248,0.35);text-transform:uppercase;letter-spacing:0.08em;">Normal</span>
                 </div>
-                <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
                     <div class="switch-rocker tek-btn" id="${id}-btn-rug" style="cursor:pointer;">
                         <div style="width:3px;height:3px;border-radius:50%;background:rgba(56,189,248,0.2);margin:auto;"></div>
                     </div>
-                    <span class="control-label control-label-sm control-label-dim" style="font-size:7px;color:rgba(56,189,248,0.3);">Rug</span>
+                    <span style="font:700 8px/1 'Helvetica',sans-serif;color:rgba(56,189,248,0.35);text-transform:uppercase;letter-spacing:0.08em;">Rug</span>
                 </div>
             </div>
 
@@ -171,12 +171,12 @@
             <div class="divider-h" style="margin:1px 0;"></div>
 
             <!-- Stat readouts — VFD-style recessed displays -->
-            <div style="display:flex;flex-direction:column;gap:4px;">
+            <div style="display:flex;flex-direction:column;gap:3px;flex:1;min-height:0;">
 
                 <!-- Mean — large primary readout -->
                 <div class="readout" style="align-items:center;">
                     <div class="readout-window" style="
-                        width:100%;padding:4px 6px;text-align:right;
+                        width:100%;padding:3px 6px;text-align:right;
                         background: #020408;
                         border: 2px solid #0a0e16;
                         border-radius:2px;
@@ -246,7 +246,7 @@
                                 ">—</div>
                             </div>
                         </div>
-                        <span class="readout-tag" style="color:rgba(56,189,248,0.4);font-size:6px;">Skew</span>
+                        <span class="readout-tag" style="color:rgba(56,189,248,0.4);font-size:7px;">Skew</span>
                     </div>
                     <div class="readout" style="flex:1;align-items:center;">
                         <div class="readout-window" style="
@@ -266,7 +266,7 @@
                                 ">—</div>
                             </div>
                         </div>
-                        <span class="readout-tag" style="color:rgba(56,189,248,0.4);font-size:6px;">Kurt</span>
+                        <span class="readout-tag" style="color:rgba(56,189,248,0.4);font-size:7px;">Kurt</span>
                     </div>
                 </div>
 
@@ -281,15 +281,15 @@
                     ">
                         <div style="position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,0.03),transparent);pointer-events:none;"></div>
                         <div style="position:relative;">
-                            <div class="readout-ghost" style="font:700 12px/1 'JetBrains Mono',monospace;color:rgba(56,189,248,0.04);">8888</div>
+                            <div class="readout-ghost" style="font:700 11px/1 'JetBrains Mono',monospace;color:rgba(56,189,248,0.04);">8888</div>
                             <div id="${id}-n" class="readout-active" style="
-                                font:700 12px/1 'JetBrains Mono',monospace;color:#38bdf8;
+                                font:700 11px/1 'JetBrains Mono',monospace;color:#38bdf8;
                                 text-shadow: 0 0 4px rgba(56,189,248,0.3);
                                 position:absolute;inset:0;text-align:right;
                             ">—</div>
                         </div>
                     </div>
-                    <span class="readout-tag" style="color:rgba(56,189,248,0.4);font-size:6px;">n</span>
+                    <span class="readout-tag" style="color:rgba(56,189,248,0.4);font-size:7px;">n</span>
                 </div>
             </div>
         </div>

@@ -2032,15 +2032,44 @@
  * ══════════════════════════════════════════════════════════════ */
 
 /* Brushed aluminum — fine horizontal grain */
+/*
+ * Brushed metal — multiple overlapping grain passes at slightly
+ * different pitches / opacities to break up the regularity.
+ * Light source assumed top-left.  ::before is the grain,
+ * ::after is directional highlight.  Both use z-index:-1 so
+ * they stay behind ALL child content automatically.
+ */
 .tex-brushed {
     position: relative;
 }
 .tex-brushed::before {
-    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
-    background: repeating-linear-gradient(
-        90deg,
-        rgba(255,255,255,0.06) 0px, transparent 1px, transparent 2px,
-        rgba(0,0,0,0.08) 3px, transparent 4px
+    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: -1;
+    background:
+        /* fine grain — tight, very faint */
+        repeating-linear-gradient(
+            89.5deg,
+            rgba(255,255,255,0.012) 0px, transparent 0.5px, transparent 1.5px
+        ),
+        /* medium grain — slightly offset angle */
+        repeating-linear-gradient(
+            90.3deg,
+            rgba(0,0,0,0.018) 0px, transparent 0.5px, transparent 3px
+        ),
+        /* coarse grain — wider spacing, subtler */
+        repeating-linear-gradient(
+            89.8deg,
+            rgba(255,255,255,0.008) 0px, transparent 1px, transparent 5px,
+            rgba(0,0,0,0.01) 5px, transparent 6px, transparent 9px
+        );
+}
+/* Directional light — top-left source */
+.tex-brushed::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: -1;
+    background: linear-gradient(
+        145deg,
+        rgba(255,255,255,0.015) 0%,
+        transparent 40%,
+        rgba(0,0,0,0.01) 100%
     );
 }
 
@@ -2049,11 +2078,29 @@
     position: relative;
 }
 .tex-brushed-v::before {
-    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
-    background: repeating-linear-gradient(
-        0deg,
-        rgba(255,255,255,0.06) 0px, transparent 1px, transparent 2px,
-        rgba(0,0,0,0.08) 3px, transparent 4px
+    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: -1;
+    background:
+        repeating-linear-gradient(
+            0.5deg,
+            rgba(255,255,255,0.012) 0px, transparent 0.5px, transparent 1.5px
+        ),
+        repeating-linear-gradient(
+            -0.3deg,
+            rgba(0,0,0,0.018) 0px, transparent 0.5px, transparent 3px
+        ),
+        repeating-linear-gradient(
+            0.2deg,
+            rgba(255,255,255,0.008) 0px, transparent 1px, transparent 5px,
+            rgba(0,0,0,0.01) 5px, transparent 6px, transparent 9px
+        );
+}
+.tex-brushed-v::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: -1;
+    background: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.015) 0%,
+        transparent 40%,
+        rgba(0,0,0,0.01) 100%
     );
 }
 

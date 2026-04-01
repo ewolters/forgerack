@@ -2046,48 +2046,63 @@
     content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1;
     background:
         /* ── Grain passes ── */
-        /* fine grain — tight, slightly off-horizontal */
+        /* fine grain — tight, wider angle spread */
         repeating-linear-gradient(
-            89.4deg,
-            rgba(255,255,255,0.04) 0px, transparent 0.5px, transparent 1.5px
+            87deg,
+            rgba(255,255,255,0.03) 0px, transparent 0.5px, transparent 1.5px
         ),
-        /* medium grain — opposite offset */
+        /* medium grain — counter-angled */
         repeating-linear-gradient(
-            90.4deg,
-            rgba(0,0,0,0.045) 0px, transparent 0.5px, transparent 3px
+            92deg,
+            rgba(0,0,0,0.035) 0px, transparent 0.5px, transparent 3px
         ),
-        /* coarse grain — wider */
+        /* coarse grain — steeper */
         repeating-linear-gradient(
-            89.7deg,
-            rgba(255,255,255,0.025) 0px, transparent 1px, transparent 5px,
-            rgba(0,0,0,0.03) 5px, transparent 6px, transparent 9px
+            86deg,
+            rgba(255,255,255,0.02) 0px, transparent 1px, transparent 5px,
+            rgba(0,0,0,0.022) 5px, transparent 6px, transparent 9px
         ),
-        /* ── Break masks — intensity variation to fake length jitter ── */
-        linear-gradient(87deg,
-            transparent 0%, rgba(255,255,255,0.012) 15%,
-            transparent 30%, rgba(0,0,0,0.01) 45%,
-            transparent 55%, rgba(255,255,255,0.008) 72%,
-            transparent 88%, rgba(0,0,0,0.006) 100%
+        /* ── Break masks — length jitter ── */
+        linear-gradient(85deg,
+            transparent 0%, rgba(255,255,255,0.008) 15%,
+            transparent 30%, rgba(0,0,0,0.007) 45%,
+            transparent 55%, rgba(255,255,255,0.006) 72%,
+            transparent 88%, rgba(0,0,0,0.005) 100%
         ),
         linear-gradient(180deg,
-            rgba(255,255,255,0.008) 0%, transparent 18%,
-            rgba(0,0,0,0.008) 35%, transparent 50%,
-            rgba(255,255,255,0.006) 65%, transparent 82%,
-            rgba(0,0,0,0.008) 100%
+            rgba(255,255,255,0.006) 0%, transparent 18%,
+            rgba(0,0,0,0.006) 35%, transparent 50%,
+            rgba(255,255,255,0.005) 65%, transparent 82%,
+            rgba(0,0,0,0.006) 100%
         ),
-        radial-gradient(ellipse 40% 80% at 25% 40%, rgba(255,255,255,0.01), transparent),
-        radial-gradient(ellipse 35% 60% at 72% 65%, rgba(0,0,0,0.008), transparent),
-        radial-gradient(ellipse 50% 40% at 50% 20%, rgba(255,255,255,0.006), transparent);
+        radial-gradient(ellipse 40% 80% at 25% 40%, rgba(255,255,255,0.007), transparent),
+        radial-gradient(ellipse 35% 60% at 72% 65%, rgba(0,0,0,0.006), transparent),
+        radial-gradient(ellipse 50% 40% at 50% 20%, rgba(255,255,255,0.005), transparent);
 }
-/* Directional light — top-left source */
+/*
+ * System light source: top-left, 130deg.
+ * Used consistently across all tex-* and skeuomorphic surfaces.
+ * Washes out grain in highlight zone, deepens in shadow.
+ */
 .tex-brushed::after {
     content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1;
-    background: linear-gradient(
-        145deg,
-        rgba(255,255,255,0.025) 0%,
-        transparent 45%,
-        rgba(0,0,0,0.015) 100%
-    );
+    background:
+        /* Primary wash — broad highlight that fades the grain */
+        linear-gradient(
+            130deg,
+            rgba(255,255,255,0.04) 0%,
+            rgba(255,255,255,0.015) 25%,
+            transparent 50%,
+            rgba(0,0,0,0.01) 80%,
+            rgba(0,0,0,0.02) 100%
+        ),
+        /* Specular band — tight bright line where light catches the brush direction */
+        linear-gradient(
+            130deg,
+            transparent 10%,
+            rgba(255,255,255,0.025) 18%,
+            transparent 26%
+        );
 }
 /* Children of tex-brushed must sit above the grain layer */
 .tex-brushed > * { position: relative; z-index: 2; }

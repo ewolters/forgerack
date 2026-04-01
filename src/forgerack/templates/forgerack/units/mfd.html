@@ -35,11 +35,11 @@
 
         <!-- Left bezel keys -->
         <div style="width:48px;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:8px 4px;background:#050505;border-right:1px solid #1a1a1a;">
-            <button class="mfd-bezel-key" id="${id}-lk0" onclick="FR.units['${id}']?.leftKey?.(0)"><span class="mfd-key-label" id="${id}-lk0-label">MAP</span></button>
-            <button class="mfd-bezel-key" id="${id}-lk1" onclick="FR.units['${id}']?.leftKey?.(1)"><span class="mfd-key-label" id="${id}-lk1-label">DATA</span></button>
-            <button class="mfd-bezel-key" id="${id}-lk2" onclick="FR.units['${id}']?.leftKey?.(2)"><span class="mfd-key-label" id="${id}-lk2-label">CHART</span></button>
-            <button class="mfd-bezel-key" id="${id}-lk3" onclick="FR.units['${id}']?.leftKey?.(3)"><span class="mfd-key-label" id="${id}-lk3-label">LIST</span></button>
-            <button class="mfd-bezel-key" id="${id}-lk4" onclick="FR.units['${id}']?.leftKey?.(4)"><span class="mfd-key-label" id="${id}-lk4-label">STAT</span></button>
+            <button class="mfd-bezel-key" id="${id}-lk0" onclick="ForgeRack.units['${id}']?.leftKey?.(0)"><span class="mfd-key-label" id="${id}-lk0-label">MAP</span></button>
+            <button class="mfd-bezel-key" id="${id}-lk1" onclick="ForgeRack.units['${id}']?.leftKey?.(1)"><span class="mfd-key-label" id="${id}-lk1-label">DATA</span></button>
+            <button class="mfd-bezel-key" id="${id}-lk2" onclick="ForgeRack.units['${id}']?.leftKey?.(2)"><span class="mfd-key-label" id="${id}-lk2-label">CHART</span></button>
+            <button class="mfd-bezel-key" id="${id}-lk3" onclick="ForgeRack.units['${id}']?.leftKey?.(3)"><span class="mfd-key-label" id="${id}-lk3-label">LIST</span></button>
+            <button class="mfd-bezel-key" id="${id}-lk4" onclick="ForgeRack.units['${id}']?.leftKey?.(4)"><span class="mfd-key-label" id="${id}-lk4-label">STAT</span></button>
         </div>
 
         <!-- Screen -->
@@ -62,11 +62,11 @@
 
             <!-- Soft-key bar bottom -->
             <div class="garmin-softkeys" style="position:absolute;bottom:0;left:0;right:0;" id="${id}-softkeys">
-                <button class="garmin-softkey" id="${id}-sk0" onclick="FR.units['${id}']?.softKey?.(0)">ZOOM</button>
-                <button class="garmin-softkey" id="${id}-sk1" onclick="FR.units['${id}']?.softKey?.(1)">PAN</button>
-                <button class="garmin-softkey" id="${id}-sk2" onclick="FR.units['${id}']?.softKey?.(2)">FILTER</button>
-                <button class="garmin-softkey" id="${id}-sk3" onclick="FR.units['${id}']?.softKey?.(3)">MARK</button>
-                <button class="garmin-softkey" id="${id}-sk4" onclick="FR.units['${id}']?.softKey?.(4)">EXPORT</button>
+                <button class="garmin-softkey" id="${id}-sk0" onclick="ForgeRack.units['${id}']?.softKey?.(0)">ZOOM</button>
+                <button class="garmin-softkey" id="${id}-sk1" onclick="ForgeRack.units['${id}']?.softKey?.(1)">PAN</button>
+                <button class="garmin-softkey" id="${id}-sk2" onclick="ForgeRack.units['${id}']?.softKey?.(2)">FILTER</button>
+                <button class="garmin-softkey" id="${id}-sk3" onclick="ForgeRack.units['${id}']?.softKey?.(3)">MARK</button>
+                <button class="garmin-softkey" id="${id}-sk4" onclick="ForgeRack.units['${id}']?.softKey?.(4)">EXPORT</button>
             </div>
 
             <!-- Scan line overlay -->
@@ -75,11 +75,11 @@
 
         <!-- Right bezel keys -->
         <div style="width:48px;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:8px 4px;background:#050505;border-left:1px solid #1a1a1a;">
-            <button class="mfd-bezel-key" id="${id}-rk0" onclick="FR.units['${id}']?.rightKey?.(0)"><span class="mfd-key-label" id="${id}-rk0-label">NEXT</span></button>
-            <button class="mfd-bezel-key" id="${id}-rk1" onclick="FR.units['${id}']?.rightKey?.(1)"><span class="mfd-key-label" id="${id}-rk1-label">PREV</span></button>
-            <button class="mfd-bezel-key" id="${id}-rk2" onclick="FR.units['${id}']?.rightKey?.(2)"><span class="mfd-key-label" id="${id}-rk2-label">COL+</span></button>
-            <button class="mfd-bezel-key" id="${id}-rk3" onclick="FR.units['${id}']?.rightKey?.(3)"><span class="mfd-key-label" id="${id}-rk3-label">COL-</span></button>
-            <button class="mfd-bezel-key" id="${id}-rk4" onclick="FR.units['${id}']?.rightKey?.(4)"><span class="mfd-key-label" id="${id}-rk4-label">ENTER</span></button>
+            <button class="mfd-bezel-key" id="${id}-rk0" onclick="ForgeRack.units['${id}']?.rightKey?.(0)"><span class="mfd-key-label" id="${id}-rk0-label">NEXT</span></button>
+            <button class="mfd-bezel-key" id="${id}-rk1" onclick="ForgeRack.units['${id}']?.rightKey?.(1)"><span class="mfd-key-label" id="${id}-rk1-label">PREV</span></button>
+            <button class="mfd-bezel-key" id="${id}-rk2" onclick="ForgeRack.units['${id}']?.rightKey?.(2)"><span class="mfd-key-label" id="${id}-rk2-label">COL+</span></button>
+            <button class="mfd-bezel-key" id="${id}-rk3" onclick="ForgeRack.units['${id}']?.rightKey?.(3)"><span class="mfd-key-label" id="${id}-rk3-label">COL-</span></button>
+            <button class="mfd-bezel-key" id="${id}-rk4" onclick="ForgeRack.units['${id}']?.rightKey?.(4)"><span class="mfd-key-label" id="${id}-rk4-label">ENTER</span></button>
         </div>
     </div>
 </div>

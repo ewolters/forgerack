@@ -322,3 +322,219 @@ box-shadow: inset 0 2px 6px rgba(0,0,0,0.8);
 - `backdrop-filter: blur()` is very expensive. Avoid or limit to tiny elements.
 - `will-change: transform` on animated elements only (needles, pulsing LEDs).
 - Pseudo-element budget: 2 per element (::before, ::after). Plan screw crosses carefully.
+
+---
+
+## Advanced Techniques — From Reason Studios Research
+
+### Ventilation Holes & Perforated Metal
+Real racks have vent patterns. Two approaches:
+
+**Hex hole array (honeycomb):**
+```css
+background-image:
+    radial-gradient(circle, transparent 1.5px, rgba(0,0,0,0.3) 1.5px, rgba(0,0,0,0.3) 2px, transparent 2px);
+background-size: 6px 6px;
+```
+
+**Horizontal slot vents:**
+```css
+background:
+    repeating-linear-gradient(0deg,
+        transparent 0px, transparent 2px,
+        rgba(0,0,0,0.2) 2px, rgba(0,0,0,0.2) 3px,
+        transparent 3px, transparent 8px);
+```
+
+### Panel Seams
+Where sections of a faceplate meet — a 1px groove with highlight on one side:
+
+```css
+.panel-seam-h {
+    height: 1px;
+    background: rgba(0,0,0,0.4);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.02);
+}
+.panel-seam-v {
+    width: 1px;
+    background: rgba(0,0,0,0.4);
+    box-shadow: 1px 0 0 rgba(255,255,255,0.02);
+}
+```
+
+### Light Leak Between Panels
+Subtle glow at the gap between rack units:
+
+```css
+.rack-unit + .rack-unit::before {
+    content: ''; position: absolute; top: -1px; left: 48px; right: 48px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.02), transparent);
+}
+```
+
+### Carbon Fiber Texture
+Diagonal weave pattern:
+
+```css
+.tex-carbon {
+    background-image:
+        repeating-linear-gradient(45deg,
+            transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px),
+        repeating-linear-gradient(-45deg,
+            transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px),
+        linear-gradient(180deg, #1a1a1a, #222);
+}
+```
+
+### Diamond Plate
+Industrial floor/ramp texture:
+
+```css
+.tex-diamond {
+    background:
+        linear-gradient(135deg, rgba(255,255,255,0.04) 25%, transparent 25%) -10px 0,
+        linear-gradient(225deg, rgba(255,255,255,0.04) 25%, transparent 25%) -10px 0,
+        linear-gradient(315deg, rgba(255,255,255,0.04) 25%, transparent 25%),
+        linear-gradient(45deg, rgba(255,255,255,0.04) 25%, transparent 25%);
+    background-size: 20px 20px;
+    background-color: #333;
+}
+```
+
+### Leather / Vinyl Wrap
+Subtle grain with warm undertone:
+
+```css
+.tex-leather {
+    background:
+        radial-gradient(ellipse at 30% 40%, rgba(255,255,255,0.01), transparent 30%),
+        radial-gradient(ellipse at 70% 60%, rgba(0,0,0,0.02), transparent 25%),
+        linear-gradient(180deg, #2a2018, #1e1810);
+}
+```
+
+### Tolex (Amp Covering)
+Vinyl covering used on tube amps — diagonal grain:
+
+```css
+.tex-tolex {
+    background:
+        repeating-linear-gradient(160deg,
+            rgba(255,255,255,0.004) 0px, transparent 1px, transparent 3px),
+        linear-gradient(160deg, #1e1216, #1a0f14 30%, #1c1015 50%, #160c10 80%);
+}
+```
+
+### Rack Rail Holes (EIA-310-D Standard)
+Repeating pattern: 1/2" - 5/8" - 5/8" spacing. Each hole has inset shadow:
+
+```css
+.rail-hole {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: radial-gradient(circle, #000, #1a1a1a);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.8), 0 0.5px 0 rgba(255,255,255,0.03);
+}
+```
+
+### Mounting Ear Bolts
+The bolts that attach units to rails — visible from front:
+
+```css
+.mount-bolt {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #666, #333 60%, #222);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 1px 2px rgba(0,0,0,0.4);
+}
+/* Hex socket */
+.mount-bolt::after {
+    content: ''; position: absolute; inset: 25%;
+    clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+    background: rgba(0,0,0,0.5);
+}
+```
+
+### 7-Segment SVG Display
+True 7-segment with individual segment control — more authentic than font:
+
+```css
+.seg-display { display: inline-flex; gap: 2px; padding: 4px; background: #030503; border: 1px solid rgba(0,0,0,0.7); }
+.seg-digit svg { width: 14px; height: 22px; }
+.seg-digit .seg { fill: rgba(255,255,255,0.02); transition: fill 0.05s; }
+.seg-digit .seg.on { fill: currentColor; filter: drop-shadow(0 0 2px currentColor); }
+```
+
+### Dot Matrix Display
+5x7 pixel grid for character rendering:
+
+```css
+.dotmatrix {
+    display: grid;
+    grid-template-columns: repeat(var(--dm-cols, 5), 3px);
+    grid-template-rows: repeat(var(--dm-rows, 7), 3px);
+    gap: 1px;
+    padding: 3px;
+    background: #0a0a0a;
+}
+.dotmatrix-pixel {
+    width: 3px; height: 3px; border-radius: 50%;
+    background: rgba(0,255,100,0.03);
+    transition: background 0.05s;
+}
+.dotmatrix-pixel.on {
+    background: rgba(0,255,100,0.8);
+    box-shadow: 0 0 2px rgba(0,255,100,0.4);
+}
+```
+
+### Shadow Stacking Formula
+The key to realistic depth — three-layer shadow system:
+
+```css
+/* Light object (raised 2-3px) */
+box-shadow:
+    0 1px 2px rgba(0,0,0,0.15),    /* tight contact */
+    0 3px 6px rgba(0,0,0,0.1),     /* medium diffuse */
+    0 8px 16px rgba(0,0,0,0.06);   /* distant ambient */
+
+/* Heavy object (raised 4-6px) */
+box-shadow:
+    0 2px 3px rgba(0,0,0,0.2),
+    0 6px 12px rgba(0,0,0,0.15),
+    0 16px 32px rgba(0,0,0,0.08);
+
+/* Inset/recessed (pressed into surface) */
+box-shadow:
+    inset 0 2px 4px rgba(0,0,0,0.35),
+    inset 0 -1px 0 rgba(255,255,255,0.006),
+    0 1px 0 rgba(255,255,255,0.02);
+```
+
+### Knob Specular Rotation
+When a knob rotates, the specular highlight should stay in place (light source doesn't move). Use a fixed overlay:
+
+```css
+.knob-highlight {
+    position: absolute; inset: 0; border-radius: 50%;
+    background: radial-gradient(circle at 38% 35%, rgba(255,255,255,0.08), transparent 60%);
+    pointer-events: none;
+    /* This does NOT rotate with the knob — parent rotates, this stays */
+    transform: rotate(calc(-1 * var(--knob-angle)));
+}
+```
+
+### Cable Droop Formula
+SVG cubic Bézier with sag proportional to distance:
+
+```
+Sag = distance × 0.35
+Control point 1: (startX + distance×0.33, startY + sag)
+Control point 2: (endX - distance×0.33, endY + sag)
+```
+
+The 0.35 factor is the weight constant. Heavier cables (thicker lines) use 0.4-0.5.
+
+### Design Principle: What NOT to Render
+From Reason's evolution — they removed decorative elements over time:
+- **Keep**: functional controls (knobs, sliders, buttons, displays)
+- **Remove or minimize**: decorative screws that aren't structural, excessive vent patterns, brand logos that compete with readability, shadow effects that don't communicate depth
+- **The test**: if hiding the element changes nothing about usability, it's decoration. Decoration is fine in moderation — it's what makes the rack feel real. But every decorative element has a rendering cost and a visual noise cost.

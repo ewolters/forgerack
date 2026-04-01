@@ -5475,4 +5475,327 @@ FR.registerUnit('designer', {
     }
 });
 
+// ═══════════════════════════════════════════════════════════
+// RESOLVER RV-01 — DOE Analysis & Optimization Engine (Axiom)
+// Accepts design from DESIGNER, fits model, shows ANOVA/effects/optimization.
+// ═══════════════════════════════════════════════════════════
+
+FR.registerUnit('resolver', {
+    init(el, id) {
+        this.el = el; this.id = id;
+        this._design = null;   // from DESIGNER's 'design' output
+        this._analysis = null; // last analysis result
+        this._optimResult = null;
+
+        var self = this;
+        var analyzeBtn = document.getElementById(id + '-btn-analyze');
+        if (analyzeBtn) analyzeBtn.addEventListener('click', function() { self._analyze(); });
+
+        var optimBtn = document.getElementById(id + '-btn-optimize');
+        if (optimBtn) optimBtn.addEventListener('click', function() { self._optimize(); });
+
+        // Tab switching
+        ['anova', 'effects', 'optim'].forEach(function(tab) {
+            var btn = document.getElementById(id + '-tab-' + tab);
+            if (btn) btn.addEventListener('click', function() { self._switchTab(tab); });
+        });
+    },
+
+    _switchTab(tab) {
+        var tabs = ['anova', 'effects', 'optim'];
+        var self = this;
+        tabs.forEach(function(t) {
+            var panel = document.getElementById(self.id + '-result-' + t);
+            var btn = document.getElementById(self.id + '-tab-' + t);
+            if (panel) panel.style.display = (t === tab) ? '' : 'none';
+            if (btn) {
+                btn.style.background = (t === tab) ? 'rgba(94,234,212,0.06)' : 'transparent';
+                btn.style.color = (t === tab) ? 'rgba(94,234,212,0.35)' : 'rgba(94,234,212,0.15)';
+                btn.style.borderColor = (t === tab) ? 'rgba(94,234,212,0.1)' : 'rgba(94,234,212,0.05)';
+            }
+        });
+    },
+
+    _parseResponses() {
+        var ta = document.getElementById(this.id + '-responses');
+        if (!ta) return [];
+        var text = ta.value.trim();
+        if (!text) return [];
+        return text.split(/[\n,;]+/).map(function(s) { return parseFloat(s.trim()); }).filter(function(v) { return !isNaN(v); });
+    },
+
+    _showPanel(panel, msg) {
+        var el = document.getElementById(this.id + '-result-' + panel);
+        if (el) el.innerHTML = '<span style="color:rgba(94,234,212,0.12);">' + msg + '</span>';
+    },
+
+    _analyze() {
+        if (!this._design) {
+            this._showPanel('anova', 'No design loaded. Wire from DESIGNER.');
+            return;
+        }
+        var responses = this._parseResponses();
+        if (responses.length === 0) {
+            this._showPanel('anova', 'Enter response values (one per run).');
+            return;
+        }
+        if (responses.length !== this._design.n_runs) {
+            this._showPanel('anova', 'Expected ' + this._design.n_runs + ' values, got ' + responses.length + '.');
+            return;
+        }
+
+        var modelSel = document.getElementById(this.id + '-model');
+        var alphaSel = document.getElementById(this.id + '-alpha');
+        var model = modelSel ? modelSel.value : 'linear+interactions';
+        var alpha = alphaSel ? parseFloat(alphaSel.value) : 0.05;
+
+        var payload = {
+            coded_matrix: this._design.coded_matrix,
+            responses: responses,
+            factor_names: this._design.factor_names,
+            model: model,
+            alpha: alpha
+        };
+
+        var self = this;
+        var csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+        this._showPanel('anova', 'Fitting model...');
+
+        fetch('/api/rack/compute/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf ? csrf.value : document.cookie.replace(/.*csrftoken=([^;]*).*/, '$1') },
+            body: JSON.stringify({ op: 'doe_analyze', data: payload })
+        })
+        .then(function(resp) { return resp.json(); })
+        .then(function(json) {
+            if (json.error) {
+                var msg = typeof json.error === 'string' ? json.error : (json.error.message || JSON.stringify(json.error));
+                self._showPanel('anova', 'ERROR: ' + msg);
+                FR.LED(document.getElementById(self.id + '-led')).set('red');
+                return;
+            }
+            var r = json.result;
+            if (r.error_type) { self._showPanel('anova', r.message); return; }
+            self._analysis = r;
+            self._displayAnalysis(r);
+            self._displayEffects(r);
+        })
+        .catch(function(e) {
+            self._showPanel('anova', 'Fetch error: ' + e);
+            FR.LED(document.getElementById(self.id + '-led')).set('red');
+        });
+    },
+
+    _displayAnalysis(r) {
+        // Update LCD readouts
+        var r2El = document.getElementById(this.id + '-r2');
+        var r2aEl = document.getElementById(this.id + '-r2adj');
+        var fEl = document.getElementById(this.id + '-fstat');
+        var rsEl = document.getElementById(this.id + '-rstd');
+        if (r2El) r2El.textContent = r.r_squared.toFixed(3);
+        if (r2aEl) r2aEl.textContent = r.r_squared_adj.toFixed(3);
+        if (fEl) fEl.textContent = r.f_statistic.toFixed(2);
+        if (rsEl) rsEl.textContent = r.residual_std.toFixed(3);
+
+        // ANOVA table in CRT
+        var sig = {};
+        r.significant_terms.forEach(function(t) { sig[t] = true; });
+
+        var html = '<div style="color:rgba(94,234,212,0.3);margin-bottom:4px;font-size:8px;letter-spacing:0.1em;">MODEL: ' +
+            r.model_type.toUpperCase() + ' &nbsp; F=' + r.f_statistic.toFixed(2) +
+            ' &nbsp; p=' + r.f_p_value.toFixed(4) + '</div>';
+
+        html += '<table style="width:100%;border-collapse:collapse;">';
+        html += '<tr>' +
+            '<th style="padding:2px 4px;color:rgba(94,234,212,0.4);font-size:8px;text-align:left;border-bottom:1px solid rgba(94,234,212,0.1);">Term</th>' +
+            '<th style="padding:2px 4px;color:rgba(94,234,212,0.4);font-size:8px;text-align:right;border-bottom:1px solid rgba(94,234,212,0.1);">Coeff</th>' +
+            '<th style="padding:2px 4px;color:rgba(94,234,212,0.4);font-size:8px;text-align:right;border-bottom:1px solid rgba(94,234,212,0.1);">SE</th>' +
+            '<th style="padding:2px 4px;color:rgba(94,234,212,0.4);font-size:8px;text-align:right;border-bottom:1px solid rgba(94,234,212,0.1);">t</th>' +
+            '<th style="padding:2px 4px;color:rgba(94,234,212,0.4);font-size:8px;text-align:right;border-bottom:1px solid rgba(94,234,212,0.1);">p</th>' +
+            '<th style="padding:2px 4px;color:rgba(94,234,212,0.4);font-size:8px;text-align:center;border-bottom:1px solid rgba(94,234,212,0.1);"></th>' +
+            '</tr>';
+
+        var terms = Object.keys(r.coefficients);
+        terms.forEach(function(term) {
+            var isSig = sig[term];
+            var rowColor = isSig ? 'rgba(94,234,212,0.45)' : 'rgba(94,234,212,0.18)';
+            var pVal = r.p_values[term];
+            var marker = '';
+            if (pVal < 0.001) marker = '***';
+            else if (pVal < 0.01) marker = '**';
+            else if (pVal < 0.05) marker = '*';
+            else if (pVal < 0.1) marker = '.';
+
+            html += '<tr>' +
+                '<td style="padding:1px 4px;color:' + rowColor + ';font-size:9px;border-bottom:1px solid rgba(94,234,212,0.02);">' + term + '</td>' +
+                '<td style="padding:1px 4px;color:' + rowColor + ';font-size:9px;text-align:right;border-bottom:1px solid rgba(94,234,212,0.02);">' + r.coefficients[term].toFixed(4) + '</td>' +
+                '<td style="padding:1px 4px;color:rgba(94,234,212,0.15);font-size:9px;text-align:right;border-bottom:1px solid rgba(94,234,212,0.02);">' + (r.se_coefficients[term] ? r.se_coefficients[term].toFixed(4) : '—') + '</td>' +
+                '<td style="padding:1px 4px;color:rgba(94,234,212,0.2);font-size:9px;text-align:right;border-bottom:1px solid rgba(94,234,212,0.02);">' + (r.t_values[term] ? r.t_values[term].toFixed(2) : '—') + '</td>' +
+                '<td style="padding:1px 4px;color:' + rowColor + ';font-size:9px;text-align:right;border-bottom:1px solid rgba(94,234,212,0.02);">' + (pVal !== undefined ? pVal.toFixed(4) : '—') + '</td>' +
+                '<td style="padding:1px 4px;color:rgba(94,234,212,0.5);font-size:9px;text-align:center;border-bottom:1px solid rgba(94,234,212,0.02);">' + marker + '</td>' +
+                '</tr>';
+        });
+        html += '</table>';
+        html += '<div style="margin-top:4px;font-size:7px;color:rgba(94,234,212,0.12);">Signif: *** 0.001 ** 0.01 * 0.05 . 0.1</div>';
+
+        var el = document.getElementById(this.id + '-result-anova');
+        if (el) el.innerHTML = html;
+
+        FR.LED(document.getElementById(this.id + '-led')).set('green');
+        FR.emit(this.id, 'analysis', r);
+    },
+
+    _displayEffects(r) {
+        // Sort effects by absolute magnitude (descending)
+        var entries = [];
+        Object.keys(r.effects).forEach(function(k) {
+            entries.push({ term: k, effect: r.effects[k] });
+        });
+        entries.sort(function(a, b) { return Math.abs(b.effect) - Math.abs(a.effect); });
+
+        var maxEffect = entries.length > 0 ? Math.abs(entries[0].effect) : 1;
+        var sig = {};
+        r.significant_terms.forEach(function(t) { sig[t] = true; });
+
+        var html = '<div style="color:rgba(94,234,212,0.3);margin-bottom:6px;font-size:8px;letter-spacing:0.1em;">EFFECTS RANKING (|2&#xD7;coeff|)</div>';
+
+        entries.forEach(function(e) {
+            var pct = maxEffect > 0 ? (Math.abs(e.effect) / maxEffect * 100) : 0;
+            var isSig = sig[e.term];
+            var barColor = isSig ? 'rgba(94,234,212,0.3)' : 'rgba(94,234,212,0.08)';
+            var textColor = isSig ? 'rgba(94,234,212,0.5)' : 'rgba(94,234,212,0.2)';
+
+            html += '<div style="display:flex;align-items:center;gap:4px;margin-bottom:2px;">' +
+                '<span style="width:70px;font:9px/1 JetBrains Mono,monospace;color:' + textColor + ';text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + e.term + '">' + e.term + '</span>' +
+                '<div style="flex:1;height:8px;background:rgba(0,0,0,0.2);border-radius:1px;overflow:hidden;">' +
+                    '<div style="width:' + pct.toFixed(1) + '%;height:100%;background:' + barColor + ';border-radius:1px;"></div>' +
+                '</div>' +
+                '<span style="width:45px;font:9px/1 JetBrains Mono,monospace;color:' + textColor + ';text-align:right;">' + e.effect.toFixed(3) + '</span>' +
+                '</div>';
+        });
+
+        var el = document.getElementById(this.id + '-result-effects');
+        if (el) el.innerHTML = html;
+    },
+
+    _optimize() {
+        if (!this._design || !this._analysis) {
+            this._showPanel('optim', 'Run analysis first.');
+            this._switchTab('optim');
+            return;
+        }
+
+        var responses = this._parseResponses();
+        if (responses.length === 0) return;
+
+        var modelSel = document.getElementById(this.id + '-model');
+        var alphaSel = document.getElementById(this.id + '-alpha');
+        var model = modelSel ? modelSel.value : 'linear+interactions';
+        var alpha = alphaSel ? parseFloat(alphaSel.value) : 0.05;
+
+        // Single-response optimization — maximize by default
+        var payload = {
+            coded_matrix: this._design.coded_matrix,
+            responses: {
+                'Y': {
+                    values: responses,
+                    goal: 'maximize'
+                }
+            },
+            factors: this._design.runs.length > 0 ?
+                this._design.factor_names.map(function(name, i) {
+                    // Extract factor bounds from the design runs (natural scale)
+                    var vals = [];
+                    this._design.runs.forEach(function(run) { if (run[name] !== undefined) vals.push(run[name]); });
+                    var lo = Math.min.apply(null, vals);
+                    var hi = Math.max.apply(null, vals);
+                    return { name: name, low: lo, high: hi };
+                }.bind(this)) : [],
+            factor_names: this._design.factor_names,
+            model: model,
+            alpha: alpha,
+            n_starts: 200
+        };
+
+        var self = this;
+        var csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+        this._showPanel('optim', 'Optimizing...');
+        this._switchTab('optim');
+
+        fetch('/api/rack/compute/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf ? csrf.value : document.cookie.replace(/.*csrftoken=([^;]*).*/, '$1') },
+            body: JSON.stringify({ op: 'doe_optimize', data: payload })
+        })
+        .then(function(resp) { return resp.json(); })
+        .then(function(json) {
+            if (json.error) {
+                var msg = typeof json.error === 'string' ? json.error : (json.error.message || JSON.stringify(json.error));
+                self._showPanel('optim', 'ERROR: ' + msg);
+                return;
+            }
+            var r = json.result;
+            if (r.error_type) { self._showPanel('optim', r.message); return; }
+            self._optimResult = r;
+            self._displayOptimization(r);
+        })
+        .catch(function(e) { self._showPanel('optim', 'Fetch error: ' + e); });
+    },
+
+    _displayOptimization(r) {
+        var desirEl = document.getElementById(this.id + '-desir');
+        if (desirEl) desirEl.textContent = r.desirability.toFixed(3);
+
+        var html = '<div style="color:rgba(94,234,212,0.3);margin-bottom:6px;font-size:8px;letter-spacing:0.1em;">OPTIMAL SETTINGS</div>';
+
+        html += '<table style="width:100%;border-collapse:collapse;">';
+        html += '<tr>' +
+            '<th style="padding:3px 6px;color:rgba(94,234,212,0.4);font-size:9px;text-align:left;border-bottom:1px solid rgba(94,234,212,0.1);">Factor</th>' +
+            '<th style="padding:3px 6px;color:rgba(94,234,212,0.4);font-size:9px;text-align:right;border-bottom:1px solid rgba(94,234,212,0.1);">Optimal Value</th>' +
+            '</tr>';
+
+        Object.keys(r.optimal_settings).forEach(function(k) {
+            html += '<tr>' +
+                '<td style="padding:2px 6px;color:rgba(94,234,212,0.4);font-size:10px;border-bottom:1px solid rgba(94,234,212,0.02);">' + k + '</td>' +
+                '<td style="padding:2px 6px;color:rgba(94,234,212,0.5);font-size:10px;text-align:right;border-bottom:1px solid rgba(94,234,212,0.02);">' +
+                    (typeof r.optimal_settings[k] === 'number' ? r.optimal_settings[k].toFixed(3) : r.optimal_settings[k]) + '</td>' +
+                '</tr>';
+        });
+        html += '</table>';
+
+        html += '<div style="color:rgba(94,234,212,0.3);margin:8px 0 4px;font-size:8px;letter-spacing:0.1em;">PREDICTED RESPONSES</div>';
+        html += '<table style="width:100%;border-collapse:collapse;">';
+        Object.keys(r.predicted_responses).forEach(function(k) {
+            html += '<tr>' +
+                '<td style="padding:2px 6px;color:rgba(94,234,212,0.35);font-size:10px;">' + k + '</td>' +
+                '<td style="padding:2px 6px;color:rgba(94,234,212,0.5);font-size:10px;text-align:right;">' +
+                    (typeof r.predicted_responses[k] === 'number' ? r.predicted_responses[k].toFixed(3) : r.predicted_responses[k]) + '</td>' +
+                '</tr>';
+        });
+        html += '</table>';
+
+        html += '<div style="margin-top:8px;padding:4px 6px;background:rgba(94,234,212,0.03);border:1px solid rgba(94,234,212,0.06);border-radius:2px;">' +
+            '<span style="font:700 10px/1 JetBrains Mono,monospace;color:rgba(94,234,212,0.4);">Composite Desirability: ' + r.desirability.toFixed(4) + '</span></div>';
+
+        var el = document.getElementById(this.id + '-result-optim');
+        if (el) el.innerHTML = html;
+
+        FR.emit(this.id, 'optimal', r);
+    },
+
+    receive(inputName, data) {
+        if (inputName === 'design' && data) {
+            this._design = data;
+            this._showPanel('anova', 'Design loaded: ' + data.design_type + ' (' + data.n_runs + ' runs). Enter responses and analyze.');
+            FR.LED(document.getElementById(this.id + '-led')).set('amber');
+        }
+    },
+
+    getOutput(channel) {
+        if (channel === 'analysis' && this._analysis) return this._analysis;
+        if (channel === 'optimal' && this._optimResult) return this._optimResult;
+        return null;
+    }
+});
+
 })(ForgeRack);

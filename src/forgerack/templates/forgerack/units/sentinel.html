@@ -103,7 +103,7 @@
     </div>
 
     <!-- ════ CONTROL PANEL — silkscreen sections on faceplate ════ -->
-    <div style="margin:3px 48px 4px;display:flex;gap:6px;align-items:flex-start;">
+    <div style="margin:3px 48px 4px;display:flex;gap:6px;align-items:stretch;">
 
         <!-- ▌ CHART TYPE ▌ -->
         <div style="
@@ -116,8 +116,8 @@
                 position:absolute;top:-6px;left:6px;
                 background:rgba(217,119,6,0.8);
                 padding:1px 7px;border-radius:2px;
-                font:800 7px/1 'Arial Narrow','Arial',sans-serif;
-                color:#0a0d14;text-transform:uppercase;letter-spacing:0.12em;
+                font:800 9px/1 'Arial Narrow','Arial',sans-serif;
+                color:#0a0d14;text-transform:uppercase;letter-spacing:0.1em;
             ">Chart</div>
             <select id="${id}-chart-type" title="Control chart type" style="
                 background:#060810;border:1px solid rgba(217,119,6,0.15);
@@ -149,11 +149,11 @@
                 position:absolute;top:-6px;left:6px;
                 background:rgba(217,119,6,0.8);
                 padding:1px 7px;border-radius:2px;
-                font:800 7px/1 'Arial Narrow','Arial',sans-serif;
-                color:#0a0d14;text-transform:uppercase;letter-spacing:0.12em;
+                font:800 9px/1 'Arial Narrow','Arial',sans-serif;
+                color:#0a0d14;text-transform:uppercase;letter-spacing:0.1em;
             ">Input</div>
             <div style="display:flex;flex-direction:column;gap:1px;">
-                <span style="font:800 6px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.3);text-transform:uppercase;letter-spacing:0.1em;">Measure</span>
+                <span style="font:800 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.5);text-transform:uppercase;letter-spacing:0.1em;">Measure</span>
                 <select id="${id}-col" title="Measurement column" style="
                     background:#060810;border:1px solid rgba(217,119,6,0.12);
                     color:#d4a050;padding:2px 3px;border-radius:1px;
@@ -162,7 +162,7 @@
                 "><option value="">—</option></select>
             </div>
             <div style="display:flex;flex-direction:column;gap:1px;">
-                <span style="font:800 6px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.3);text-transform:uppercase;letter-spacing:0.1em;">Subgrp</span>
+                <span style="font:800 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.5);text-transform:uppercase;letter-spacing:0.1em;">Subgrp</span>
                 <select id="${id}-subgroup" title="Subgroup column" style="
                     background:#060810;border:1px solid rgba(217,119,6,0.12);
                     color:#d4a050;padding:2px 3px;border-radius:1px;
@@ -183,8 +183,8 @@
                 position:absolute;top:-6px;left:6px;
                 background:rgba(217,119,6,0.8);
                 padding:1px 7px;border-radius:2px;
-                font:800 7px/1 'Arial Narrow','Arial',sans-serif;
-                color:#0a0d14;text-transform:uppercase;letter-spacing:0.12em;
+                font:800 9px/1 'Arial Narrow','Arial',sans-serif;
+                color:#0a0d14;text-transform:uppercase;letter-spacing:0.1em;
             ">Spec</div>
             <div style="display:flex;gap:3px;">
                 <input type="text" id="${id}-lsl" title="Lower Specification Limit" placeholder="LSL" style="
@@ -211,8 +211,8 @@
                 position:absolute;top:-6px;left:6px;
                 background:rgba(217,119,6,0.8);
                 padding:1px 7px;border-radius:2px;
-                font:800 7px/1 'Arial Narrow','Arial',sans-serif;
-                color:#0a0d14;text-transform:uppercase;letter-spacing:0.12em;
+                font:800 9px/1 'Arial Narrow','Arial',sans-serif;
+                color:#0a0d14;text-transform:uppercase;letter-spacing:0.1em;
             ">Rules</div>
             <select id="${id}-rules" title="Special cause detection rules" style="
                 background:#060810;border:1px solid rgba(217,119,6,0.12);
@@ -256,8 +256,8 @@
                 position:absolute;top:-6px;left:6px;
                 background:rgba(217,119,6,0.8);
                 padding:1px 7px;border-radius:2px;
-                font:800 7px/1 'Arial Narrow','Arial',sans-serif;
-                color:#0a0d14;text-transform:uppercase;letter-spacing:0.12em;
+                font:800 9px/1 'Arial Narrow','Arial',sans-serif;
+                color:#0a0d14;text-transform:uppercase;letter-spacing:0.1em;
             ">Capability</div>
 
             <!-- Cpk -->
@@ -276,7 +276,7 @@
                             position:absolute;inset:0;text-align:right;">—</div>
                     </div>
                 </div>
-                <span style="font:800 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.5);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;display:block;">Cpk</span>
+                <span style="font:800 9px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.55);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;display:block;">Cpk</span>
             </div>
 
             <!-- PPM -->
@@ -295,7 +295,7 @@
                             position:absolute;inset:0;text-align:right;">—</div>
                     </div>
                 </div>
-                <span style="font:800 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.5);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;display:block;">PPM</span>
+                <span style="font:800 9px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.55);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;display:block;">PPM</span>
             </div>
 
             <!-- n -->
@@ -314,7 +314,7 @@
                             position:absolute;inset:0;text-align:right;">—</div>
                     </div>
                 </div>
-                <span style="font:800 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.5);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;display:block;">n</span>
+                <span style="font:800 9px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.55);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;display:block;">n</span>
             </div>
         </div>
     </div>

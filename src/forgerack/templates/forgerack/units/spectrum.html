@@ -140,14 +140,14 @@
                 "><option value="">—</option></select>
             </div>
 
-            <!-- Controls panel — yellow-bordered faceplate section -->
+            <!-- Bins — yellow-bordered faceplate section -->
             <div style="
                 border:1px solid rgba(251,191,36,0.25);
                 border-radius:3px;
-                padding:4px 5px;
+                padding:4px 5px 3px;
                 position:relative;
+                margin-top:3px;
             ">
-                <!-- Yellow pill label -->
                 <div style="
                     position:absolute;top:-6px;left:8px;
                     background:#2a3040;
@@ -155,21 +155,32 @@
                     font:700 7px/1 'Helvetica',sans-serif;
                     color:rgba(251,191,36,0.6);
                     text-transform:uppercase;letter-spacing:0.1em;
-                ">Controls</div>
-
-                <!-- Bins row -->
-                <div style="display:flex;align-items:center;gap:4px;margin-top:2px;">
-                    <span style="font:700 7px/1 'Helvetica',sans-serif;color:rgba(251,191,36,0.4);text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;">Bins</span>
-                    <div class="tek-btn-row" style="gap:2px;">
-                        <button class="tek-btn" id="${id}-bin-8" style="font-size:7px;padding:3px 5px;border-color:rgba(251,191,36,0.15);">8</button>
-                        <button class="tek-btn active" id="${id}-bin-15" style="font-size:7px;padding:3px 5px;border-color:rgba(251,191,36,0.15);">15</button>
-                        <button class="tek-btn" id="${id}-bin-25" style="font-size:7px;padding:3px 5px;border-color:rgba(251,191,36,0.15);">25</button>
-                        <button class="tek-btn" id="${id}-bin-auto" style="font-size:7px;padding:3px 4px;border-color:rgba(251,191,36,0.15);">A</button>
-                    </div>
+                ">Bins</div>
+                <div class="tek-btn-row" style="gap:2px;margin-top:1px;">
+                    <button class="tek-btn" id="${id}-bin-8" style="font-size:7px;padding:3px 6px;border-color:rgba(251,191,36,0.15);">8</button>
+                    <button class="tek-btn active" id="${id}-bin-15" style="font-size:7px;padding:3px 6px;border-color:rgba(251,191,36,0.15);">15</button>
+                    <button class="tek-btn" id="${id}-bin-25" style="font-size:7px;padding:3px 6px;border-color:rgba(251,191,36,0.15);">25</button>
+                    <button class="tek-btn" id="${id}-bin-auto" style="font-size:7px;padding:3px 5px;border-color:rgba(251,191,36,0.15);">A</button>
                 </div>
+            </div>
 
-                <!-- Overlay toggles row -->
-                <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
+            <!-- Overlay — yellow-bordered faceplate section -->
+            <div style="
+                border:1px solid rgba(251,191,36,0.25);
+                border-radius:3px;
+                padding:4px 5px 3px;
+                position:relative;
+                margin-top:3px;
+            ">
+                <div style="
+                    position:absolute;top:-6px;left:8px;
+                    background:#2a3040;
+                    padding:0 5px;
+                    font:700 7px/1 'Helvetica',sans-serif;
+                    color:rgba(251,191,36,0.6);
+                    text-transform:uppercase;letter-spacing:0.1em;
+                ">Overlay</div>
+                <div style="display:flex;align-items:center;gap:8px;margin-top:1px;">
                     <div style="display:flex;align-items:center;gap:3px;">
                         <div class="switch-rocker on tek-btn active" id="${id}-btn-normal" style="cursor:pointer;width:14px;height:20px;">
                             <div style="width:3px;height:3px;border-radius:50%;background:rgba(56,189,248,0.5);margin:auto;"></div>

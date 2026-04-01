@@ -5291,4 +5291,168 @@ FR.registerUnit('precision', {
     getOutput(channel) { return null; }
 });
 
+// ═══════════════════════════════════════════════════════════
+// DESIGNER DX-01 — Experiment Design Generator (Tokamak)
+// Factor entry → design selection → run sheet via forgedoe.
+// ═══════════════════════════════════════════════════════════
+
+FR.registerUnit('designer', {
+    init(el, id) {
+        this.el = el; this.id = id;
+        this._factors = [];
+        this._lastDesign = null;
+
+        var self = this;
+        var addBtn = document.getElementById(id + '-btn-add');
+        if (addBtn) addBtn.addEventListener('click', function() { self._addFactor(); });
+
+        var genBtn = document.getElementById(id + '-btn-gen');
+        if (genBtn) genBtn.addEventListener('click', function() { self._generate(); });
+
+        // Enter key on factor inputs
+        ['-f-name', '-f-low', '-f-high'].forEach(function(suffix) {
+            var inp = document.getElementById(id + suffix);
+            if (inp) inp.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') { e.preventDefault(); self._addFactor(); }
+            });
+        });
+    },
+
+    _addFactor() {
+        var nameEl = document.getElementById(this.id + '-f-name');
+        var lowEl = document.getElementById(this.id + '-f-low');
+        var highEl = document.getElementById(this.id + '-f-high');
+
+        var name = nameEl ? nameEl.value.trim() : '';
+        var low = lowEl ? parseFloat(lowEl.value) : NaN;
+        var high = highEl ? parseFloat(highEl.value) : NaN;
+
+        if (!name || isNaN(low) || isNaN(high)) return;
+        if (low >= high) return;
+
+        this._factors.push({ name: name, low: low, high: high });
+        this._renderFactors();
+
+        // Clear inputs
+        if (nameEl) { nameEl.value = ''; nameEl.focus(); }
+        if (lowEl) lowEl.value = '';
+        if (highEl) highEl.value = '';
+    },
+
+    _renderFactors() {
+        var container = document.getElementById(this.id + '-factors');
+        if (!container) return;
+        var self = this;
+        container.innerHTML = '';
+        this._factors.forEach(function(f, i) {
+            var row = document.createElement('div');
+            row.style.cssText = 'display:flex;gap:3px;align-items:center;padding:2px 3px;background:rgba(244,63,94,0.03);border:1px solid rgba(244,63,94,0.06);border-radius:1px;';
+            row.innerHTML =
+                '<span style="flex:1;font:700 9px/1 JetBrains Mono,monospace;color:rgba(244,63,94,0.5);">' + f.name + '</span>' +
+                '<span style="font:9px/1 JetBrains Mono,monospace;color:rgba(244,63,94,0.3);">' + f.low + '</span>' +
+                '<span style="font:8px/1 sans-serif;color:rgba(244,63,94,0.15);">\u2013</span>' +
+                '<span style="font:9px/1 JetBrains Mono,monospace;color:rgba(244,63,94,0.3);">' + f.high + '</span>' +
+                '<span style="cursor:pointer;color:rgba(244,63,94,0.2);font-size:10px;" data-idx="' + i + '">\u00D7</span>';
+            row.querySelector('[data-idx]').addEventListener('click', function() {
+                self._factors.splice(i, 1);
+                self._renderFactors();
+            });
+            container.appendChild(row);
+        });
+    },
+
+    _generate() {
+        if (this._factors.length < 2) {
+            this._showSheet('Need at least 2 factors.');
+            return;
+        }
+
+        var designSel = document.getElementById(this.id + '-design');
+        var designType = designSel ? designSel.value : 'full';
+
+        var self = this;
+        var csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+        this._showSheet('Generating...');
+
+        fetch('/api/rack/compute/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf ? csrf.value : document.cookie.replace(/.*csrftoken=([^;]*).*/, '$1') },
+            body: JSON.stringify({ op: 'doe_design', data: { factors: self._factors, design: designType } })
+        })
+        .then(function(resp) { return resp.json(); })
+        .then(function(json) {
+            if (json.error) {
+                var msg = typeof json.error === 'string' ? json.error : (json.error.message || JSON.stringify(json.error));
+                self._showSheet('ERROR: ' + msg);
+                FR.LED(document.getElementById(self.id + '-led')).set('red');
+                return;
+            }
+            var r = json.result;
+            if (r.error_type) { self._showSheet(r.message); return; }
+            self._lastDesign = r;
+            self._displayRunSheet(r);
+        })
+        .catch(function(e) {
+            self._showSheet('Fetch error: ' + e);
+            FR.LED(document.getElementById(self.id + '-led')).set('red');
+        });
+    },
+
+    _showSheet(msg) {
+        var el = document.getElementById(this.id + '-runsheet');
+        if (el) el.innerHTML = '<span style="color:rgba(244,63,94,0.2);">' + msg + '</span>';
+    },
+
+    _displayRunSheet(r) {
+        var nEl = document.getElementById(this.id + '-n-runs');
+        if (nEl) nEl.textContent = r.n_runs;
+
+        var badge = document.getElementById(this.id + '-design-badge');
+        if (badge) { badge.textContent = r.design_type; badge.style.display = 'inline-flex'; }
+
+        // Build table
+        var html = '<table style="width:100%;border-collapse:collapse;">';
+        html += '<tr><th style="padding:2px 4px;color:rgba(244,63,94,0.4);font-size:8px;text-align:right;border-bottom:1px solid rgba(244,63,94,0.1);">Run</th>';
+        r.factor_names.forEach(function(n) {
+            html += '<th style="padding:2px 4px;color:rgba(244,63,94,0.4);font-size:8px;text-align:right;border-bottom:1px solid rgba(244,63,94,0.1);">' + n + '</th>';
+        });
+        html += '<th style="padding:2px 4px;color:rgba(244,63,94,0.15);font-size:8px;text-align:right;border-bottom:1px solid rgba(244,63,94,0.1);">Response</th></tr>';
+
+        r.runs.forEach(function(run) {
+            html += '<tr>';
+            html += '<td style="padding:1px 4px;color:rgba(244,63,94,0.2);font-size:9px;text-align:right;border-bottom:1px solid rgba(244,63,94,0.02);">' + run.run + '</td>';
+            r.factor_names.forEach(function(n) {
+                html += '<td style="padding:1px 4px;color:rgba(244,63,94,0.35);font-size:9px;text-align:right;border-bottom:1px solid rgba(244,63,94,0.02);">' + (typeof run[n] === 'number' ? run[n].toFixed(1) : run[n]) + '</td>';
+            });
+            html += '<td style="padding:1px 4px;color:rgba(244,63,94,0.1);font-size:9px;text-align:right;border-bottom:1px solid rgba(244,63,94,0.02);">___</td>';
+            html += '</tr>';
+        });
+        html += '</table>';
+
+        var el = document.getElementById(this.id + '-runsheet');
+        if (el) el.innerHTML = html;
+
+        FR.LED(document.getElementById(this.id + '-led')).set('green');
+
+        // Emit design as columnar data (run sheet for downstream units)
+        var outData = { columns: ['run'].concat(r.factor_names), data: { run: [] } };
+        r.factor_names.forEach(function(n) { outData.data[n] = []; });
+        r.runs.forEach(function(run) {
+            outData.data.run.push(run.run);
+            r.factor_names.forEach(function(n) { outData.data[n].push(run[n]); });
+        });
+        FR.emit(this.id, 'design', r);
+        FR.emit(this.id, 'runsheet', outData);
+    },
+
+    receive(inputName, data) {
+        // Designer doesn't receive data — it generates it
+    },
+
+    getOutput(channel) {
+        if (channel === 'design' && this._lastDesign) return this._lastDesign;
+        return null;
+    }
+});
+
 })(ForgeRack);

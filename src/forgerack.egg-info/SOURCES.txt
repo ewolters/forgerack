@@ -31,6 +31,7 @@ src/forgerack/templates/forgerack/units/readout.html
 src/forgerack/templates/forgerack/units/router.html
 src/forgerack/templates/forgerack/units/scribble.html
 src/forgerack/templates/forgerack/units/sentinel.html
+src/forgerack/templates/forgerack/units/spectrum.html
 src/forgerack/templates/forgerack/units/splitter.html
 src/forgerack/templates/forgerack/units/threshold.html
 src/forgerack/templates/forgerack/units/triage.html

@@ -4317,14 +4317,14 @@ FR.registerUnit('formula', {
 
 FR.registerUnit('probe', {
     _MODES: [
-        { name: 'mean',   label: 'MEAN',   angle: -90  },
-        { name: 'median', label: 'MED',    angle: -60  },
-        { name: 'stdev',  label: 'STD',    angle: -30  },
-        { name: 'min',    label: 'MIN',    angle: 0    },
-        { name: 'max',    label: 'MAX',    angle: 30   },
-        { name: 'range',  label: 'RNG',    angle: 60   },
-        { name: 'n',      label: 'n',      angle: 90   },
-        { name: 'sum',    label: 'SUM',    angle: 120  }
+        { name: 'mean',   label: 'MEAN',   angle: 0    },
+        { name: 'median', label: 'MED',    angle: 45   },
+        { name: 'stdev',  label: 'STD',    angle: 90   },
+        { name: 'min',    label: 'MIN',    angle: 135  },
+        { name: 'max',    label: 'MAX',    angle: 180  },
+        { name: 'range',  label: 'RNG',    angle: 225  },
+        { name: 'n',      label: 'n',      angle: 270  },
+        { name: 'sum',    label: 'SUM',    angle: 315  }
     ],
 
     init(el, id) {

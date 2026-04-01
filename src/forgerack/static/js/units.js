@@ -5272,17 +5272,11 @@ FR.registerUnit('precision', {
 // ═══════════════════════════════════════════════════════════
 
 FR.registerUnit('designer', {
-    // ── Design catalog: category → [{value, label}] ──
+    // ── Simple DOE catalog (advanced designs in STRATEGIST) ──
     _catalog: {
         factorial:        [{v:'full',           l:'Full Factorial'}, {v:'fractional', l:'Fractional Factorial'}, {v:'plackett_burman', l:'Plackett-Burman'}],
         response_surface: [{v:'ccd',            l:'CCD (Central Composite)'}, {v:'bbd', l:'Box-Behnken'}],
-        screening:        [{v:'dsd',            l:'Definitive Screening'}],
-        classical:        [{v:'latin_square',   l:'Latin Square'}, {v:'rcbd', l:'Randomized Block'}, {v:'taguchi', l:'Taguchi'}],
-        optimal:          [{v:'d_optimal',      l:'D-Optimal'}, {v:'i_optimal', l:'I-Optimal'}],
-        space_filling:    [{v:'lhs',            l:'Latin Hypercube'}, {v:'maximin_lhs', l:'Maximin LHS'}],
-        mixture:          [{v:'simplex_lattice',l:'Simplex Lattice'}, {v:'simplex_centroid', l:'Simplex Centroid'}, {v:'extreme_vertices', l:'Extreme Vertices'}],
-        split_plot:       [{v:'split_plot',     l:'Split-Plot'}, {v:'split_plot_ccd', l:'Split-Plot CCD'}],
-        evop:             [{v:'evop',           l:'EVOP Phase'}]
+        screening:        [{v:'dsd',            l:'Definitive Screening'}]
     },
 
     init(el, id) {
@@ -5473,6 +5467,33 @@ FR.registerUnit('designer', {
         if (channel === 'design' && this._lastDesign) return this._lastDesign;
         return null;
     }
+});
+
+// ═══════════════════════════════════════════════════════════
+// STRATEGIST KX-07 — Advanced Experiment Designer (Kosmos)
+// Same interface as DESIGNER but with advanced design catalog.
+// Competes with DESIGNER — both output to RESOLVER.
+// ═══════════════════════════════════════════════════════════
+
+FR.registerUnit('strategist', {
+    _catalog: {
+        classical:        [{v:'latin_square', l:'Latin Square'}, {v:'rcbd', l:'Randomized Block'}, {v:'taguchi', l:'Taguchi'}],
+        optimal:          [{v:'d_optimal',    l:'D-Optimal'}, {v:'i_optimal', l:'I-Optimal'}],
+        space_filling:    [{v:'lhs',          l:'Latin Hypercube'}, {v:'maximin_lhs', l:'Maximin LHS'}],
+        mixture:          [{v:'simplex_lattice', l:'Simplex Lattice'}, {v:'simplex_centroid', l:'Simplex Centroid'}, {v:'extreme_vertices', l:'Extreme Vertices'}],
+        split_plot:       [{v:'split_plot',   l:'Split-Plot'}, {v:'split_plot_ccd', l:'Split-Plot CCD'}],
+        evop:             [{v:'evop',         l:'EVOP Phase'}]
+    },
+    // Delegate all methods to the designer prototype
+    init:               FR._unitDefs.designer.init,
+    _updateDesignDropdown: FR._unitDefs.designer._updateDesignDropdown,
+    _addFactor:         FR._unitDefs.designer._addFactor,
+    _renderFactors:     FR._unitDefs.designer._renderFactors,
+    _generate:          FR._unitDefs.designer._generate,
+    _showSheet:         FR._unitDefs.designer._showSheet,
+    _displayRunSheet:   FR._unitDefs.designer._displayRunSheet,
+    receive:            FR._unitDefs.designer.receive,
+    getOutput:          FR._unitDefs.designer.getOutput
 });
 
 // ═══════════════════════════════════════════════════════════

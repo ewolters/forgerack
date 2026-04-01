@@ -5186,18 +5186,20 @@ FR.registerUnit('precision', {
     },
 
     _displayResults(r) {
-        // GRR% gauge
-        var grrEl = document.getElementById(this.id + '-grr-pct');
-        if (grrEl) grrEl.textContent = r.grr_percent.toFixed(1);
+        // Needle gauge — GRR% maps to rotation
+        // 0% = -60deg (far left, green), 30% = 0deg (center, yellow), 60%+ = 60deg (right, red)
+        var needle = document.getElementById(this.id + '-needle');
+        if (needle) {
+            var angle = Math.min(60, Math.max(-60, (r.grr_percent - 30) * 2));
+            needle.style.transform = 'rotate(' + angle + 'deg)';
+        }
 
         // NDC
         var ndcEl = document.getElementById(this.id + '-ndc');
         if (ndcEl) ndcEl.textContent = r.ndc;
 
-        // Assessment verdict
-        var verdictEl = document.getElementById(this.id + '-verdict');
+        // Verdict LED
         var verdictLed = document.getElementById(this.id + '-led-verdict');
-        if (verdictEl) verdictEl.textContent = r.assessment;
         if (verdictLed) {
             if (r.assessment === 'Acceptable') FR.LED(verdictLed).set('green');
             else if (r.assessment === 'Marginal') FR.LED(verdictLed).set('amber');
@@ -5212,7 +5214,7 @@ FR.registerUnit('precision', {
         if (noEl) noEl.textContent = r.n_operators;
         if (nrEl) nrEl.textContent = r.n_replicates;
 
-        // Bubble level — centered if good, off-center if bad
+        // Bubble level
         var bubble = document.getElementById(this.id + '-bubble');
         if (bubble) {
             var offset = r.assessment === 'Acceptable' ? 0 : r.assessment === 'Marginal' ? 4 : 8;
@@ -5221,25 +5223,43 @@ FR.registerUnit('precision', {
 
         FR.LED(document.getElementById(this.id + '-led')).set('green');
 
-        // Detailed results in glass panel
-        var html = '<div style="font:11px/1.6 Georgia,serif;color:rgba(74,90,74,0.6);">';
-        html += '<div style="font:700 12px/1 Georgia,serif;color:rgba(74,90,74,0.7);margin-bottom:6px;">Gage R&R Results</div>';
-        html += '<div style="border-bottom:1px solid rgba(74,90,74,0.08);padding:2px 0;"><span style="display:inline-block;width:110px;color:rgba(74,90,74,0.4);">Repeatability</span> <span style="font-family:JetBrains Mono,monospace;font-size:10px;">' + (r.repeatability * 1e6).toFixed(1) + ' \u00D710\u207B\u2076</span></div>';
-        html += '<div style="border-bottom:1px solid rgba(74,90,74,0.08);padding:2px 0;"><span style="display:inline-block;width:110px;color:rgba(74,90,74,0.4);">Reproducibility</span> <span style="font-family:JetBrains Mono,monospace;font-size:10px;">' + (r.reproducibility * 1e6).toFixed(1) + ' \u00D710\u207B\u2076</span></div>';
-        html += '<div style="border-bottom:1px solid rgba(74,90,74,0.08);padding:2px 0;"><span style="display:inline-block;width:110px;color:rgba(74,90,74,0.4);">GRR</span> <span style="font-family:JetBrains Mono,monospace;font-size:10px;">' + (r.grr * 1e6).toFixed(1) + ' \u00D710\u207B\u2076</span></div>';
-        html += '<div style="border-bottom:1px solid rgba(74,90,74,0.08);padding:2px 0;"><span style="display:inline-block;width:110px;color:rgba(74,90,74,0.4);">Part Variation</span> <span style="font-family:JetBrains Mono,monospace;font-size:10px;">' + (r.part_variation * 1e6).toFixed(1) + ' \u00D710\u207B\u2076</span></div>';
-        html += '<div style="border-bottom:1px solid rgba(74,90,74,0.08);padding:2px 0;"><span style="display:inline-block;width:110px;color:rgba(74,90,74,0.4);">Total Variation</span> <span style="font-family:JetBrains Mono,monospace;font-size:10px;">' + (r.total_variation * 1e6).toFixed(1) + ' \u00D710\u207B\u2076</span></div>';
-        html += '<div style="margin-top:6px;padding:4px 6px;background:rgba(74,90,74,0.04);border-radius:2px;">';
-        html += '<span style="font:700 9px/1 Georgia,serif;color:rgba(74,90,74,0.5);">GRR% = ' + r.grr_percent.toFixed(1) + '% &nbsp; NDC = ' + r.ndc + '</span>';
-        html += '<div style="font:10px/1.4 Georgia,serif;color:rgba(74,90,74,0.35);margin-top:2px;">';
-        if (r.grr_percent < 10) html += 'Measurement system is adequate.';
-        else if (r.grr_percent < 30) html += 'Measurement system may be acceptable depending on application.';
-        else html += 'Measurement system needs improvement. NDC \u2265 5 required.';
-        html += '</div></div>';
-        html += '</div>';
+        // Paper tape printout
+        var lines = [];
+        lines.push('================================');
+        lines.push('  GAGE R&R ANALYSIS REPORT');
+        lines.push('  ' + r.n_parts + ' parts x ' + r.n_operators + ' operators x ' + r.n_replicates + ' reps');
+        lines.push('================================');
+        lines.push('');
+        lines.push('  Source          Variance');
+        lines.push('  --------------- ----------');
+        lines.push('  Repeatability   ' + r.repeatability.toExponential(3));
+        lines.push('  Reproducibility ' + r.reproducibility.toExponential(3));
+        lines.push('  GRR (total)     ' + r.grr.toExponential(3));
+        lines.push('  Part-to-Part    ' + r.part_variation.toExponential(3));
+        lines.push('  Total           ' + r.total_variation.toExponential(3));
+        lines.push('');
+        lines.push('  GRR%  = ' + r.grr_percent.toFixed(1) + '%');
+        lines.push('  NDC   = ' + r.ndc);
+        lines.push('');
+        if (r.grr_percent < 10) {
+            lines.push('  >> ACCEPTABLE');
+            lines.push('  Measurement system is adequate.');
+        } else if (r.grr_percent < 30) {
+            lines.push('  >> MARGINAL');
+            lines.push('  May be acceptable depending');
+            lines.push('  on application importance.');
+        } else {
+            lines.push('  >> UNACCEPTABLE');
+            lines.push('  Measurement system needs');
+            lines.push('  improvement. NDC >= 5 req.');
+        }
+        lines.push('');
+        lines.push('================================');
+
+        var html = lines.join('\n');
 
         var resultsEl = document.getElementById(this.id + '-results');
-        if (resultsEl) resultsEl.innerHTML = html;
+        if (resultsEl) resultsEl.innerHTML = '<pre style="margin:0;font:9px/1.5 Courier New,monospace;color:#3a4a3a;white-space:pre;">' + html + '</pre>';
 
         FR.emit(this.id, 'result', r);
     },

@@ -1,0 +1,113 @@
+<!--
+ ╔══════════════════════════════════════════════════════════════╗
+ ║  PRISM MFD-700 — Multi-Function Display                      ║
+ ║  Manufacturer: GARMIN                                        ║
+ ║  Identity: Glass cockpit MFD. Black bezel, bright LCD,       ║
+ ║  context-sensitive bezel keys on left and right edges.        ║
+ ║  Wire any data source — bezel keys switch views.             ║
+ ╚══════════════════════════════════════════════════════════════╝
+-->
+
+<!-- ════════ FRONT PANEL ════════ -->
+<div class="rack-unit-front u10 mfr-garmin" data-unit="mfd" data-id="${id}" style="
+    --device-accent:#00e5ff;
+    background: #0a0a0a !important;
+    overflow:hidden;
+">
+    <!-- Top bar — model + status -->
+    <div style="
+        display:flex;align-items:center;gap:8px;
+        padding:3px 48px 3px 20px;
+        background:#000;
+        border-bottom:1px solid #1a1a1a;
+    ">
+        <div class="led-housing"><span class="led" id="${id}-led-pwr" style="width:5px;height:5px;"></span></div>
+        <span style="font:700 10px/1 'Helvetica Neue','Arial',sans-serif;color:#00e5ff;letter-spacing:0.12em;text-transform:uppercase;">Prism</span>
+        <span style="font:300 9px/1 'Helvetica Neue',sans-serif;color:rgba(0,229,255,0.2);">Multi-Function Display</span>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:6px;">
+            <span style="font:600 8px/1 'Helvetica Neue',sans-serif;color:rgba(0,229,255,0.15);" id="${id}-page-label">MAP</span>
+            <span style="font:400 8px/1 'Courier New',monospace;color:rgba(255,255,255,0.06);">MFD-700</span>
+        </div>
+    </div>
+
+    <!-- Main body: bezel keys | screen | bezel keys -->
+    <div style="display:flex;height:calc(100% - 26px);">
+
+        <!-- Left bezel keys -->
+        <div style="width:48px;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:8px 4px;background:#050505;border-right:1px solid #1a1a1a;">
+            <button class="mfd-bezel-key" id="${id}-lk0" onclick="FR.units['${id}']?.leftKey?.(0)"><span class="mfd-key-label" id="${id}-lk0-label">MAP</span></button>
+            <button class="mfd-bezel-key" id="${id}-lk1" onclick="FR.units['${id}']?.leftKey?.(1)"><span class="mfd-key-label" id="${id}-lk1-label">DATA</span></button>
+            <button class="mfd-bezel-key" id="${id}-lk2" onclick="FR.units['${id}']?.leftKey?.(2)"><span class="mfd-key-label" id="${id}-lk2-label">CHART</span></button>
+            <button class="mfd-bezel-key" id="${id}-lk3" onclick="FR.units['${id}']?.leftKey?.(3)"><span class="mfd-key-label" id="${id}-lk3-label">LIST</span></button>
+            <button class="mfd-bezel-key" id="${id}-lk4" onclick="FR.units['${id}']?.leftKey?.(4)"><span class="mfd-key-label" id="${id}-lk4-label">STAT</span></button>
+        </div>
+
+        <!-- Screen -->
+        <div style="flex:1;position:relative;background:#000;overflow:hidden;" id="${id}-screen">
+            <!-- Status bar top -->
+            <div class="garmin-strip" id="${id}-status-bar" style="position:absolute;top:0;left:0;right:0;z-index:2;">
+                <div class="garmin-strip-cell cyan" id="${id}-src-label">NO SOURCE</div>
+                <div class="garmin-strip-cell white" id="${id}-row-label">—</div>
+                <div class="garmin-strip-cell white" id="${id}-col-label">—</div>
+                <div class="garmin-strip-cell green" id="${id}-mode-label">MAP</div>
+            </div>
+
+            <!-- Content area -->
+            <div style="position:absolute;top:18px;bottom:24px;left:0;right:0;overflow:hidden;" id="${id}-content">
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:6px;">
+                    <span style="font:300 14px/1 'Helvetica Neue',sans-serif;color:rgba(0,229,255,0.08);">NO DATA</span>
+                    <span style="font:300 9px/1 'Helvetica Neue',sans-serif;color:rgba(255,255,255,0.04);">wire a data source to the input jack</span>
+                </div>
+            </div>
+
+            <!-- Soft-key bar bottom -->
+            <div class="garmin-softkeys" style="position:absolute;bottom:0;left:0;right:0;" id="${id}-softkeys">
+                <button class="garmin-softkey" id="${id}-sk0" onclick="FR.units['${id}']?.softKey?.(0)">ZOOM</button>
+                <button class="garmin-softkey" id="${id}-sk1" onclick="FR.units['${id}']?.softKey?.(1)">PAN</button>
+                <button class="garmin-softkey" id="${id}-sk2" onclick="FR.units['${id}']?.softKey?.(2)">FILTER</button>
+                <button class="garmin-softkey" id="${id}-sk3" onclick="FR.units['${id}']?.softKey?.(3)">MARK</button>
+                <button class="garmin-softkey" id="${id}-sk4" onclick="FR.units['${id}']?.softKey?.(4)">EXPORT</button>
+            </div>
+
+            <!-- Scan line overlay -->
+            <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0px,rgba(0,229,255,0.003) 1px,transparent 2px);pointer-events:none;z-index:1;"></div>
+        </div>
+
+        <!-- Right bezel keys -->
+        <div style="width:48px;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:8px 4px;background:#050505;border-left:1px solid #1a1a1a;">
+            <button class="mfd-bezel-key" id="${id}-rk0" onclick="FR.units['${id}']?.rightKey?.(0)"><span class="mfd-key-label" id="${id}-rk0-label">NEXT</span></button>
+            <button class="mfd-bezel-key" id="${id}-rk1" onclick="FR.units['${id}']?.rightKey?.(1)"><span class="mfd-key-label" id="${id}-rk1-label">PREV</span></button>
+            <button class="mfd-bezel-key" id="${id}-rk2" onclick="FR.units['${id}']?.rightKey?.(2)"><span class="mfd-key-label" id="${id}-rk2-label">COL+</span></button>
+            <button class="mfd-bezel-key" id="${id}-rk3" onclick="FR.units['${id}']?.rightKey?.(3)"><span class="mfd-key-label" id="${id}-rk3-label">COL-</span></button>
+            <button class="mfd-bezel-key" id="${id}-rk4" onclick="FR.units['${id}']?.rightKey?.(4)"><span class="mfd-key-label" id="${id}-rk4-label">ENTER</span></button>
+        </div>
+    </div>
+</div>
+
+<!-- ════════ BACK PANEL ════════ -->
+<div class="rack-unit-back u10" data-unit-back="mfd" data-id="${id}" style="
+    background: repeating-linear-gradient(180deg, rgba(255,255,255,0.008) 0px, transparent 1px, transparent 4px),
+                linear-gradient(160deg, #1c1c1c, #1f1f1f 40%, #1d1d1d);
+    overflow:hidden;
+">
+    <div style="display:flex;align-items:center;gap:8px;padding:5px 48px;border-bottom:1px solid rgba(255,255,255,0.05);">
+        <span style="font:700 11px/1 'Arial',sans-serif;color:rgba(255,255,255,0.1);text-transform:uppercase;letter-spacing:0.15em;">Prism</span>
+        <span style="font:400 11px/1 'Courier New',monospace;color:rgba(255,255,255,0.06);">MFD-700</span>
+        <span style="font:400 9px/1 'Courier New',monospace;color:rgba(255,255,255,0.04);margin-left:auto;">S/N ${id}</span>
+    </div>
+    <div style="padding:10px 48px;display:flex;gap:24px;">
+        <div>
+            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(255,255,255,0.07);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:10px;">Input</div>
+            <div style="display:flex;gap:12px;">
+                <div class="patch-group"><div class="patch-jack" data-input="data" data-unit-id="${id}"></div><div class="patch-jack-label">Data</div></div>
+                <div class="patch-group"><div class="patch-jack" data-input="aux" data-unit-id="${id}"></div><div class="patch-jack-label">Aux</div></div>
+            </div>
+        </div>
+        <div>
+            <div style="font:700 10px/1 'Arial',sans-serif;color:rgba(255,255,255,0.07);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:10px;">Output</div>
+            <div style="display:flex;gap:12px;">
+                <div class="patch-group"><div class="patch-jack" data-output="selected" data-unit-id="${id}"></div><div class="patch-jack-label">Selected</div></div>
+            </div>
+        </div>
+    </div>
+</div>

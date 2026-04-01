@@ -2046,7 +2046,6 @@
     content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1;
     mix-blend-mode: soft-light;
     background:
-        /* ── Hair-thin grain — many passes, sub-pixel width ── */
         repeating-linear-gradient(87deg,
             rgba(255,255,255,0.12) 0px, transparent 0.3px, transparent 1px),
         repeating-linear-gradient(91deg,
@@ -2058,15 +2057,7 @@
         repeating-linear-gradient(86.5deg,
             rgba(255,255,255,0.08) 0px, transparent 0.3px, transparent 2.8px),
         repeating-linear-gradient(92.5deg,
-            rgba(0,0,0,0.09) 0px, transparent 0.25px, transparent 3.5px),
-        /* ── Break masks — length jitter ── */
-        linear-gradient(85deg,
-            transparent 0%, rgba(255,255,255,0.008) 15%,
-            transparent 30%, rgba(0,0,0,0.007) 45%,
-            transparent 55%, rgba(255,255,255,0.006) 72%,
-            transparent 88%, rgba(0,0,0,0.005) 100%),
-        radial-gradient(ellipse 40% 80% at 25% 40%, rgba(255,255,255,0.007), transparent),
-        radial-gradient(ellipse 35% 60% at 72% 65%, rgba(0,0,0,0.006), transparent);
+            rgba(0,0,0,0.09) 0px, transparent 0.25px, transparent 3.5px);
 }
 /*
  * System light source: top-left, 130deg.

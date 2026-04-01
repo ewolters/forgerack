@@ -2052,7 +2052,7 @@
     mix-blend-mode: soft-light;
     background: #808080;
     filter: url(#brush-grain);
-    opacity: 0.12;
+    opacity: 0.09;
 }
 /* Children of tex-brushed must sit above the grain layer */
 .tex-brushed > * { position: relative; z-index: 2; }

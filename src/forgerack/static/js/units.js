@@ -6,6 +6,60 @@
 'use strict';
 
 // ═══════════════════════════════════════════════════════════
+// Shared column population helpers
+// ═══════════════════════════════════════════════════════════
+
+/**
+ * Check if a column is numeric (first non-null value parses as float).
+ */
+function _isNumericCol(data, col) {
+    var v = data.data[col];
+    if (!v || v.length === 0) return false;
+    for (var i = 0; i < Math.min(v.length, 5); i++) {
+        if (v[i] !== null && v[i] !== '' && !isNaN(parseFloat(v[i]))) return true;
+    }
+    return false;
+}
+
+/**
+ * Populate a <select> with columns from data.
+ * @param {string} selId — element ID
+ * @param {object} data — {columns: [...], data: {...}}
+ * @param {string} filter — 'numeric', 'categorical', or 'all'
+ * @param {string} placeholder — first option text
+ * @returns {string|null} — the selected value after population
+ */
+function _populateColumnSelect(selId, data, filter, placeholder) {
+    var sel = document.getElementById(selId);
+    if (!sel || !data) return null;
+    var prev = sel.value;
+    sel.innerHTML = '<option value="">' + (placeholder || 'column') + '</option>';
+
+    var validCols = [];
+    data.columns.forEach(function(c) {
+        var isNum = _isNumericCol(data, c);
+        if (filter === 'numeric' && !isNum) return;
+        if (filter === 'categorical' && isNum) return;
+        validCols.push(c);
+        var opt = document.createElement('option');
+        opt.value = c; opt.textContent = c;
+        sel.appendChild(opt);
+    });
+
+    // Restore previous selection or auto-select first valid
+    if (prev && validCols.indexOf(prev) !== -1) {
+        sel.value = prev;
+    } else if (validCols.length > 0) {
+        sel.value = validCols[0];
+    }
+    return sel.value;
+}
+
+// Export helpers for units
+FR._isNumericCol = _isNumericCol;
+FR._populateColumnSelect = _populateColumnSelect;
+
+// ═══════════════════════════════════════════════════════════
 // INGEST DT-100 — already has unit-csv-input.js, but let's consolidate
 // ═══════════════════════════════════════════════════════════
 
@@ -773,17 +827,7 @@ FR.registerUnit('filter', {
         }
 
         // Populate column selector
-        var colSelect = document.getElementById(this.id + '-col-select');
-        if (colSelect) {
-            var prev = colSelect.value;
-            colSelect.innerHTML = '';
-            this._inputData.columns.forEach(function(c) {
-                var opt = document.createElement('option');
-                opt.value = c; opt.textContent = c;
-                colSelect.appendChild(opt);
-            });
-            if (prev && this._inputData.columns.indexOf(prev) !== -1) colSelect.value = prev;
-        }
+        _populateColumnSelect(this.id + '-col-select', this._inputData, 'all', '');
 
         this._apply();
     },
@@ -990,17 +1034,7 @@ FR.registerUnit('readout', {
         // Columnar data — auto-compute descriptive stats
         if (data.data && data.columns) {
             // Populate column selector
-            var colSelect = document.getElementById(this.id + '-col');
-            if (colSelect) {
-                var prev = colSelect.value;
-                colSelect.innerHTML = '<option value="">auto</option>';
-                data.columns.forEach(function(c) {
-                    var opt = document.createElement('option');
-                    opt.value = c; opt.textContent = c;
-                    colSelect.appendChild(opt);
-                });
-                if (prev && data.columns.indexOf(prev) !== -1) colSelect.value = prev;
-            }
+            _populateColumnSelect(this.id + '-col', data, 'numeric', 'auto');
             this._computeStats();
             return;
         }
@@ -3458,41 +3492,8 @@ FR.registerUnit('sentinel', {
         FR.emit(this.id, 'thru', data);
 
         // Populate column selectors
-        var colSel = document.getElementById(this.id + '-col');
-        var subSel = document.getElementById(this.id + '-subgroup');
-
-        var numericCols = [], factorCols = [];
-        data.columns.forEach(function(c) {
-            var vals = data.data[c] || [];
-            var hasNum = vals.some(function(v) { return typeof v === 'number'; });
-            var hasStr = vals.some(function(v) { return typeof v === 'string'; });
-            if (hasNum && !hasStr) numericCols.push(c);
-            else if (hasStr) factorCols.push(c);
-            else numericCols.push(c);
-        });
-
-        if (colSel) {
-            var prev = colSel.value;
-            colSel.innerHTML = '<option value="">—</option>';
-            numericCols.forEach(function(c) {
-                var opt = document.createElement('option');
-                opt.value = c; opt.textContent = c;
-                colSel.appendChild(opt);
-            });
-            if (prev && numericCols.indexOf(prev) !== -1) colSel.value = prev;
-            else if (numericCols.length > 0) colSel.value = numericCols[0];
-        }
-
-        if (subSel) {
-            var prevS = subSel.value;
-            subSel.innerHTML = '<option value="">none</option>';
-            factorCols.concat(numericCols).forEach(function(c) {
-                var opt = document.createElement('option');
-                opt.value = c; opt.textContent = c;
-                subSel.appendChild(opt);
-            });
-            if (prevS && data.columns.indexOf(prevS) !== -1) subSel.value = prevS;
-        }
+        _populateColumnSelect(this.id + '-col', data, 'numeric', '\u2014');
+        _populateColumnSelect(this.id + '-subgroup', data, 'all', 'none');
 
         var n = data.data[data.columns[0]] ? data.data[data.columns[0]].length : 0;
         var nEl = document.getElementById(this.id + '-n-val');
@@ -3793,13 +3794,8 @@ FR.registerUnit('router', {
         if (inputName !== 'data') return;
         this.data = data;
         // Populate column selector
-        const sel = document.getElementById(`${this.id}-col`);
-        if (sel && sel.options.length <= 1 && data.columns) {
-            data.columns.forEach(c => {
-                const opt = document.createElement('option');
-                opt.value = c; opt.textContent = c;
-                sel.appendChild(opt);
-            });
+        if (data.columns) {
+            _populateColumnSelect(this.id + '-col', data, 'numeric', 'column');
         }
         this._route(data);
     },
@@ -4420,30 +4416,8 @@ FR.registerUnit('probe', {
             this._data = { columns: ['x'], data: { x: data } };
         } else return;
 
-        // Populate column selector
-        var colSelect = document.getElementById(this.id + '-col');
-        if (colSelect) {
-            var prev = colSelect.value;
-            colSelect.innerHTML = '<option value="">column</option>';
-            this._data.columns.forEach(function(c) {
-                var opt = document.createElement('option');
-                opt.value = c; opt.textContent = c;
-                colSelect.appendChild(opt);
-            });
-            // Auto-select first numeric column
-            if (!prev || this._data.columns.indexOf(prev) === -1) {
-                for (var i = 0; i < this._data.columns.length; i++) {
-                    var c = this._data.columns[i];
-                    var v = this._data.data[c];
-                    if (v && v.length > 0 && !isNaN(parseFloat(v[0]))) {
-                        colSelect.value = c;
-                        break;
-                    }
-                }
-            } else {
-                colSelect.value = prev;
-            }
-        }
+        // Populate column selector — numeric only
+        _populateColumnSelect(this.id + '-col', this._data, 'numeric', 'column');
 
         this._compute();
         FR.LED(document.getElementById(this.id + '-led')).set('green');
@@ -4615,22 +4589,7 @@ FR.registerUnit('comparator', {
     },
 
     _populateSelect(selectId, data) {
-        var sel = document.getElementById(selectId);
-        if (!sel || !data) return;
-        var prev = sel.value;
-        sel.innerHTML = '<option value="">column</option>';
-        data.columns.forEach(function(c) {
-            var opt = document.createElement('option');
-            opt.value = c; opt.textContent = c;
-            sel.appendChild(opt);
-        });
-        if (prev && data.columns.indexOf(prev) !== -1) sel.value = prev;
-        else {
-            for (var i = 0; i < data.columns.length; i++) {
-                var v = data.data[data.columns[i]];
-                if (v && v.length > 0 && !isNaN(parseFloat(v[0]))) { sel.value = data.columns[i]; break; }
-            }
-        }
+        _populateColumnSelect(selectId, data, 'numeric', 'column');
     },
 
     receive(inputName, data, fromUnit) {
@@ -4819,28 +4778,16 @@ FR.registerUnit('correlator', {
         } else return;
 
         // Populate selectors
-        var self = this;
-        ['col-x','col-y'].forEach(function(selId, idx) {
-            var sel = document.getElementById(self.id + '-' + selId);
-            if (!sel) return;
-            var prev = sel.value;
-            sel.innerHTML = '<option value="">column</option>';
-            var numCols = self._data.columns.filter(function(c) {
-                var v = self._data.data[c];
-                return v && v.length > 0 && !isNaN(parseFloat(v[0]));
-            });
-            numCols.forEach(function(c) {
-                var opt = document.createElement('option');
-                opt.value = c; opt.textContent = c;
-                sel.appendChild(opt);
-            });
-            // Auto-select first two numeric columns
-            if (!prev || numCols.indexOf(prev) === -1) {
-                if (numCols[idx]) sel.value = numCols[idx];
-            } else {
-                sel.value = prev;
-            }
-        });
+        var prevX = document.getElementById(this.id + '-col-x');
+        var prevXVal = prevX ? prevX.value : '';
+        var prevY = document.getElementById(this.id + '-col-y');
+        var prevYVal = prevY ? prevY.value : '';
+        _populateColumnSelect(this.id + '-col-x', this._data, 'numeric', 'column');
+        _populateColumnSelect(this.id + '-col-y', this._data, 'numeric', 'column');
+        // Auto-select second numeric column for Y when no prior selection
+        if (!prevYVal && prevY && prevY.options.length > 2) {
+            prevY.value = prevY.options[2].value;
+        }
 
         this._render();
         FR.emit(this.id, 'thru', data);
@@ -5006,21 +4953,7 @@ FR.registerUnit('spectrum', {
         else if (Array.isArray(data)) { this._data = { columns: ['x'], data: { x: data } }; }
         else return;
 
-        var self = this;
-        var colSel = document.getElementById(this.id + '-col');
-        if (colSel) {
-            var prev = colSel.value;
-            colSel.innerHTML = '<option value="">column</option>';
-            var self2 = this;
-            this._data.columns.forEach(function(c) {
-                var v = self2._data.data[c];
-                if (!v || v.length === 0 || isNaN(parseFloat(v[0]))) return; // skip non-numeric
-                var opt = document.createElement('option'); opt.value = c; opt.textContent = c;
-                colSel.appendChild(opt);
-            });
-            if (prev && colSel.querySelector('option[value="'+prev+'"]')) colSel.value = prev;
-            else if (colSel.options.length > 1) colSel.selectedIndex = 1;
-        }
+        _populateColumnSelect(this.id + '-col', this._data, 'numeric', 'column');
         this._render();
         FR.emit(this.id, 'thru', data);
     },
@@ -5270,19 +5203,9 @@ FR.registerUnit('precision', {
         else return;
 
         // Populate all three selectors
-        var self = this;
-        ['col-part', 'col-op', 'col-meas'].forEach(function(selId) {
-            var sel = document.getElementById(self.id + '-' + selId);
-            if (!sel) return;
-            var prev = sel.value;
-            sel.innerHTML = '<option value="">column</option>';
-            self._data.columns.forEach(function(c) {
-                var opt = document.createElement('option');
-                opt.value = c; opt.textContent = c;
-                sel.appendChild(opt);
-            });
-            if (prev && self._data.columns.indexOf(prev) !== -1) sel.value = prev;
-        });
+        _populateColumnSelect(this.id + '-col-part', this._data, 'all', 'column');
+        _populateColumnSelect(this.id + '-col-op', this._data, 'all', 'column');
+        _populateColumnSelect(this.id + '-col-meas', this._data, 'all', 'column');
 
         FR.LED(document.getElementById(this.id + '-led')).set('green');
         FR.emit(this.id, 'thru', data);

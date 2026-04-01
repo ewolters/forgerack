@@ -2045,31 +2045,51 @@
 .tex-brushed::before {
     content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1;
     background:
-        /* fine grain — tight */
+        /* ── Grain passes ── */
+        /* fine grain — tight, slightly off-horizontal */
         repeating-linear-gradient(
-            89.5deg,
-            rgba(255,255,255,0.14) 0px, transparent 0.5px, transparent 1.5px
+            89.4deg,
+            rgba(255,255,255,0.09) 0px, transparent 0.5px, transparent 1.5px
         ),
-        /* medium grain — slightly offset angle */
+        /* medium grain — opposite offset */
         repeating-linear-gradient(
-            90.3deg,
-            rgba(0,0,0,0.15) 0px, transparent 0.5px, transparent 3px
+            90.4deg,
+            rgba(0,0,0,0.10) 0px, transparent 0.5px, transparent 3px
         ),
-        /* coarse grain — wider spacing */
+        /* coarse grain — wider */
         repeating-linear-gradient(
-            89.8deg,
-            rgba(255,255,255,0.10) 0px, transparent 1px, transparent 5px,
-            rgba(0,0,0,0.11) 5px, transparent 6px, transparent 9px
-        );
+            89.7deg,
+            rgba(255,255,255,0.06) 0px, transparent 1px, transparent 5px,
+            rgba(0,0,0,0.07) 5px, transparent 6px, transparent 9px
+        ),
+        /* ── Break masks — intensity variation to fake length jitter ── */
+        /* Broad fade patches — grain appears/disappears in zones */
+        linear-gradient(87deg,
+            transparent 0%, rgba(255,255,255,0.03) 15%,
+            transparent 30%, rgba(0,0,0,0.025) 45%,
+            transparent 55%, rgba(255,255,255,0.02) 72%,
+            transparent 88%, rgba(0,0,0,0.015) 100%
+        ),
+        /* Vertical intensity bands — breaks up uniform horizontal runs */
+        linear-gradient(180deg,
+            rgba(255,255,255,0.02) 0%, transparent 18%,
+            rgba(0,0,0,0.02) 35%, transparent 50%,
+            rgba(255,255,255,0.015) 65%, transparent 82%,
+            rgba(0,0,0,0.02) 100%
+        ),
+        /* Soft hotspots — deeper polish in a few spots */
+        radial-gradient(ellipse 40% 80% at 25% 40%, rgba(255,255,255,0.025), transparent),
+        radial-gradient(ellipse 35% 60% at 72% 65%, rgba(0,0,0,0.02), transparent),
+        radial-gradient(ellipse 50% 40% at 50% 20%, rgba(255,255,255,0.015), transparent);
 }
 /* Directional light — top-left source */
 .tex-brushed::after {
     content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1;
     background: linear-gradient(
         145deg,
-        rgba(255,255,255,0.08) 0%,
+        rgba(255,255,255,0.06) 0%,
         transparent 45%,
-        rgba(0,0,0,0.05) 100%
+        rgba(0,0,0,0.04) 100%
     );
 }
 /* Children of tex-brushed must sit above the grain layer */

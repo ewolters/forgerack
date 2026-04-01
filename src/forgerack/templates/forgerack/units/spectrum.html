@@ -10,20 +10,20 @@
 -->
 
 <!-- ════════ FRONT PANEL ════════ -->
-<div class="rack-unit-front u8 mfr-tektronix tex-brushed tex-matte chamfer-heavy" data-unit="spectrum" data-id="${id}" style="
+<div class="rack-unit-front u10 mfr-tektronix tex-brushed tex-matte chamfer-heavy" data-unit="spectrum" data-id="${id}" style="
     --device-accent:#38bdf8;
     background:
         radial-gradient(ellipse at 45% 25%, hsla(210,30%,55%,.02), transparent 55%),
         linear-gradient(160deg, #2a3040 0%, #242a36 30%, #282e3a 50%, #202630 80%);
     overflow:hidden;position:relative;
 ">
-    <!-- ── Lit screws — specular highlight from 130deg source ── -->
-    <div style="position:absolute;top:5px;left:5px;width:10px;height:10px;border-radius:50%;z-index:10;
+    <!-- ── Lit screws — inset from corners so they don't overlap rack rails ── -->
+    <div style="position:absolute;top:5px;left:30px;width:10px;height:10px;border-radius:50%;z-index:10;
         background:radial-gradient(circle at 30% 30%, #6a7080, #3a4050 40%, #2a3040 70%, #1a2030);
         box-shadow: inset 0 1px 1px rgba(255,255,255,0.12), inset 0 -1px 2px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.3);
     "><div style="position:absolute;top:4px;left:2px;width:6px;height:1.5px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div>
       <div style="position:absolute;top:2px;left:4px;width:1.5px;height:6px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div></div>
-    <div style="position:absolute;top:5px;right:5px;width:10px;height:10px;border-radius:50%;z-index:10;
+    <div style="position:absolute;top:5px;right:30px;width:10px;height:10px;border-radius:50%;z-index:10;
         background:radial-gradient(circle at 30% 30%, #6a7080, #3a4050 40%, #2a3040 70%, #1a2030);
         box-shadow: inset 0 1px 1px rgba(255,255,255,0.12), inset 0 -1px 2px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.3);
     "><div style="position:absolute;top:4px;left:2px;width:6px;height:1.5px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div>
@@ -329,13 +329,13 @@
         </div>
     </div>
 
-    <!-- Bottom screws with lighting -->
-    <div style="position:absolute;bottom:5px;left:5px;width:10px;height:10px;border-radius:50%;z-index:10;
+    <!-- Bottom screws -->
+    <div style="position:absolute;bottom:5px;left:30px;width:10px;height:10px;border-radius:50%;z-index:10;
         background:radial-gradient(circle at 30% 30%, #6a7080, #3a4050 40%, #2a3040 70%, #1a2030);
         box-shadow: inset 0 1px 1px rgba(255,255,255,0.12), inset 0 -1px 2px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.3);
     "><div style="position:absolute;top:4px;left:2px;width:6px;height:1.5px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div>
       <div style="position:absolute;top:2px;left:4px;width:1.5px;height:6px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div></div>
-    <div style="position:absolute;bottom:5px;right:5px;width:10px;height:10px;border-radius:50%;z-index:10;
+    <div style="position:absolute;bottom:5px;right:30px;width:10px;height:10px;border-radius:50%;z-index:10;
         background:radial-gradient(circle at 30% 30%, #6a7080, #3a4050 40%, #2a3040 70%, #1a2030);
         box-shadow: inset 0 1px 1px rgba(255,255,255,0.12), inset 0 -1px 2px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.3);
     "><div style="position:absolute;top:4px;left:2px;width:6px;height:1.5px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div>
@@ -343,7 +343,7 @@
 </div>
 
 <!-- ════════ BACK PANEL ════════ -->
-<div class="rack-unit-back u8" data-unit-back="spectrum" data-id="${id}" style="
+<div class="rack-unit-back u10" data-unit-back="spectrum" data-id="${id}" style="
     background: repeating-linear-gradient(180deg, rgba(255,255,255,0.005) 0px, transparent 1px, transparent 2px),
         linear-gradient(160deg, #1c1c1c, #1f1f1f 40%, #1d1d1d);
     overflow:hidden;position:relative;

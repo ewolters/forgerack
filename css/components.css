@@ -2057,6 +2057,17 @@
 /* Children of tex-brushed must sit above the grain layer */
 .tex-brushed > * { position: relative; z-index: 2; }
 
+/* Fine variant — tighter, thinner scratches for darker chassis */
+.tex-brushed-fine { position: relative; }
+.tex-brushed-fine::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1;
+    mix-blend-mode: soft-light;
+    background: #808080;
+    filter: url(#brush-grain-fine);
+    opacity: 0.09;
+}
+.tex-brushed-fine > * { position: relative; z-index: 2; }
+
 /* Vertical brushed — for side panels, face plates */
 .tex-brushed-v {
     position: relative;

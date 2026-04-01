@@ -9,7 +9,7 @@
 -->
 
 <!-- ════════ FRONT PANEL ════════ -->
-<div class="rack-unit-front u8 mfr-guardian tex-brushed chamfer-heavy wear-scratched" data-unit="sentinel" data-id="${id}" style="
+<div class="rack-unit-front u8 mfr-guardian tex-brushed-fine chamfer-heavy wear-scratched" data-unit="sentinel" data-id="${id}" style="
     --device-accent:#d97706;
     background:
         radial-gradient(ellipse at 35% 25%, hsla(220,15%,60%,.035), transparent 55%),
@@ -105,9 +105,9 @@
     <!-- ════ CONTROL PANEL — silkscreen sections on faceplate ════ -->
     <div style="margin:3px 48px 4px;display:flex;gap:6px;align-items:flex-start;">
 
-        <!-- ▌ CHART TYPE — amber silkscreen panel, thick border ▌ -->
+        <!-- ▌ CHART TYPE ▌ -->
         <div style="
-            border:2px solid rgba(217,119,6,0.25);
+            border:1px solid rgba(217,119,6,0.2);
             border-radius:3px;
             padding:7px 6px 5px;
             position:relative;
@@ -137,9 +137,9 @@
             </select>
         </div>
 
-        <!-- ▌ MEASURE + SUBGROUP — thinner border, grouped ▌ -->
+        <!-- ▌ MEASURE + SUBGROUP ▌ -->
         <div style="
-            border:1px solid rgba(217,119,6,0.18);
+            border:1px solid rgba(217,119,6,0.2);
             border-radius:3px;
             padding:7px 6px 5px;
             position:relative;
@@ -172,17 +172,17 @@
             </div>
         </div>
 
-        <!-- ▌ SPEC LIMITS — thin dashed border ▌ -->
+        <!-- ▌ SPEC LIMITS ▌ -->
         <div style="
-            border:1px dashed rgba(217,119,6,0.15);
+            border:1px solid rgba(217,119,6,0.2);
             border-radius:3px;
             padding:7px 6px 5px;
             position:relative;
         ">
             <div style="
                 position:absolute;top:-6px;left:6px;
-                background:rgba(217,119,6,0.65);
-                padding:1px 6px;border-radius:2px;
+                background:rgba(217,119,6,0.8);
+                padding:1px 7px;border-radius:2px;
                 font:800 7px/1 'Arial Narrow','Arial',sans-serif;
                 color:#0a0d14;text-transform:uppercase;letter-spacing:0.12em;
             ">Spec</div>
@@ -200,17 +200,17 @@
             </div>
         </div>
 
-        <!-- ▌ RULES — thin border ▌ -->
+        <!-- ▌ RULES ▌ -->
         <div style="
-            border:1px solid rgba(217,119,6,0.15);
+            border:1px solid rgba(217,119,6,0.2);
             border-radius:3px;
             padding:7px 6px 5px;
             position:relative;
         ">
             <div style="
                 position:absolute;top:-6px;left:6px;
-                background:rgba(217,119,6,0.65);
-                padding:1px 6px;border-radius:2px;
+                background:rgba(217,119,6,0.8);
+                padding:1px 7px;border-radius:2px;
                 font:800 7px/1 'Arial Narrow','Arial',sans-serif;
                 color:#0a0d14;text-transform:uppercase;letter-spacing:0.12em;
             ">Rules</div>
@@ -230,11 +230,11 @@
         <div style="display:flex;flex-direction:column;gap:3px;padding-top:2px;">
             <button id="${id}-btn-run" title="Generate control chart" style="
                 padding:5px 10px;
-                background:linear-gradient(180deg,rgba(217,119,6,0.2),rgba(217,119,6,0.08));
-                border:2px solid rgba(217,119,6,0.35);border-radius:2px;
+                background:linear-gradient(180deg, #1a1408, #120e06);
+                border:1px solid rgba(217,119,6,0.3);border-radius:2px;
                 color:#d97706;font:800 10px/1 'Arial Narrow',sans-serif;letter-spacing:0.15em;text-transform:uppercase;
                 cursor:pointer;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(217,119,6,0.1);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(217,119,6,0.06);
             ">&#x25B6; Run</button>
             <div style="display:flex;gap:2px;">
                 <button id="${id}-btn-copy" title="Copy SVG" class="btn-export" style="font-size:7px;padding:2px 4px;border-color:rgba(217,119,6,0.1);">Copy</button>
@@ -246,7 +246,7 @@
         <!-- ▌ CAPABILITY — VFD readouts, thick amber border ▌ -->
         <div style="
             margin-left:auto;
-            border:2px solid rgba(217,119,6,0.2);
+            border:1px solid rgba(217,119,6,0.2);
             border-radius:3px;
             padding:7px 6px 4px;
             position:relative;

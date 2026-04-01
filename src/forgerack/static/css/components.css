@@ -2045,21 +2045,21 @@
 .tex-brushed::before {
     content: ''; position: absolute; inset: 0; pointer-events: none; z-index: -1;
     background:
-        /* fine grain — tight, very faint */
+        /* fine grain — tight */
         repeating-linear-gradient(
             89.5deg,
-            rgba(255,255,255,0.012) 0px, transparent 0.5px, transparent 1.5px
+            rgba(255,255,255,0.022) 0px, transparent 0.5px, transparent 1.5px
         ),
         /* medium grain — slightly offset angle */
         repeating-linear-gradient(
             90.3deg,
-            rgba(0,0,0,0.018) 0px, transparent 0.5px, transparent 3px
+            rgba(0,0,0,0.028) 0px, transparent 0.5px, transparent 3px
         ),
-        /* coarse grain — wider spacing, subtler */
+        /* coarse grain — wider spacing */
         repeating-linear-gradient(
             89.8deg,
-            rgba(255,255,255,0.008) 0px, transparent 1px, transparent 5px,
-            rgba(0,0,0,0.01) 5px, transparent 6px, transparent 9px
+            rgba(255,255,255,0.015) 0px, transparent 1px, transparent 5px,
+            rgba(0,0,0,0.018) 5px, transparent 6px, transparent 9px
         );
 }
 /* Directional light — top-left source */
@@ -2067,9 +2067,9 @@
     content: ''; position: absolute; inset: 0; pointer-events: none; z-index: -1;
     background: linear-gradient(
         145deg,
-        rgba(255,255,255,0.015) 0%,
-        transparent 40%,
-        rgba(0,0,0,0.01) 100%
+        rgba(255,255,255,0.025) 0%,
+        transparent 45%,
+        rgba(0,0,0,0.015) 100%
     );
 }
 

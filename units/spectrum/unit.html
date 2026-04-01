@@ -111,10 +111,10 @@
                         pointer-events:none;z-index:8;"></div>
 
                     <!-- Grid — graticule etched on glass -->
-                    <div class="scope-grid" style="height:100%;">
+                    <div class="scope-grid" style="height:100%;overflow:hidden;position:relative;">
                         <div class="scope-grid-major"></div>
                         <div class="scope-grid-center"></div>
-                        <div id="${id}-viewport" style="position:relative;z-index:4;height:100%;"></div>
+                        <div id="${id}-viewport" style="position:absolute;inset:0;z-index:4;overflow:hidden;"></div>
                         <div id="${id}-empty" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;z-index:3;">
                             <span style="font:300 11px/1 'Courier New',monospace;color:rgba(56,189,248,0.07);">NO SIGNAL</span>
                             <span style="font:300 8px/1 'Courier New',monospace;color:rgba(56,189,248,0.03);">select column to analyze</span>
@@ -125,50 +125,65 @@
         </div>
 
         <!-- ▌ RIGHT CONTROL PANEL ▌ -->
-        <div style="width:115px;display:flex;flex-direction:column;gap:3px;overflow:visible;">
+        <div style="width:115px;display:flex;flex-direction:column;gap:3px;">
 
-            <!-- Column selector — recessed panel -->
-            <div class="panel-recessed" style="padding:4px;border-radius:2px;">
-                <span class="control-label control-label-sm control-label-mid" style="color:rgba(56,189,248,0.35);">Column</span>
+            <!-- Column selector -->
+            <div style="display:flex;flex-direction:column;gap:1px;">
+                <span style="font:700 8px/1 'Helvetica',sans-serif;color:rgba(56,189,248,0.35);text-transform:uppercase;letter-spacing:0.1em;">Column</span>
                 <select id="${id}-col" style="
                     width:100%;
                     background:#080c14;
                     border:1px solid rgba(56,189,248,0.2);
-                    color:#38bdf8;padding:4px 5px;border-radius:1px;
+                    color:#38bdf8;padding:3px 5px;border-radius:1px;
                     font:10px/1 'JetBrains Mono',monospace;
                     box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
                 "><option value="">—</option></select>
             </div>
 
-            <!-- Bin count — physical pushbuttons in recessed well -->
-            <div class="panel-recessed" style="padding:4px;border-radius:2px;">
-                <span class="control-label control-label-sm control-label-mid" style="color:rgba(56,189,248,0.35);">Bins</span>
-                <div class="tek-btn-row" style="flex-wrap:wrap;gap:3px;margin-top:2px;">
-                    <button class="tek-btn btn-flush" id="${id}-bin-8" style="font-size:8px;padding:4px 7px;">8</button>
-                    <button class="tek-btn btn-flush active" id="${id}-bin-15" style="font-size:8px;padding:4px 7px;">15</button>
-                    <button class="tek-btn btn-flush" id="${id}-bin-25" style="font-size:8px;padding:4px 7px;">25</button>
-                    <button class="tek-btn btn-flush" id="${id}-bin-auto" style="font-size:8px;padding:4px 5px;">Auto</button>
+            <!-- Controls panel — yellow-bordered faceplate section -->
+            <div style="
+                border:1px solid rgba(251,191,36,0.25);
+                border-radius:3px;
+                padding:4px 5px;
+                position:relative;
+            ">
+                <!-- Yellow pill label -->
+                <div style="
+                    position:absolute;top:-6px;left:8px;
+                    background:#2a3040;
+                    padding:0 5px;
+                    font:700 7px/1 'Helvetica',sans-serif;
+                    color:rgba(251,191,36,0.6);
+                    text-transform:uppercase;letter-spacing:0.1em;
+                ">Controls</div>
+
+                <!-- Bins row -->
+                <div style="display:flex;align-items:center;gap:4px;margin-top:2px;">
+                    <span style="font:700 7px/1 'Helvetica',sans-serif;color:rgba(251,191,36,0.4);text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;">Bins</span>
+                    <div class="tek-btn-row" style="gap:2px;">
+                        <button class="tek-btn" id="${id}-bin-8" style="font-size:7px;padding:3px 5px;border-color:rgba(251,191,36,0.15);">8</button>
+                        <button class="tek-btn active" id="${id}-bin-15" style="font-size:7px;padding:3px 5px;border-color:rgba(251,191,36,0.15);">15</button>
+                        <button class="tek-btn" id="${id}-bin-25" style="font-size:7px;padding:3px 5px;border-color:rgba(251,191,36,0.15);">25</button>
+                        <button class="tek-btn" id="${id}-bin-auto" style="font-size:7px;padding:3px 4px;border-color:rgba(251,191,36,0.15);">A</button>
+                    </div>
+                </div>
+
+                <!-- Overlay toggles row -->
+                <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
+                    <div style="display:flex;align-items:center;gap:3px;">
+                        <div class="switch-rocker on tek-btn active" id="${id}-btn-normal" style="cursor:pointer;width:14px;height:20px;">
+                            <div style="width:3px;height:3px;border-radius:50%;background:rgba(56,189,248,0.5);margin:auto;"></div>
+                        </div>
+                        <span style="font:700 7px/1 'Helvetica',sans-serif;color:rgba(251,191,36,0.4);text-transform:uppercase;">Norm</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:3px;">
+                        <div class="switch-rocker tek-btn" id="${id}-btn-rug" style="cursor:pointer;width:14px;height:20px;">
+                            <div style="width:3px;height:3px;border-radius:50%;background:rgba(56,189,248,0.2);margin:auto;"></div>
+                        </div>
+                        <span style="font:700 7px/1 'Helvetica',sans-serif;color:rgba(251,191,36,0.4);text-transform:uppercase;">Rug</span>
+                    </div>
                 </div>
             </div>
-
-            <!-- Overlay toggles — rocker switches -->
-            <div style="display:flex;gap:12px;justify-content:center;padding:3px 0;">
-                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
-                    <div class="switch-rocker on tek-btn active" id="${id}-btn-normal" style="cursor:pointer;">
-                        <div style="width:3px;height:3px;border-radius:50%;background:rgba(56,189,248,0.5);margin:auto;"></div>
-                    </div>
-                    <span style="font:700 8px/1 'Helvetica',sans-serif;color:rgba(56,189,248,0.35);text-transform:uppercase;letter-spacing:0.08em;">Normal</span>
-                </div>
-                <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
-                    <div class="switch-rocker tek-btn" id="${id}-btn-rug" style="cursor:pointer;">
-                        <div style="width:3px;height:3px;border-radius:50%;background:rgba(56,189,248,0.2);margin:auto;"></div>
-                    </div>
-                    <span style="font:700 8px/1 'Helvetica',sans-serif;color:rgba(56,189,248,0.35);text-transform:uppercase;letter-spacing:0.08em;">Rug</span>
-                </div>
-            </div>
-
-            <!-- Panel groove -->
-            <div class="divider-h" style="margin:1px 0;"></div>
 
             <!-- Stat readouts — VFD-style recessed displays -->
             <div style="display:flex;flex-direction:column;gap:3px;flex:1;min-height:0;">

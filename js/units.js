@@ -5161,12 +5161,18 @@ FR.registerUnit('precision', {
         .then(function(resp) { return resp.json(); })
         .then(function(json) {
             if (json.error) {
-                var errMsg = typeof json.error === 'string' ? json.error : JSON.stringify(json.error);
+                var errMsg = typeof json.error === 'string' ? json.error : (json.error.message || JSON.stringify(json.error));
                 self._showResult('ERROR: ' + errMsg, 'rgba(180,40,40,0.6)');
                 FR.LED(document.getElementById(self.id + '-led')).set('red');
                 return;
             }
-            self._displayResults(json.result);
+            var r = json.result;
+            if (r.error_type === 'unbalanced_design') {
+                self._showResult(r.message, 'rgba(180,120,40,0.6)');
+                FR.LED(document.getElementById(self.id + '-led')).set('amber');
+                return;
+            }
+            self._displayResults(r);
         })
         .catch(function(e) {
             self._showResult('Fetch error: ' + e, 'rgba(180,40,40,0.6)');

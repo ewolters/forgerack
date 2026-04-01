@@ -2043,66 +2043,69 @@
     position: relative;
 }
 .tex-brushed::before {
-    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: -1;
+    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1;
     background:
         /* fine grain — tight */
         repeating-linear-gradient(
             89.5deg,
-            rgba(255,255,255,0.08) 0px, transparent 0.5px, transparent 1.5px
+            rgba(255,255,255,0.14) 0px, transparent 0.5px, transparent 1.5px
         ),
         /* medium grain — slightly offset angle */
         repeating-linear-gradient(
             90.3deg,
-            rgba(0,0,0,0.09) 0px, transparent 0.5px, transparent 3px
+            rgba(0,0,0,0.15) 0px, transparent 0.5px, transparent 3px
         ),
         /* coarse grain — wider spacing */
         repeating-linear-gradient(
             89.8deg,
-            rgba(255,255,255,0.06) 0px, transparent 1px, transparent 5px,
-            rgba(0,0,0,0.065) 5px, transparent 6px, transparent 9px
+            rgba(255,255,255,0.10) 0px, transparent 1px, transparent 5px,
+            rgba(0,0,0,0.11) 5px, transparent 6px, transparent 9px
         );
 }
 /* Directional light — top-left source */
 .tex-brushed::after {
-    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: -1;
+    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1;
     background: linear-gradient(
         145deg,
-        rgba(255,255,255,0.06) 0%,
+        rgba(255,255,255,0.08) 0%,
         transparent 45%,
-        rgba(0,0,0,0.035) 100%
+        rgba(0,0,0,0.05) 100%
     );
 }
+/* Children of tex-brushed must sit above the grain layer */
+.tex-brushed > * { position: relative; z-index: 2; }
 
 /* Vertical brushed — for side panels, face plates */
 .tex-brushed-v {
     position: relative;
 }
 .tex-brushed-v::before {
-    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: -1;
+    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1;
     background:
         repeating-linear-gradient(
             0.5deg,
-            rgba(255,255,255,0.012) 0px, transparent 0.5px, transparent 1.5px
+            rgba(255,255,255,0.14) 0px, transparent 0.5px, transparent 1.5px
         ),
         repeating-linear-gradient(
             -0.3deg,
-            rgba(0,0,0,0.018) 0px, transparent 0.5px, transparent 3px
+            rgba(0,0,0,0.15) 0px, transparent 0.5px, transparent 3px
         ),
         repeating-linear-gradient(
             0.2deg,
-            rgba(255,255,255,0.008) 0px, transparent 1px, transparent 5px,
-            rgba(0,0,0,0.01) 5px, transparent 6px, transparent 9px
+            rgba(255,255,255,0.10) 0px, transparent 1px, transparent 5px,
+            rgba(0,0,0,0.11) 5px, transparent 6px, transparent 9px
         );
 }
 .tex-brushed-v::after {
-    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: -1;
+    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1;
     background: linear-gradient(
         135deg,
-        rgba(255,255,255,0.015) 0%,
+        rgba(255,255,255,0.08) 0%,
         transparent 40%,
-        rgba(0,0,0,0.01) 100%
+        rgba(0,0,0,0.05) 100%
     );
 }
+.tex-brushed-v > * { position: relative; z-index: 2; }
 
 /* Crosshatch — woven metal texture (Milspec crate lids, rugged panels) */
 .tex-crosshatch {

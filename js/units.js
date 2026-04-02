@@ -5662,10 +5662,58 @@ FR.registerUnit('strategist', {
         split_plot:       [{v:'split_plot',   l:'Split-Plot'}, {v:'split_plot_ccd', l:'Split-Plot CCD'}],
         evop:             [{v:'evop',         l:'EVOP Phase'}]
     },
-    // Delegate all methods to the designer prototype
-    init:               FR._unitDefs.designer.init,
+
+    // Own init — RBMK dial + CRT thumbwheel, then delegate factor wiring
+    init(el, id) {
+        // Delegate factor entry, generate, display from designer
+        FR._unitDefs.designer.init.call(this, el, id);
+
+        var self = this;
+        var catKeys = ['classical', 'optimal', 'space_filling', 'mixture', 'split_plot', 'evop'];
+        this._catIndex = 0;
+
+        // RBMK category dial
+        var catDial = document.getElementById(id + '-cat-dial');
+        var catSel = document.getElementById(id + '-category');
+        if (catDial && catSel) {
+            catDial.addEventListener('click', function() {
+                self._catIndex = (self._catIndex + 1) % catKeys.length;
+                catSel.value = catKeys[self._catIndex];
+                // 6 positions: 0°, 60°, 120°, 180°, 240°, 300°
+                catDial.style.transform = 'rotate(' + (self._catIndex * 60) + 'deg)';
+                // Update design dropdown cascade
+                self._updateDesignDropdown();
+                self._updateDesignCRT();
+            });
+        }
+
+        // Design sub-type CRT thumbwheel
+        var desSel = document.getElementById(id + '-design');
+        var desCrt = document.getElementById(id + '-design-crt');
+        var desUp = document.getElementById(id + '-design-up');
+        var desDown = document.getElementById(id + '-design-down');
+        if (desSel && desCrt) {
+            function updateDesCRT() {
+                var text = desSel.options[desSel.selectedIndex] ? desSel.options[desSel.selectedIndex].text : '—';
+                desCrt.textContent = text;
+            }
+            if (desUp) desUp.addEventListener('click', function() {
+                if (desSel.selectedIndex < desSel.options.length - 1) { desSel.selectedIndex++; updateDesCRT(); }
+            });
+            if (desDown) desDown.addEventListener('click', function() {
+                if (desSel.selectedIndex > 0) { desSel.selectedIndex--; updateDesCRT(); }
+            });
+            new MutationObserver(function() { updateDesCRT(); }).observe(desSel, { childList: true });
+            this._updateDesignCRT = updateDesCRT;
+            // Initial populate
+            self._updateDesignDropdown();
+            updateDesCRT();
+        }
+    },
+
     _updateDesignDropdown: FR._unitDefs.designer._updateDesignDropdown,
     _addFactor:         FR._unitDefs.designer._addFactor,
+    _addCategoricalFactor: FR._unitDefs.designer._addCategoricalFactor,
     _renderFactors:     FR._unitDefs.designer._renderFactors,
     _generate:          FR._unitDefs.designer._generate,
     _showSheet:         FR._unitDefs.designer._showSheet,

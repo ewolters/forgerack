@@ -1,11 +1,10 @@
 <!--
  ╔══════════════════════════════════════════════════════════════╗
  ║  DSh-K11 — Advanced Experiment Designer                       ║
- ║  Manufacturer: KOSMOS                                        ║
- ║  Designers: Dimitrov & Shapovalov                            ║
- ║  Identity: Olive powder-coated steel. RBMK-style controls:   ║
- ║  Bakelite rotary dials, oversized generate button, green     ║
- ║  phosphor CRT, hex bolts, stencil Courier.                   ║
+ ║  Manufacturer: KOSMOS (Dimitrov-Shapovalov Bureau)           ║
+ ║  Identity: Olive powder-coated steel. Chickenhead dials,     ║
+ ║  backlit generate button, CRT factor list, white-bordered    ║
+ ║  control sections. Horizontal layout.                        ║
  ╚══════════════════════════════════════════════════════════════╝
 -->
 
@@ -17,25 +16,23 @@
         linear-gradient(165deg, #2a2e22 0%, #242820 30%, #282c24 50%, #1e2218 80%);
     overflow:hidden;position:relative;
 ">
-    <!-- Nameplate — stamped steel, hex bolts -->
+    <!-- Nameplate -->
     <div style="
         display:flex;align-items:center;gap:10px;
         padding:6px 48px;position:relative;
         border-bottom:2px solid rgba(0,0,0,0.4);
         background: linear-gradient(180deg, #2e3226 0%, #282c22 50%, #22261c 100%);
     ">
-        <!-- Hex bolts -->
         <div style="position:absolute;left:34px;top:50%;transform:translateY(-50%);width:7px;height:7px;
             background:radial-gradient(circle at 35% 35%, #5a5e4a, #2a2e22);
             clip-path:polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);"></div>
         <div style="position:absolute;right:34px;top:50%;transform:translateY(-50%);width:7px;height:7px;
             background:radial-gradient(circle at 35% 35%, #5a5e4a, #2a2e22);
             clip-path:polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);"></div>
-
         <div class="led-housing"><span class="led lg" id="${id}-led"></span></div>
         <span style="font:700 13px/1 'Courier New',monospace;color:rgba(163,177,138,0.4);letter-spacing:0.2em;text-transform:uppercase;
             text-shadow: 0 -1px 0 rgba(0,0,0,0.5), 0 1px 0 rgba(255,240,215,0.02);">DSh-K11</span>
-        <span style="font:400 8px/1 'Courier New',monospace;color:rgba(163,177,138,0.15);letter-spacing:0.08em;">DIMITROV-SHAPOVALOV</span>
+        <span style="font:400 8px/1 'Courier New',monospace;color:rgba(163,177,138,0.15);">DIMITROV-SHAPOVALOV</span>
         <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
             <svg width="12" height="12" viewBox="0 0 12 12" style="opacity:0.06;">
                 <polygon points="6,0.5 7.5,4.5 11.5,4.5 8.2,7.2 9.5,11.5 6,8.8 2.5,11.5 3.8,7.2 0.5,4.5 4.5,4.5" fill="#a3b18a"/>
@@ -52,167 +49,61 @@
         background:radial-gradient(circle at 35% 35%, #5a5e4a, #3a3e2e 40%, #2a2e22 70%, #1e2218);
         clip-path:polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);"></div>
 
-    <div style="padding:6px 48px 4px;display:flex;gap:12px;height:calc(100% - 38px);">
+    <!-- ═══ MAIN AREA: three columns ═══ -->
+    <div style="padding:8px 48px 4px;display:flex;gap:8px;height:calc(100% - 40px);">
 
-        <!-- ▌ LEFT — Controls ▌ -->
-        <div style="width:180px;display:flex;flex-direction:column;gap:5px;">
+        <!-- ▌ LEFT — Factor CRT + entry ▌ -->
+        <div style="width:155px;display:flex;flex-direction:column;gap:4px;">
+            <span style="font:700 9px/1 'Courier New',monospace;color:rgba(163,177,138,0.4);text-transform:uppercase;letter-spacing:0.12em;
+                text-shadow: 0 -1px 0 rgba(0,0,0,0.3);">Factors</span>
 
-            <!-- Factors -->
-            <div style="display:flex;flex-direction:column;gap:3px;flex:1;">
-                <span style="font:700 9px/1 'Courier New',monospace;color:rgba(163,177,138,0.4);text-transform:uppercase;letter-spacing:0.12em;
-                    text-shadow: 0 -1px 0 rgba(0,0,0,0.3);">Factors</span>
+            <!-- Factor list as CRT -->
+            <div style="flex:1;background:#010301;border:2px solid #000;border-radius:2px;
+                box-shadow:inset 0 2px 6px rgba(0,0,0,0.6);position:relative;overflow:hidden;">
+                <div style="position:absolute;inset:0;background:repeating-linear-gradient(180deg, transparent, transparent 2px, rgba(163,177,138,0.004) 2px, rgba(163,177,138,0.004) 4px);pointer-events:none;z-index:2;"></div>
+                <div style="position:absolute;inset:0;box-shadow:inset 0 0 20px rgba(0,0,0,0.4);pointer-events:none;z-index:3;"></div>
                 <div id="${id}-factors" style="
-                    flex:1;overflow-y:auto;
-                    background:rgba(0,0,0,0.2);border:2px solid rgba(0,0,0,0.3);border-radius:2px;
-                    border-top-color:rgba(0,0,0,0.4);border-left-color:rgba(0,0,0,0.35);
-                    padding:3px;display:flex;flex-direction:column;gap:2px;
-                    box-shadow:inset 0 2px 6px rgba(0,0,0,0.4);
+                    height:100%;overflow-y:auto;padding:4px;
+                    display:flex;flex-direction:column;gap:2px;
+                    position:relative;z-index:1;
                 "></div>
-
-                <!-- Type toggle -->
-                <div style="display:flex;gap:3px;align-items:center;">
-                    <button id="${id}-f-type-toggle" style="
-                        padding:2px 6px;font:700 8px/1 'Courier New',monospace;color:#a3b18a;
-                        background:#1a1e14;border:1px solid rgba(163,177,138,0.2);border-radius:1px;cursor:pointer;
-                    ">CONT</button>
-                    <span style="font:600 7px/1 'Courier New',monospace;color:rgba(163,177,138,0.15);">toggle</span>
-                </div>
-
-                <!-- Continuous row -->
-                <div id="${id}-f-row-cont" style="display:flex;gap:2px;">
-                    <input type="text" id="${id}-f-name" placeholder="factor" style="
-                        flex:1;background:rgba(0,0,0,0.3);border:1px solid rgba(163,177,138,0.1);
-                        color:#a3b18a;padding:3px 4px;border-radius:1px;font:9px/1 'JetBrains Mono',monospace;">
-                    <input type="number" id="${id}-f-low" placeholder="lo" style="
-                        width:34px;background:rgba(0,0,0,0.3);border:1px solid rgba(163,177,138,0.1);
-                        color:#b8c8a0;padding:3px 2px;border-radius:1px;text-align:center;font:9px/1 'JetBrains Mono',monospace;">
-                    <input type="number" id="${id}-f-high" placeholder="hi" style="
-                        width:34px;background:rgba(0,0,0,0.3);border:1px solid rgba(163,177,138,0.1);
-                        color:#b8c8a0;padding:3px 2px;border-radius:1px;text-align:center;font:9px/1 'JetBrains Mono',monospace;">
-                    <button id="${id}-btn-add" style="
-                        padding:3px 6px;font:700 9px/1 'Courier New',monospace;color:#a3b18a;
-                        background:#1a1e14;border:1px solid rgba(163,177,138,0.2);border-radius:1px;cursor:pointer;">+</button>
-                </div>
-
-                <!-- Categorical row -->
-                <div id="${id}-f-row-cat" style="display:none;gap:2px;">
-                    <input type="text" id="${id}-f-name-cat" placeholder="factor" style="
-                        width:50px;background:rgba(0,0,0,0.3);border:1px solid rgba(163,177,138,0.1);
-                        color:#a3b18a;padding:3px 4px;border-radius:1px;font:9px/1 'JetBrains Mono',monospace;">
-                    <input type="text" id="${id}-f-levels" placeholder="A, B, C" style="
-                        flex:1;background:rgba(0,0,0,0.3);border:1px solid rgba(163,177,138,0.1);
-                        color:#b8c8a0;padding:3px 4px;border-radius:1px;font:9px/1 'JetBrains Mono',monospace;">
-                    <button id="${id}-btn-add-cat" style="
-                        padding:3px 6px;font:700 9px/1 'Courier New',monospace;color:#a3b18a;
-                        background:#1a1e14;border:1px solid rgba(163,177,138,0.2);border-radius:1px;cursor:pointer;">+</button>
-                </div>
             </div>
 
-            <!-- RBMK dials row — category + design sub-type -->
-            <div style="display:flex;gap:10px;align-items:flex-start;">
-
-                <!-- Category dial — RBMK Bakelite -->
-                <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
-                    <span style="font:700 8px/1 'Courier New',monospace;color:rgba(163,177,138,0.35);text-transform:uppercase;">Category</span>
-                    <div style="position:relative;width:50px;height:50px;">
-                        <!-- Dial recess -->
-                        <div style="position:absolute;inset:-3px;border-radius:50%;background:#141810;
-                            box-shadow:inset 0 2px 5px rgba(0,0,0,0.6);"></div>
-                        <!-- Chickenhead knob -->
-                        <div id="${id}-cat-dial" style="
-                            position:absolute;inset:0;cursor:pointer;
-                            transition: transform 0.12s ease-out;
-                            transform: rotate(0deg);
-                        ">
-                            <!-- Knob body — round base -->
-                            <div style="position:absolute;inset:4px;border-radius:50%;
-                                background:
-                                    radial-gradient(circle at 38% 34%, rgba(255,240,215,0.07), transparent 45%),
-                                    radial-gradient(circle, #222220 0%, #1a1a18 50%, #121210 100%);
-                                border:2px solid #0a0a08;
-                                box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,215,0.04);
-                            "></div>
-                            <!-- Chickenhead beak — pointer -->
-                            <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);
-                                width:10px;height:16px;
-                                background:linear-gradient(180deg, #1e1e1c, #141412 60%, #1a1a18);
-                                clip-path:polygon(50% 0%, 95% 70%, 80% 100%, 20% 100%, 5% 70%);
-                                border-radius:1px;
-                            "></div>
-                            <!-- White indicator line on beak -->
-                            <div style="position:absolute;top:1px;left:50%;transform:translateX(-50%);
-                                width:1.5px;height:11px;background:#d0d0c8;border-radius:0.5px;
-                                box-shadow:0 0 2px rgba(208,208,200,0.4);"></div>
-                        </div>
-                        <!-- Position labels -->
-                        <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);font:700 6px/1 'Courier New',monospace;color:rgba(163,177,138,0.3);white-space:nowrap;">CLASS</div>
-                        <div style="position:absolute;top:2px;right:-18px;font:700 6px/1 'Courier New',monospace;color:rgba(163,177,138,0.3);white-space:nowrap;">OPT</div>
-                        <div style="position:absolute;top:22px;right:-16px;font:700 6px/1 'Courier New',monospace;color:rgba(163,177,138,0.3);white-space:nowrap;">LHS</div>
-                        <div style="position:absolute;bottom:-10px;right:2px;font:700 6px/1 'Courier New',monospace;color:rgba(163,177,138,0.3);white-space:nowrap;">MIX</div>
-                        <div style="position:absolute;bottom:-10px;left:0px;font:700 6px/1 'Courier New',monospace;color:rgba(163,177,138,0.3);white-space:nowrap;">S-P</div>
-                        <div style="position:absolute;top:22px;left:-20px;font:700 6px/1 'Courier New',monospace;color:rgba(163,177,138,0.3);white-space:nowrap;">EVOP</div>
-                    </div>
-                    <select id="${id}-category" style="display:none;">
-                        <option value="classical">Classical</option>
-                        <option value="optimal">Optimal</option>
-                        <option value="space_filling">Space-Filling</option>
-                        <option value="mixture">Mixture</option>
-                        <option value="split_plot">Split-Plot</option>
-                        <option value="evop">EVOP</option>
-                    </select>
-                </div>
-
-                <!-- Design sub-type — CRT + thumbwheel -->
-                <div style="display:flex;flex-direction:column;gap:2px;flex:1;">
-                    <span style="font:700 8px/1 'Courier New',monospace;color:rgba(163,177,138,0.35);text-transform:uppercase;">Type</span>
-                    <div style="background:#010301;border:2px solid #000;border-radius:2px;
-                        box-shadow:inset 0 1px 4px rgba(0,0,0,0.6);padding:3px 5px;">
-                        <div id="${id}-design-crt" style="font:700 10px/1 'JetBrains Mono',monospace;color:rgba(163,177,138,0.5);
-                            text-shadow:0 0 3px rgba(163,177,138,0.2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
-                    </div>
-                    <div style="display:flex;gap:2px;">
-                        <button id="${id}-design-up" style="flex:1;height:14px;cursor:pointer;background:#eee;border:1px solid #b4b4b4;border-radius:2px;
-                            box-shadow:0 1px 1px rgba(0,0,0,0.2),0 2px 0 0 rgba(255,255,255,0.7) inset;display:flex;align-items:center;justify-content:center;">
-                            <span style="font:700 7px/1 sans-serif;color:#333;">&#x25B2;</span></button>
-                        <button id="${id}-design-down" style="flex:1;height:14px;cursor:pointer;background:#eee;border:1px solid #b4b4b4;border-radius:2px;
-                            box-shadow:0 1px 1px rgba(0,0,0,0.2),0 2px 0 0 rgba(255,255,255,0.7) inset;display:flex;align-items:center;justify-content:center;">
-                            <span style="font:700 7px/1 sans-serif;color:#333;">&#x25BC;</span></button>
-                    </div>
-                    <select id="${id}-design" style="display:none;"></select>
-                </div>
+            <!-- Type toggle + add rows -->
+            <div style="display:flex;gap:3px;align-items:center;">
+                <button id="${id}-f-type-toggle" style="
+                    padding:2px 6px;font:700 8px/1 'Courier New',monospace;color:#a3b18a;
+                    background:#1a1e14;border:1px solid rgba(163,177,138,0.2);border-radius:1px;cursor:pointer;
+                ">CONT</button>
+                <span style="font:600 7px/1 'Courier New',monospace;color:rgba(163,177,138,0.15);">toggle</span>
             </div>
-
-            <!-- Parameters -->
-            <div style="display:flex;gap:4px;align-items:center;">
-                <span style="font:700 8px/1 'Courier New',monospace;color:rgba(163,177,138,0.35);text-transform:uppercase;">N</span>
-                <input type="number" id="${id}-n-runs-input" value="20" style="
-                    width:38px;background:rgba(0,0,0,0.3);border:1px solid rgba(163,177,138,0.1);
-                    color:#a3b18a;padding:2px 3px;border-radius:1px;text-align:center;font:9px/1 'JetBrains Mono',monospace;">
-                <span style="font:700 8px/1 'Courier New',monospace;color:rgba(163,177,138,0.35);text-transform:uppercase;">Res</span>
-                <input type="number" id="${id}-resolution" value="3" min="3" max="5" style="
-                    width:28px;background:rgba(0,0,0,0.3);border:1px solid rgba(163,177,138,0.1);
-                    color:#a3b18a;padding:2px 3px;border-radius:1px;text-align:center;font:9px/1 'JetBrains Mono',monospace;">
+            <div id="${id}-f-row-cont" style="display:flex;gap:2px;">
+                <input type="text" id="${id}-f-name" placeholder="factor" style="
+                    flex:1;background:rgba(0,0,0,0.3);border:1px solid rgba(163,177,138,0.1);
+                    color:#a3b18a;padding:3px 4px;border-radius:1px;font:9px/1 'JetBrains Mono',monospace;">
+                <input type="number" id="${id}-f-low" placeholder="lo" style="
+                    width:30px;background:rgba(0,0,0,0.3);border:1px solid rgba(163,177,138,0.1);
+                    color:#b8c8a0;padding:3px 2px;border-radius:1px;text-align:center;font:9px/1 'JetBrains Mono',monospace;">
+                <input type="number" id="${id}-f-high" placeholder="hi" style="
+                    width:30px;background:rgba(0,0,0,0.3);border:1px solid rgba(163,177,138,0.1);
+                    color:#b8c8a0;padding:3px 2px;border-radius:1px;text-align:center;font:9px/1 'JetBrains Mono',monospace;">
+                <button id="${id}-btn-add" style="padding:3px 5px;font:700 9px/1 'Courier New',monospace;color:#a3b18a;
+                    background:#1a1e14;border:1px solid rgba(163,177,138,0.2);border-radius:1px;cursor:pointer;">+</button>
             </div>
-
-            <!-- GENERATE — round Bakelite dome button -->
-            <div style="display:flex;align-items:center;gap:8px;">
-                <button id="${id}-btn-gen" style="
-                    width:44px;height:44px;border-radius:50%;cursor:pointer;
-                    background:
-                        radial-gradient(circle at 42% 38%, rgba(255,240,215,0.06), transparent 45%),
-                        radial-gradient(circle at 50% 50%, #2a2a28 0%, #1e1e1c 40%, #141414 70%, #0a0a08 100%);
-                    border:3px solid #0a0a08;
-                    color:#a3b18a;font:700 8px/1 'Courier New',monospace;letter-spacing:0.1em;
-                    box-shadow: 0 4px 8px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,215,0.05), inset 0 -3px 6px rgba(0,0,0,0.4);
-                    display:flex;align-items:center;justify-content:center;
-                ">&#x25B6;</button>
-                <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.35);text-transform:uppercase;letter-spacing:0.15em;
-                    text-shadow: 0 -1px 0 rgba(0,0,0,0.3);">Generate</span>
+            <div id="${id}-f-row-cat" style="display:none;gap:2px;">
+                <input type="text" id="${id}-f-name-cat" placeholder="factor" style="
+                    width:45px;background:rgba(0,0,0,0.3);border:1px solid rgba(163,177,138,0.1);
+                    color:#a3b18a;padding:3px 4px;border-radius:1px;font:9px/1 'JetBrains Mono',monospace;">
+                <input type="text" id="${id}-f-levels" placeholder="A, B, C" style="
+                    flex:1;background:rgba(0,0,0,0.3);border:1px solid rgba(163,177,138,0.1);
+                    color:#b8c8a0;padding:3px 4px;border-radius:1px;font:9px/1 'JetBrains Mono',monospace;">
+                <button id="${id}-btn-add-cat" style="padding:3px 5px;font:700 9px/1 'Courier New',monospace;color:#a3b18a;
+                    background:#1a1e14;border:1px solid rgba(163,177,138,0.2);border-radius:1px;cursor:pointer;">+</button>
             </div>
         </div>
 
-        <!-- ▌ RIGHT — CRT (green phosphor) ▌ -->
-        <div style="flex:1;display:flex;flex-direction:column;gap:3px;">
+        <!-- ▌ CENTER — Run sheet CRT ▌ -->
+        <div style="flex:1;display:flex;flex-direction:column;gap:3px;min-width:0;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
                 <span style="font:700 9px/1 'Courier New',monospace;color:rgba(163,177,138,0.4);text-transform:uppercase;letter-spacing:0.12em;
                     text-shadow: 0 -1px 0 rgba(0,0,0,0.3);">Run Sheet</span>
@@ -222,35 +113,105 @@
                     <span class="badge" id="${id}-design-badge" style="display:none;font-size:7px;background:rgba(163,177,138,0.08);color:rgba(163,177,138,0.4);border:1px solid rgba(163,177,138,0.1);"></span>
                 </div>
             </div>
-
-            <div class="frame-bezel" style="
-                flex:1;padding:5px;
-                background: linear-gradient(145deg, #3a3e30 0%, #282c24 20%, #1e221a 80%, #161a12 100%);
-                border-radius:3px;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.6), 0 1px 0 rgba(255,240,215,0.02),
-                    inset 0 1px 0 rgba(255,240,215,0.03), inset 0 -2px 3px rgba(0,0,0,0.4);
-            ">
-                <div class="crt-screen" style="
-                    height:100%;border-radius:2px;position:relative;overflow:hidden;
-                    background:#010301;border:2px solid #000;
-                    box-shadow: inset 0 3px 12px rgba(0,0,0,0.8), inset 0 0 30px rgba(0,0,0,0.4);
-                ">
-                    <div class="crt-scanlines" style="position:absolute;inset:0;
-                        background:repeating-linear-gradient(180deg, transparent, transparent 2px, rgba(163,177,138,0.005) 2px, rgba(163,177,138,0.005) 4px);
-                        pointer-events:none;z-index:6;"></div>
-                    <div class="crt-bloom" style="position:absolute;inset:0;
-                        background:radial-gradient(ellipse at 50% 50%, rgba(163,177,138,0.012), transparent 65%);
-                        pointer-events:none;z-index:5;"></div>
-                    <div class="crt-edge" style="position:absolute;inset:0;box-shadow:inset 0 0 35px rgba(0,0,0,0.5);pointer-events:none;z-index:7;"></div>
-                    <div style="position:absolute;inset:0;background:linear-gradient(135deg, rgba(255,240,215,0.015) 0%, transparent 35%);pointer-events:none;z-index:8;"></div>
-
-                    <div id="${id}-runsheet" style="
-                        height:100%;overflow-y:auto;padding:6px 8px;
-                        font:10px/1.5 'JetBrains Mono',monospace;
-                        color:rgba(163,177,138,0.22);text-shadow: 0 0 3px currentColor;
+            <div class="frame-bezel" style="flex:1;padding:4px;
+                background: linear-gradient(145deg, #343830 0%, #282c24 20%, #1e221a 80%, #161a12 100%);
+                border-radius:3px;box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,215,0.03), inset 0 -1px 2px rgba(0,0,0,0.3);">
+                <div class="crt-screen" style="height:100%;border-radius:2px;position:relative;overflow:hidden;
+                    background:#010301;border:2px solid #000;box-shadow: inset 0 3px 12px rgba(0,0,0,0.8), inset 0 0 30px rgba(0,0,0,0.4);">
+                    <div class="crt-scanlines" style="position:absolute;inset:0;background:repeating-linear-gradient(180deg, transparent, transparent 2px, rgba(163,177,138,0.005) 2px, rgba(163,177,138,0.005) 4px);pointer-events:none;z-index:6;"></div>
+                    <div class="crt-bloom" style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%, rgba(163,177,138,0.012), transparent 65%);pointer-events:none;z-index:5;"></div>
+                    <div class="crt-edge" style="position:absolute;inset:0;box-shadow:inset 0 0 30px rgba(0,0,0,0.5);pointer-events:none;z-index:7;"></div>
+                    <div id="${id}-runsheet" style="height:100%;overflow-y:auto;padding:6px 8px;
+                        font:10px/1.5 'JetBrains Mono',monospace;color:rgba(163,177,138,0.22);text-shadow: 0 0 3px currentColor;
                         position:relative;z-index:1;
                     "><span style="color:rgba(163,177,138,0.08);">Define factors &amp; select design_</span></div>
                 </div>
+            </div>
+        </div>
+
+        <!-- ▌ RIGHT — Dials + Generate in white-bordered sections ▌ -->
+        <div style="width:120px;display:flex;flex-direction:column;gap:6px;">
+
+            <!-- Category dial — white border section -->
+            <div style="border:1px solid rgba(208,208,200,0.2);border-radius:3px;padding:8px 8px 6px;position:relative;display:flex;flex-direction:column;align-items:center;">
+                <span style="font:700 8px/1 'Courier New',monospace;color:rgba(163,177,138,0.4);text-transform:uppercase;align-self:flex-start;margin-bottom:6px;">Category</span>
+                <div style="position:relative;width:50px;height:50px;">
+                    <div style="position:absolute;inset:-3px;border-radius:50%;background:#141810;
+                        box-shadow:inset 0 2px 5px rgba(0,0,0,0.6);"></div>
+                    <div id="${id}-cat-dial" style="position:absolute;inset:0;cursor:pointer;
+                        transition: transform 0.12s ease-out;transform: rotate(0deg);">
+                        <div style="position:absolute;inset:4px;border-radius:50%;
+                            background:radial-gradient(circle at 38% 34%, rgba(255,240,215,0.07), transparent 45%),
+                                radial-gradient(circle, #222220 0%, #1a1a18 50%, #121210 100%);
+                            border:2px solid #0a0a08;
+                            box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,215,0.04);"></div>
+                        <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);
+                            width:10px;height:16px;background:linear-gradient(180deg, #1e1e1c, #141412 60%, #1a1a18);
+                            clip-path:polygon(50% 0%, 95% 70%, 80% 100%, 20% 100%, 5% 70%);"></div>
+                        <div style="position:absolute;top:1px;left:50%;transform:translateX(-50%);
+                            width:1.5px;height:11px;background:#d0d0c8;border-radius:0.5px;
+                            box-shadow:0 0 2px rgba(208,208,200,0.4);"></div>
+                    </div>
+                    <div style="position:absolute;top:-9px;left:50%;transform:translateX(-50%);font:700 6px/1 'Courier New',monospace;color:rgba(208,208,200,0.25);white-space:nowrap;">CLASS</div>
+                    <div style="position:absolute;top:3px;right:-18px;font:700 6px/1 'Courier New',monospace;color:rgba(208,208,200,0.25);">OPT</div>
+                    <div style="position:absolute;top:24px;right:-16px;font:700 6px/1 'Courier New',monospace;color:rgba(208,208,200,0.25);">LHS</div>
+                    <div style="position:absolute;bottom:-9px;right:4px;font:700 6px/1 'Courier New',monospace;color:rgba(208,208,200,0.25);">MIX</div>
+                    <div style="position:absolute;bottom:-9px;left:2px;font:700 6px/1 'Courier New',monospace;color:rgba(208,208,200,0.25);">S-P</div>
+                    <div style="position:absolute;top:24px;left:-22px;font:700 6px/1 'Courier New',monospace;color:rgba(208,208,200,0.25);">EVOP</div>
+                </div>
+                <select id="${id}-category" style="display:none;">
+                    <option value="classical">Classical</option>
+                    <option value="optimal">Optimal</option>
+                    <option value="space_filling">Space-Filling</option>
+                    <option value="mixture">Mixture</option>
+                    <option value="split_plot">Split-Plot</option>
+                    <option value="evop">EVOP</option>
+                </select>
+            </div>
+
+            <!-- Type dial — white border section, smaller chickenhead -->
+            <div style="border:1px solid rgba(208,208,200,0.2);border-radius:3px;padding:8px 8px 6px;position:relative;display:flex;flex-direction:column;align-items:center;">
+                <span style="font:700 8px/1 'Courier New',monospace;color:rgba(163,177,138,0.4);text-transform:uppercase;align-self:flex-start;margin-bottom:4px;">Type</span>
+                <!-- CRT showing current type -->
+                <div style="width:100%;background:#010301;border:2px solid #000;border-radius:2px;
+                    box-shadow:inset 0 1px 3px rgba(0,0,0,0.5);padding:3px 5px;margin-bottom:3px;">
+                    <div id="${id}-design-crt" style="font:700 9px/1 'JetBrains Mono',monospace;color:rgba(163,177,138,0.5);
+                        text-shadow:0 0 3px rgba(163,177,138,0.2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
+                </div>
+                <div style="display:flex;gap:2px;width:100%;">
+                    <button id="${id}-design-up" style="flex:1;height:16px;cursor:pointer;background:#eee;border:1px solid #b4b4b4;border-radius:2px;
+                        box-shadow:0 1px 1px rgba(0,0,0,0.2),0 2px 0 0 rgba(255,255,255,0.7) inset;display:flex;align-items:center;justify-content:center;">
+                        <span style="font:700 7px/1 sans-serif;color:#333;">&#x25B2;</span></button>
+                    <button id="${id}-design-down" style="flex:1;height:16px;cursor:pointer;background:#eee;border:1px solid #b4b4b4;border-radius:2px;
+                        box-shadow:0 1px 1px rgba(0,0,0,0.2),0 2px 0 0 rgba(255,255,255,0.7) inset;display:flex;align-items:center;justify-content:center;">
+                        <span style="font:700 7px/1 sans-serif;color:#333;">&#x25BC;</span></button>
+                </div>
+                <select id="${id}-design" style="display:none;"></select>
+            </div>
+
+            <!-- Parameters -->
+            <div style="display:flex;gap:3px;align-items:center;">
+                <span style="font:700 7px/1 'Courier New',monospace;color:rgba(163,177,138,0.3);">N</span>
+                <input type="number" id="${id}-n-runs-input" value="20" style="
+                    width:34px;background:rgba(0,0,0,0.3);border:1px solid rgba(163,177,138,0.1);
+                    color:#a3b18a;padding:2px 3px;border-radius:1px;text-align:center;font:9px/1 'JetBrains Mono',monospace;">
+                <span style="font:700 7px/1 'Courier New',monospace;color:rgba(163,177,138,0.3);">R</span>
+                <input type="number" id="${id}-resolution" value="3" min="3" max="5" style="
+                    width:26px;background:rgba(0,0,0,0.3);border:1px solid rgba(163,177,138,0.1);
+                    color:#a3b18a;padding:2px 3px;border-radius:1px;text-align:center;font:9px/1 'JetBrains Mono',monospace;">
+            </div>
+
+            <!-- Generate — white border, backlit square button -->
+            <div style="border:1px solid rgba(208,208,200,0.2);border-radius:3px;padding:8px;display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:auto;">
+                <button id="${id}-btn-gen" style="
+                    width:40px;height:40px;cursor:pointer;
+                    background:radial-gradient(circle at 50% 45%, #2a2a28, #1a1a18 50%, #0e0e0c);
+                    border:2px solid #0a0a08;border-radius:3px;
+                    color:#a3b18a;font:700 14px/1 sans-serif;
+                    box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,215,0.04), inset 0 -2px 4px rgba(0,0,0,0.3);
+                    display:flex;align-items:center;justify-content:center;
+                ">&#x25B6;</button>
+                <span style="font:700 8px/1 'Courier New',monospace;color:rgba(163,177,138,0.3);text-transform:uppercase;letter-spacing:0.1em;">Generate</span>
             </div>
         </div>
     </div>
@@ -283,9 +244,9 @@
     </div>
     <div style="padding:6px 48px;margin-top:auto;border-top:1px solid rgba(163,177,138,0.02);">
         <div style="font:300 8px/1.4 'Courier New',monospace;color:rgba(163,177,138,0.04);letter-spacing:0.04em;">
-            FORGERACK DSh-K11 &#x2022; REV.C &#x2022; FORGEDOE ENGINE<br>
+            FORGERACK DSh-K11 &#x2022; REV.D &#x2022; FORGEDOE ENGINE<br>
             OPTIMAL &#x2022; MIXTURE &#x2022; SPLIT-PLOT &#x2022; CLASSICAL &#x2022; EVOP<br>
-            KOSMOS ENGINEERING &#x2022; DIMITROV-SHAPOVALOV BUREAU
+            KOSMOS ENGINEERING &#x2022; &#x0414;&#x0428;-&#x041A;11 &#x2022; DIMITROV-SHAPOVALOV
         </div>
     </div>
     <div class="rack-screw" style="position:absolute;bottom:4px;left:4px;"></div>

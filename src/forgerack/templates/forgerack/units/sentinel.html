@@ -2,14 +2,14 @@
  ╔══════════════════════════════════════════════════════════════╗
  ║  SENTINEL SpX-481 — Process Monitor & SPC Engine             ║
  ║  Manufacturer: GUARDIAN                                      ║
- ║  Identity: Deep navy steel, amber/gold watchful accent.      ║
- ║  Radar station aesthetic. Brushed tex, CRT bezel, silkscreen ║
- ║  control panels, VFD readouts. Full skeuomorphic.            ║
+ ║  Identity: Deep navy steel, amber/gold. Radar station.       ║
+ ║  Full analog: lit screws, routed traces, warm tungsten,      ║
+ ║  VFD readouts, matte noise. u10 for CRT breathing room.     ║
  ╚══════════════════════════════════════════════════════════════╝
 -->
 
 <!-- ════════ FRONT PANEL ════════ -->
-<div class="rack-unit-front u8 mfr-guardian tex-brushed-fine chamfer-heavy wear-scratched" data-unit="sentinel" data-id="${id}" style="
+<div class="rack-unit-front u10 mfr-guardian tex-brushed-fine tex-matte chamfer-heavy wear-scratched" data-unit="sentinel" data-id="${id}" style="
     --device-accent:#d97706;
     background:
         radial-gradient(ellipse at 35% 25%, hsla(220,15%,60%,.035), transparent 55%),
@@ -17,30 +17,29 @@
         linear-gradient(160deg, #0e1118 0%, #0c0f16 30%, #0d1017 50%, #0a0d14 80%);
     overflow:hidden;position:relative;
 ">
-    <!-- Mounting hardware -->
-    <div class="rack-screw" style="position:absolute;top:4px;left:4px;"></div>
-    <div class="rack-screw" style="position:absolute;top:4px;right:4px;"></div>
-    <div class="carry-handle" style="position:absolute;top:1px;left:50%;transform:translateX(-50%);"></div>
-
-    <!-- Nameplate — opaque, no brush bleed -->
-    <div class="nameplate" style="
+    <!-- Nameplate with rivets — opaque -->
+    <div style="
         display:flex;align-items:center;gap:8px;
-        padding:5px 48px;
+        padding:5px 48px;position:relative;
         border-bottom:2px solid rgba(0,0,0,0.5);
         background: linear-gradient(180deg, #12161f 0%, #0f1219 50%, #0c0f16 100%);
     ">
-        <div class="led-housing">
-            <span class="led lg" id="${id}-led-power"></span>
-        </div>
-        <span class="text-engraved" style="
-            font:800 16px/1 'Arial Narrow','Arial',sans-serif;
-            color:rgba(217,119,6,0.45);
-            letter-spacing:0.2em;text-transform:uppercase;
-            text-shadow: 0 1px 0 rgba(255,255,255,0.03), 0 -1px 0 rgba(0,0,0,0.6);
-        ">Sentinel</span>
-        <span style="font:italic 300 9px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.15);letter-spacing:0.06em;">Process Monitor</span>
+        <!-- Rivets -->
+        <div style="position:absolute;left:34px;top:50%;transform:translateY(-50%);width:5px;height:5px;border-radius:50%;
+            background:radial-gradient(circle at 35% 35%, #4a5060, #1a2030);
+            box-shadow:inset 0 1px 1px rgba(255,240,215,0.08), 0 1px 1px rgba(0,0,0,0.4);"></div>
+        <div style="position:absolute;right:34px;top:50%;transform:translateY(-50%);width:5px;height:5px;border-radius:50%;
+            background:radial-gradient(circle at 35% 35%, #4a5060, #1a2030);
+            box-shadow:inset 0 1px 1px rgba(255,240,215,0.08), 0 1px 1px rgba(0,0,0,0.4);"></div>
 
-        <!-- Status LEDs -->
+        <div class="led-housing"><span class="led lg" id="${id}-led-power"></span></div>
+        <span style="
+            font:800 16px/1 'Arial Narrow','Arial',sans-serif;
+            color:rgba(217,119,6,0.4);letter-spacing:0.2em;text-transform:uppercase;
+            text-shadow: 0 -1px 0 rgba(0,0,0,0.5), 0 1px 0 rgba(255,240,215,0.03);
+        ">Sentinel</span>
+        <span style="font:italic 300 9px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.15);">Process Monitor</span>
+
         <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
             <div style="display:flex;align-items:center;gap:3px;">
                 <span class="led" id="${id}-led-ic"></span>
@@ -51,48 +50,50 @@
                 <span style="font:800 7px/1 'Arial Narrow',sans-serif;color:rgba(239,68,68,0.35);letter-spacing:0.08em;">OOC</span>
             </div>
             <div style="width:1px;height:14px;background:rgba(217,119,6,0.06);"></div>
-            <span class="cert-mark" style="font-size:6px;opacity:0.15;">CE</span>
-            <span style="font:600 9px/1 'Courier New',monospace;color:rgba(217,119,6,0.15);">SpX-481</span>
+            <span style="font:600 9px/1 'Courier New',monospace;color:rgba(217,119,6,0.12);">SpX-481</span>
         </div>
     </div>
 
-    <!-- Chart viewport — CRT with bezel -->
-    <div style="margin:4px 48px 3px;">
+    <!-- Lit screws below nameplate — dark steel, warm specular -->
+    <div style="position:absolute;top:36px;left:46px;width:10px;height:10px;border-radius:50%;z-index:10;
+        background:radial-gradient(circle at 30% 30%, #3a3e48, #1e222c 40%, #14182220 70%, #0c1018);
+        box-shadow: inset 0 1px 1px rgba(255,240,215,0.1), inset 0 -1px 2px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.3);
+    "><div style="position:absolute;top:4px;left:2px;width:6px;height:1.5px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div>
+      <div style="position:absolute;top:2px;left:4px;width:1.5px;height:6px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div></div>
+    <div style="position:absolute;top:36px;right:46px;width:10px;height:10px;border-radius:50%;z-index:10;
+        background:radial-gradient(circle at 30% 30%, #3a3e48, #1e222c 40%, #141822 70%, #0c1018);
+        box-shadow: inset 0 1px 1px rgba(255,240,215,0.1), inset 0 -1px 2px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.3);
+    "><div style="position:absolute;top:4px;left:2px;width:6px;height:1.5px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div>
+      <div style="position:absolute;top:2px;left:4px;width:1.5px;height:6px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div></div>
+
+    <!-- CRT with bezel — taller now -->
+    <div style="margin:6px 48px 3px;">
         <div class="frame-bezel" style="
             padding:4px;
             background: linear-gradient(145deg, #1a1e28 0%, #10141c 30%, #0a0e16 100%);
             border-radius:3px;
-            box-shadow:
-                0 3px 6px rgba(0,0,0,0.5),
-                0 1px 0 rgba(255,255,255,0.03),
-                inset 0 1px 0 rgba(255,255,255,0.04),
-                inset 0 -1px 2px rgba(0,0,0,0.3);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.5), 0 1px 0 rgba(255,240,215,0.03),
+                inset 0 1px 0 rgba(255,240,215,0.04), inset 0 -1px 2px rgba(0,0,0,0.3);
         ">
             <div class="crt-screen" style="
                 border-radius:2px;position:relative;overflow:hidden;
                 background:#020304;border:2px solid #000;
-                box-shadow:
-                    inset 0 3px 12px rgba(0,0,0,0.8),
-                    inset 0 0 30px rgba(0,0,0,0.4);
+                box-shadow: inset 0 3px 12px rgba(0,0,0,0.8), inset 0 0 30px rgba(0,0,0,0.4);
             ">
-                <!-- Amber scanlines -->
                 <div class="crt-scanlines" style="position:absolute;inset:0;
                     background:repeating-linear-gradient(0deg, transparent 0px, rgba(217,119,6,0.005) 1px, transparent 2px);
                     pointer-events:none;z-index:6;"></div>
-                <!-- Bloom -->
                 <div class="crt-bloom" style="position:absolute;inset:0;
                     background:radial-gradient(ellipse at 50% 50%, rgba(217,119,6,0.012), transparent 65%);
                     pointer-events:none;z-index:5;"></div>
-                <!-- Vignette -->
                 <div class="crt-edge" style="position:absolute;inset:0;
-                    box-shadow:inset 0 0 35px rgba(0,0,0,0.5);
-                    pointer-events:none;z-index:7;"></div>
-                <!-- Glass -->
+                    box-shadow:inset 0 0 35px rgba(0,0,0,0.5);pointer-events:none;z-index:7;"></div>
+                <!-- Warm glass -->
                 <div style="position:absolute;inset:0;
-                    background:linear-gradient(135deg, rgba(255,255,255,0.012) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.004) 100%);
+                    background:linear-gradient(135deg, rgba(255,240,215,0.02) 0%, transparent 35%, transparent 70%, rgba(255,240,215,0.005) 100%);
                     pointer-events:none;z-index:8;"></div>
 
-                <div id="${id}-viewport" class="radar-sweep" style="height:200px;position:relative;z-index:1;overflow:hidden;">
+                <div id="${id}-viewport" class="radar-sweep" style="height:240px;position:relative;z-index:1;overflow:hidden;">
                     <div id="${id}-empty" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:6px;">
                         <span style="font:300 12px/1 'Courier New',monospace;color:rgba(217,119,6,0.07);">NO SIGNAL</span>
                         <span style="font:300 9px/1 'Courier New',monospace;color:rgba(217,119,6,0.03);">wire measurement data to input jack</span>
@@ -102,28 +103,23 @@
         </div>
     </div>
 
-    <!-- ════ CONTROL PANEL — silkscreen sections on faceplate ════ -->
-    <div style="margin:7px 48px 4px;display:flex;gap:6px;align-items:stretch;">
+    <!-- Routed trace -->
+    <div style="height:1px;margin:3px 48px;background:linear-gradient(90deg,
+        transparent 0%, rgba(217,119,6,0.06) 15%, rgba(217,119,6,0.06) 85%, transparent 100%);
+        box-shadow: 0 1px 0 rgba(255,240,215,0.015);"></div>
 
-        <!-- ▌ CHART TYPE ▌ -->
-        <div style="
-            border:1px solid rgba(217,119,6,0.2);
-            border-radius:3px;
-            padding:7px 6px 5px;
-            position:relative;
-        ">
-            <div style="
-                position:absolute;top:-6px;left:6px;
-                background:rgba(217,119,6,0.8);
-                padding:1px 7px;border-radius:2px;
-                font:800 9px/1 'Arial Narrow','Arial',sans-serif;
-                color:#0a0d14;text-transform:uppercase;letter-spacing:0.1em;
-            ">Chart</div>
+    <!-- ════ CONTROL STRIP — screenprinted labels, routed sections ════ -->
+    <div style="margin:3px 48px 4px;display:flex;gap:0;align-items:stretch;">
+
+        <!-- Chart type -->
+        <div style="padding:3px 8px;display:flex;flex-direction:column;gap:2px;justify-content:center;">
+            <span style="font:800 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.35);text-transform:uppercase;letter-spacing:0.1em;
+                text-shadow: 0 -1px 0 rgba(0,0,0,0.3), 0 1px 0 rgba(255,240,215,0.02);">Chart</span>
             <select id="${id}-chart-type" title="Control chart type" style="
-                background:#060810;border:1px solid rgba(217,119,6,0.15);
+                background:#060810;border:1px solid rgba(217,119,6,0.12);
+                border-top-color:rgba(0,0,0,0.4);border-left-color:rgba(0,0,0,0.3);
                 color:#d4a050;padding:3px 4px;border-radius:1px;
                 font:9px/1 'JetBrains Mono',monospace;min-width:68px;
-                box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
             ">
                 <option value="imr">I-MR</option>
                 <option value="xbar_r">X̄-R</option>
@@ -137,88 +133,69 @@
             </select>
         </div>
 
-        <!-- ▌ MEASURE + SUBGROUP ▌ -->
-        <div style="
-            border:1px solid rgba(217,119,6,0.2);
-            border-radius:3px;
-            padding:7px 6px 5px;
-            position:relative;
-            display:flex;gap:4px;
-        ">
-            <div style="
-                position:absolute;top:-6px;left:6px;
-                background:rgba(217,119,6,0.8);
-                padding:1px 7px;border-radius:2px;
-                font:800 9px/1 'Arial Narrow','Arial',sans-serif;
-                color:#0a0d14;text-transform:uppercase;letter-spacing:0.1em;
-            ">Input</div>
-            <div style="display:flex;flex-direction:column;gap:1px;">
-                <span style="font:800 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.5);text-transform:uppercase;letter-spacing:0.1em;">Measure</span>
+        <!-- Trace divider -->
+        <div style="width:1px;background:linear-gradient(180deg, transparent 10%, rgba(217,119,6,0.06) 30%, rgba(217,119,6,0.06) 70%, transparent 90%);
+            box-shadow: 1px 0 0 rgba(255,240,215,0.01);margin:2px 0;"></div>
+
+        <!-- Measure + Subgroup -->
+        <div style="padding:3px 8px;display:flex;gap:6px;align-items:center;">
+            <div style="display:flex;flex-direction:column;gap:2px;">
+                <span style="font:800 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.35);text-transform:uppercase;letter-spacing:0.1em;
+                    text-shadow: 0 -1px 0 rgba(0,0,0,0.3), 0 1px 0 rgba(255,240,215,0.02);">Measure</span>
                 <select id="${id}-col" title="Measurement column" style="
                     background:#060810;border:1px solid rgba(217,119,6,0.12);
+                    border-top-color:rgba(0,0,0,0.4);border-left-color:rgba(0,0,0,0.3);
                     color:#d4a050;padding:2px 3px;border-radius:1px;
                     font:9px/1 'JetBrains Mono',monospace;min-width:60px;
-                    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
                 "><option value="">—</option></select>
             </div>
-            <div style="display:flex;flex-direction:column;gap:1px;">
-                <span style="font:800 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.5);text-transform:uppercase;letter-spacing:0.1em;">Subgrp</span>
+            <div style="display:flex;flex-direction:column;gap:2px;">
+                <span style="font:800 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.35);text-transform:uppercase;letter-spacing:0.1em;
+                    text-shadow: 0 -1px 0 rgba(0,0,0,0.3), 0 1px 0 rgba(255,240,215,0.02);">Subgrp</span>
                 <select id="${id}-subgroup" title="Subgroup column" style="
                     background:#060810;border:1px solid rgba(217,119,6,0.12);
+                    border-top-color:rgba(0,0,0,0.4);border-left-color:rgba(0,0,0,0.3);
                     color:#d4a050;padding:2px 3px;border-radius:1px;
                     font:9px/1 'JetBrains Mono',monospace;min-width:50px;
-                    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
                 "><option value="">none</option></select>
             </div>
         </div>
 
-        <!-- ▌ SPEC LIMITS ▌ -->
-        <div style="
-            border:1px solid rgba(217,119,6,0.2);
-            border-radius:3px;
-            padding:7px 6px 5px;
-            position:relative;
-        ">
-            <div style="
-                position:absolute;top:-6px;left:6px;
-                background:rgba(217,119,6,0.8);
-                padding:1px 7px;border-radius:2px;
-                font:800 9px/1 'Arial Narrow','Arial',sans-serif;
-                color:#0a0d14;text-transform:uppercase;letter-spacing:0.1em;
-            ">Spec</div>
+        <!-- Trace divider -->
+        <div style="width:1px;background:linear-gradient(180deg, transparent 10%, rgba(217,119,6,0.06) 30%, rgba(217,119,6,0.06) 70%, transparent 90%);
+            box-shadow: 1px 0 0 rgba(255,240,215,0.01);margin:2px 0;"></div>
+
+        <!-- Spec limits -->
+        <div style="padding:3px 8px;display:flex;flex-direction:column;gap:2px;justify-content:center;">
+            <span style="font:800 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.35);text-transform:uppercase;letter-spacing:0.1em;
+                text-shadow: 0 -1px 0 rgba(0,0,0,0.3), 0 1px 0 rgba(255,240,215,0.02);">Specs</span>
             <div style="display:flex;gap:3px;">
-                <input type="text" id="${id}-lsl" title="Lower Specification Limit" placeholder="LSL" style="
+                <input type="text" id="${id}-lsl" title="LSL" placeholder="LSL" style="
                     width:36px;background:rgba(0,0,0,0.5);border:1px solid rgba(217,119,6,0.1);
+                    border-top-color:rgba(0,0,0,0.4);border-left-color:rgba(0,0,0,0.3);
                     color:#d97706;padding:3px 3px;border-radius:1px;text-align:center;
-                    font:700 9px/1 'JetBrains Mono',monospace;box-sizing:border-box;
-                    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);">
-                <input type="text" id="${id}-usl" title="Upper Specification Limit" placeholder="USL" style="
+                    font:700 9px/1 'JetBrains Mono',monospace;box-sizing:border-box;">
+                <input type="text" id="${id}-usl" title="USL" placeholder="USL" style="
                     width:36px;background:rgba(0,0,0,0.5);border:1px solid rgba(217,119,6,0.1);
+                    border-top-color:rgba(0,0,0,0.4);border-left-color:rgba(0,0,0,0.3);
                     color:#d97706;padding:3px 3px;border-radius:1px;text-align:center;
-                    font:700 9px/1 'JetBrains Mono',monospace;box-sizing:border-box;
-                    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);">
+                    font:700 9px/1 'JetBrains Mono',monospace;box-sizing:border-box;">
             </div>
         </div>
 
-        <!-- ▌ RULES ▌ -->
-        <div style="
-            border:1px solid rgba(217,119,6,0.2);
-            border-radius:3px;
-            padding:7px 6px 5px;
-            position:relative;
-        ">
-            <div style="
-                position:absolute;top:-6px;left:6px;
-                background:rgba(217,119,6,0.8);
-                padding:1px 7px;border-radius:2px;
-                font:800 9px/1 'Arial Narrow','Arial',sans-serif;
-                color:#0a0d14;text-transform:uppercase;letter-spacing:0.1em;
-            ">Rules</div>
-            <select id="${id}-rules" title="Special cause detection rules" style="
+        <!-- Trace divider -->
+        <div style="width:1px;background:linear-gradient(180deg, transparent 10%, rgba(217,119,6,0.06) 30%, rgba(217,119,6,0.06) 70%, transparent 90%);
+            box-shadow: 1px 0 0 rgba(255,240,215,0.01);margin:2px 0;"></div>
+
+        <!-- Rules -->
+        <div style="padding:3px 8px;display:flex;flex-direction:column;gap:2px;justify-content:center;">
+            <span style="font:800 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.35);text-transform:uppercase;letter-spacing:0.1em;
+                text-shadow: 0 -1px 0 rgba(0,0,0,0.3), 0 1px 0 rgba(255,240,215,0.02);">Rules</span>
+            <select id="${id}-rules" title="Detection rules" style="
                 background:#060810;border:1px solid rgba(217,119,6,0.12);
+                border-top-color:rgba(0,0,0,0.4);border-left-color:rgba(0,0,0,0.3);
                 color:#d4a050;padding:3px 4px;border-radius:1px;
                 font:9px/1 'JetBrains Mono',monospace;
-                box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
             ">
                 <option value="nelson">Nelson</option>
                 <option value="weco">WECO</option>
@@ -226,112 +203,116 @@
             </select>
         </div>
 
-        <!-- ▌ ACTION — no border, just buttons on faceplate ▌ -->
-        <div style="display:flex;flex-direction:column;gap:3px;padding-top:2px;">
+        <!-- Trace divider -->
+        <div style="width:1px;background:linear-gradient(180deg, transparent 10%, rgba(217,119,6,0.06) 30%, rgba(217,119,6,0.06) 70%, transparent 90%);
+            box-shadow: 1px 0 0 rgba(255,240,215,0.01);margin:2px 0;"></div>
+
+        <!-- Run + export -->
+        <div style="padding:3px 8px;display:flex;flex-direction:column;gap:3px;justify-content:center;">
             <button id="${id}-btn-run" title="Generate control chart" style="
                 padding:5px 10px;
                 background:linear-gradient(180deg, #1a1408, #120e06);
-                border:1px solid rgba(217,119,6,0.3);border-radius:2px;
+                border:1px solid rgba(217,119,6,0.25);border-radius:2px;
                 color:#d97706;font:800 10px/1 'Arial Narrow',sans-serif;letter-spacing:0.15em;text-transform:uppercase;
                 cursor:pointer;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(217,119,6,0.06);
+                box-shadow: 0 1px 1px rgba(0,0,0,0.3), 0 2px 0 rgba(0,0,0,0.2);
             ">&#x25B6; Run</button>
             <div style="display:flex;gap:2px;">
-                <button id="${id}-btn-copy" title="Copy SVG" class="btn-export" style="font-size:7px;padding:2px 4px;border-color:rgba(217,119,6,0.1);">Copy</button>
-                <button id="${id}-btn-svg" title="Download SVG" class="btn-export" style="font-size:7px;padding:2px 4px;border-color:rgba(217,119,6,0.1);">SVG</button>
-                <button id="${id}-btn-png" title="Download PNG" class="btn-export" style="font-size:7px;padding:2px 4px;border-color:rgba(217,119,6,0.1);">PNG</button>
+                <button id="${id}-btn-copy" title="Copy SVG" class="btn-export" style="font-size:7px;padding:2px 4px;border-color:rgba(217,119,6,0.08);">Cp</button>
+                <button id="${id}-btn-svg" title="Download SVG" class="btn-export" style="font-size:7px;padding:2px 4px;border-color:rgba(217,119,6,0.08);">SVG</button>
+                <button id="${id}-btn-png" title="Download PNG" class="btn-export" style="font-size:7px;padding:2px 4px;border-color:rgba(217,119,6,0.08);">PNG</button>
             </div>
         </div>
 
-        <!-- ▌ CAPABILITY — VFD readouts, thick amber border ▌ -->
-        <div style="
-            margin-left:auto;
-            border:1px solid rgba(217,119,6,0.2);
-            border-radius:3px;
-            padding:7px 6px 4px;
-            position:relative;
-            display:flex;gap:4px;
-        ">
-            <div style="
-                position:absolute;top:-6px;left:6px;
-                background:rgba(217,119,6,0.8);
-                padding:1px 7px;border-radius:2px;
-                font:800 9px/1 'Arial Narrow','Arial',sans-serif;
-                color:#0a0d14;text-transform:uppercase;letter-spacing:0.1em;
-            ">Capability</div>
+        <!-- Capability VFD readouts — right side -->
+        <div style="margin-left:auto;padding:3px 0 3px 8px;display:flex;gap:4px;align-items:center;
+            border-left:1px solid rgba(217,119,6,0.06);">
 
             <!-- Cpk -->
             <div style="text-align:center;">
-                <div class="readout-window" style="
+                <div style="
                     padding:3px 5px;text-align:right;
                     background:#020408;border:2px solid #0a0e16;border-radius:2px;
-                    box-shadow: inset 0 2px 5px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.02);
+                    border-top-color:#060a12;border-left-color:#080c14;
+                    box-shadow: inset 0 2px 5px rgba(0,0,0,0.6), 0 1px 0 rgba(255,240,215,0.02);
                     position:relative;overflow:hidden;
                 ">
-                    <div style="position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);pointer-events:none;"></div>
+                    <div style="position:absolute;top:0;left:0;right:0;height:35%;background:linear-gradient(180deg,rgba(255,240,215,0.02),transparent);pointer-events:none;"></div>
                     <div style="position:relative;">
-                        <div class="readout-ghost" style="font:700 16px/1 'JetBrains Mono',monospace;color:rgba(217,119,6,0.04);">8.88</div>
+                        <div style="font:700 16px/1 'JetBrains Mono',monospace;color:rgba(217,119,6,0.04);">8.88</div>
                         <div id="${id}-cpk" style="font:700 16px/1 'JetBrains Mono',monospace;color:#d97706;
                             text-shadow: 0 0 6px rgba(217,119,6,0.4);
                             position:absolute;inset:0;text-align:right;">—</div>
                     </div>
                 </div>
-                <span style="font:800 9px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.55);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;display:block;">Cpk</span>
+                <span style="font:800 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.45);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;display:block;
+                    text-shadow: 0 -1px 0 rgba(0,0,0,0.3);">Cpk</span>
             </div>
 
             <!-- PPM -->
             <div style="text-align:center;">
-                <div class="readout-window" style="
+                <div style="
                     padding:3px 5px;text-align:right;
                     background:#020408;border:2px solid #0a0e16;border-radius:2px;
-                    box-shadow: inset 0 2px 5px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.02);
+                    border-top-color:#060a12;border-left-color:#080c14;
+                    box-shadow: inset 0 2px 5px rgba(0,0,0,0.6), 0 1px 0 rgba(255,240,215,0.02);
                     position:relative;overflow:hidden;
                 ">
-                    <div style="position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);pointer-events:none;"></div>
+                    <div style="position:absolute;top:0;left:0;right:0;height:35%;background:linear-gradient(180deg,rgba(255,240,215,0.02),transparent);pointer-events:none;"></div>
                     <div style="position:relative;">
-                        <div class="readout-ghost" style="font:700 16px/1 'JetBrains Mono',monospace;color:rgba(217,119,6,0.04);">8888</div>
+                        <div style="font:700 16px/1 'JetBrains Mono',monospace;color:rgba(217,119,6,0.04);">8888</div>
                         <div id="${id}-ppm" style="font:700 16px/1 'JetBrains Mono',monospace;color:#d97706;
                             text-shadow: 0 0 6px rgba(217,119,6,0.4);
                             position:absolute;inset:0;text-align:right;">—</div>
                     </div>
                 </div>
-                <span style="font:800 9px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.55);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;display:block;">PPM</span>
+                <span style="font:800 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.45);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;display:block;
+                    text-shadow: 0 -1px 0 rgba(0,0,0,0.3);">PPM</span>
             </div>
 
             <!-- n -->
             <div style="text-align:center;">
-                <div class="readout-window" style="
+                <div style="
                     padding:3px 5px;text-align:right;
                     background:#020408;border:2px solid #0a0e16;border-radius:2px;
-                    box-shadow: inset 0 2px 5px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.02);
+                    border-top-color:#060a12;border-left-color:#080c14;
+                    box-shadow: inset 0 2px 5px rgba(0,0,0,0.6), 0 1px 0 rgba(255,240,215,0.02);
                     position:relative;overflow:hidden;
                 ">
-                    <div style="position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);pointer-events:none;"></div>
+                    <div style="position:absolute;top:0;left:0;right:0;height:35%;background:linear-gradient(180deg,rgba(255,240,215,0.02),transparent);pointer-events:none;"></div>
                     <div style="position:relative;">
-                        <div class="readout-ghost" style="font:700 16px/1 'JetBrains Mono',monospace;color:rgba(217,119,6,0.04);">8888</div>
+                        <div style="font:700 16px/1 'JetBrains Mono',monospace;color:rgba(217,119,6,0.04);">8888</div>
                         <div id="${id}-n-val" style="font:700 16px/1 'JetBrains Mono',monospace;color:#d97706;
                             text-shadow: 0 0 6px rgba(217,119,6,0.4);
                             position:absolute;inset:0;text-align:right;">—</div>
                     </div>
                 </div>
-                <span style="font:800 9px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.55);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;display:block;">n</span>
+                <span style="font:800 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.45);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;display:block;
+                    text-shadow: 0 -1px 0 rgba(0,0,0,0.3);">n</span>
             </div>
         </div>
     </div>
 
-    <!-- Bottom hardware -->
-    <div class="rack-screw" style="position:absolute;bottom:4px;left:4px;"></div>
-    <div class="rack-screw" style="position:absolute;bottom:4px;right:4px;"></div>
+    <!-- Bottom screws -->
+    <div style="position:absolute;bottom:5px;left:46px;width:10px;height:10px;border-radius:50%;z-index:10;
+        background:radial-gradient(circle at 30% 30%, #3a3e48, #1e222c 40%, #141822 70%, #0c1018);
+        box-shadow: inset 0 1px 1px rgba(255,240,215,0.1), inset 0 -1px 2px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.3);
+    "><div style="position:absolute;top:4px;left:2px;width:6px;height:1.5px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div>
+      <div style="position:absolute;top:2px;left:4px;width:1.5px;height:6px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div></div>
+    <div style="position:absolute;bottom:5px;right:46px;width:10px;height:10px;border-radius:50%;z-index:10;
+        background:radial-gradient(circle at 30% 30%, #3a3e48, #1e222c 40%, #141822 70%, #0c1018);
+        box-shadow: inset 0 1px 1px rgba(255,240,215,0.1), inset 0 -1px 2px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.3);
+    "><div style="position:absolute;top:4px;left:2px;width:6px;height:1.5px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div>
+      <div style="position:absolute;top:2px;left:4px;width:1.5px;height:6px;background:rgba(0,0,0,0.4);border-radius:0.5px;"></div></div>
 </div>
 
 <!-- ════════ BACK PANEL ════════ -->
-<div class="rack-unit-back u8" data-unit-back="sentinel" data-id="${id}" style="
+<div class="rack-unit-back u10" data-unit-back="sentinel" data-id="${id}" style="
     background:repeating-linear-gradient(180deg, rgba(255,255,255,0.005) 0px, transparent 1px, transparent 2px),
         linear-gradient(160deg, #1c1c1c, #1f1f1f 40%, #1d1d1d);overflow:hidden;position:relative;
 ">
     <div class="rack-screw" style="position:absolute;top:4px;left:4px;"></div>
     <div class="rack-screw" style="position:absolute;top:4px;right:4px;"></div>
-
     <div style="display:flex;align-items:center;gap:8px;padding:5px 48px;border-bottom:1px solid rgba(255,255,255,0.05);">
         <span style="font:800 11px/1 'Arial Narrow',sans-serif;color:rgba(255,255,255,0.1);letter-spacing:0.15em;text-transform:uppercase;">Sentinel</span>
         <span style="font:400 11px/1 'Courier New',monospace;color:rgba(255,255,255,0.06);">SpX-481</span>
@@ -346,22 +327,18 @@
             <div class="patch-group"><div class="patch-jack" data-output="thru" data-unit-id="${id}"></div><div class="patch-jack-label">thru</div></div>
         </div>
     </div>
-
-    <!-- Ventilation -->
     <div style="padding:6px 48px;display:flex;gap:3px;">
         <div style="flex:1;height:2px;background:repeating-linear-gradient(90deg,rgba(255,255,255,0.02) 0px,rgba(255,255,255,0.02) 8px,transparent 8px,transparent 12px);border-radius:1px;"></div>
     </div>
-
     <div style="padding:6px 48px;display:flex;align-items:center;gap:12px;margin-top:auto;border-top:1px solid rgba(217,119,6,0.02);">
         <div class="warning-label">Process Monitor</div>
         <span class="cert-mark">CE</span>
         <span class="cert-mark">UL</span>
         <div style="font:300 8px/1.4 'Courier New',monospace;color:rgba(217,119,6,0.04);letter-spacing:0.04em;margin-left:auto;">
-            FORGERACK SENTINEL &#x2022; SpX-481 REV.B &#x2022; PROCESS MONITOR<br>
+            FORGERACK SENTINEL &#x2022; SpX-481 REV.C &#x2022; PROCESS MONITOR<br>
             FORGESPC ENGINE &#x2022; 9 CHART TYPES &#x2022; NELSON/WECO &#x2022; GUARDIAN MFG
         </div>
     </div>
-
     <div class="rack-screw" style="position:absolute;bottom:4px;left:4px;"></div>
     <div class="rack-screw" style="position:absolute;bottom:4px;right:4px;"></div>
 </div>

@@ -5220,7 +5220,8 @@ FR.registerUnit('precision', {
         // 0% = -60deg (far left, green), 30% = 0deg (center, yellow), 60%+ = 60deg (right, red)
         var needle = document.getElementById(this.id + '-needle');
         if (needle) {
-            var angle = Math.min(60, Math.max(-60, (r.grr_percent - 30) * 2));
+            // 0% = -70deg (far left, at 0), 30% = 0deg (center), 80%+ = 60deg (far right)
+            var angle = Math.min(60, Math.max(-70, (r.grr_percent / 80) * 130 - 70));
             needle.style.transform = 'rotate(' + angle + 'deg)';
         }
 

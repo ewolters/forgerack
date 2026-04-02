@@ -82,58 +82,12 @@
         </div>
     </div>
 
-    <!-- Capability readouts — right beneath CRT -->
-    <div style="margin:2px 48px 0;display:flex;gap:6px;align-items:center;justify-content:flex-end;">
-        <div style="text-align:center;">
-            <div style="padding:3px 5px;text-align:right;background:#020408;border:2px solid #0a0e16;border-radius:2px;
-                border-top-color:#060a12;border-left-color:#080c14;
-                box-shadow:inset 0 2px 5px rgba(0,0,0,0.6),0 1px 0 rgba(255,240,215,0.02);position:relative;overflow:hidden;">
-                <div style="position:absolute;top:0;left:0;right:0;height:35%;background:linear-gradient(180deg,rgba(255,240,215,0.02),transparent);pointer-events:none;"></div>
-                <div style="position:relative;">
-                    <div style="font:700 16px/1 'JetBrains Mono',monospace;color:rgba(217,119,6,0.04);">8.88</div>
-                    <div id="${id}-cpk" style="font:700 16px/1 'JetBrains Mono',monospace;color:#d97706;
-                        text-shadow:0 0 6px rgba(217,119,6,0.4);position:absolute;inset:0;text-align:right;">—</div>
-                </div>
-            </div>
-            <span style="font:800 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.4);text-transform:uppercase;margin-top:1px;display:block;
-                text-shadow:0 -1px 0 rgba(0,0,0,0.3);">Cpk</span>
-        </div>
-        <div style="text-align:center;">
-            <div style="padding:3px 5px;text-align:right;background:#020408;border:2px solid #0a0e16;border-radius:2px;
-                border-top-color:#060a12;border-left-color:#080c14;
-                box-shadow:inset 0 2px 5px rgba(0,0,0,0.6),0 1px 0 rgba(255,240,215,0.02);position:relative;overflow:hidden;">
-                <div style="position:absolute;top:0;left:0;right:0;height:35%;background:linear-gradient(180deg,rgba(255,240,215,0.02),transparent);pointer-events:none;"></div>
-                <div style="position:relative;">
-                    <div style="font:700 16px/1 'JetBrains Mono',monospace;color:rgba(217,119,6,0.04);">8888</div>
-                    <div id="${id}-ppm" style="font:700 16px/1 'JetBrains Mono',monospace;color:#d97706;
-                        text-shadow:0 0 6px rgba(217,119,6,0.4);position:absolute;inset:0;text-align:right;">—</div>
-                </div>
-            </div>
-            <span style="font:800 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.4);text-transform:uppercase;margin-top:1px;display:block;
-                text-shadow:0 -1px 0 rgba(0,0,0,0.3);">PPM</span>
-        </div>
-        <div style="text-align:center;">
-            <div style="padding:3px 5px;text-align:right;background:#020408;border:2px solid #0a0e16;border-radius:2px;
-                border-top-color:#060a12;border-left-color:#080c14;
-                box-shadow:inset 0 2px 5px rgba(0,0,0,0.6),0 1px 0 rgba(255,240,215,0.02);position:relative;overflow:hidden;">
-                <div style="position:absolute;top:0;left:0;right:0;height:35%;background:linear-gradient(180deg,rgba(255,240,215,0.02),transparent);pointer-events:none;"></div>
-                <div style="position:relative;">
-                    <div style="font:700 16px/1 'JetBrains Mono',monospace;color:rgba(217,119,6,0.04);">8888</div>
-                    <div id="${id}-n-val" style="font:700 16px/1 'JetBrains Mono',monospace;color:#d97706;
-                        text-shadow:0 0 6px rgba(217,119,6,0.4);position:absolute;inset:0;text-align:right;">—</div>
-                </div>
-            </div>
-            <span style="font:800 8px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.4);text-transform:uppercase;margin-top:1px;display:block;
-                text-shadow:0 -1px 0 rgba(0,0,0,0.3);">n</span>
-        </div>
-    </div>
-
     <!-- Routed trace -->
     <div style="height:1px;margin:3px 48px;background:linear-gradient(90deg,transparent 0%,rgba(217,119,6,0.06) 15%,rgba(217,119,6,0.06) 85%,transparent 100%);
         box-shadow:0 1px 0 rgba(255,240,215,0.015);"></div>
 
-    <!-- ════ CONTROL STRIP — yellow Nord sections ════ -->
-    <div style="margin:3px 48px 4px;display:flex;gap:8px;align-items:stretch;">
+    <!-- ════ CONTROL STRIP — yellow Nord sections + VFDs ════ -->
+    <div style="margin:3px 48px 4px;display:flex;gap:8px;align-items:flex-start;">
 
         <!-- ▌ CHART TYPE — two-column LED bank with icons ▌ -->
         <div style="background:rgba(217,170,40,0.85);border-radius:4px;padding:6px 8px 5px;">
@@ -313,7 +267,7 @@
         </div>
 
         <!-- ▌ RUN ▌ -->
-        <div style="display:flex;flex-direction:column;gap:4px;justify-content:center;">
+        <div style="display:flex;flex-direction:column;gap:4px;justify-content:flex-start;">
             <button id="${id}-btn-run" style="
                 padding:8px 14px;
                 background:#1a1a1a;border:1px solid #3a3a3a;border-radius:2px;
@@ -324,6 +278,52 @@
                 <button id="${id}-btn-copy" class="btn-export" style="font-size:7px;padding:3px 4px;border-color:rgba(217,119,6,0.08);">Cp</button>
                 <button id="${id}-btn-svg" class="btn-export" style="font-size:7px;padding:3px 4px;border-color:rgba(217,119,6,0.08);">SVG</button>
                 <button id="${id}-btn-png" class="btn-export" style="font-size:7px;padding:3px 4px;border-color:rgba(217,119,6,0.08);">PNG</button>
+            </div>
+        </div>
+
+        <!-- ▌ CAPABILITY VFDs — top-aligned with yellow sections ▌ -->
+        <div style="margin-left:auto;display:flex;gap:5px;align-items:flex-start;">
+            <div style="text-align:center;">
+                <div style="padding:4px 6px;text-align:right;background:#020408;border:2px solid #0a0e16;border-radius:2px;
+                    border-top-color:#060a12;border-left-color:#080c14;
+                    box-shadow:inset 0 2px 5px rgba(0,0,0,0.6),0 1px 0 rgba(255,240,215,0.02);position:relative;overflow:hidden;">
+                    <div style="position:absolute;top:0;left:0;right:0;height:35%;background:linear-gradient(180deg,rgba(255,240,215,0.02),transparent);pointer-events:none;"></div>
+                    <div style="position:relative;">
+                        <div style="font:700 18px/1 'JetBrains Mono',monospace;color:rgba(217,119,6,0.04);">8.88</div>
+                        <div id="${id}-cpk" style="font:700 18px/1 'JetBrains Mono',monospace;color:#d97706;
+                            text-shadow:0 0 6px rgba(217,119,6,0.4);position:absolute;inset:0;text-align:right;">—</div>
+                    </div>
+                </div>
+                <span style="font:800 9px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.45);text-transform:uppercase;margin-top:2px;display:block;
+                    text-shadow:0 -1px 0 rgba(0,0,0,0.3);">Cpk</span>
+            </div>
+            <div style="text-align:center;">
+                <div style="padding:4px 6px;text-align:right;background:#020408;border:2px solid #0a0e16;border-radius:2px;
+                    border-top-color:#060a12;border-left-color:#080c14;
+                    box-shadow:inset 0 2px 5px rgba(0,0,0,0.6),0 1px 0 rgba(255,240,215,0.02);position:relative;overflow:hidden;">
+                    <div style="position:absolute;top:0;left:0;right:0;height:35%;background:linear-gradient(180deg,rgba(255,240,215,0.02),transparent);pointer-events:none;"></div>
+                    <div style="position:relative;">
+                        <div style="font:700 18px/1 'JetBrains Mono',monospace;color:rgba(217,119,6,0.04);">8888</div>
+                        <div id="${id}-ppm" style="font:700 18px/1 'JetBrains Mono',monospace;color:#d97706;
+                            text-shadow:0 0 6px rgba(217,119,6,0.4);position:absolute;inset:0;text-align:right;">—</div>
+                    </div>
+                </div>
+                <span style="font:800 9px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.45);text-transform:uppercase;margin-top:2px;display:block;
+                    text-shadow:0 -1px 0 rgba(0,0,0,0.3);">PPM</span>
+            </div>
+            <div style="text-align:center;">
+                <div style="padding:4px 6px;text-align:right;background:#020408;border:2px solid #0a0e16;border-radius:2px;
+                    border-top-color:#060a12;border-left-color:#080c14;
+                    box-shadow:inset 0 2px 5px rgba(0,0,0,0.6),0 1px 0 rgba(255,240,215,0.02);position:relative;overflow:hidden;">
+                    <div style="position:absolute;top:0;left:0;right:0;height:35%;background:linear-gradient(180deg,rgba(255,240,215,0.02),transparent);pointer-events:none;"></div>
+                    <div style="position:relative;">
+                        <div style="font:700 18px/1 'JetBrains Mono',monospace;color:rgba(217,119,6,0.04);">8888</div>
+                        <div id="${id}-n-val" style="font:700 18px/1 'JetBrains Mono',monospace;color:#d97706;
+                            text-shadow:0 0 6px rgba(217,119,6,0.4);position:absolute;inset:0;text-align:right;">—</div>
+                    </div>
+                </div>
+                <span style="font:800 9px/1 'Arial Narrow',sans-serif;color:rgba(217,119,6,0.45);text-transform:uppercase;margin-top:2px;display:block;
+                    text-shadow:0 -1px 0 rgba(0,0,0,0.3);">n</span>
             </div>
         </div>
 

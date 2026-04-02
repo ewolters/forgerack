@@ -78,8 +78,19 @@
                     box-shadow:inset 0 2px 6px rgba(0,0,0,0.4);
                 "></div>
 
-                <!-- Add factor row -->
-                <div style="display:flex;gap:2px;">
+                <!-- Factor type toggle -->
+                <div style="display:flex;gap:3px;align-items:center;">
+                    <button id="${id}-f-type-toggle" style="
+                        padding:2px 6px;font:700 8px/1 'Georgia',serif;color:#c2956a;
+                        background:linear-gradient(180deg, #2a2520, #1e1a16);
+                        border:1px solid rgba(194,149,106,0.15);border-radius:1px;cursor:pointer;
+                        letter-spacing:0.05em;
+                    ">CONT</button>
+                    <span style="font:600 7px/1 'Georgia',serif;color:rgba(194,149,106,0.2);">click to toggle</span>
+                </div>
+
+                <!-- Add factor row — continuous (default) -->
+                <div id="${id}-f-row-cont" style="display:flex;gap:2px;">
                     <input type="text" id="${id}-f-name" placeholder="factor" style="
                         flex:1;background:rgba(0,0,0,0.35);border:1px solid rgba(194,149,106,0.1);
                         color:#c2956a;padding:3px 4px;border-radius:1px;
@@ -96,6 +107,25 @@
                         font:9px/1 'JetBrains Mono',monospace;
                     ">
                     <button id="${id}-btn-add" style="
+                        padding:3px 6px;font:700 9px/1 'Georgia',serif;color:#c2956a;
+                        background:linear-gradient(180deg, #2a2520, #1e1a16);
+                        border:1px solid rgba(194,149,106,0.15);border-radius:1px;cursor:pointer;
+                    ">+</button>
+                </div>
+
+                <!-- Add factor row — categorical (hidden by default) -->
+                <div id="${id}-f-row-cat" style="display:none;gap:2px;">
+                    <input type="text" id="${id}-f-name-cat" placeholder="factor" style="
+                        width:50px;background:rgba(0,0,0,0.35);border:1px solid rgba(194,149,106,0.1);
+                        color:#c2956a;padding:3px 4px;border-radius:1px;
+                        font:9px/1 'JetBrains Mono',monospace;
+                    ">
+                    <input type="text" id="${id}-f-levels" placeholder="A, B, C" style="
+                        flex:1;background:rgba(0,0,0,0.35);border:1px solid rgba(194,149,106,0.1);
+                        color:#d4a574;padding:3px 4px;border-radius:1px;
+                        font:9px/1 'JetBrains Mono',monospace;
+                    ">
+                    <button id="${id}-btn-add-cat" style="
                         padding:3px 6px;font:700 9px/1 'Georgia',serif;color:#c2956a;
                         background:linear-gradient(180deg, #2a2520, #1e1a16);
                         border:1px solid rgba(194,149,106,0.15);border-radius:1px;cursor:pointer;

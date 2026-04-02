@@ -5402,10 +5402,28 @@ FR.registerUnit('designer', {
         this.el = el; this.id = id;
         this._factors = [];
         this._lastDesign = null;
+        this._factorMode = 'cont'; // 'cont' or 'cat'
 
         var self = this;
         var addBtn = document.getElementById(id + '-btn-add');
         if (addBtn) addBtn.addEventListener('click', function() { self._addFactor(); });
+
+        // Categorical add button
+        var addCatBtn = document.getElementById(id + '-btn-add-cat');
+        if (addCatBtn) addCatBtn.addEventListener('click', function() { self._addCategoricalFactor(); });
+
+        // Factor type toggle
+        var toggleBtn = document.getElementById(id + '-f-type-toggle');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function() {
+                self._factorMode = (self._factorMode === 'cont') ? 'cat' : 'cont';
+                toggleBtn.textContent = self._factorMode === 'cont' ? 'CONT' : 'CAT';
+                var contRow = document.getElementById(id + '-f-row-cont');
+                var catRow = document.getElementById(id + '-f-row-cat');
+                if (contRow) contRow.style.display = self._factorMode === 'cont' ? 'flex' : 'none';
+                if (catRow) catRow.style.display = self._factorMode === 'cat' ? 'flex' : 'none';
+            });
+        }
 
         var genBtn = document.getElementById(id + '-btn-gen');
         if (genBtn) genBtn.addEventListener('click', function() { self._generate(); });
@@ -5420,6 +5438,12 @@ FR.registerUnit('designer', {
             var inp = document.getElementById(id + suffix);
             if (inp) inp.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') { e.preventDefault(); self._addFactor(); }
+            });
+        });
+        ['-f-name-cat', '-f-levels'].forEach(function(suffix) {
+            var inp = document.getElementById(id + suffix);
+            if (inp) inp.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') { e.preventDefault(); self._addCategoricalFactor(); }
             });
         });
     },
@@ -5451,12 +5475,30 @@ FR.registerUnit('designer', {
         if (!name || isNaN(low) || isNaN(high)) return;
         if (low >= high) return;
 
-        this._factors.push({ name: name, low: low, high: high });
+        this._factors.push({ name: name, low: low, high: high, type: 'continuous' });
         this._renderFactors();
 
         if (nameEl) { nameEl.value = ''; nameEl.focus(); }
         if (lowEl) lowEl.value = '';
         if (highEl) highEl.value = '';
+    },
+
+    _addCategoricalFactor() {
+        var nameEl = document.getElementById(this.id + '-f-name-cat');
+        var levelsEl = document.getElementById(this.id + '-f-levels');
+
+        var name = nameEl ? nameEl.value.trim() : '';
+        var levelsStr = levelsEl ? levelsEl.value.trim() : '';
+        if (!name || !levelsStr) return;
+
+        var levels = levelsStr.split(/[,;]+/).map(function(s) { return s.trim(); }).filter(function(s) { return s; });
+        if (levels.length < 2) return;
+
+        this._factors.push({ name: name, levels: levels, type: 'categorical' });
+        this._renderFactors();
+
+        if (nameEl) { nameEl.value = ''; nameEl.focus(); }
+        if (levelsEl) levelsEl.value = '';
     },
 
     _renderFactors() {
@@ -5467,12 +5509,21 @@ FR.registerUnit('designer', {
         this._factors.forEach(function(f, i) {
             var row = document.createElement('div');
             row.style.cssText = 'display:flex;gap:3px;align-items:center;padding:2px 3px;background:rgba(194,149,106,0.03);border:1px solid rgba(194,149,106,0.06);border-radius:1px;';
+
+            var detail;
+            if (f.type === 'categorical') {
+                detail = '<span style="font:italic 8px/1 JetBrains Mono,monospace;color:rgba(194,149,106,0.25);">' + f.levels.join(', ') + '</span>';
+            } else {
+                detail = '<span style="font:9px/1 JetBrains Mono,monospace;color:rgba(194,149,106,0.3);">' + f.low + '</span>' +
+                    '<span style="font:8px/1 sans-serif;color:rgba(194,149,106,0.15);">\u2013</span>' +
+                    '<span style="font:9px/1 JetBrains Mono,monospace;color:rgba(194,149,106,0.3);">' + f.high + '</span>';
+            }
+
             row.innerHTML =
-                '<span style="flex:1;font:700 9px/1 JetBrains Mono,monospace;color:rgba(194,149,106,0.5);">' + f.name + '</span>' +
-                '<span style="font:9px/1 JetBrains Mono,monospace;color:rgba(194,149,106,0.3);">' + f.low + '</span>' +
-                '<span style="font:8px/1 sans-serif;color:rgba(194,149,106,0.15);">\u2013</span>' +
-                '<span style="font:9px/1 JetBrains Mono,monospace;color:rgba(194,149,106,0.3);">' + f.high + '</span>' +
-                '<span style="cursor:pointer;color:rgba(194,149,106,0.2);font-size:10px;" data-idx="' + i + '">\u00D7</span>';
+                '<span style="flex-shrink:0;font:700 9px/1 JetBrains Mono,monospace;color:rgba(194,149,106,0.5);">' + f.name + '</span>' +
+                (f.type === 'categorical' ? '<span style="font:600 6px/1 sans-serif;color:rgba(194,149,106,0.2);background:rgba(194,149,106,0.06);padding:1px 2px;border-radius:1px;">CAT</span>' : '') +
+                '<span style="flex:1;"></span>' + detail +
+                '<span style="cursor:pointer;color:rgba(194,149,106,0.2);font-size:10px;flex-shrink:0;" data-idx="' + i + '">\u00D7</span>';
             row.querySelector('[data-idx]').addEventListener('click', function() {
                 self._factors.splice(i, 1);
                 self._renderFactors();
@@ -5496,8 +5547,16 @@ FR.registerUnit('designer', {
         var nRuns = nRunsEl ? parseInt(nRunsEl.value) || 20 : 20;
         var resolution = resEl ? parseInt(resEl.value) || 3 : 3;
 
+        // Build factor payload — include type and levels for categorical
+        var factorPayload = this._factors.map(function(f) {
+            if (f.type === 'categorical') {
+                return { name: f.name, factor_type: 'categorical', levels: f.levels };
+            }
+            return { name: f.name, low: f.low, high: f.high };
+        });
+
         var payload = {
-            factors: this._factors,
+            factors: factorPayload,
             design: designType,
             n_runs: nRuns,
             resolution: resolution

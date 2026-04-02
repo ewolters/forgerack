@@ -3436,27 +3436,19 @@ FR.registerUnit('sentinel', {
         var runBtn = document.getElementById(id + '-btn-run');
         if (runBtn) runBtn.addEventListener('click', function() { self._run(); });
 
-        // LED pushbutton bank — chart type selector
-        var chartBtns = el.querySelectorAll('[data-chart-val]');
+        // Chart type — single cycle button
         var chartSel = document.getElementById(id + '-chart-type');
-        chartBtns.forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                var val = btn.getAttribute('data-chart-val');
-                if (chartSel) chartSel.value = val;
-                // Toggle LEDs
-                chartBtns.forEach(function(b) {
-                    var led = b.querySelector('.led');
-                    if (led) {
-                        if (b === btn) FR.LED(led).set('amber');
-                        else FR.LED(led).set('off');
-                    }
-                });
+        var chartDisplay = document.getElementById(id + '-chart-display');
+        var chartLed = document.getElementById(id + '-chart-led');
+        var chartCycle = document.getElementById(id + '-chart-cycle');
+        if (chartCycle && chartSel) {
+            if (chartLed) FR.LED(chartLed).set('amber');
+            chartCycle.addEventListener('click', function() {
+                var idx = chartSel.selectedIndex;
+                chartSel.selectedIndex = (idx + 1) % chartSel.options.length;
+                if (chartDisplay) chartDisplay.textContent = chartSel.options[chartSel.selectedIndex].text;
+                if (chartLed) { FR.LED(chartLed).set('off'); setTimeout(function() { FR.LED(chartLed).set('amber'); }, 80); }
             });
-        });
-        // Default first button active
-        if (chartBtns.length > 0) {
-            var firstLed = chartBtns[0].querySelector('.led');
-            if (firstLed) FR.LED(firstLed).set('amber');
         }
 
         // Rotary dial — rules selector

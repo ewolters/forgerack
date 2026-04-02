@@ -2117,7 +2117,7 @@
     mix-blend-mode: soft-light;
     background: #808080;
     filter: url(#brush-grain-fine);
-    opacity: 0.09;
+    opacity: 0.05;
 }
 .tex-brushed-fine > * { position: relative; z-index: 2; }
 

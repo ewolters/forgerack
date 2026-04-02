@@ -5102,6 +5102,37 @@ FR.registerUnit('precision', {
         var self = this;
         var runBtn = document.getElementById(id + '-btn-run');
         if (runBtn) runBtn.addEventListener('click', function() { self._run(); });
+
+        // Wire thumbwheel selectors — each has hidden select + CRT display + ▲/▼ buttons
+        ['col-part', 'col-op', 'col-meas'].forEach(function(key) {
+            self._wireThumbwheel(id, key);
+        });
+    },
+
+    _wireThumbwheel(id, key) {
+        var sel = document.getElementById(id + '-' + key);
+        var display = document.getElementById(id + '-' + key + '-crt');
+        var upBtn = document.getElementById(id + '-' + key + '-up');
+        var downBtn = document.getElementById(id + '-' + key + '-down');
+        if (!sel || !display) return;
+
+        function update() {
+            var text = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : '—';
+            display.textContent = text;
+        }
+
+        if (upBtn) upBtn.addEventListener('click', function() {
+            if (sel.selectedIndex < sel.options.length - 1) { sel.selectedIndex++; update(); }
+        });
+        if (downBtn) downBtn.addEventListener('click', function() {
+            if (sel.selectedIndex > 0) { sel.selectedIndex--; update(); }
+        });
+
+        // Also update display when select is populated programmatically
+        var origSet = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'innerHTML');
+        new MutationObserver(function() { update(); }).observe(sel, { childList: true });
+
+        update();
     },
 
     _run() {

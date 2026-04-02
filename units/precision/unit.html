@@ -2,8 +2,8 @@
  ╔══════════════════════════════════════════════════════════════╗
  ║  PRECISION GX-8 — Gage R&R / MSA Instrument                  ║
  ║  Manufacturer: APOTHECARY                                    ║
- ║  Identity: White enamel, analytical balance. Printout center, ║
- ║  controls left, gauge + readouts right. Bench instrument.    ║
+ ║  Identity: White enamel, analytical balance. Thumbwheel+CRT  ║
+ ║  selectors, silk screen sections, printout center.           ║
  ╚══════════════════════════════════════════════════════════════╝
 -->
 
@@ -48,68 +48,121 @@
     "><div style="position:absolute;top:3.5px;left:1.5px;width:6px;height:1px;background:rgba(0,0,0,0.3);border-radius:0.5px;"></div>
       <div style="position:absolute;top:1.5px;left:3.5px;width:1px;height:6px;background:rgba(0,0,0,0.3);border-radius:0.5px;"></div></div>
 
-    <!-- ═══ THREE-COLUMN: controls | printout | gauge ═══ -->
-    <div style="padding:6px 48px 5px;display:flex;gap:8px;height:calc(100% - 34px);">
+    <!-- ═══ THREE COLUMN: controls | printout | gauge ═══ -->
+    <div style="padding:8px 48px 5px;display:flex;gap:8px;height:calc(100% - 36px);">
 
-        <!-- ▌ LEFT: Controls ▌ -->
-        <div style="width:120px;display:flex;flex-direction:column;gap:5px;">
-            <!-- Input -->
-            <div style="border:1px solid rgba(107,142,107,0.2);border-radius:3px;
-                padding:10px 5px 5px;position:relative;">
-                <div style="position:absolute;top:-6px;left:5px;background:rgba(107,142,107,0.7);padding:1px 6px;border-radius:2px;
-                    font:700 8px/1 'Georgia',serif;color:#f0ece4;text-transform:uppercase;letter-spacing:0.08em;">Input</div>
-                <div style="display:flex;flex-direction:column;gap:4px;">
-                    <div style="display:flex;flex-direction:column;gap:1px;">
-                        <span style="font:700 7px/1 'Georgia',serif;color:rgba(74,90,74,0.5);text-transform:uppercase;">Part / Sample</span>
-                        <div style="background:#f0ece0;border:2px solid #c0bca8;border-top-color:#a8a494;border-left-color:#b0ac98;
-                            border-radius:1px;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1), 0 1px 0 rgba(255,240,215,0.2);overflow:hidden;">
-                            <select id="${id}-col-part" style="
-                                background:transparent;border:none;color:#3a4a3a;padding:2px 4px;
-                                font:9px/1 'JetBrains Mono',monospace;width:100%;box-sizing:border-box;
-                                -webkit-appearance:none;appearance:none;outline:none;
-                            "><option value="">column</option></select>
-                        </div>
+        <!-- ▌ LEFT: Thumbwheel selectors + controls ▌ -->
+        <div style="width:125px;display:flex;flex-direction:column;gap:6px;">
+
+            <!-- PART selector — silk screen label + thumbwheel + CRT -->
+            <div style="display:flex;flex-direction:column;gap:2px;">
+                <span style="font:700 8px/1 'Georgia',serif;color:rgba(74,90,74,0.5);text-transform:uppercase;letter-spacing:0.08em;
+                    text-shadow: 0 1px 0 rgba(255,240,215,0.2);">Part / Sample</span>
+                <div style="display:flex;gap:2px;align-items:stretch;">
+                    <!-- CRT display window -->
+                    <div style="flex:1;
+                        background:#040804;border:2px solid #2a302a;border-radius:2px;
+                        border-top-color:#1a201a;border-left-color:#202620;
+                        box-shadow:inset 0 1px 4px rgba(0,0,0,0.5), 0 1px 0 rgba(255,240,215,0.1);
+                        padding:3px 5px;overflow:hidden;position:relative;
+                    ">
+                        <!-- Scanlines -->
+                        <div style="position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent,transparent 1px,rgba(107,142,107,0.015) 1px,rgba(107,142,107,0.015) 2px);pointer-events:none;"></div>
+                        <div id="${id}-col-part-crt" style="font:10px/1 'JetBrains Mono',monospace;color:rgba(107,180,107,0.6);
+                            text-shadow:0 0 4px rgba(107,180,107,0.3);position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
                     </div>
+                    <!-- Thumbwheel buttons -->
                     <div style="display:flex;flex-direction:column;gap:1px;">
-                        <span style="font:700 7px/1 'Georgia',serif;color:rgba(74,90,74,0.5);text-transform:uppercase;">Operator</span>
-                        <div style="background:#f0ece0;border:2px solid #c0bca8;border-top-color:#a8a494;border-left-color:#b0ac98;
-                            border-radius:1px;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1), 0 1px 0 rgba(255,240,215,0.2);overflow:hidden;">
-                            <select id="${id}-col-op" style="
-                                background:transparent;border:none;color:#3a4a3a;padding:2px 4px;
-                                font:9px/1 'JetBrains Mono',monospace;width:100%;box-sizing:border-box;
-                                -webkit-appearance:none;appearance:none;outline:none;
-                            "><option value="">column</option></select>
-                        </div>
+                        <button id="${id}-col-part-up" style="
+                            padding:0;width:16px;flex:1;font:8px/1 sans-serif;color:rgba(74,90,74,0.5);cursor:pointer;
+                            background:linear-gradient(180deg,#dcd8d0,#ccc8c0);border:1px solid #b0ac98;border-radius:1px;
+                            box-shadow:0 1px 1px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,240,215,0.3);
+                        ">&#x25B2;</button>
+                        <button id="${id}-col-part-down" style="
+                            padding:0;width:16px;flex:1;font:8px/1 sans-serif;color:rgba(74,90,74,0.5);cursor:pointer;
+                            background:linear-gradient(180deg,#dcd8d0,#ccc8c0);border:1px solid #b0ac98;border-radius:1px;
+                            box-shadow:0 1px 1px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,240,215,0.3);
+                        ">&#x25BC;</button>
                     </div>
-                    <div style="display:flex;flex-direction:column;gap:1px;">
-                        <span style="font:700 7px/1 'Georgia',serif;color:rgba(74,90,74,0.5);text-transform:uppercase;">Measurement</span>
-                        <div style="background:#f0ece0;border:2px solid #c0bca8;border-top-color:#a8a494;border-left-color:#b0ac98;
-                            border-radius:1px;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1), 0 1px 0 rgba(255,240,215,0.2);overflow:hidden;">
-                            <select id="${id}-col-meas" style="
-                                background:transparent;border:none;color:#3a4a3a;padding:2px 4px;
-                                font:9px/1 'JetBrains Mono',monospace;width:100%;box-sizing:border-box;
-                                -webkit-appearance:none;appearance:none;outline:none;
-                            "><option value="">column</option></select>
-                        </div>
-                    </div>
+                    <select id="${id}-col-part" style="display:none;"><option value="">column</option></select>
                 </div>
             </div>
 
-            <!-- Tolerance -->
-            <div style="border:1px solid rgba(107,142,107,0.2);border-radius:3px;
-                padding:10px 5px 5px;position:relative;">
-                <div style="position:absolute;top:-6px;left:5px;background:rgba(107,142,107,0.7);padding:1px 6px;border-radius:2px;
-                    font:700 8px/1 'Georgia',serif;color:#f0ece4;text-transform:uppercase;letter-spacing:0.08em;">Tolerance</div>
+            <!-- OPERATOR selector -->
+            <div style="display:flex;flex-direction:column;gap:2px;">
+                <span style="font:700 8px/1 'Georgia',serif;color:rgba(74,90,74,0.5);text-transform:uppercase;letter-spacing:0.08em;
+                    text-shadow: 0 1px 0 rgba(255,240,215,0.2);">Operator</span>
+                <div style="display:flex;gap:2px;align-items:stretch;">
+                    <div style="flex:1;
+                        background:#040804;border:2px solid #2a302a;border-radius:2px;
+                        border-top-color:#1a201a;border-left-color:#202620;
+                        box-shadow:inset 0 1px 4px rgba(0,0,0,0.5), 0 1px 0 rgba(255,240,215,0.1);
+                        padding:3px 5px;overflow:hidden;position:relative;
+                    ">
+                        <div style="position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent,transparent 1px,rgba(107,142,107,0.015) 1px,rgba(107,142,107,0.015) 2px);pointer-events:none;"></div>
+                        <div id="${id}-col-op-crt" style="font:10px/1 'JetBrains Mono',monospace;color:rgba(107,180,107,0.6);
+                            text-shadow:0 0 4px rgba(107,180,107,0.3);position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:1px;">
+                        <button id="${id}-col-op-up" style="
+                            padding:0;width:16px;flex:1;font:8px/1 sans-serif;color:rgba(74,90,74,0.5);cursor:pointer;
+                            background:linear-gradient(180deg,#dcd8d0,#ccc8c0);border:1px solid #b0ac98;border-radius:1px;
+                            box-shadow:0 1px 1px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,240,215,0.3);
+                        ">&#x25B2;</button>
+                        <button id="${id}-col-op-down" style="
+                            padding:0;width:16px;flex:1;font:8px/1 sans-serif;color:rgba(74,90,74,0.5);cursor:pointer;
+                            background:linear-gradient(180deg,#dcd8d0,#ccc8c0);border:1px solid #b0ac98;border-radius:1px;
+                            box-shadow:0 1px 1px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,240,215,0.3);
+                        ">&#x25BC;</button>
+                    </div>
+                    <select id="${id}-col-op" style="display:none;"><option value="">column</option></select>
+                </div>
+            </div>
+
+            <!-- MEASUREMENT selector -->
+            <div style="display:flex;flex-direction:column;gap:2px;">
+                <span style="font:700 8px/1 'Georgia',serif;color:rgba(74,90,74,0.5);text-transform:uppercase;letter-spacing:0.08em;
+                    text-shadow: 0 1px 0 rgba(255,240,215,0.2);">Measurement</span>
+                <div style="display:flex;gap:2px;align-items:stretch;">
+                    <div style="flex:1;
+                        background:#040804;border:2px solid #2a302a;border-radius:2px;
+                        border-top-color:#1a201a;border-left-color:#202620;
+                        box-shadow:inset 0 1px 4px rgba(0,0,0,0.5), 0 1px 0 rgba(255,240,215,0.1);
+                        padding:3px 5px;overflow:hidden;position:relative;
+                    ">
+                        <div style="position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent,transparent 1px,rgba(107,142,107,0.015) 1px,rgba(107,142,107,0.015) 2px);pointer-events:none;"></div>
+                        <div id="${id}-col-meas-crt" style="font:10px/1 'JetBrains Mono',monospace;color:rgba(107,180,107,0.6);
+                            text-shadow:0 0 4px rgba(107,180,107,0.3);position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:1px;">
+                        <button id="${id}-col-meas-up" style="
+                            padding:0;width:16px;flex:1;font:8px/1 sans-serif;color:rgba(74,90,74,0.5);cursor:pointer;
+                            background:linear-gradient(180deg,#dcd8d0,#ccc8c0);border:1px solid #b0ac98;border-radius:1px;
+                            box-shadow:0 1px 1px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,240,215,0.3);
+                        ">&#x25B2;</button>
+                        <button id="${id}-col-meas-down" style="
+                            padding:0;width:16px;flex:1;font:8px/1 sans-serif;color:rgba(74,90,74,0.5);cursor:pointer;
+                            background:linear-gradient(180deg,#dcd8d0,#ccc8c0);border:1px solid #b0ac98;border-radius:1px;
+                            box-shadow:0 1px 1px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,240,215,0.3);
+                        ">&#x25BC;</button>
+                    </div>
+                    <select id="${id}-col-meas" style="display:none;"><option value="">column</option></select>
+                </div>
+            </div>
+
+            <!-- Tolerance — silk screen label, recessed window -->
+            <div style="display:flex;flex-direction:column;gap:2px;">
+                <span style="font:700 8px/1 'Georgia',serif;color:rgba(74,90,74,0.5);text-transform:uppercase;letter-spacing:0.08em;
+                    text-shadow: 0 1px 0 rgba(255,240,215,0.2);">Tolerance</span>
                 <div style="background:#f0ece0;border:2px solid #c0bca8;border-top-color:#a8a494;border-left-color:#b0ac98;
                     border-radius:1px;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1), 0 1px 0 rgba(255,240,215,0.2);overflow:hidden;">
                     <input type="text" id="${id}-tolerance" placeholder="USL − LSL" style="
-                        background:transparent;border:none;color:#3a4a3a;padding:2px 4px;text-align:center;
-                        font:9px/1 'JetBrains Mono',monospace;width:100%;box-sizing:border-box;outline:none;
-                    ">
+                        background:transparent;border:none;color:#3a4a3a;padding:3px 5px;text-align:center;
+                        font:10px/1 'JetBrains Mono',monospace;width:100%;box-sizing:border-box;outline:none;">
                 </div>
             </div>
 
-            <!-- Analyze -->
+            <!-- Analyze button -->
             <button id="${id}-btn-run" style="
                 width:100%;padding:6px 0;margin-top:auto;
                 font:700 9px/1 'Georgia',serif;text-transform:uppercase;letter-spacing:0.12em;
@@ -122,7 +175,8 @@
 
         <!-- ▌ CENTER: Paper tape printout — full height ▌ -->
         <div style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0;">
-            <span style="font:700 8px/1 'Georgia',serif;color:rgba(74,90,74,0.5);text-transform:uppercase;letter-spacing:0.08em;">Results</span>
+            <span style="font:700 8px/1 'Georgia',serif;color:rgba(74,90,74,0.5);text-transform:uppercase;letter-spacing:0.08em;
+                text-shadow: 0 1px 0 rgba(255,240,215,0.2);">Results</span>
             <div style="
                 flex:1;overflow-y:auto;position:relative;
                 background:
@@ -134,7 +188,6 @@
                 box-shadow:inset 0 2px 4px rgba(0,0,0,0.08), 0 1px 0 rgba(255,240,215,0.3);
                 padding:5px 8px 5px 14px;
             ">
-                <!-- Tractor edge -->
                 <div style="position:absolute;left:0;top:0;bottom:0;width:8px;
                     background:repeating-linear-gradient(180deg,
                         transparent 0px, transparent 4px,
@@ -147,8 +200,8 @@
             </div>
         </div>
 
-        <!-- ▌ RIGHT: Gauge + readouts ▌ -->
-        <div style="width:160px;display:flex;flex-direction:column;gap:5px;">
+        <!-- ▌ RIGHT: VU gauge + readouts ▌ -->
+        <div style="width:155px;display:flex;flex-direction:column;gap:5px;">
 
             <!-- VU Gauge -->
             <div class="apothecary-glass" style="padding:4px;align-self:center;">
@@ -156,24 +209,24 @@
                     background: radial-gradient(ellipse at 50% 100%, #f0e8d0, #e0d8c0 60%, #c8c0a8 100%);
                     border:2px solid #a0a098;border-radius:5px 5px 0 0;
                     box-shadow:inset 0 2px 5px rgba(0,0,0,0.1), 0 1px 0 rgba(255,240,215,0.3);
-                    position:relative;overflow:hidden;width:140px;height:70px;
+                    position:relative;overflow:hidden;width:138px;height:69px;
                 ">
                     <div style="position:absolute;bottom:8px;left:12px;font:700 9px/1 'Georgia',serif;color:#2a6a2a;">0</div>
                     <div style="position:absolute;bottom:32px;left:6px;font:700 9px/1 'Georgia',serif;color:#2a6a2a;">10</div>
                     <div style="position:absolute;top:8px;left:30px;font:700 9px/1 'Georgia',serif;color:#8a8a20;">20</div>
-                    <div style="position:absolute;top:4px;left:62px;font:700 9px/1 'Georgia',serif;color:#c06020;">30</div>
+                    <div style="position:absolute;top:4px;left:60px;font:700 9px/1 'Georgia',serif;color:#c06020;">30</div>
                     <div style="position:absolute;top:8px;right:26px;font:700 9px/1 'Georgia',serif;color:#c03030;">50</div>
                     <div style="position:absolute;bottom:32px;right:6px;font:700 9px/1 'Georgia',serif;color:#c03030;">80</div>
                     <div style="position:absolute;bottom:4px;left:12px;width:35px;height:2px;background:rgba(34,120,34,0.3);transform-origin:right center;transform:rotate(-50deg);"></div>
                     <div style="position:absolute;bottom:4px;left:46px;width:28px;height:2px;background:rgba(200,160,30,0.3);transform-origin:right center;transform:rotate(-25deg);"></div>
                     <div style="position:absolute;bottom:4px;right:22px;width:35px;height:2px;background:rgba(200,50,50,0.3);transform-origin:left center;transform:rotate(15deg);"></div>
                     <div id="${id}-needle" style="
-                        position:absolute;bottom:4px;left:70px;width:1.5px;height:55px;
+                        position:absolute;bottom:4px;left:69px;width:1.5px;height:54px;
                         background:linear-gradient(to top, #1a1a18, rgba(26,26,24,0.2));
                         transform-origin:bottom center;transform:rotate(-60deg);
                         transition:transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
                         box-shadow:0 0 1px rgba(0,0,0,0.4);"></div>
-                    <div style="position:absolute;bottom:1px;left:67px;width:8px;height:8px;border-radius:50%;
+                    <div style="position:absolute;bottom:1px;left:66px;width:8px;height:8px;border-radius:50%;
                         background:radial-gradient(circle at 35% 35%, #6a6f6a, #1a1f1a);
                         box-shadow:0 1px 2px rgba(0,0,0,0.3);"></div>
                     <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 80%, rgba(255,200,100,0.06), transparent 60%);pointer-events:none;"></div>
@@ -182,31 +235,29 @@
             </div>
 
             <!-- Study -->
-            <div style="border:1px solid rgba(107,142,107,0.2);border-radius:3px;padding:10px 6px 4px;position:relative;">
-                <div style="position:absolute;top:-6px;left:5px;background:rgba(107,142,107,0.7);padding:1px 6px;border-radius:2px;
-                    font:700 8px/1 'Georgia',serif;color:#f0ece4;text-transform:uppercase;letter-spacing:0.08em;">Study</div>
-                <div style="display:flex;gap:5px;align-items:baseline;justify-content:center;">
-                    <span id="${id}-n-parts" style="font:700 13px/1 'Georgia',serif;color:#4a5a4a;">—</span>
-                    <span style="font:700 7px/1 'Georgia',serif;color:rgba(74,90,74,0.3);">p</span>
+            <div style="display:flex;flex-direction:column;gap:1px;">
+                <span style="font:700 8px/1 'Georgia',serif;color:rgba(74,90,74,0.5);text-transform:uppercase;letter-spacing:0.08em;
+                    text-shadow: 0 1px 0 rgba(255,240,215,0.2);">Study</span>
+                <div style="display:flex;gap:5px;align-items:baseline;">
+                    <span id="${id}-n-parts" style="font:700 14px/1 'Georgia',serif;color:#4a5a4a;">—</span>
+                    <span style="font:700 7px/1 'Georgia',serif;color:rgba(74,90,74,0.3);">parts</span>
                     <span style="color:rgba(74,90,74,0.1);">&#x00D7;</span>
-                    <span id="${id}-n-ops" style="font:700 13px/1 'Georgia',serif;color:#4a5a4a;">—</span>
-                    <span style="font:700 7px/1 'Georgia',serif;color:rgba(74,90,74,0.3);">o</span>
+                    <span id="${id}-n-ops" style="font:700 14px/1 'Georgia',serif;color:#4a5a4a;">—</span>
+                    <span style="font:700 7px/1 'Georgia',serif;color:rgba(74,90,74,0.3);">ops</span>
                     <span style="color:rgba(74,90,74,0.1);">&#x00D7;</span>
-                    <span id="${id}-n-reps" style="font:700 13px/1 'Georgia',serif;color:#4a5a4a;">—</span>
-                    <span style="font:700 7px/1 'Georgia',serif;color:rgba(74,90,74,0.3);">r</span>
+                    <span id="${id}-n-reps" style="font:700 14px/1 'Georgia',serif;color:#4a5a4a;">—</span>
+                    <span style="font:700 7px/1 'Georgia',serif;color:rgba(74,90,74,0.3);">reps</span>
                 </div>
             </div>
 
             <!-- NDC + Verdict -->
-            <div style="display:flex;gap:5px;">
-                <div style="flex:1;border:1px solid rgba(107,142,107,0.2);border-radius:3px;padding:10px 6px 4px;position:relative;text-align:center;">
-                    <div style="position:absolute;top:-6px;left:5px;background:rgba(107,142,107,0.7);padding:1px 6px;border-radius:2px;
-                        font:700 8px/1 'Georgia',serif;color:#f0ece4;text-transform:uppercase;letter-spacing:0.08em;">NDC</div>
-                    <div id="${id}-ndc" style="font:700 18px/1 'Georgia',serif;color:#4a5a4a;">—</div>
+            <div style="display:flex;gap:6px;align-items:center;">
+                <div style="display:flex;flex-direction:column;gap:1px;">
+                    <span style="font:700 8px/1 'Georgia',serif;color:rgba(74,90,74,0.5);text-transform:uppercase;letter-spacing:0.08em;
+                        text-shadow: 0 1px 0 rgba(255,240,215,0.2);">NDC</span>
+                    <span id="${id}-ndc" style="font:700 20px/1 'Georgia',serif;color:#4a5a4a;">—</span>
                 </div>
-                <div style="display:flex;align-items:center;padding-top:4px;">
-                    <span class="led lg" id="${id}-led-verdict"></span>
-                </div>
+                <span class="led lg" id="${id}-led-verdict" style="margin-top:10px;"></span>
             </div>
         </div>
     </div>
@@ -245,7 +296,7 @@
     </div>
     <div style="padding:6px 48px;margin-top:auto;border-top:1px solid rgba(107,142,107,0.02);">
         <div style="font:300 8px/1.4 'Courier New',monospace;color:rgba(107,142,107,0.05);letter-spacing:0.04em;">
-            FORGERACK PRECISION &#x2022; GX-8 REV.D &#x2022; GAGE R&amp;R / MSA<br>
+            FORGERACK PRECISION &#x2022; GX-8 REV.E &#x2022; GAGE R&amp;R / MSA<br>
             FORGESPC ENGINE &#x2022; CROSSED DESIGN &#x2022; APOTHECARY MFG
         </div>
     </div>

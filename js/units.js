@@ -5714,7 +5714,7 @@ FR.registerUnit('strategist', {
                 var y = 50 + Math.sin(rad) * r;
                 var label = document.createElement('div');
                 var shortName = desSel.options[i].text.substring(0, 4);
-                label.style.cssText = 'position:absolute;font:700 7px/1 Courier New,monospace;color:rgba(208,208,200,0.3);white-space:nowrap;' +
+                label.style.cssText = 'position:absolute;font:700 8px/1 Courier New,monospace;color:rgba(208,208,200,0.3);white-space:nowrap;' +
                     'left:' + x + '%;top:' + y + '%;transform:translate(-50%,-50%);';
                 label.textContent = shortName;
                 typeLabels.appendChild(label);

@@ -54,24 +54,21 @@
         <!-- ▌ LEFT: Thumbwheel selectors + controls ▌ -->
         <div style="width:125px;display:flex;flex-direction:column;gap:6px;">
 
-            <!-- PART selector — silk screen label + thumbwheel + CRT -->
+            <!-- PART selector — LCD + thumbwheel -->
             <div style="display:flex;flex-direction:column;gap:2px;">
                 <span style="font:700 8px/1 'Georgia',serif;color:rgba(74,90,74,0.5);text-transform:uppercase;letter-spacing:0.08em;
                     text-shadow: 0 1px 0 rgba(255,240,215,0.2);">Part / Sample</span>
                 <div style="display:flex;gap:2px;align-items:stretch;">
-                    <!-- CRT display window -->
                     <div style="flex:1;
-                        background:#040804;border:2px solid #2a302a;border-radius:2px;
-                        border-top-color:#1a201a;border-left-color:#202620;
-                        box-shadow:inset 0 1px 4px rgba(0,0,0,0.5), 0 1px 0 rgba(255,240,215,0.1);
-                        padding:3px 5px;overflow:hidden;position:relative;
+                        background:linear-gradient(180deg, #9aaa8a, #8a9a7a);
+                        border:2px solid #2a2a2a;border-radius:2px;
+                        box-shadow:inset 0 1px 3px rgba(0,0,0,0.25);
+                        padding:3px 5px;position:relative;overflow:hidden;
                     ">
-                        <!-- Scanlines -->
-                        <div style="position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent,transparent 1px,rgba(107,142,107,0.015) 1px,rgba(107,142,107,0.015) 2px);pointer-events:none;"></div>
-                        <div id="${id}-col-part-crt" style="font:10px/1 'JetBrains Mono',monospace;color:rgba(107,180,107,0.6);
-                            text-shadow:0 0 4px rgba(107,180,107,0.3);position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
+                        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.08),transparent 40%,rgba(0,0,0,0.04));pointer-events:none;"></div>
+                        <div id="${id}-col-part-crt" style="font:700 10px/1 'JetBrains Mono',monospace;color:#0a1208;
+                            position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
                     </div>
-                    <!-- Thumbwheel buttons -->
                     <div style="display:flex;flex-direction:column;gap:1px;">
                         <button id="${id}-col-part-up" style="
                             padding:0;width:16px;flex:1;font:8px/1 sans-serif;color:rgba(74,90,74,0.5);cursor:pointer;
@@ -88,20 +85,20 @@
                 </div>
             </div>
 
-            <!-- OPERATOR selector -->
+            <!-- OPERATOR selector — LCD + thumbwheel -->
             <div style="display:flex;flex-direction:column;gap:2px;">
                 <span style="font:700 8px/1 'Georgia',serif;color:rgba(74,90,74,0.5);text-transform:uppercase;letter-spacing:0.08em;
                     text-shadow: 0 1px 0 rgba(255,240,215,0.2);">Operator</span>
                 <div style="display:flex;gap:2px;align-items:stretch;">
                     <div style="flex:1;
-                        background:#040804;border:2px solid #2a302a;border-radius:2px;
-                        border-top-color:#1a201a;border-left-color:#202620;
-                        box-shadow:inset 0 1px 4px rgba(0,0,0,0.5), 0 1px 0 rgba(255,240,215,0.1);
-                        padding:3px 5px;overflow:hidden;position:relative;
+                        background:linear-gradient(180deg, #9aaa8a, #8a9a7a);
+                        border:2px solid #2a2a2a;border-radius:2px;
+                        box-shadow:inset 0 1px 3px rgba(0,0,0,0.25);
+                        padding:3px 5px;position:relative;overflow:hidden;
                     ">
-                        <div style="position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent,transparent 1px,rgba(107,142,107,0.015) 1px,rgba(107,142,107,0.015) 2px);pointer-events:none;"></div>
-                        <div id="${id}-col-op-crt" style="font:10px/1 'JetBrains Mono',monospace;color:rgba(107,180,107,0.6);
-                            text-shadow:0 0 4px rgba(107,180,107,0.3);position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
+                        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.08),transparent 40%,rgba(0,0,0,0.04));pointer-events:none;"></div>
+                        <div id="${id}-col-op-crt" style="font:700 10px/1 'JetBrains Mono',monospace;color:#0a1208;
+                            position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
                     </div>
                     <div style="display:flex;flex-direction:column;gap:1px;">
                         <button id="${id}-col-op-up" style="
@@ -119,20 +116,20 @@
                 </div>
             </div>
 
-            <!-- MEASUREMENT selector -->
+            <!-- MEASUREMENT selector — LCD + thumbwheel -->
             <div style="display:flex;flex-direction:column;gap:2px;">
                 <span style="font:700 8px/1 'Georgia',serif;color:rgba(74,90,74,0.5);text-transform:uppercase;letter-spacing:0.08em;
                     text-shadow: 0 1px 0 rgba(255,240,215,0.2);">Measurement</span>
                 <div style="display:flex;gap:2px;align-items:stretch;">
                     <div style="flex:1;
-                        background:#040804;border:2px solid #2a302a;border-radius:2px;
-                        border-top-color:#1a201a;border-left-color:#202620;
-                        box-shadow:inset 0 1px 4px rgba(0,0,0,0.5), 0 1px 0 rgba(255,240,215,0.1);
-                        padding:3px 5px;overflow:hidden;position:relative;
+                        background:linear-gradient(180deg, #9aaa8a, #8a9a7a);
+                        border:2px solid #2a2a2a;border-radius:2px;
+                        box-shadow:inset 0 1px 3px rgba(0,0,0,0.25);
+                        padding:3px 5px;position:relative;overflow:hidden;
                     ">
-                        <div style="position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent,transparent 1px,rgba(107,142,107,0.015) 1px,rgba(107,142,107,0.015) 2px);pointer-events:none;"></div>
-                        <div id="${id}-col-meas-crt" style="font:10px/1 'JetBrains Mono',monospace;color:rgba(107,180,107,0.6);
-                            text-shadow:0 0 4px rgba(107,180,107,0.3);position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
+                        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.08),transparent 40%,rgba(0,0,0,0.04));pointer-events:none;"></div>
+                        <div id="${id}-col-meas-crt" style="font:700 10px/1 'JetBrains Mono',monospace;color:#0a1208;
+                            position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
                     </div>
                     <div style="display:flex;flex-direction:column;gap:1px;">
                         <button id="${id}-col-meas-up" style="
@@ -150,15 +147,21 @@
                 </div>
             </div>
 
-            <!-- Tolerance — silk screen label, recessed window -->
+            <!-- Tolerance — LCD window, editable -->
             <div style="display:flex;flex-direction:column;gap:2px;">
                 <span style="font:700 8px/1 'Georgia',serif;color:rgba(74,90,74,0.5);text-transform:uppercase;letter-spacing:0.08em;
                     text-shadow: 0 1px 0 rgba(255,240,215,0.2);">Tolerance</span>
-                <div style="background:#f0ece0;border:2px solid #c0bca8;border-top-color:#a8a494;border-left-color:#b0ac98;
-                    border-radius:1px;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1), 0 1px 0 rgba(255,240,215,0.2);overflow:hidden;">
+                <div style="
+                    background:linear-gradient(180deg, #9aaa8a, #8a9a7a);
+                    border:2px solid #2a2a2a;border-radius:2px;
+                    box-shadow:inset 0 1px 3px rgba(0,0,0,0.25);
+                    position:relative;overflow:hidden;
+                ">
+                    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.08),transparent 40%,rgba(0,0,0,0.04));pointer-events:none;"></div>
                     <input type="text" id="${id}-tolerance" placeholder="USL − LSL" style="
-                        background:transparent;border:none;color:#3a4a3a;padding:3px 5px;text-align:center;
-                        font:10px/1 'JetBrains Mono',monospace;width:100%;box-sizing:border-box;outline:none;">
+                        background:transparent;border:none;color:#0a1208;padding:3px 5px;text-align:center;
+                        font:700 10px/1 'JetBrains Mono',monospace;width:100%;box-sizing:border-box;outline:none;
+                        position:relative;z-index:1;">
                 </div>
             </div>
 

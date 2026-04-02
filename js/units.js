@@ -3436,20 +3436,41 @@ FR.registerUnit('sentinel', {
         var runBtn = document.getElementById(id + '-btn-run');
         if (runBtn) runBtn.addEventListener('click', function() { self._run(); });
 
-        // Chart type — single cycle button
+        // Chart type — LED bank with cycle button
+        var chartBtns = el.querySelectorAll('[data-chart-val]');
         var chartSel = document.getElementById(id + '-chart-type');
-        var chartDisplay = document.getElementById(id + '-chart-display');
-        var chartLed = document.getElementById(id + '-chart-led');
         var chartCycle = document.getElementById(id + '-chart-cycle');
-        if (chartCycle && chartSel) {
-            if (chartLed) FR.LED(chartLed).set('amber');
-            chartCycle.addEventListener('click', function() {
-                var idx = chartSel.selectedIndex;
-                chartSel.selectedIndex = (idx + 1) % chartSel.options.length;
-                if (chartDisplay) chartDisplay.textContent = chartSel.options[chartSel.selectedIndex].text;
-                if (chartLed) { FR.LED(chartLed).set('off'); setTimeout(function() { FR.LED(chartLed).set('amber'); }, 80); }
+        this._chartIndex = 0;
+
+        function updateChartLEDs(activeIdx) {
+            chartBtns.forEach(function(b, i) {
+                var led = b.querySelector('.led');
+                if (led) FR.LED(led).set(i === activeIdx ? 'amber' : 'off');
             });
         }
+        // Light first LED
+        updateChartLEDs(0);
+
+        // Cycle button advances
+        if (chartCycle && chartSel) {
+            var selfRef = this;
+            chartCycle.addEventListener('click', function() {
+                selfRef._chartIndex = (selfRef._chartIndex + 1) % chartBtns.length;
+                var val = chartBtns[selfRef._chartIndex].getAttribute('data-chart-val');
+                chartSel.value = val;
+                updateChartLEDs(selfRef._chartIndex);
+            });
+        }
+        // Also allow clicking individual rows
+        chartBtns.forEach(function(btn, i) {
+            btn.style.cursor = 'pointer';
+            btn.addEventListener('click', function() {
+                self._chartIndex = i;
+                var val = btn.getAttribute('data-chart-val');
+                if (chartSel) chartSel.value = val;
+                updateChartLEDs(i);
+            });
+        });
 
         // Rotary dial — rules selector
         this._rulesOptions = ['nelson', 'weco', 'svend', 'none'];

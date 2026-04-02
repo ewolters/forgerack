@@ -3436,6 +3436,69 @@ FR.registerUnit('sentinel', {
         var runBtn = document.getElementById(id + '-btn-run');
         if (runBtn) runBtn.addEventListener('click', function() { self._run(); });
 
+        // LED pushbutton bank — chart type selector
+        var chartBtns = el.querySelectorAll('[data-chart-val]');
+        var chartSel = document.getElementById(id + '-chart-type');
+        chartBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var val = btn.getAttribute('data-chart-val');
+                if (chartSel) chartSel.value = val;
+                // Toggle LEDs
+                chartBtns.forEach(function(b) {
+                    var led = b.querySelector('.led');
+                    if (led) {
+                        if (b === btn) FR.LED(led).set('amber');
+                        else FR.LED(led).set('off');
+                    }
+                });
+            });
+        });
+        // Default first button active
+        if (chartBtns.length > 0) {
+            var firstLed = chartBtns[0].querySelector('.led');
+            if (firstLed) FR.LED(firstLed).set('amber');
+        }
+
+        // Rotary dial — rules selector
+        this._rulesOptions = ['nelson', 'weco', 'svend', 'none'];
+        this._rulesIndex = 0;
+        var dial = document.getElementById(id + '-rules-dial');
+        if (dial) {
+            dial.addEventListener('click', function() {
+                self._rulesIndex = (self._rulesIndex + 1) % self._rulesOptions.length;
+                var val = self._rulesOptions[self._rulesIndex];
+                var rulesSel = document.getElementById(id + '-rules');
+                if (rulesSel) rulesSel.value = (val === 'svend') ? 'nelson' : val;
+                // Rotate dial indicator
+                var angles = [-45, 0, 45, 90]; // 4 positions
+                dial.style.transform = 'rotate(' + angles[self._rulesIndex] + 'deg)';
+                // Update label
+                var label = document.getElementById(id + '-rules-label');
+                if (label) label.textContent = val.toUpperCase();
+            });
+        }
+
+        // Mini CRT thumbwheels — column selectors
+        ['col', 'subgroup'].forEach(function(key) {
+            var sel = document.getElementById(id + '-' + key);
+            var display = document.getElementById(id + '-' + key + '-crt');
+            var upBtn = document.getElementById(id + '-' + key + '-up');
+            var downBtn = document.getElementById(id + '-' + key + '-down');
+            if (!sel || !display) return;
+            function update() {
+                var text = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : '—';
+                display.textContent = text;
+            }
+            if (upBtn) upBtn.addEventListener('click', function() {
+                if (sel.selectedIndex < sel.options.length - 1) { sel.selectedIndex++; update(); }
+            });
+            if (downBtn) downBtn.addEventListener('click', function() {
+                if (sel.selectedIndex > 0) { sel.selectedIndex--; update(); }
+            });
+            new MutationObserver(function() { update(); }).observe(sel, { childList: true });
+            update();
+        });
+
         // Export buttons
         var viewport = document.getElementById(id + '-viewport');
         var copyBtn = document.getElementById(id + '-btn-copy');

@@ -2110,6 +2110,23 @@
 }
 .tex-matte > * { position: relative; z-index: 2; }
 
+/*
+ * Mottled metal — hammertone / wrinkle paint / cast iron grain.
+ * Reuses wear-chips SVG filter (low-freq isotropic noise, hard threshold)
+ * but with soft-light blending so it reads as surface texture, not damage.
+ * Perfect for: Vakuum (tube amp hammertone), Steelwerk (cast iron),
+ * Milspec (wrinkle paint), vintage/aged equipment, back panels.
+ */
+.tex-mottled { position: relative; }
+.tex-mottled::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1;
+    mix-blend-mode: soft-light;
+    background: #808080;
+    filter: url(#wear-chips);
+    opacity: 0.12;
+}
+.tex-mottled > * { position: relative; z-index: 2; }
+
 /* Fine variant — tighter, thinner scratches for darker chassis */
 .tex-brushed-fine { position: relative; }
 .tex-brushed-fine::before {

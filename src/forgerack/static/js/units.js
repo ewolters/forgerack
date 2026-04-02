@@ -3482,12 +3482,9 @@ FR.registerUnit('sentinel', {
                 var val = self._rulesOptions[self._rulesIndex];
                 var rulesSel = document.getElementById(id + '-rules');
                 if (rulesSel) rulesSel.value = (val === 'svend') ? 'nelson' : val;
-                // Rotate dial indicator
-                var angles = [-45, 0, 45, 90]; // 4 positions
+                // Rotate: 0°=12 o'clock (NELSON), 90°=3 (WECO), 180°=6 (SVEND), 270°=9 (OFF)
+                var angles = [0, 90, 180, 270];
                 dial.style.transform = 'rotate(' + angles[self._rulesIndex] + 'deg)';
-                // Update label
-                var label = document.getElementById(id + '-rules-label');
-                if (label) label.textContent = val.toUpperCase();
             });
         }
 

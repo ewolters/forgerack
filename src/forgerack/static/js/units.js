@@ -5141,11 +5141,25 @@ FR.registerUnit('precision', {
         var opSel = document.getElementById(this.id + '-col-op');
         var measSel = document.getElementById(this.id + '-col-meas');
         var tolInput = document.getElementById(this.id + '-tolerance');
+        var lslInput = document.getElementById(this.id + '-lsl');
+        var uslInput = document.getElementById(this.id + '-usl');
 
         var partCol = partSel ? partSel.value : '';
         var opCol = opSel ? opSel.value : '';
         var measCol = measSel ? measSel.value : '';
-        var tol = tolInput && tolInput.value.trim() ? parseFloat(tolInput.value) : null;
+
+        // Compute tolerance from USL - LSL if both provided
+        var tol = null;
+        if (lslInput && uslInput && lslInput.value.trim() && uslInput.value.trim()) {
+            var lsl = parseFloat(lslInput.value);
+            var usl = parseFloat(uslInput.value);
+            if (!isNaN(lsl) && !isNaN(usl)) {
+                tol = usl - lsl;
+                if (tolInput) tolInput.value = tol;
+            }
+        } else if (tolInput && tolInput.value.trim()) {
+            tol = parseFloat(tolInput.value);
+        }
 
         if (!partCol || !opCol || !measCol) {
             this._showResult('Select Part, Operator, and Measurement columns.', 'rgba(180,40,40,0.5)');

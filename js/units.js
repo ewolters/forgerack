@@ -5687,28 +5687,80 @@ FR.registerUnit('strategist', {
             });
         }
 
-        // Design sub-type CRT thumbwheel
+        // Design sub-type — chickenhead dial + CRT readout
         var desSel = document.getElementById(id + '-design');
         var desCrt = document.getElementById(id + '-design-crt');
-        var desUp = document.getElementById(id + '-design-up');
-        var desDown = document.getElementById(id + '-design-down');
-        if (desSel && desCrt) {
-            function updateDesCRT() {
-                var text = desSel.options[desSel.selectedIndex] ? desSel.options[desSel.selectedIndex].text : '—';
-                desCrt.textContent = text;
-            }
-            if (desUp) desUp.addEventListener('click', function() {
-                if (desSel.selectedIndex < desSel.options.length - 1) { desSel.selectedIndex++; updateDesCRT(); }
-            });
-            if (desDown) desDown.addEventListener('click', function() {
-                if (desSel.selectedIndex > 0) { desSel.selectedIndex--; updateDesCRT(); }
-            });
-            new MutationObserver(function() { updateDesCRT(); }).observe(desSel, { childList: true });
-            this._updateDesignCRT = updateDesCRT;
-            // Initial populate
-            self._updateDesignDropdown();
-            updateDesCRT();
+        var typeDial = document.getElementById(id + '-type-dial');
+        var typeLabels = document.getElementById(id + '-type-labels');
+        this._typeIndex = 0;
+
+        function updateDesCRT() {
+            var text = desSel && desSel.options[desSel.selectedIndex] ? desSel.options[desSel.selectedIndex].text : '—';
+            if (desCrt) desCrt.textContent = text;
         }
+        function updateTypeLabels() {
+            if (!typeLabels || !desSel) return;
+            var n = desSel.options.length;
+            typeLabels.innerHTML = '';
+            if (n === 0) return;
+            // Place labels evenly around the dial
+            var startAngle = -90; // top
+            var sweep = Math.min(300, n * 60); // don't go full circle for 2-3 items
+            for (var i = 0; i < n; i++) {
+                var angle = startAngle + (n > 1 ? (sweep / (n - 1)) * i : 0);
+                var rad = angle * Math.PI / 180;
+                var r = 36;
+                var x = 50 + Math.cos(rad) * r;
+                var y = 50 + Math.sin(rad) * r;
+                var label = document.createElement('div');
+                var shortName = desSel.options[i].text.substring(0, 4);
+                label.style.cssText = 'position:absolute;font:700 5px/1 Courier New,monospace;color:rgba(208,208,200,0.25);white-space:nowrap;' +
+                    'left:' + x + '%;top:' + y + '%;transform:translate(-50%,-50%);';
+                label.textContent = shortName;
+                typeLabels.appendChild(label);
+            }
+        }
+        function rotateTypeDial() {
+            if (!typeDial || !desSel) return;
+            var n = desSel.options.length;
+            if (n === 0) return;
+            var sweep = Math.min(300, n * 60);
+            var angle = n > 1 ? (sweep / (n - 1)) * self._typeIndex : 0;
+            typeDial.style.transform = 'rotate(' + angle + 'deg)';
+        }
+
+        if (typeDial && desSel) {
+            typeDial.addEventListener('click', function() {
+                var n = desSel.options.length;
+                if (n === 0) return;
+                self._typeIndex = (self._typeIndex + 1) % n;
+                desSel.selectedIndex = self._typeIndex;
+                rotateTypeDial();
+                updateDesCRT();
+            });
+        }
+
+        // When category changes, reset type dial
+        var origUpdateDesign = this._updateDesignDropdown.bind(this);
+        this._updateDesignCRT = function() {
+            self._typeIndex = 0;
+            updateDesCRT();
+            updateTypeLabels();
+            rotateTypeDial();
+        };
+
+        new MutationObserver(function() {
+            self._typeIndex = 0;
+            updateDesCRT();
+            updateTypeLabels();
+            rotateTypeDial();
+        }).observe(desSel, { childList: true });
+
+        // Initial populate
+        self._updateDesignDropdown();
+        updateDesCRT();
+        updateTypeLabels();
+        rotateTypeDial();
     },
 
     _updateDesignDropdown: FR._unitDefs.designer._updateDesignDropdown,

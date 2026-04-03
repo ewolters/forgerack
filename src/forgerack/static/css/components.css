@@ -1733,6 +1733,8 @@
 .rack-unit-front.u6, .rack-unit-back.u6 { height: 252px; }
 .rack-unit-front.u8, .rack-unit-back.u8 { height: 336px; }
 .rack-unit-front.u10, .rack-unit-back.u10 { height: 420px; }
+.rack-unit-front.u11, .rack-unit-back.u11 { height: 462px; }
+.rack-unit-front.u12, .rack-unit-back.u12 { height: 504px; }
 
 /* Hide any leftover rack-screw or rack-ear elements from old unit HTML */
 .rack-unit-front .rack-screw,

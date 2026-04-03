@@ -23,6 +23,10 @@
     --status-red: #ef4444;
     --status-blue: #60a5fa;
     --mono: 'JetBrains Mono', 'Fira Code', monospace;
+    --font-xs: 9px;
+    --font-sm: 10px;
+    --font-md: 11px;
+    --font-lg: 13px;
     --sans: 'Inter', system-ui, sans-serif;
 }
 
@@ -106,11 +110,11 @@
     padding: 3px 20px;
     background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.15));
     border-bottom: 1px solid var(--unit-border);
-    font: 700 12px/1 var(--sans);
+    font: 700 var(--font-lg)/1 var(--sans);
     color: var(--device-accent);
     letter-spacing: 0.12em; text-transform: uppercase;
 }
-.rack-unit-version { font-size: 10px; font-weight: 400; color: var(--text-dim); margin-left: auto; letter-spacing: 0; }
+.rack-unit-version { font-size: var(--font-md); font-weight: 400; color: var(--text-dim); margin-left: auto; letter-spacing: 0; }
 .rack-unit-body { padding: 8px 12px; }
 
 .rack-section { padding: 6px 0; border-bottom: 1px solid var(--unit-groove); }
@@ -155,7 +159,7 @@
     box-shadow: 0 0 10px rgba(251,191,36,0.3);
 }
 .patch-jack-label {
-    font: 600 9px/1 'Arial', sans-serif; color: rgba(255,255,255,0.12);
+    font: 600 var(--font-md)/1 'Arial', sans-serif; color: rgba(255,255,255,0.12);
     text-transform: uppercase; letter-spacing: 0.1em;
 }
 
@@ -187,7 +191,7 @@
 }
 .dial.sm .dial-knob { width: 24px; height: 24px; }
 .dial.sm .dial-knob::after { height: 5px; top: 2px; }
-.dial-label { font: 400 9px/1 var(--sans); color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; }
+.dial-label { font: 400 var(--font-md)/1 var(--sans); color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; }
 .dial-value { font: 400 11px/1 var(--mono); color: var(--device-accent); }
 
 
@@ -246,7 +250,7 @@
 .led.on-accent { background: radial-gradient(circle at 40% 35%, color-mix(in srgb, var(--device-accent), white 40%), var(--device-accent)); box-shadow: 0 0 6px var(--device-accent), 0 0 14px color-mix(in srgb, var(--device-accent), transparent 70%); }
 
 .led-bank { display: flex; gap: 3px; align-items: center; }
-.led-bank-labels { display: flex; gap: 3px; font-size: 8px; color: var(--text-label); }
+.led-bank-labels { display: flex; gap: 3px; font-size: var(--font-sm); color: var(--text-label); }
 .led-bank-labels span { width: 8px; text-align: center; }
 
 
@@ -260,7 +264,7 @@
     padding: 4px 8px; background: rgba(0,0,0,0.3);
     border: 1px solid rgba(0,0,0,0.4); border-radius: 2px;
 }
-.readout-label { font: 600 9px/1 var(--sans); color: var(--text-label); text-transform: uppercase; letter-spacing: 0.1em; }
+.readout-label { font: 600 var(--font-md)/1 var(--sans); color: var(--text-label); text-transform: uppercase; letter-spacing: 0.1em; }
 .readout.sm .readout-value { font-size: 15px; min-width: 44px; }
 .readout.lg .readout-value { font-size: 32px; min-width: 90px; }
 .readout.good .readout-value { color: var(--status-green); text-shadow: 0 0 8px rgba(34,197,94,0.25); }
@@ -276,7 +280,7 @@
 }
 .meter-fill { height: 100%; background: var(--device-accent); border-radius: 3px; transition: width 0.3s; }
 .meter.zoned .meter-fill { background: linear-gradient(90deg, var(--status-red), var(--status-amber), var(--status-green)); }
-.meter-ticks { display: flex; justify-content: space-between; font-size: 8px; color: var(--text-label); margin-top: 1px; }
+.meter-ticks { display: flex; justify-content: space-between; font-size: var(--font-sm); color: var(--text-label); margin-top: 1px; }
 
 .vu-meter {
     width: 8px; background: rgba(0,0,0,0.3);
@@ -300,7 +304,7 @@
     position: absolute; left: -6px; cursor: grab;
     box-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
-.fader-label { font: 400 9px/1 var(--sans); color: var(--text-dim); text-transform: uppercase; }
+.fader-label { font: 400 var(--font-md)/1 var(--sans); color: var(--text-dim); text-transform: uppercase; }
 
 
 /* ── Grip Selector — grooved plastic category slider ── */
@@ -522,11 +526,11 @@
 /* ── Control Labels ── */
 
 .control-label {
-    font: 700 10px/1 'Arial', sans-serif;
+    font: 700 var(--font-md)/1 'Arial', sans-serif;
     text-transform: uppercase; letter-spacing: 0.2em; text-align: center;
 }
-.control-label-sm { font-size: 9px; letter-spacing: 0.15em; }
-.control-label-lg { font-size: 11px; }
+.control-label-sm { font-size: var(--font-sm); letter-spacing: 0.15em; }
+.control-label-lg { font-size: var(--font-lg); }
 /* Color variants via inline style or parent --device-accent */
 .control-label-dim { opacity: 0.15; }
 .control-label-mid { opacity: 0.4; }
@@ -2355,7 +2359,7 @@
     display: inline-block; padding: 2px 8px;
     background: linear-gradient(180deg, #e8e8e0, #d8d8d0);
     border: 1px solid rgba(0,0,0,0.15);
-    font: 400 7px/1 'Courier New', monospace; color: #1a1a1a;
+    font: 400 var(--font-xs)/1 'Courier New', monospace; color: #1a1a1a;
     letter-spacing: 0.05em;
     box-shadow: 0 1px 2px rgba(0,0,0,0.2);
     transform: rotate(-0.5deg);

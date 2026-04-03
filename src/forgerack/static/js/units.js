@@ -5709,7 +5709,7 @@ FR.registerUnit('strategist', {
             for (var i = 0; i < n; i++) {
                 var angle = startAngle + (n > 1 ? (sweep / (n - 1)) * i : 0);
                 var rad = angle * Math.PI / 180;
-                var r = 40;
+                var r = 46;
                 var x = 50 + Math.cos(rad) * r;
                 var y = 50 + Math.sin(rad) * r;
                 var label = document.createElement('div');

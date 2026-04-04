@@ -5386,6 +5386,33 @@ FR.registerUnit('precision', {
 });
 
 // ═══════════════════════════════════════════════════════════
+// DOE SHARED — Excel run sheet export
+// ═══════════════════════════════════════════════════════════
+
+function _doeExportRunSheet(designData) {
+    var csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+    fetch('/api/rack/export-runsheet/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf ? csrf.value : document.cookie.replace(/.*csrftoken=([^;]*).*/, '$1') },
+        body: JSON.stringify(designData)
+    }).then(function(resp) {
+        if (!resp.ok) throw new Error('Export failed');
+        return resp.blob();
+    }).then(function(blob) {
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'runsheet.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }).catch(function(err) {
+        console.error('Run sheet export error:', err);
+    });
+}
+
+// ═══════════════════════════════════════════════════════════
 // DESIGNER DX-01 — Experiment Design Generator (Tokamak)
 // Factor entry → design selection → run sheet via forgedoe.
 // ═══════════════════════════════════════════════════════════
@@ -5427,6 +5454,9 @@ FR.registerUnit('designer', {
 
         var genBtn = document.getElementById(id + '-btn-gen');
         if (genBtn) genBtn.addEventListener('click', function() { self._generate(); });
+
+        var exportBtn = document.getElementById(id + '-btn-export');
+        if (exportBtn) exportBtn.addEventListener('click', function() { self._exportXlsx(); });
 
         // Category → design cascade
         var catSel = document.getElementById(id + '-category');
@@ -5626,6 +5656,9 @@ FR.registerUnit('designer', {
 
         FR.LED(document.getElementById(this.id + '-led')).set('green');
 
+        // Store for export
+        this._lastDesign = r;
+
         // Emit design as columnar data (run sheet for downstream units)
         var outData = { columns: ['run'].concat(r.factor_names), data: { run: [] } };
         r.factor_names.forEach(function(n) { outData.data[n] = []; });
@@ -5635,6 +5668,11 @@ FR.registerUnit('designer', {
         });
         FR.emit(this.id, 'design', r);
         FR.emit(this.id, 'runsheet', outData);
+    },
+
+    _exportXlsx() {
+        if (!this._lastDesign) return;
+        _doeExportRunSheet(this._lastDesign);
     },
 
     receive(inputName, data) {
@@ -5770,6 +5808,7 @@ FR.registerUnit('strategist', {
     _generate:          FR._unitDefs.designer._generate,
     _showSheet:         FR._unitDefs.designer._showSheet,
     _displayRunSheet:   FR._unitDefs.designer._displayRunSheet,
+    _exportXlsx:        FR._unitDefs.designer._exportXlsx,
     receive:            FR._unitDefs.designer.receive,
     getOutput:          FR._unitDefs.designer.getOutput
 });

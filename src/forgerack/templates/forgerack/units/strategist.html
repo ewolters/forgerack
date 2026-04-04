@@ -2,15 +2,12 @@
  ╔══════════════════════════════════════════════════════════════╗
  ║  DSh-K11 — Advanced Experiment Designer                       ║
  ║  Manufacturer: KOSMOS (Dimitrov-Shapovalov Bureau)           ║
- ║  Identity: Olive powder-coated steel. Chickenhead dials,     ║
- ║  backlit buttons, CRT factor list. Controls only — patch     ║
- ║  output into a display unit for run sheet visualization.     ║
- ║  Layout: PCB cutout — two columns, u6.                       ║
+ ║  Controls only — horizontal layout, u4.                      ║
  ╚══════════════════════════════════════════════════════════════╝
 -->
 
 <!-- ════════ FRONT PANEL ════════ -->
-<div class="rack-unit-front u6 mfr-kosmos tex-matte chamfer-heavy" data-unit="strategist" data-id="${id}" style="
+<div class="rack-unit-front u4 mfr-kosmos tex-matte chamfer-heavy" data-unit="strategist" data-id="${id}" style="
     --device-accent:#a3b18a;
     background:
         radial-gradient(ellipse at 30% 40%, rgba(163,177,138,0.01), transparent 50%),
@@ -50,214 +47,172 @@
         background:radial-gradient(circle at 35% 35%, #5a5e4a, #3a3e2e 40%, #2a2e22 70%, #1e2218);
         clip-path:polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);"></div>
 
-    <!-- ══ MAIN AREA — two columns ══ -->
-    <div style="position:absolute;top:52px;left:48px;right:48px;bottom:12px;">
+    <!-- ══ MAIN AREA — single horizontal row ══ -->
+    <div style="position:absolute;top:52px;left:48px;right:48px;bottom:10px;
+        display:flex;align-items:center;gap:16px;">
 
-        <!-- ── LEFT: factor-display + factor-entry (0,0) 200×full ── -->
-        <div style="position:absolute;left:0;top:0;width:200px;bottom:0;
-            display:flex;flex-direction:column;gap:5px;">
-            <!-- Stamped tag: Factors -->
-            <div class="tex-matte" style="align-self:center;display:inline-flex;align-items:center;gap:4px;position:relative;overflow:hidden;
-                background:linear-gradient(180deg, #58585a, #48484a);
-                border:1px solid rgba(0,0,0,0.4);border-radius:1px;padding:4px 14px;
-                box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,240,215,0.05);">
-                <div style="width:3px;height:3px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #707072, #3a3a3c);
-                    box-shadow:inset 0 0.5px 0.5px rgba(255,240,215,0.1), 0 0.5px 1px rgba(0,0,0,0.3);"></div>
-                <span style="font:700 10px/1 'Courier New',monospace;color:rgba(208,208,200,0.45);text-transform:uppercase;letter-spacing:0.1em;
-                    text-shadow: 0 -0.5px 0 rgba(0,0,0,0.25), 0 0.5px 0 rgba(255,240,215,0.08);">Factors</span>
-                <div style="width:3px;height:3px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #707072, #3a3a3c);
-                    box-shadow:inset 0 0.5px 0.5px rgba(255,240,215,0.1), 0 0.5px 1px rgba(0,0,0,0.3);"></div>
+        <!-- ① Category dial -->
+        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+            <div style="position:relative;width:50px;height:50px;">
+                <div style="position:absolute;inset:-3px;border-radius:50%;background:#141810;
+                    box-shadow:inset 0 2px 5px rgba(0,0,0,0.6);"></div>
+                <div id="${id}-cat-dial" style="position:absolute;inset:0;cursor:pointer;
+                    transition: transform 0.12s ease-out;transform: rotate(0deg);">
+                    <div style="position:absolute;inset:4px;border-radius:50%;
+                        background:radial-gradient(circle at 38% 34%, rgba(255,240,215,0.07), transparent 45%),
+                            radial-gradient(circle, #222220 0%, #1a1a18 50%, #121210 100%);
+                        border:2px solid #0a0a08;
+                        box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,215,0.04);"></div>
+                    <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);
+                        width:10px;height:16px;background:linear-gradient(180deg, #1e1e1c, #141412 60%, #1a1a18);
+                        clip-path:polygon(50% 0%, 95% 70%, 80% 100%, 20% 100%, 5% 70%);"></div>
+                    <div style="position:absolute;top:1px;left:50%;transform:translateX(-50%);
+                        width:1.5px;height:11px;background:#d0d0c8;border-radius:0.5px;
+                        box-shadow:0 0 2px rgba(208,208,200,0.4);"></div>
+                    <div style="position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);
+                        width:12px;height:8px;background:linear-gradient(0deg, #1a1a18, #1e1e1c 60%, #141412);
+                        border-radius:0 0 3px 3px;border:2px solid #0a0a08;border-top:none;"></div>
+                </div>
+                <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);font:700 10px/1 'Courier New',monospace;color:rgba(208,208,200,0.3);white-space:nowrap;">CLASS</div>
+                <div style="position:absolute;top:4px;right:-26px;font:700 10px/1 'Courier New',monospace;color:rgba(208,208,200,0.3);">OPT</div>
+                <div style="position:absolute;bottom:4px;right:-22px;font:700 10px/1 'Courier New',monospace;color:rgba(208,208,200,0.3);">LHS</div>
+                <div style="position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);font:700 10px/1 'Courier New',monospace;color:rgba(208,208,200,0.3);">MIX</div>
+                <div style="position:absolute;bottom:4px;left:-22px;font:700 10px/1 'Courier New',monospace;color:rgba(208,208,200,0.3);">S-P</div>
+                <div style="position:absolute;top:4px;left:-30px;font:700 10px/1 'Courier New',monospace;color:rgba(208,208,200,0.3);">EVOP</div>
             </div>
+            <div class="tex-matte" style="display:inline-flex;align-items:center;gap:4px;margin-top:18px;position:relative;overflow:hidden;
+                background:linear-gradient(180deg, #58585a, #48484a);border:1px solid rgba(0,0,0,0.4);border-radius:1px;padding:3px 10px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,240,215,0.05);">
+                <div style="width:2px;height:2px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #707072, #3a3a3c);"></div>
+                <span style="font:700 10px/1 'Courier New',monospace;color:rgba(208,208,200,0.45);text-transform:uppercase;letter-spacing:0.08em;
+                    text-shadow: 0 -0.5px 0 rgba(0,0,0,0.25), 0 0.5px 0 rgba(255,240,215,0.08);">Category</span>
+                <div style="width:2px;height:2px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #707072, #3a3a3c);"></div>
+            </div>
+            <select id="${id}-category" style="display:none;">
+                <option value="classical">Classical</option>
+                <option value="optimal">Optimal</option>
+                <option value="space_filling">Space-Filling</option>
+                <option value="mixture">Mixture</option>
+                <option value="split_plot">Split-Plot</option>
+                <option value="evop">EVOP</option>
+            </select>
+        </div>
+
+        <!-- ② Type dial -->
+        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+            <div style="position:relative;width:50px;height:50px;overflow:visible;">
+                <div style="position:absolute;inset:-3px;border-radius:50%;background:#141810;
+                    box-shadow:inset 0 2px 5px rgba(0,0,0,0.6);"></div>
+                <div id="${id}-type-dial" style="position:absolute;inset:0;cursor:pointer;
+                    transition: transform 0.12s ease-out;transform: rotate(0deg);">
+                    <div style="position:absolute;inset:4px;border-radius:50%;
+                        background:radial-gradient(circle at 38% 34%, rgba(255,240,215,0.07), transparent 45%),
+                            radial-gradient(circle, #222220 0%, #1a1a18 50%, #121210 100%);
+                        border:2px solid #0a0a08;
+                        box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,215,0.04);"></div>
+                    <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);
+                        width:10px;height:16px;background:linear-gradient(180deg, #1e1e1c, #141412 60%, #1a1a18);
+                        clip-path:polygon(50% 0%, 95% 70%, 80% 100%, 20% 100%, 5% 70%);"></div>
+                    <div style="position:absolute;top:1px;left:50%;transform:translateX(-50%);
+                        width:1.5px;height:11px;background:#d0d0c8;border-radius:0.5px;
+                        box-shadow:0 0 2px rgba(208,208,200,0.4);"></div>
+                    <div style="position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);
+                        width:12px;height:8px;background:linear-gradient(0deg, #1a1a18, #1e1e1c 60%, #141412);
+                        border-radius:0 0 3px 3px;border:2px solid #0a0a08;border-top:none;"></div>
+                </div>
+                <div id="${id}-type-labels" style="position:absolute;inset:-24px;pointer-events:none;overflow:visible;"></div>
+            </div>
+            <div class="tex-matte" style="display:inline-flex;align-items:center;gap:4px;margin-top:18px;position:relative;overflow:hidden;
+                background:linear-gradient(180deg, #58585a, #48484a);border:1px solid rgba(0,0,0,0.4);border-radius:1px;padding:3px 10px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,240,215,0.05);">
+                <div style="width:2px;height:2px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #707072, #3a3a3c);"></div>
+                <span style="font:700 10px/1 'Courier New',monospace;color:rgba(208,208,200,0.45);text-transform:uppercase;letter-spacing:0.08em;
+                    text-shadow: 0 -0.5px 0 rgba(0,0,0,0.25), 0 0.5px 0 rgba(255,240,215,0.08);">Type</span>
+                <div style="width:2px;height:2px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #707072, #3a3a3c);"></div>
+            </div>
+            <div id="${id}-design-crt" style="display:none;"></div>
+            <select id="${id}-design" style="display:none;"></select>
+        </div>
+
+        <!-- ③ Factor CRT + entry -->
+        <div style="flex:1;display:flex;flex-direction:column;gap:3px;min-width:0;">
             <!-- Factor list CRT -->
-            <div style="height:60px;background:#010301;border:2px solid #000;border-radius:2px;
+            <div style="height:44px;background:#010301;border:2px solid #000;border-radius:2px;
                 box-shadow:inset 0 2px 6px rgba(0,0,0,0.6);position:relative;overflow:hidden;">
                 <div style="position:absolute;inset:0;background:repeating-linear-gradient(180deg, transparent, transparent 2px, rgba(163,177,138,0.004) 2px, rgba(163,177,138,0.004) 4px);pointer-events:none;z-index:2;"></div>
                 <div style="position:absolute;inset:0;box-shadow:inset 0 0 20px rgba(0,0,0,0.4);pointer-events:none;z-index:3;"></div>
-                <div id="${id}-factors" style="height:100%;overflow-y:auto;padding:6px;
-                    display:flex;flex-direction:column;gap:3px;position:relative;z-index:1;"></div>
+                <div id="${id}-factors" style="height:100%;overflow-y:auto;padding:4px 6px;
+                    display:flex;flex-direction:column;gap:2px;position:relative;z-index:1;"></div>
             </div>
-            <!-- Type toggle -->
-            <div style="display:flex;gap:4px;align-items:center;">
+            <!-- Entry row — horizontal -->
+            <div id="${id}-f-row-cont" style="display:flex;gap:3px;align-items:center;">
                 <button id="${id}-f-type-toggle" style="
-                    padding:4px 10px;font:700 10px/1 'Courier New',monospace;color:#a3b18a;
+                    padding:3px 6px;font:700 10px/1 'Courier New',monospace;color:#a3b18a;
                     background:linear-gradient(180deg, #1e2218, #161a12);
-                    border:2px solid #0a0a08;border-radius:2px;cursor:pointer;
+                    border:2px solid #0a0a08;border-radius:2px;cursor:pointer;flex-shrink:0;
                     box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,240,215,0.03);
                 ">CONT</button>
-                <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.2);letter-spacing:0.05em;">mode</span>
-            </div>
-            <!-- Continuous -->
-            <div id="${id}-f-row-cont" style="display:flex;flex-direction:column;gap:4px;">
-                <div style="display:flex;gap:4px;align-items:center;">
-                    <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.35);width:28px;">Name</span>
-                    <input type="text" id="${id}-f-name" placeholder="factor" style="
-                        flex:1;background:#080a06;border:2px solid #0a0a08;color:#a3b18a;padding:5px 6px;border-radius:2px;
-                        font:11px/1 'JetBrains Mono',monospace;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);text-shadow: 0 0 3px rgba(163,177,138,0.15);">
-                </div>
-                <div style="display:flex;gap:4px;align-items:center;">
-                    <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.35);width:28px;">Lo</span>
-                    <input type="number" id="${id}-f-low" placeholder="0" style="
-                        flex:1;background:#080a06;border:2px solid #0a0a08;color:#b8c8a0;padding:5px 6px;border-radius:2px;text-align:center;
-                        font:11px/1 'JetBrains Mono',monospace;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);text-shadow: 0 0 3px rgba(163,177,138,0.15);">
-                    <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.35);width:20px;text-align:center;">Hi</span>
-                    <input type="number" id="${id}-f-high" placeholder="100" style="
-                        flex:1;background:#080a06;border:2px solid #0a0a08;color:#b8c8a0;padding:5px 6px;border-radius:2px;text-align:center;
-                        font:11px/1 'JetBrains Mono',monospace;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);text-shadow: 0 0 3px rgba(163,177,138,0.15);">
-                </div>
+                <input type="text" id="${id}-f-name" placeholder="name" style="
+                    width:60px;background:#080a06;border:2px solid #0a0a08;color:#a3b18a;padding:4px 5px;border-radius:2px;
+                    font:11px/1 'JetBrains Mono',monospace;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);text-shadow: 0 0 3px rgba(163,177,138,0.15);">
+                <input type="number" id="${id}-f-low" placeholder="lo" style="
+                    width:36px;background:#080a06;border:2px solid #0a0a08;color:#b8c8a0;padding:4px 3px;border-radius:2px;text-align:center;
+                    font:11px/1 'JetBrains Mono',monospace;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);text-shadow: 0 0 3px rgba(163,177,138,0.15);">
+                <input type="number" id="${id}-f-high" placeholder="hi" style="
+                    width:36px;background:#080a06;border:2px solid #0a0a08;color:#b8c8a0;padding:4px 3px;border-radius:2px;text-align:center;
+                    font:11px/1 'JetBrains Mono',monospace;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);text-shadow: 0 0 3px rgba(163,177,138,0.15);">
                 <button id="${id}-btn-add" style="
-                    padding:5px 8px;font:700 11px/1 'Courier New',monospace;color:#a3b18a;
-                    background:linear-gradient(180deg, #1e2218, #161a12);border:2px solid #0a0a08;border-radius:2px;cursor:pointer;
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,240,215,0.03);
-                    width:100%;text-transform:uppercase;letter-spacing:0.1em;">+ Add Factor</button>
+                    padding:4px 6px;font:700 11px/1 'Courier New',monospace;color:#a3b18a;
+                    background:linear-gradient(180deg, #1e2218, #161a12);border:2px solid #0a0a08;border-radius:2px;cursor:pointer;flex-shrink:0;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,240,215,0.03);">+</button>
             </div>
-            <!-- Categorical -->
-            <div id="${id}-f-row-cat" style="display:none;flex-direction:column;gap:4px;">
-                <div style="display:flex;gap:4px;align-items:center;">
-                    <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.35);width:28px;">Name</span>
-                    <input type="text" id="${id}-f-name-cat" placeholder="factor" style="
-                        flex:1;background:#080a06;border:2px solid #0a0a08;color:#a3b18a;padding:5px 6px;border-radius:2px;
-                        font:11px/1 'JetBrains Mono',monospace;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);text-shadow: 0 0 3px rgba(163,177,138,0.15);">
-                </div>
-                <div style="display:flex;gap:4px;align-items:center;">
-                    <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.35);width:28px;">Lvls</span>
-                    <input type="text" id="${id}-f-levels" placeholder="A, B, C" style="
-                        flex:1;background:#080a06;border:2px solid #0a0a08;color:#b8c8a0;padding:5px 6px;border-radius:2px;
-                        font:11px/1 'JetBrains Mono',monospace;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);text-shadow: 0 0 3px rgba(163,177,138,0.15);">
-                </div>
+            <!-- Categorical (hidden) -->
+            <div id="${id}-f-row-cat" style="display:none;gap:3px;align-items:center;">
+                <input type="text" id="${id}-f-name-cat" placeholder="name" style="
+                    width:60px;background:#080a06;border:2px solid #0a0a08;color:#a3b18a;padding:4px 5px;border-radius:2px;
+                    font:11px/1 'JetBrains Mono',monospace;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);">
+                <input type="text" id="${id}-f-levels" placeholder="A, B, C" style="
+                    flex:1;background:#080a06;border:2px solid #0a0a08;color:#b8c8a0;padding:4px 5px;border-radius:2px;
+                    font:11px/1 'JetBrains Mono',monospace;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);">
                 <button id="${id}-btn-add-cat" style="
-                    padding:5px 8px;font:700 11px/1 'Courier New',monospace;color:#a3b18a;
-                    background:linear-gradient(180deg, #1e2218, #161a12);border:2px solid #0a0a08;border-radius:2px;cursor:pointer;
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,240,215,0.03);
-                    width:100%;text-transform:uppercase;letter-spacing:0.1em;">+ Add Factor</button>
+                    padding:4px 6px;font:700 11px/1 'Courier New',monospace;color:#a3b18a;
+                    background:linear-gradient(180deg, #1e2218, #161a12);border:2px solid #0a0a08;border-radius:2px;cursor:pointer;flex-shrink:0;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,240,215,0.03);">+</button>
             </div>
-            <!-- N / R -->
-            <div style="display:flex;gap:4px;align-items:center;margin-top:auto;">
+            <!-- N / R inline -->
+            <div style="display:flex;gap:4px;align-items:center;">
                 <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.4);">N</span>
                 <input type="number" id="${id}-n-runs-input" value="20" style="
-                    width:40px;background:#080a06;border:2px solid #0a0a08;color:#a3b18a;padding:5px 6px;border-radius:2px;text-align:center;
-                    font:11px/1 'JetBrains Mono',monospace;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);text-shadow: 0 0 3px rgba(163,177,138,0.15);">
+                    width:36px;background:#080a06;border:2px solid #0a0a08;color:#a3b18a;padding:4px 3px;border-radius:2px;text-align:center;
+                    font:11px/1 'JetBrains Mono',monospace;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);">
                 <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.4);">R</span>
                 <input type="number" id="${id}-resolution" value="3" min="3" max="5" style="
-                    width:34px;background:#080a06;border:2px solid #0a0a08;color:#a3b18a;padding:5px 6px;border-radius:2px;text-align:center;
-                    font:11px/1 'JetBrains Mono',monospace;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);text-shadow: 0 0 3px rgba(163,177,138,0.15);">
+                    width:30px;background:#080a06;border:2px solid #0a0a08;color:#a3b18a;padding:4px 3px;border-radius:2px;text-align:center;
+                    font:11px/1 'JetBrains Mono',monospace;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);">
             </div>
         </div>
 
-        <!-- ── RIGHT: dials + buttons (right:0, 0) 122×full ── -->
-        <div style="position:absolute;right:0;top:0;width:122px;bottom:0;
-            display:flex;flex-direction:column;align-items:center;gap:6px;">
-
-            <!-- Category dial + tag -->
-            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:116px;">
-                <div style="position:relative;width:50px;height:50px;">
-                    <div style="position:absolute;inset:-3px;border-radius:50%;background:#141810;
-                        box-shadow:inset 0 2px 5px rgba(0,0,0,0.6);"></div>
-                    <div id="${id}-cat-dial" style="position:absolute;inset:0;cursor:pointer;
-                        transition: transform 0.12s ease-out;transform: rotate(0deg);">
-                        <div style="position:absolute;inset:4px;border-radius:50%;
-                            background:radial-gradient(circle at 38% 34%, rgba(255,240,215,0.07), transparent 45%),
-                                radial-gradient(circle, #222220 0%, #1a1a18 50%, #121210 100%);
-                            border:2px solid #0a0a08;
-                            box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,215,0.04);"></div>
-                        <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);
-                            width:10px;height:16px;background:linear-gradient(180deg, #1e1e1c, #141412 60%, #1a1a18);
-                            clip-path:polygon(50% 0%, 95% 70%, 80% 100%, 20% 100%, 5% 70%);"></div>
-                        <div style="position:absolute;top:1px;left:50%;transform:translateX(-50%);
-                            width:1.5px;height:11px;background:#d0d0c8;border-radius:0.5px;
-                            box-shadow:0 0 2px rgba(208,208,200,0.4);"></div>
-                        <div style="position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);
-                            width:12px;height:8px;background:linear-gradient(0deg, #1a1a18, #1e1e1c 60%, #141412);
-                            border-radius:0 0 3px 3px;border:2px solid #0a0a08;border-top:none;"></div>
-                    </div>
-                    <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);font:700 10px/1 'Courier New',monospace;color:rgba(208,208,200,0.3);white-space:nowrap;">CLASS</div>
-                    <div style="position:absolute;top:4px;right:-26px;font:700 10px/1 'Courier New',monospace;color:rgba(208,208,200,0.3);">OPT</div>
-                    <div style="position:absolute;bottom:4px;right:-22px;font:700 10px/1 'Courier New',monospace;color:rgba(208,208,200,0.3);">LHS</div>
-                    <div style="position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);font:700 10px/1 'Courier New',monospace;color:rgba(208,208,200,0.3);">MIX</div>
-                    <div style="position:absolute;bottom:4px;left:-22px;font:700 10px/1 'Courier New',monospace;color:rgba(208,208,200,0.3);">S-P</div>
-                    <div style="position:absolute;top:4px;left:-30px;font:700 10px/1 'Courier New',monospace;color:rgba(208,208,200,0.3);">EVOP</div>
-                </div>
-                <div class="tex-matte" style="display:inline-flex;align-items:center;gap:4px;margin-top:18px;position:relative;overflow:hidden;
-                    background:linear-gradient(180deg, #58585a, #48484a);
-                    border:1px solid rgba(0,0,0,0.4);border-radius:1px;padding:4px 14px;
-                    box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,240,215,0.05);">
-                    <div style="width:3px;height:3px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #707072, #3a3a3c);
-                        box-shadow:inset 0 0.5px 0.5px rgba(255,240,215,0.1), 0 0.5px 1px rgba(0,0,0,0.3);"></div>
-                    <span style="font:700 10px/1 'Courier New',monospace;color:rgba(208,208,200,0.45);text-transform:uppercase;letter-spacing:0.1em;
-                        text-shadow: 0 -0.5px 0 rgba(0,0,0,0.25), 0 0.5px 0 rgba(255,240,215,0.08);">Category</span>
-                    <div style="width:3px;height:3px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #707072, #3a3a3c);
-                        box-shadow:inset 0 0.5px 0.5px rgba(255,240,215,0.1), 0 0.5px 1px rgba(0,0,0,0.3);"></div>
-                </div>
-                <select id="${id}-category" style="display:none;">
-                    <option value="classical">Classical</option>
-                    <option value="optimal">Optimal</option>
-                    <option value="space_filling">Space-Filling</option>
-                    <option value="mixture">Mixture</option>
-                    <option value="split_plot">Split-Plot</option>
-                    <option value="evop">EVOP</option>
-                </select>
-            </div>
-
-            <!-- Type dial + tag -->
-            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:116px;overflow:visible;">
-                <div style="position:relative;width:50px;height:50px;overflow:visible;">
-                    <div style="position:absolute;inset:-3px;border-radius:50%;background:#141810;
-                        box-shadow:inset 0 2px 5px rgba(0,0,0,0.6);"></div>
-                    <div id="${id}-type-dial" style="position:absolute;inset:0;cursor:pointer;
-                        transition: transform 0.12s ease-out;transform: rotate(0deg);">
-                        <div style="position:absolute;inset:4px;border-radius:50%;
-                            background:radial-gradient(circle at 38% 34%, rgba(255,240,215,0.07), transparent 45%),
-                                radial-gradient(circle, #222220 0%, #1a1a18 50%, #121210 100%);
-                            border:2px solid #0a0a08;
-                            box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,215,0.04);"></div>
-                        <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);
-                            width:10px;height:16px;background:linear-gradient(180deg, #1e1e1c, #141412 60%, #1a1a18);
-                            clip-path:polygon(50% 0%, 95% 70%, 80% 100%, 20% 100%, 5% 70%);"></div>
-                        <div style="position:absolute;top:1px;left:50%;transform:translateX(-50%);
-                            width:1.5px;height:11px;background:#d0d0c8;border-radius:0.5px;
-                            box-shadow:0 0 2px rgba(208,208,200,0.4);"></div>
-                        <div style="position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);
-                            width:12px;height:8px;background:linear-gradient(0deg, #1a1a18, #1e1e1c 60%, #141412);
-                            border-radius:0 0 3px 3px;border:2px solid #0a0a08;border-top:none;"></div>
-                    </div>
-                    <div id="${id}-type-labels" style="position:absolute;inset:-24px;pointer-events:none;overflow:visible;"></div>
-                </div>
-                <div class="tex-matte" style="display:inline-flex;align-items:center;gap:4px;margin-top:24px;position:relative;overflow:hidden;
-                    background:linear-gradient(180deg, #58585a, #48484a);
-                    border:1px solid rgba(0,0,0,0.4);border-radius:1px;padding:4px 14px;
-                    box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,240,215,0.05);">
-                    <div style="width:3px;height:3px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #707072, #3a3a3c);
-                        box-shadow:inset 0 0.5px 0.5px rgba(255,240,215,0.1), 0 0.5px 1px rgba(0,0,0,0.3);"></div>
-                    <span style="font:700 10px/1 'Courier New',monospace;color:rgba(208,208,200,0.45);text-transform:uppercase;letter-spacing:0.1em;
-                        text-shadow: 0 -0.5px 0 rgba(0,0,0,0.25), 0 0.5px 0 rgba(255,240,215,0.08);">Type</span>
-                    <div style="width:3px;height:3px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #707072, #3a3a3c);
-                        box-shadow:inset 0 0.5px 0.5px rgba(255,240,215,0.1), 0 0.5px 1px rgba(0,0,0,0.3);"></div>
-                </div>
-                <div id="${id}-design-crt" style="display:none;"></div>
-                <select id="${id}-design" style="display:none;"></select>
-            </div>
-
-            <!-- Generate + Download — stacked -->
-            <div style="margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:4px;">
-                <button id="${id}-btn-gen" style="
-                    width:40px;height:40px;cursor:pointer;
-                    background:radial-gradient(circle at 50% 45%, #2a2a28, #1a1a18 50%, #0e0e0c);
-                    border:2px solid #0a0a08;border-radius:3px;
-                    color:#a3b18a;font:700 14px/1 sans-serif;
-                    box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,215,0.04), inset 0 -2px 4px rgba(0,0,0,0.3);
-                    display:flex;align-items:center;justify-content:center;">&#x25B6;</button>
-                <button id="${id}-btn-export" style="
-                    width:40px;height:40px;cursor:pointer;
-                    background:radial-gradient(circle at 50% 45%, #2a2a28, #1a1a18 50%, #0e0e0c);
-                    border:2px solid #0a0a08;border-radius:3px;
-                    color:rgba(163,177,138,0.4);font:700 14px/1 sans-serif;
-                    box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,215,0.04), inset 0 -2px 4px rgba(0,0,0,0.3);
-                    display:flex;align-items:center;justify-content:center;">&#x2B73;</button>
-            </div>
+        <!-- ④ Generate + Download -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;">
+            <button id="${id}-btn-gen" style="
+                width:40px;height:40px;cursor:pointer;
+                background:radial-gradient(circle at 50% 45%, #2a2a28, #1a1a18 50%, #0e0e0c);
+                border:2px solid #0a0a08;border-radius:3px;
+                color:#a3b18a;font:700 14px/1 sans-serif;
+                box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,215,0.04), inset 0 -2px 4px rgba(0,0,0,0.3);
+                display:flex;align-items:center;justify-content:center;">&#x25B6;</button>
+            <button id="${id}-btn-export" style="
+                width:40px;height:40px;cursor:pointer;
+                background:radial-gradient(circle at 50% 45%, #2a2a28, #1a1a18 50%, #0e0e0c);
+                border:2px solid #0a0a08;border-radius:3px;
+                color:rgba(163,177,138,0.4);font:700 14px/1 sans-serif;
+                box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,215,0.04), inset 0 -2px 4px rgba(0,0,0,0.3);
+                display:flex;align-items:center;justify-content:center;">&#x2B73;</button>
         </div>
 
     </div>
 
-    <!-- Hidden runsheet display for JS compat -->
+    <!-- Hidden elements for JS compat -->
     <div id="${id}-runsheet" style="display:none;"></div>
     <div id="${id}-n-runs" style="display:none;">—</div>
     <span id="${id}-design-badge" style="display:none;"></span>
@@ -272,7 +227,7 @@
 </div>
 
 <!-- ════════ BACK PANEL ════════ -->
-<div class="rack-unit-back u6" data-unit-back="strategist" data-id="${id}" style="
+<div class="rack-unit-back u4" data-unit-back="strategist" data-id="${id}" style="
     background: linear-gradient(160deg, #1c1c1c, #1f1f1f 40%, #1d1d1d);overflow:hidden;position:relative;">
     <div class="rack-screw" style="position:absolute;top:4px;left:4px;"></div>
     <div class="rack-screw" style="position:absolute;top:4px;right:4px;"></div>
@@ -286,12 +241,6 @@
         <div style="display:flex;gap:18px;">
             <div class="patch-group"><div class="patch-jack" data-output="design" data-unit-id="${id}"></div><div class="patch-jack-label">design</div></div>
             <div class="patch-group"><div class="patch-jack" data-output="runsheet" data-unit-id="${id}"></div><div class="patch-jack-label">run sheet</div></div>
-        </div>
-    </div>
-    <div style="padding:6px 48px;margin-top:auto;border-top:1px solid rgba(163,177,138,0.02);">
-        <div style="font:300 10px/1.4 'Courier New',monospace;color:rgba(163,177,138,0.04);letter-spacing:0.04em;">
-            FORGERACK DSh-K11 &#x2022; REV.D &#x2022; FORGEDOE ENGINE<br>
-            KOSMOS ENGINEERING &#x2022; &#x0414;&#x0428;-&#x041A;11
         </div>
     </div>
     <div class="rack-screw" style="position:absolute;bottom:4px;left:4px;"></div>

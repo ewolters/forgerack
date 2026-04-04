@@ -1,11 +1,14 @@
 <!--
  ╔══════════════════════════════════════════════════════════════╗
- ║  DSh-K11 — CUTOUT TEMPLATE                                   ║
- ║  Black rectangles showing allocated regions.                  ║
- ║  Approve layout before populating with widgets.               ║
+ ║  DSh-K11 — Advanced Experiment Designer                       ║
+ ║  Manufacturer: KOSMOS (Dimitrov-Shapovalov Bureau)           ║
+ ║  Identity: Olive powder-coated steel. Chickenhead dials,     ║
+ ║  backlit generate button, CRT factor list.                   ║
+ ║  Layout: PCB cutout method — absolute positioned regions.    ║
  ╚══════════════════════════════════════════════════════════════╝
 -->
 
+<!-- ════════ FRONT PANEL ════════ -->
 <div class="rack-unit-front u11 mfr-kosmos tex-matte chamfer-heavy" data-unit="strategist" data-id="${id}" style="
     --device-accent:#a3b18a;
     background:
@@ -13,7 +16,7 @@
         linear-gradient(165deg, #2a2e22 0%, #242820 30%, #282c24 50%, #1e2218 80%);
     overflow:hidden;position:relative;
 ">
-    <!-- ══ NAMEPLATE (fixed) ══ -->
+    <!-- ══ NAMEPLATE ══ -->
     <div style="
         display:flex;align-items:center;gap:10px;
         padding:6px 48px;position:relative;
@@ -38,7 +41,7 @@
         </div>
     </div>
 
-    <!-- ══ HEX BOLTS (fixed hardware) ══ -->
+    <!-- ══ HEX BOLTS ══ -->
     <div style="position:absolute;top:38px;left:46px;width:9px;height:9px;z-index:10;
         background:radial-gradient(circle at 35% 35%, #5a5e4a, #3a3e2e 40%, #2a2e22 70%, #1e2218);
         clip-path:polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);"></div>
@@ -49,82 +52,290 @@
     <!-- ══ MAIN AREA — absolute positioned cutouts ══ -->
     <div style="position:absolute;top:52px;left:48px;right:48px;bottom:16px;">
 
-        <!-- CUTOUT-A: factor-display — tag + CRT -->
+        <!-- ── CUTOUT-A: factor-display (0,0) 170×120 ── -->
         <div style="position:absolute;left:0;top:0;width:170px;height:120px;
-            background:#000;border:1px solid rgba(163,177,138,0.15);
-            display:flex;align-items:center;justify-content:center;">
-            <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.4);text-transform:uppercase;letter-spacing:0.1em;">
-                A: factor-display<br>
-                <span style="font-weight:400;font-size:9px;color:rgba(163,177,138,0.2);">170 × 120</span>
-            </span>
+            display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <div class="tex-matte" style="display:inline-flex;align-items:center;gap:4px;position:relative;overflow:hidden;
+                background:linear-gradient(180deg, #58585a, #48484a);
+                border:1px solid rgba(0,0,0,0.4);border-radius:1px;padding:4px 14px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,240,215,0.05);">
+                <div style="width:3px;height:3px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #707072, #3a3a3c);
+                    box-shadow:inset 0 0.5px 0.5px rgba(255,240,215,0.1), 0 0.5px 1px rgba(0,0,0,0.3);"></div>
+                <span style="font:700 10px/1 'Courier New',monospace;color:rgba(208,208,200,0.45);text-transform:uppercase;letter-spacing:0.1em;
+                    text-shadow: 0 -0.5px 0 rgba(0,0,0,0.25), 0 0.5px 0 rgba(255,240,215,0.08);">Factors</span>
+                <div style="width:3px;height:3px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #707072, #3a3a3c);
+                    box-shadow:inset 0 0.5px 0.5px rgba(255,240,215,0.1), 0 0.5px 1px rgba(0,0,0,0.3);"></div>
+            </div>
+            <div style="width:100%;flex:1;background:#010301;border:2px solid #000;border-radius:2px;
+                box-shadow:inset 0 2px 6px rgba(0,0,0,0.6);position:relative;overflow:hidden;">
+                <div style="position:absolute;inset:0;background:repeating-linear-gradient(180deg, transparent, transparent 2px, rgba(163,177,138,0.004) 2px, rgba(163,177,138,0.004) 4px);pointer-events:none;z-index:2;"></div>
+                <div style="position:absolute;inset:0;box-shadow:inset 0 0 20px rgba(0,0,0,0.4);pointer-events:none;z-index:3;"></div>
+                <div id="${id}-factors" style="height:100%;overflow-y:auto;padding:6px;
+                    display:flex;flex-direction:column;gap:3px;position:relative;z-index:1;"></div>
+            </div>
         </div>
 
-        <!-- CUTOUT-B: factor-entry — toggle + inputs + N/R -->
+        <!-- ── CUTOUT-B: factor-entry (0,126) 170×268 ── -->
         <div style="position:absolute;left:0;top:126px;width:170px;height:268px;
-            background:#000;border:1px solid rgba(163,177,138,0.15);
-            display:flex;align-items:center;justify-content:center;">
-            <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.4);text-transform:uppercase;letter-spacing:0.1em;text-align:center;">
-                B: factor-entry<br>
-                <span style="font-weight:400;font-size:9px;color:rgba(163,177,138,0.2);">170 × 268</span>
-            </span>
+            display:flex;flex-direction:column;gap:5px;">
+            <div style="display:flex;gap:4px;align-items:center;">
+                <button id="${id}-f-type-toggle" style="
+                    padding:4px 10px;font:700 10px/1 'Courier New',monospace;color:#a3b18a;
+                    background:linear-gradient(180deg, #1e2218, #161a12);
+                    border:2px solid #0a0a08;border-radius:2px;cursor:pointer;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,240,215,0.03);
+                ">CONT</button>
+                <span style="font:700 9px/1 'Courier New',monospace;color:rgba(163,177,138,0.2);letter-spacing:0.05em;">mode</span>
+            </div>
+            <div id="${id}-f-row-cont" style="display:flex;flex-direction:column;gap:4px;">
+                <div style="display:flex;gap:4px;align-items:center;">
+                    <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.35);width:28px;">Name</span>
+                    <input type="text" id="${id}-f-name" placeholder="factor" style="
+                        flex:1;background:#080a06;border:2px solid #0a0a08;color:#a3b18a;padding:5px 6px;border-radius:2px;
+                        font:11px/1 'JetBrains Mono',monospace;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);text-shadow: 0 0 3px rgba(163,177,138,0.15);">
+                </div>
+                <div style="display:flex;gap:4px;align-items:center;">
+                    <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.35);width:28px;">Lo</span>
+                    <input type="number" id="${id}-f-low" placeholder="0" style="
+                        flex:1;background:#080a06;border:2px solid #0a0a08;color:#b8c8a0;padding:5px 6px;border-radius:2px;text-align:center;
+                        font:11px/1 'JetBrains Mono',monospace;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);text-shadow: 0 0 3px rgba(163,177,138,0.15);">
+                    <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.35);width:20px;text-align:center;">Hi</span>
+                    <input type="number" id="${id}-f-high" placeholder="100" style="
+                        flex:1;background:#080a06;border:2px solid #0a0a08;color:#b8c8a0;padding:5px 6px;border-radius:2px;text-align:center;
+                        font:11px/1 'JetBrains Mono',monospace;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);text-shadow: 0 0 3px rgba(163,177,138,0.15);">
+                </div>
+                <button id="${id}-btn-add" style="
+                    padding:5px 8px;font:700 11px/1 'Courier New',monospace;color:#a3b18a;
+                    background:linear-gradient(180deg, #1e2218, #161a12);border:2px solid #0a0a08;border-radius:2px;cursor:pointer;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,240,215,0.03);
+                    width:100%;text-transform:uppercase;letter-spacing:0.1em;">+ Add Factor</button>
+            </div>
+            <div id="${id}-f-row-cat" style="display:none;flex-direction:column;gap:4px;">
+                <div style="display:flex;gap:4px;align-items:center;">
+                    <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.35);width:28px;">Name</span>
+                    <input type="text" id="${id}-f-name-cat" placeholder="factor" style="
+                        flex:1;background:#080a06;border:2px solid #0a0a08;color:#a3b18a;padding:5px 6px;border-radius:2px;
+                        font:11px/1 'JetBrains Mono',monospace;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);text-shadow: 0 0 3px rgba(163,177,138,0.15);">
+                </div>
+                <div style="display:flex;gap:4px;align-items:center;">
+                    <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.35);width:28px;">Lvls</span>
+                    <input type="text" id="${id}-f-levels" placeholder="A, B, C" style="
+                        flex:1;background:#080a06;border:2px solid #0a0a08;color:#b8c8a0;padding:5px 6px;border-radius:2px;
+                        font:11px/1 'JetBrains Mono',monospace;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);text-shadow: 0 0 3px rgba(163,177,138,0.15);">
+                </div>
+                <button id="${id}-btn-add-cat" style="
+                    padding:5px 8px;font:700 11px/1 'Courier New',monospace;color:#a3b18a;
+                    background:linear-gradient(180deg, #1e2218, #161a12);border:2px solid #0a0a08;border-radius:2px;cursor:pointer;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,240,215,0.03);
+                    width:100%;text-transform:uppercase;letter-spacing:0.1em;">+ Add Factor</button>
+            </div>
+            <div style="display:flex;gap:4px;align-items:center;margin-top:4px;">
+                <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.4);">N</span>
+                <input type="number" id="${id}-n-runs-input" value="20" style="
+                    width:40px;background:#080a06;border:2px solid #0a0a08;color:#a3b18a;padding:5px 6px;border-radius:2px;text-align:center;
+                    font:11px/1 'JetBrains Mono',monospace;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);text-shadow: 0 0 3px rgba(163,177,138,0.15);">
+                <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.4);">R</span>
+                <input type="number" id="${id}-resolution" value="3" min="3" max="5" style="
+                    width:34px;background:#080a06;border:2px solid #0a0a08;color:#a3b18a;padding:5px 6px;border-radius:2px;text-align:center;
+                    font:11px/1 'JetBrains Mono',monospace;box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);text-shadow: 0 0 3px rgba(163,177,138,0.15);">
+            </div>
         </div>
 
-        <!-- CUTOUT-C: runsheet-header — tag + runs counter + badge -->
+        <!-- ── CUTOUT-C: runsheet-header (182,0) flex×30 ── -->
         <div style="position:absolute;left:182px;top:0;right:134px;height:30px;
-            background:#000;border:1px solid rgba(163,177,138,0.15);
-            display:flex;align-items:center;justify-content:center;">
-            <span style="font:700 9px/1 'Courier New',monospace;color:rgba(163,177,138,0.4);text-transform:uppercase;letter-spacing:0.1em;">
-                C: runsheet-header
-            </span>
+            display:flex;justify-content:space-between;align-items:center;">
+            <div class="tex-matte" style="display:inline-flex;align-items:center;gap:4px;position:relative;overflow:hidden;
+                background:linear-gradient(180deg, #58585a, #48484a);
+                border:1px solid rgba(0,0,0,0.4);border-radius:1px;padding:4px 14px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,240,215,0.05);">
+                <div style="width:3px;height:3px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #707072, #3a3a3c);
+                    box-shadow:inset 0 0.5px 0.5px rgba(255,240,215,0.1), 0 0.5px 1px rgba(0,0,0,0.3);"></div>
+                <span style="font:700 10px/1 'Courier New',monospace;color:rgba(208,208,200,0.45);text-transform:uppercase;letter-spacing:0.1em;
+                    text-shadow: 0 -0.5px 0 rgba(0,0,0,0.25), 0 0.5px 0 rgba(255,240,215,0.08);">Run Sheet</span>
+                <div style="width:3px;height:3px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #707072, #3a3a3c);
+                    box-shadow:inset 0 0.5px 0.5px rgba(255,240,215,0.1), 0 0.5px 1px rgba(0,0,0,0.3);"></div>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center;">
+                <span style="font:700 11px/1 'JetBrains Mono',monospace;color:rgba(163,177,138,0.3);">
+                    <span id="${id}-n-runs">—</span> runs</span>
+                <span class="badge" id="${id}-design-badge" style="display:none;font-size:8px;background:rgba(163,177,138,0.08);color:rgba(163,177,138,0.4);border:1px solid rgba(163,177,138,0.1);"></span>
+            </div>
         </div>
 
-        <!-- CUTOUT-D: runsheet-crt — frame bezel + CRT screen -->
-        <div style="position:absolute;left:182px;top:36px;right:134px;bottom:0;
-            background:#000;border:1px solid rgba(163,177,138,0.15);
-            display:flex;align-items:center;justify-content:center;">
-            <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.4);text-transform:uppercase;letter-spacing:0.1em;text-align:center;">
-                D: runsheet-crt<br>
-                <span style="font-weight:400;font-size:9px;color:rgba(163,177,138,0.2);">flex × flex</span>
-            </span>
+        <!-- ── CUTOUT-D: runsheet-crt (182,36) flex×flex ── -->
+        <div style="position:absolute;left:182px;top:36px;right:134px;bottom:0;">
+            <div class="frame-bezel tex-matte" style="height:100%;padding:4px;position:relative;overflow:hidden;
+                background: linear-gradient(145deg, #343830 0%, #282c24 20%, #1e221a 80%, #161a12 100%);
+                border-radius:3px;box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,215,0.03), inset 0 -1px 2px rgba(0,0,0,0.3);">
+                <div class="crt-screen" style="height:100%;border-radius:2px;position:relative;overflow:hidden;
+                    background:#010301;border:2px solid #000;box-shadow: inset 0 3px 12px rgba(0,0,0,0.8), inset 0 0 30px rgba(0,0,0,0.4);">
+                    <div class="crt-scanlines" style="position:absolute;inset:0;background:repeating-linear-gradient(180deg, transparent, transparent 2px, rgba(163,177,138,0.005) 2px, rgba(163,177,138,0.005) 4px);pointer-events:none;z-index:6;"></div>
+                    <div class="crt-bloom" style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%, rgba(163,177,138,0.012), transparent 65%);pointer-events:none;z-index:5;"></div>
+                    <div class="crt-edge" style="position:absolute;inset:0;box-shadow:inset 0 0 30px rgba(0,0,0,0.5);pointer-events:none;z-index:7;"></div>
+                    <div id="${id}-runsheet" style="height:100%;overflow-y:auto;padding:8px 10px;
+                        font:11px/1.5 'JetBrains Mono',monospace;color:rgba(163,177,138,0.25);text-shadow: 0 0 3px currentColor;
+                        position:relative;z-index:1;
+                    "><span style="color:rgba(163,177,138,0.1);">Define factors &amp; select design_</span></div>
+                </div>
+            </div>
         </div>
 
-        <!-- CUTOUT-E: category-dial — dial + 6 labels + tag -->
+        <!-- ── CUTOUT-E: category-dial (right:0, top:0) 122×116 ── -->
         <div style="position:absolute;right:0;top:0;width:122px;height:116px;
-            background:#000;border:1px solid rgba(163,177,138,0.15);
-            display:flex;align-items:center;justify-content:center;">
-            <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.4);text-transform:uppercase;letter-spacing:0.1em;text-align:center;">
-                E: category-dial<br>
-                <span style="font-weight:400;font-size:9px;color:rgba(163,177,138,0.2);">122 × 116</span>
-            </span>
+            display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            <div style="position:relative;width:50px;height:50px;">
+                <div style="position:absolute;inset:-3px;border-radius:50%;background:#141810;
+                    box-shadow:inset 0 2px 5px rgba(0,0,0,0.6);"></div>
+                <div id="${id}-cat-dial" style="position:absolute;inset:0;cursor:pointer;
+                    transition: transform 0.12s ease-out;transform: rotate(0deg);">
+                    <div style="position:absolute;inset:4px;border-radius:50%;
+                        background:radial-gradient(circle at 38% 34%, rgba(255,240,215,0.07), transparent 45%),
+                            radial-gradient(circle, #222220 0%, #1a1a18 50%, #121210 100%);
+                        border:2px solid #0a0a08;
+                        box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,215,0.04);"></div>
+                    <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);
+                        width:10px;height:16px;background:linear-gradient(180deg, #1e1e1c, #141412 60%, #1a1a18);
+                        clip-path:polygon(50% 0%, 95% 70%, 80% 100%, 20% 100%, 5% 70%);"></div>
+                    <div style="position:absolute;top:1px;left:50%;transform:translateX(-50%);
+                        width:1.5px;height:11px;background:#d0d0c8;border-radius:0.5px;
+                        box-shadow:0 0 2px rgba(208,208,200,0.4);"></div>
+                    <div style="position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);
+                        width:12px;height:8px;background:linear-gradient(0deg, #1a1a18, #1e1e1c 60%, #141412);
+                        border-radius:0 0 3px 3px;border:2px solid #0a0a08;border-top:none;"></div>
+                </div>
+                <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);font:700 8px/1 'Courier New',monospace;color:rgba(208,208,200,0.3);white-space:nowrap;">CLASS</div>
+                <div style="position:absolute;top:4px;right:-26px;font:700 8px/1 'Courier New',monospace;color:rgba(208,208,200,0.3);">OPT</div>
+                <div style="position:absolute;bottom:4px;right:-22px;font:700 8px/1 'Courier New',monospace;color:rgba(208,208,200,0.3);">LHS</div>
+                <div style="position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);font:700 8px/1 'Courier New',monospace;color:rgba(208,208,200,0.3);">MIX</div>
+                <div style="position:absolute;bottom:4px;left:-22px;font:700 8px/1 'Courier New',monospace;color:rgba(208,208,200,0.3);">S-P</div>
+                <div style="position:absolute;top:4px;left:-30px;font:700 8px/1 'Courier New',monospace;color:rgba(208,208,200,0.3);">EVOP</div>
+            </div>
+            <div class="tex-matte" style="display:inline-flex;align-items:center;gap:4px;margin-top:18px;position:relative;overflow:hidden;
+                background:linear-gradient(180deg, #58585a, #48484a);
+                border:1px solid rgba(0,0,0,0.4);border-radius:1px;padding:4px 14px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,240,215,0.05);">
+                <div style="width:3px;height:3px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #707072, #3a3a3c);
+                    box-shadow:inset 0 0.5px 0.5px rgba(255,240,215,0.1), 0 0.5px 1px rgba(0,0,0,0.3);"></div>
+                <span style="font:700 10px/1 'Courier New',monospace;color:rgba(208,208,200,0.45);text-transform:uppercase;letter-spacing:0.1em;
+                    text-shadow: 0 -0.5px 0 rgba(0,0,0,0.25), 0 0.5px 0 rgba(255,240,215,0.08);">Category</span>
+                <div style="width:3px;height:3px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #707072, #3a3a3c);
+                    box-shadow:inset 0 0.5px 0.5px rgba(255,240,215,0.1), 0 0.5px 1px rgba(0,0,0,0.3);"></div>
+            </div>
+            <select id="${id}-category" style="display:none;">
+                <option value="classical">Classical</option>
+                <option value="optimal">Optimal</option>
+                <option value="space_filling">Space-Filling</option>
+                <option value="mixture">Mixture</option>
+                <option value="split_plot">Split-Plot</option>
+                <option value="evop">EVOP</option>
+            </select>
         </div>
 
-        <!-- CUTOUT-F: type-dial — dial + dynamic labels + tag -->
+        <!-- ── CUTOUT-F: type-dial (right:0, top:126) 122×116 ── -->
         <div style="position:absolute;right:0;top:126px;width:122px;height:116px;
-            background:#000;border:1px solid rgba(163,177,138,0.15);
-            display:flex;align-items:center;justify-content:center;">
-            <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.4);text-transform:uppercase;letter-spacing:0.1em;text-align:center;">
-                F: type-dial<br>
-                <span style="font-weight:400;font-size:9px;color:rgba(163,177,138,0.2);">122 × 116</span>
-            </span>
+            display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:visible;">
+            <div style="position:relative;width:50px;height:50px;overflow:visible;">
+                <div style="position:absolute;inset:-3px;border-radius:50%;background:#141810;
+                    box-shadow:inset 0 2px 5px rgba(0,0,0,0.6);"></div>
+                <div id="${id}-type-dial" style="position:absolute;inset:0;cursor:pointer;
+                    transition: transform 0.12s ease-out;transform: rotate(0deg);">
+                    <div style="position:absolute;inset:4px;border-radius:50%;
+                        background:radial-gradient(circle at 38% 34%, rgba(255,240,215,0.07), transparent 45%),
+                            radial-gradient(circle, #222220 0%, #1a1a18 50%, #121210 100%);
+                        border:2px solid #0a0a08;
+                        box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,215,0.04);"></div>
+                    <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);
+                        width:10px;height:16px;background:linear-gradient(180deg, #1e1e1c, #141412 60%, #1a1a18);
+                        clip-path:polygon(50% 0%, 95% 70%, 80% 100%, 20% 100%, 5% 70%);"></div>
+                    <div style="position:absolute;top:1px;left:50%;transform:translateX(-50%);
+                        width:1.5px;height:11px;background:#d0d0c8;border-radius:0.5px;
+                        box-shadow:0 0 2px rgba(208,208,200,0.4);"></div>
+                    <div style="position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);
+                        width:12px;height:8px;background:linear-gradient(0deg, #1a1a18, #1e1e1c 60%, #141412);
+                        border-radius:0 0 3px 3px;border:2px solid #0a0a08;border-top:none;"></div>
+                </div>
+                <div id="${id}-type-labels" style="position:absolute;inset:-24px;pointer-events:none;overflow:visible;"></div>
+            </div>
+            <div class="tex-matte" style="display:inline-flex;align-items:center;gap:4px;margin-top:18px;position:relative;overflow:hidden;
+                background:linear-gradient(180deg, #58585a, #48484a);
+                border:1px solid rgba(0,0,0,0.4);border-radius:1px;padding:4px 14px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,240,215,0.05);">
+                <div style="width:3px;height:3px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #707072, #3a3a3c);
+                    box-shadow:inset 0 0.5px 0.5px rgba(255,240,215,0.1), 0 0.5px 1px rgba(0,0,0,0.3);"></div>
+                <span style="font:700 10px/1 'Courier New',monospace;color:rgba(208,208,200,0.45);text-transform:uppercase;letter-spacing:0.1em;
+                    text-shadow: 0 -0.5px 0 rgba(0,0,0,0.25), 0 0.5px 0 rgba(255,240,215,0.08);">Type</span>
+                <div style="width:3px;height:3px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #707072, #3a3a3c);
+                    box-shadow:inset 0 0.5px 0.5px rgba(255,240,215,0.1), 0 0.5px 1px rgba(0,0,0,0.3);"></div>
+            </div>
+            <div id="${id}-design-crt" style="display:none;"></div>
+            <select id="${id}-design" style="display:none;"></select>
         </div>
 
-        <!-- CUTOUT-G: generate — button + tag -->
+        <!-- ── CUTOUT-G: generate (right:0, bottom:0) 122×90 ── -->
         <div style="position:absolute;right:0;bottom:0;width:122px;height:90px;
-            background:#000;border:1px solid rgba(163,177,138,0.15);
-            display:flex;align-items:center;justify-content:center;">
-            <span style="font:700 10px/1 'Courier New',monospace;color:rgba(163,177,138,0.4);text-transform:uppercase;letter-spacing:0.1em;text-align:center;">
-                G: generate<br>
-                <span style="font-weight:400;font-size:9px;color:rgba(163,177,138,0.2);">122 × 90</span>
-            </span>
+            display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;">
+            <button id="${id}-btn-gen" style="
+                width:40px;height:40px;cursor:pointer;
+                background:radial-gradient(circle at 50% 45%, #2a2a28, #1a1a18 50%, #0e0e0c);
+                border:2px solid #0a0a08;border-radius:3px;
+                color:#a3b18a;font:700 14px/1 sans-serif;
+                box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,240,215,0.04), inset 0 -2px 4px rgba(0,0,0,0.3);
+                display:flex;align-items:center;justify-content:center;">&#x25B6;</button>
+            <button id="${id}-btn-export" style="
+                width:40px;height:20px;cursor:pointer;
+                background:linear-gradient(180deg, #1e2218, #161a12);
+                border:2px solid #0a0a08;border-radius:2px;
+                color:rgba(163,177,138,0.4);font:700 7px/1 'Courier New',monospace;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,240,215,0.03);
+                display:flex;align-items:center;justify-content:center;letter-spacing:0.05em;">XLSX</button>
+            <div class="tex-matte" style="display:inline-flex;align-items:center;gap:4px;position:relative;overflow:hidden;
+                background:linear-gradient(180deg, #58585a, #48484a);
+                border:1px solid rgba(0,0,0,0.4);border-radius:1px;padding:3px 10px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,240,215,0.05);">
+                <div style="width:3px;height:3px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #707072, #3a3a3c);
+                    box-shadow:inset 0 0.5px 0.5px rgba(255,240,215,0.1), 0 0.5px 1px rgba(0,0,0,0.3);"></div>
+                <span style="font:700 9px/1 'Courier New',monospace;color:rgba(208,208,200,0.45);text-transform:uppercase;letter-spacing:0.1em;
+                    text-shadow: 0 -0.5px 0 rgba(0,0,0,0.25), 0 0.5px 0 rgba(255,240,215,0.08);">Generate</span>
+                <div style="width:3px;height:3px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #707072, #3a3a3c);
+                    box-shadow:inset 0 0.5px 0.5px rgba(255,240,215,0.1), 0 0.5px 1px rgba(0,0,0,0.3);"></div>
+            </div>
         </div>
 
     </div>
 
-    <!-- ══ BOTTOM HEX BOLTS (fixed hardware) ══ -->
+    <!-- ══ BOTTOM HEX BOLTS ══ -->
     <div style="position:absolute;bottom:5px;left:46px;width:9px;height:9px;z-index:10;
         background:radial-gradient(circle at 35% 35%, #5a5e4a, #3a3e2e 40%, #2a2e22 70%, #1e2218);
         clip-path:polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);"></div>
     <div style="position:absolute;bottom:5px;right:46px;width:9px;height:9px;z-index:10;
         background:radial-gradient(circle at 35% 35%, #5a5e4a, #3a3e2e 40%, #2a2e22 70%, #1e2218);
         clip-path:polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);"></div>
+</div>
+
+<!-- ════════ BACK PANEL ════════ -->
+<div class="rack-unit-back u11" data-unit-back="strategist" data-id="${id}" style="
+    background: linear-gradient(160deg, #1c1c1c, #1f1f1f 40%, #1d1d1d);overflow:hidden;position:relative;">
+    <div class="rack-screw" style="position:absolute;top:4px;left:4px;"></div>
+    <div class="rack-screw" style="position:absolute;top:4px;right:4px;"></div>
+    <div style="display:flex;align-items:center;gap:8px;padding:5px 48px;border-bottom:1px solid rgba(255,255,255,0.05);">
+        <span style="font:700 11px/1 'Courier New',monospace;color:rgba(163,177,138,0.1);letter-spacing:0.15em;text-transform:uppercase;">DSh-K11</span>
+        <span style="font:400 9px/1 'Courier New',monospace;color:rgba(163,177,138,0.06);">Dimitrov-Shapovalov</span>
+        <span class="serial-tag" style="margin-left:auto;">S/N ${id}</span>
+    </div>
+    <div style="padding:10px 48px;">
+        <div style="font:700 9px/1 'Courier New',monospace;color:rgba(255,255,255,0.07);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:10px;">Signal</div>
+        <div style="display:flex;gap:18px;">
+            <div class="patch-group"><div class="patch-jack" data-output="design" data-unit-id="${id}"></div><div class="patch-jack-label">design</div></div>
+            <div class="patch-group"><div class="patch-jack" data-output="runsheet" data-unit-id="${id}"></div><div class="patch-jack-label">run sheet</div></div>
+        </div>
+    </div>
+    <div style="padding:6px 48px;margin-top:auto;border-top:1px solid rgba(163,177,138,0.02);">
+        <div style="font:300 8px/1.4 'Courier New',monospace;color:rgba(163,177,138,0.04);letter-spacing:0.04em;">
+            FORGERACK DSh-K11 &#x2022; REV.D &#x2022; FORGEDOE ENGINE<br>
+            OPTIMAL &#x2022; MIXTURE &#x2022; SPLIT-PLOT &#x2022; CLASSICAL &#x2022; EVOP<br>
+            KOSMOS ENGINEERING &#x2022; &#x0414;&#x0428;-&#x041A;11 &#x2022; DIMITROV-SHAPOVALOV
+        </div>
+    </div>
+    <div class="rack-screw" style="position:absolute;bottom:4px;left:4px;"></div>
+    <div class="rack-screw" style="position:absolute;bottom:4px;right:4px;"></div>
 </div>

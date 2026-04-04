@@ -1,0 +1,228 @@
+{
+  "width": 690,
+  "u_height": 6,
+  "panel_preset": "olive",
+  "panel_surface": "tex-matte",
+  "widgets": [
+    {
+      "type": "nameplate",
+      "x": 0,
+      "y": 0,
+      "w": 690,
+      "h": 30,
+      "texture": "tex-matte"
+    },
+    {
+      "type": "chickenhead-dial",
+      "x": 44,
+      "y": 60,
+      "w": 100,
+      "h": 90,
+      "labels": [
+        "CLASS",
+        "OPT",
+        "LHS",
+        "MIX",
+        "S-P",
+        "EVOP"
+      ]
+    },
+    {
+      "type": "chickenhead-dial",
+      "x": 184,
+      "y": 60,
+      "w": 100,
+      "h": 90,
+      "note": "VARIABLE"
+    },
+    {
+      "type": "stamped-tag",
+      "x": 56,
+      "y": 144,
+      "w": 80,
+      "h": 22,
+      "texture": "tex-anodized"
+    },
+    {
+      "type": "stamped-tag",
+      "x": 196,
+      "y": 144,
+      "w": 80,
+      "h": 22,
+      "texture": "tex-anodized"
+    },
+    {
+      "type": "hex-bolt",
+      "x": 8,
+      "y": 44,
+      "w": 16,
+      "h": 16
+    },
+    {
+      "type": "hex-bolt",
+      "x": 4,
+      "y": 232,
+      "w": 16,
+      "h": 16
+    },
+    {
+      "type": "hex-bolt",
+      "x": 668,
+      "y": 232,
+      "w": 16,
+      "h": 16
+    },
+    {
+      "type": "hex-bolt",
+      "x": 664,
+      "y": 44,
+      "w": 16,
+      "h": 16
+    },
+    {
+      "type": "bezel-frame",
+      "x": 298,
+      "y": 45,
+      "w": 360,
+      "h": 200,
+      "texture": "tex-matte"
+    },
+    {
+      "type": "rivet",
+      "x": 304,
+      "y": 52,
+      "w": 8,
+      "h": 8
+    },
+    {
+      "type": "rivet",
+      "x": 640,
+      "y": 52,
+      "w": 8,
+      "h": 8
+    },
+    {
+      "type": "input-text",
+      "x": 336,
+      "y": 172,
+      "w": 72,
+      "h": 28
+    },
+    {
+      "type": "rocker",
+      "x": 336,
+      "y": 56,
+      "w": 20,
+      "h": 28
+    },
+    {
+      "type": "rocker",
+      "x": 397,
+      "y": 56,
+      "w": 20,
+      "h": 28
+    },
+    {
+      "type": "stencil-text",
+      "x": 316,
+      "y": 84,
+      "w": 60,
+      "h": 16,
+      "note": "2-lvl"
+    },
+    {
+      "type": "stencil-text",
+      "x": 379,
+      "y": 85,
+      "w": 60,
+      "h": 16,
+      "note": "3-lvl"
+    },
+    {
+      "type": "input-number",
+      "x": 359,
+      "y": 204,
+      "w": 50,
+      "h": 28
+    },
+    {
+      "type": "stencil-text",
+      "x": 337,
+      "y": 205,
+      "w": 20,
+      "h": 28
+    },
+    {
+      "type": "input-text",
+      "x": 414,
+      "y": 171,
+      "w": 180,
+      "h": 28
+    },
+    {
+      "type": "input-number",
+      "x": 441,
+      "y": 202,
+      "w": 50,
+      "h": 28
+    },
+    {
+      "type": "stencil-text",
+      "x": 421,
+      "y": 203,
+      "w": 20,
+      "h": 28
+    },
+    {
+      "type": "button-square",
+      "x": 600,
+      "y": 171,
+      "w": 28,
+      "h": 28
+    },
+    {
+      "type": "crt",
+      "x": 438,
+      "y": 65,
+      "w": 200,
+      "h": 100,
+      "wear": "wear-dust"
+    },
+    {
+      "type": "rivet",
+      "x": 304,
+      "y": 228,
+      "w": 8,
+      "h": 8
+    },
+    {
+      "type": "rivet",
+      "x": 644,
+      "y": 228,
+      "w": 8,
+      "h": 8
+    },
+    {
+      "type": "button-square",
+      "x": 44,
+      "y": 192,
+      "w": 40,
+      "h": 40
+    },
+    {
+      "type": "button-square",
+      "x": 128,
+      "y": 192,
+      "w": 40,
+      "h": 40,
+      "note": "excel"
+    },
+    {
+      "type": "carry-handle",
+      "x": 324,
+      "y": 116,
+      "w": 103,
+      "h": 12
+    }
+  ]
+}

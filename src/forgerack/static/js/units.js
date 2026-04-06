@@ -3431,6 +3431,7 @@ FR.registerUnit('sentinel', {
         this.id = id;
         this._data = null;
         this._lastResult = null;
+        this._lastChartSpec = null;
 
         var self = this;
         var runBtn = document.getElementById(id + '-btn-run');
@@ -3507,53 +3508,6 @@ FR.registerUnit('sentinel', {
             });
             new MutationObserver(function() { update(); }).observe(sel, { childList: true });
             update();
-        });
-
-        // Export buttons
-        var viewport = document.getElementById(id + '-viewport');
-        var copyBtn = document.getElementById(id + '-btn-copy');
-        var svgBtn = document.getElementById(id + '-btn-svg');
-        var pngBtn = document.getElementById(id + '-btn-png');
-
-        if (copyBtn) copyBtn.addEventListener('click', function() {
-            var svg = viewport && viewport.querySelector('svg');
-            if (svg) {
-                var data = new XMLSerializer().serializeToString(svg);
-                navigator.clipboard.writeText(data).then(function() {
-                    copyBtn.textContent = 'OK';
-                    setTimeout(function() { copyBtn.textContent = 'Copy'; }, 1200);
-                });
-            }
-        });
-        if (svgBtn) svgBtn.addEventListener('click', function() {
-            var svg = viewport && viewport.querySelector('svg');
-            if (svg) {
-                var data = new XMLSerializer().serializeToString(svg);
-                var blob = new Blob([data], { type: 'image/svg+xml' });
-                var url = URL.createObjectURL(blob);
-                var a = document.createElement('a'); a.href = url; a.download = 'sentinel-chart.svg'; a.click();
-                URL.revokeObjectURL(url);
-            }
-        });
-        if (pngBtn) pngBtn.addEventListener('click', function() {
-            var svg = viewport && viewport.querySelector('svg');
-            if (svg) {
-                var data = new XMLSerializer().serializeToString(svg);
-                var img = new Image();
-                var canvas = document.createElement('canvas');
-                canvas.width = svg.clientWidth * 2; canvas.height = svg.clientHeight * 2;
-                img.onload = function() {
-                    var ctx = canvas.getContext('2d');
-                    ctx.scale(2, 2);
-                    ctx.drawImage(img, 0, 0);
-                    canvas.toBlob(function(blob) {
-                        var url = URL.createObjectURL(blob);
-                        var a = document.createElement('a'); a.href = url; a.download = 'sentinel-chart.png'; a.click();
-                        URL.revokeObjectURL(url);
-                    });
-                };
-                img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(data)));
-            }
         });
     },
 
@@ -3639,136 +3593,95 @@ FR.registerUnit('sentinel', {
         .then(function(json) {
             if (json.error) { console.warn('sentinel compute error:', json.error); return; }
             var r = json.result;
-            self._renderChart(vals, r, col, chartType, lsl, usl);
+            self._emitChart(vals, r, col, chartType, lsl, usl);
         })
         .catch(function(e) { console.warn('sentinel fetch error:', e); });
     },
 
-    _renderChart(vals, r, col, chartType, lsl, usl) {
-        // Use chart_data if server sent transformed series (CUSUM/EWMA), else raw vals
+    _emitChart(vals, r, col, chartType, lsl, usl) {
+        // Build ChartSpec from compute result — CHART-PANEL renders it
         var plotVals = r.chart_data || vals;
         var n = plotVals.length;
         var mean = r.mean, ucl = r.ucl, lcl = r.lcl;
 
-        // Build OOC index set from server results
+        // Build OOC index set
         var seen = {};
         var allViolations = (r.out_of_control || []).concat(r.violations || []);
         allViolations.forEach(function(v) { seen[v.index] = true; });
         var oocCount = Object.keys(seen).length;
         var inControl = oocCount === 0;
 
-        // Status LEDs
+        // Status LEDs on the unit faceplate
         FR.LED(document.getElementById(this.id + '-led-ic')).set(inControl ? 'green' : 'off');
         FR.LED(document.getElementById(this.id + '-led-ooc')).set(inControl ? 'off' : 'red');
 
-        // Capability readouts
+        // VFD readouts on the unit faceplate
         var cpkEl = document.getElementById(this.id + '-cpk');
         var ppmEl = document.getElementById(this.id + '-ppm');
         if (cpkEl) cpkEl.textContent = r.cpk != null ? r.cpk.toFixed(2) : '—';
         if (ppmEl) ppmEl.textContent = r.ppm != null ? r.ppm : '—';
 
-        // Build SVG chart
-        var viewport = document.getElementById(this.id + '-viewport');
-        var empty = document.getElementById(this.id + '-empty');
-        if (empty) empty.style.display = 'none';
+        // Build x-axis labels (observation indices)
+        var xLabels = [];
+        for (var i = 0; i < n; i++) xLabels.push(i + 1);
 
-        if (viewport) {
-            var w = viewport.clientWidth || 600;
-            var h = viewport.clientHeight || 200;
-            var pad = { top: 15, right: 20, bottom: 25, left: 50 };
-            var pw = w - pad.left - pad.right;
-            var ph = h - pad.top - pad.bottom;
-
-            // For CUSUM, also consider negative series in y-range
-            var allPlot = plotVals.slice();
-            if (r.chart_data_neg) allPlot = allPlot.concat(r.chart_data_neg);
-
-            var sigma = ucl !== lcl ? (ucl - mean) / 3 : Math.abs(ucl) * 0.1 || 1;
-            var yMin = Math.min(lcl, Math.min.apply(null, allPlot)) - Math.abs(sigma);
-            var yMax = Math.max(ucl, Math.max.apply(null, allPlot)) + Math.abs(sigma);
-            if (lsl !== null) yMin = Math.min(yMin, lsl - Math.abs(sigma));
-            if (usl !== null) yMax = Math.max(yMax, usl + Math.abs(sigma));
-            var yRange = yMax - yMin || 1;
-
-            function sx(i) { return pad.left + (i / (n - 1 || 1)) * pw; }
-            function sy(v) { return pad.top + (1 - (v - yMin) / yRange) * ph; }
-
-            var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '" style="font-family:JetBrains Mono,monospace;">';
-
-            // Grid
-            for (var g = 0; g <= 5; g++) {
-                var gy = pad.top + (g / 5) * ph;
-                var gv = yMax - (g / 5) * yRange;
-                svg += '<line x1="' + pad.left + '" y1="' + gy + '" x2="' + (w - pad.right) + '" y2="' + gy + '" stroke="rgba(217,119,6,0.04)" stroke-width="0.5"/>';
-                svg += '<text x="' + (pad.left - 4) + '" y="' + (gy + 3) + '" fill="rgba(217,119,6,0.2)" font-size="8" text-anchor="end">' + gv.toFixed(1) + '</text>';
-            }
-
-            // EWMA time-varying limits
-            if (r.ucl_series && r.lcl_series) {
-                var uclPath = '', lclPath = '';
-                for (var i = 0; i < n; i++) {
-                    uclPath += (i === 0 ? 'M' : 'L') + sx(i).toFixed(1) + ',' + sy(r.ucl_series[i]).toFixed(1);
-                    lclPath += (i === 0 ? 'M' : 'L') + sx(i).toFixed(1) + ',' + sy(r.lcl_series[i]).toFixed(1);
-                }
-                svg += '<path d="' + uclPath + '" fill="none" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>';
-                svg += '<path d="' + lclPath + '" fill="none" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>';
-                svg += '<text x="' + (w - pad.right + 3) + '" y="' + (sy(r.ucl_series[n-1]) + 3) + '" fill="#ef4444" font-size="7" opacity="0.6">UCL</text>';
-                svg += '<text x="' + (w - pad.right + 3) + '" y="' + (sy(r.lcl_series[n-1]) + 3) + '" fill="#ef4444" font-size="7" opacity="0.6">LCL</text>';
-            } else {
-                // Static UCL/CL/LCL
-                svg += '<line x1="' + pad.left + '" y1="' + sy(ucl) + '" x2="' + (w - pad.right) + '" y2="' + sy(ucl) + '" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"><title>UCL = ' + ucl.toFixed(3) + '</title></line>';
-                svg += '<text x="' + (w - pad.right + 3) + '" y="' + (sy(ucl) + 3) + '" fill="#ef4444" font-size="7" opacity="0.6">UCL</text>';
-                svg += '<line x1="' + pad.left + '" y1="' + sy(lcl) + '" x2="' + (w - pad.right) + '" y2="' + sy(lcl) + '" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"><title>LCL = ' + lcl.toFixed(3) + '</title></line>';
-                svg += '<text x="' + (w - pad.right + 3) + '" y="' + (sy(lcl) + 3) + '" fill="#ef4444" font-size="7" opacity="0.6">LCL</text>';
-            }
-            // Center line always
-            svg += '<line x1="' + pad.left + '" y1="' + sy(mean) + '" x2="' + (w - pad.right) + '" y2="' + sy(mean) + '" stroke="#4ade80" stroke-width="1" opacity="0.5"><title>CL = ' + mean.toFixed(3) + '</title></line>';
-            svg += '<text x="' + (w - pad.right + 3) + '" y="' + (sy(mean) + 3) + '" fill="#4ade80" font-size="7" opacity="0.5">CL</text>';
-
-            // Spec limits
-            if (lsl !== null) {
-                svg += '<line x1="' + pad.left + '" y1="' + sy(lsl) + '" x2="' + (w - pad.right) + '" y2="' + sy(lsl) + '" stroke="#f59e0b" stroke-width="1" stroke-dasharray="2,2" opacity="0.4"/>';
-                svg += '<text x="' + (w - pad.right + 3) + '" y="' + (sy(lsl) + 3) + '" fill="#f59e0b" font-size="7" opacity="0.4">LSL</text>';
-            }
-            if (usl !== null) {
-                svg += '<line x1="' + pad.left + '" y1="' + sy(usl) + '" x2="' + (w - pad.right) + '" y2="' + sy(usl) + '" stroke="#f59e0b" stroke-width="1" stroke-dasharray="2,2" opacity="0.4"/>';
-                svg += '<text x="' + (w - pad.right + 3) + '" y="' + (sy(usl) + 3) + '" fill="#f59e0b" font-size="7" opacity="0.4">USL</text>';
-            }
-
-            // CUSUM negative series (blue)
-            if (r.chart_data_neg) {
-                var negPath = '';
-                for (var i = 0; i < r.chart_data_neg.length; i++) {
-                    negPath += (i === 0 ? 'M' : 'L') + sx(i).toFixed(1) + ',' + sy(r.chart_data_neg[i]).toFixed(1);
-                }
-                svg += '<path d="' + negPath + '" fill="none" stroke="#60a5fa" stroke-width="1.5" opacity="0.8"/>';
-            }
-
-            // Data line
-            var pathD = '';
-            for (var i = 0; i < n; i++) { pathD += (i === 0 ? 'M' : 'L') + sx(i).toFixed(1) + ',' + sy(plotVals[i]).toFixed(1); }
-            svg += '<path d="' + pathD + '" fill="none" stroke="#d97706" stroke-width="1.5" opacity="0.8"/>';
-
-            // Data points
-            for (var i = 0; i < n; i++) {
-                var isOOC = seen[i];
-                var ptR = isOOC ? 4 : 2.5;
-                var color = isOOC ? '#ef4444' : '#d97706';
-                var tip = '#' + (i + 1) + ': ' + plotVals[i].toFixed(3) + (isOOC ? ' \u26A0 OOC' : '');
-                svg += '<circle cx="' + sx(i).toFixed(1) + '" cy="' + sy(plotVals[i]).toFixed(1) + '" r="' + ptR + '" fill="' + color + '" opacity="0.9" style="cursor:pointer;"><title>' + tip + '</title></circle>';
-                if (isOOC) svg += '<circle cx="' + sx(i).toFixed(1) + '" cy="' + sy(plotVals[i]).toFixed(1) + '" r="7" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.3"/>';
-            }
-
-            // Chart title with type label
-            var typeLabels = { imr: 'I-MR', xbar_r: 'X\u0304-R', xbar_s: 'X\u0304-S', p: 'p', np: 'np', c: 'c', u: 'u', cusum: 'CUSUM', ewma: 'EWMA' };
-            var typeLabel = typeLabels[chartType] || chartType.toUpperCase();
-            svg += '<text x="' + (pad.left + 4) + '" y="' + (pad.top - 4) + '" fill="rgba(217,119,6,0.4)" font-size="9" font-weight="700">' +
-                typeLabel + ' \u2014 ' + col + '  (n=' + n + ', OOC=' + oocCount + ')</text>';
-            svg += '</svg>';
-            viewport.innerHTML = svg;
+        // Split data into in-control and OOC point arrays for separate trace styling
+        var icY = [], oocY = [], oocX = [];
+        for (var i = 0; i < n; i++) {
+            icY.push(plotVals[i]);
+            if (seen[i]) { oocY.push(plotVals[i]); oocX.push(i + 1); }
         }
 
-        // Emit
+        var typeLabels = { imr: 'I-MR', xbar_r: 'X\u0304-R', xbar_s: 'X\u0304-S', p: 'p', np: 'np', c: 'c', u: 'u', cusum: 'CUSUM', ewma: 'EWMA' };
+        var typeLabel = typeLabels[chartType] || chartType.toUpperCase();
+
+        // Assemble ChartSpec — chart-panel renders anything with .traces
+        var spec = {
+            chart_type: 'control',
+            title: typeLabel + ' \u2014 ' + col + '  (n=' + n + ', OOC=' + oocCount + ')',
+            x_axis: { label: 'Observation' },
+            y_axis: { label: col },
+            traces: [
+                { x: xLabels, y: icY, label: col, color: '#d97706', mode: 'line+markers' }
+            ],
+            // Control limit reference lines for chart-panel to render
+            reference_lines: [
+                { value: ucl, label: 'UCL', color: '#ef4444', dash: '4,3' },
+                { value: mean, label: 'CL', color: '#4ade80', dash: null },
+                { value: lcl, label: 'LCL', color: '#ef4444', dash: '4,3' }
+            ],
+            // Source metadata
+            _sentinel: { cpk: r.cpk, ppm: r.ppm, oocCount: oocCount, inControl: inControl }
+        };
+
+        // OOC points as separate trace (red, markers only)
+        if (oocY.length > 0) {
+            spec.traces.push({ x: oocX, y: oocY, label: 'OOC', color: '#ef4444', mode: 'markers', marker_size: 8 });
+        }
+
+        // EWMA time-varying limits
+        if (r.ucl_series && r.lcl_series) {
+            spec.traces.push({ x: xLabels, y: r.ucl_series, label: 'UCL', color: '#ef4444', mode: 'line', dash: '4,3', opacity: 0.5 });
+            spec.traces.push({ x: xLabels, y: r.lcl_series, label: 'LCL', color: '#ef4444', mode: 'line', dash: '4,3', opacity: 0.5 });
+            // Remove static UCL/LCL reference lines for EWMA
+            spec.reference_lines = [{ value: mean, label: 'CL', color: '#4ade80', dash: null }];
+        }
+
+        // CUSUM negative series
+        if (r.chart_data_neg) {
+            spec.traces.push({ x: xLabels, y: r.chart_data_neg, label: 'CUSUM-', color: '#60a5fa', mode: 'line', opacity: 0.8 });
+        }
+
+        // Spec limits
+        if (lsl !== null) spec.reference_lines.push({ value: lsl, label: 'LSL', color: '#f59e0b', dash: '2,2' });
+        if (usl !== null) spec.reference_lines.push({ value: usl, label: 'USL', color: '#f59e0b', dash: '2,2' });
+
+        this._lastChartSpec = spec;
+
+        // Emit chart to connected CHART-PANEL
+        FR.emit(this.id, 'chart', spec);
+
+        // Emit structured result + violations on separate channels
         this._lastResult = r;
         this._lastResult.column = col;
         this._lastResult.chartType = chartType;
@@ -3777,6 +3690,7 @@ FR.registerUnit('sentinel', {
     },
 
     getOutput(channel) {
+        if (channel === 'chart' && this._lastChartSpec) return this._lastChartSpec;
         if (channel === 'result' && this._lastResult) return this._lastResult;
         if (channel === 'thru' && this._data) return this._data;
         return null;
